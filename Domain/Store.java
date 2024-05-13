@@ -1,6 +1,7 @@
 package Domain;
 
 public class Store {
+  
     private int id;
     private String name;
     private Inventory inventory;
