@@ -6,9 +6,9 @@ public class NormalSubscriber implements SubscriberState{
     }
 
     @Override
-    public void changeState(Subscriber subscriber, Store store, SubscriberState newState) {
+    public void changeState(Subscriber subscriber, String storeID, SubscriberState newState) {
         if (newState instanceof StoreManager || newState instanceof StoreCreator || newState instanceof StoreCreator) {
-            subscriber.setState(store, newState);
+            subscriber.setState(storeID, newState);
             System.out.println("State changed successfully to " + newState.getClass().getSimpleName());
         } else {
             System.out.println("Invalid state transition");
