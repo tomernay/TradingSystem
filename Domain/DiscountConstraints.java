@@ -1,4 +1,4 @@
 package Domain;
 
-public class DiscountConstraints {
+public abstract class DiscountConstraints {
 }

@@ -1,4 +1,4 @@
 package Domain;
 
-public class PurchasePolicy {
+public abstract class PurchasePolicy {
 }
