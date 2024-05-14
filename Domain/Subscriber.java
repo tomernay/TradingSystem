@@ -1,79 +1,38 @@
 package Domain;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class Subscriber extends User{
-    private Map<String, SubscriberState> storeStates = new HashMap<>(); //<StoreID, State>
-    private Map<String, List<Permissions>> storePermissions = new HashMap<>(); //<StoreID, List(permissions)>
+    private List<String> stores;
+    private Queue<Message> messages;
 
-    public void addStore(String storeID, SubscriberState state, List<String> permissions) {
-        storeStates.put(storeID, state);
-        storePermissions.put(storeID, Permissions.convertStringList(permissions));
+    public Subscriber() {
+        this.stores = new ArrayList<>();
+        this.messages = new PriorityQueue<>();
     }
 
-    public void changeState(String storeID, SubscriberState newState) {
-        if (storeStates.containsKey(storeID)) {
-            SubscriberState currentState = storeStates.get(storeID);
-            currentState.changeState(this, storeID, newState);
-        } else {
-            System.out.println("Subscriber is not associated with storeID: " + storeID);
-        }
+    public void addStore(String storeID) {
+        stores.add(storeID);
     }
 
-    public void setState(String storeID, SubscriberState state) {
-        storeStates.put(storeID, state);
-    }
-
-    public boolean isStoreOwner(String storeID) {
-        return storeStates.get(storeID) instanceof StoreOwner;
-    }
-
-    public boolean makeStoreOwner(String storeID) {
-        storeStates.put(storeID, new StoreOwner());
+    public boolean makeStoreOwner(Message message) {
+        messages.add(message);
         return true;
     }
 
-    public boolean isStoreManager(String storeID) {
-        return storeStates.get(storeID) instanceof StoreManager;
+    public boolean messageResponse(boolean answer) {
+        Message message = messages.poll();
+        assert message != null;
+        message.response(answer);
+        return answer;
     }
 
-    public boolean makeStoreManager(String storeID, List<String> permissions) {
-        storeStates.put(storeID, new StoreManager());
-        storePermissions.put(storeID, Permissions.convertStringList(permissions));
+    public boolean makeStoreManager(Message message) {
+        messages.add(message);
         return true;
     }
 
-    public boolean addManagerPermissions(String storeID, String permission) {
-        if (storePermissions.containsKey(storeID)) {
-            List<Permissions> permissions = storePermissions.get(storeID);
-            if (permissions.contains(Permissions.valueOf(permission))) {
-                return false;
-            }
-            permissions.add(Permissions.valueOf(permission));
-            storePermissions.put(storeID, permissions);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean removeManagerPermissions(String storeID, String permission) {
-        if (storePermissions.containsKey(storeID)) {
-            List<Permissions> permissions = storePermissions.get(storeID);
-            if (!permissions.remove(Permissions.valueOf(permission))) {
-                return false;
-            }
-            storePermissions.put(storeID, permissions);
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    public boolean isStoreCreator(String storeID) {
-        return storeStates.get(storeID) instanceof StoreCreator;
-    }
 }

@@ -19,7 +19,6 @@ public class UserService {
         if (market.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner
             return false;
         }
-        //Check if the subscriber accepts the appointment and only if so continue.
         return market.makeStoreOwner(storeID, subscriberID);
     }
 
@@ -31,7 +30,6 @@ public class UserService {
         if (market.isStoreOwner(storeID, subscriberID) || market.isStoreManager(storeID, storeOwnerID)) { //The subscriber is already the store owner / manager
             return false;
         }
-        //Check if the subscriber accepts the appointment and only if so continue.
         return market.makeStoreManager(storeID, subscriberID, permissions);
     }
 
@@ -52,12 +50,16 @@ public class UserService {
 
     // Method to close a store
     public boolean closeStore(String storeID, String storeCreatorID) {
-        if (!market.isStoreCreator(storeID, storeCreatorID)) { //The storeCreatorID is not the store owner
+        if (!market.isStoreCreator(storeID, storeCreatorID)) { //The storeCreatorID is not the store creator
             return false;
         }
         //notify all owners and managers
         //MORE TO IMPLEMENT
         return true;
+    }
+
+    public boolean messageResponse(String subscriberID, boolean answer) {
+        return market.messageResponse(subscriberID, answer);
     }
 
     // Method to prompt the subscriber to accept the subscription

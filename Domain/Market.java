@@ -3,7 +3,7 @@ package Domain;
 import java.util.List;
 
 public class Market {
-    private MarketFacade marketFacade;
+    private MarketFacade marketFacade = new MarketFacade();
 
     public boolean isStoreOwner(String storeID, String storeOwnerID) {
         return marketFacade.isStoreOwner(storeID, storeOwnerID);
@@ -31,5 +31,9 @@ public class Market {
 
     public boolean isStoreCreator(String storeID, String storeCreatorID) {
         return marketFacade.isStoreCreator(storeID, storeCreatorID);
+    }
+
+    public boolean messageResponse(String subscriberID, boolean answer) {
+        return marketFacade.messageResponse(subscriberID, answer);
     }
 }
