@@ -1,14 +1,15 @@
 package Domain;
 
-public class NormalSubscriber implements SubscriberState{
-    public void handle() {
-        System.out.println("Normal subscriber behavior");
+public class NormalSubscriber extends SubscriberState{
+
+    public NormalSubscriber(Store store, String subscriberID) {
+        super(subscriberID, store);
     }
 
     @Override
-    public void changeState(Subscriber subscriber, String storeID, SubscriberState newState) {
-        if (newState instanceof StoreManager || newState instanceof StoreCreator || newState instanceof StoreCreator) {
-            subscriber.setState(storeID, newState);
+    public void changeState(Store store, String SubscriberID, SubscriberState newState) {
+        if (newState instanceof StoreCreator || newState instanceof StoreManager || newState instanceof StoreOwner) {
+            store.setState(SubscriberID, newState);
             System.out.println("State changed successfully to " + newState.getClass().getSimpleName());
         } else {
             System.out.println("Invalid state transition");
