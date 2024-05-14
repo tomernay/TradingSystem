@@ -1,5 +1,5 @@
 package Domain;
 
 public interface SubscriberState {
-    void changeState(Subscriber subscriber, Store store, SubscriberState newState);
+    void changeState(Subscriber subscriber, String storeID, SubscriberState newState);
 }

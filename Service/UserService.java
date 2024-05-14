@@ -12,70 +12,52 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public void addStoreOwnerSubscription(String storeCreatorID, String subscriberID) {
-//        // Check if the storeOwner is already associated with a store
-//        if (storeOwner instanceof StoreOwner && ((StoreOwner) storeOwner).getStore() == null) {
-//            // Check if the subscriber is not already associated with another store owner
-//            if (subscriber instanceof Subscriber && !(((Subscriber) subscriber).getStore() instanceof StoreOwner)) {
-//                // Prompt the subscriber to accept the subscription
-//                // Assuming there is a method for prompting the subscriber to accept the subscription
-//                boolean subscriptionAccepted = promptSubscription(subscriber.getUsername(), storeOwner.getUsername());
-//
-//                if (subscriptionAccepted) {
-//                    // Create a store owner subscription
-//                    ((Subscriber) subscriber).setStoreOwnerSubscription((StoreOwner) storeOwner);
-//                    System.out.println(subscriber.getUsername() + " subscribed to " + storeOwner.getUsername() + " as a store owner.");
-//                } else {
-//                    System.out.println(subscriber.getUsername() + " declined the subscription request.");
-//                }
-//            } else {
-//                System.out.println("Subscriber is already associated with another store owner.");
-//            }
-//        } else {
-//            System.out.println("Store owner is already associated with a store.");
-//        }
+    public boolean addStoreOwnerSubscription(String storeID, String storeOwnerID, String subscriberID) {
+        if (!market.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+            return false;
+        }
+        if (market.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner
+            return false;
+        }
+        //Check if the subscriber accepts the appointment and only if so continue.
+        return market.makeStoreOwner(storeID, subscriberID);
     }
 
     // Method to add a store manager subscription
-    public void addStoreManagerSubscription(String storeCreatorID, String subscriberID, List<String> permissions) {
-//        // Check if the storeManager is already associated with a store
-//        if (storeManager instanceof StoreManager && ((StoreManager) storeManager).getStore() == null) {
-//            // Check if the subscriber is not already associated with another store owner
-//            if (subscriber instanceof Subscriber && !(((Subscriber) subscriber).getStore() instanceof StoreManager)) {
-//                // Prompt the subscriber to accept the subscription
-//                // Assuming there is a method for prompting the subscriber to accept the subscription
-//                boolean subscriptionAccepted = promptSubscription(subscriber.getUsername(), storeManager.getUsername());
-//
-//                if (subscriptionAccepted) {
-//                    // Create a store manager subscription
-//                    ((Subscriber) subscriber).setStoreManagerSubscription((StoreManager) storeManager, permissions);
-//                    System.out.println(subscriber.getUsername() + " subscribed to " + storeManager.getUsername() + " as a store manager.");
-//                } else {
-//                    System.out.println(subscriber.getUsername() + " declined the subscription request.");
-//                }
-//            } else {
-//                System.out.println("Subscriber is already associated with another store manager.");
-//            }
-//        } else {
-//            System.out.println("Store manager is already associated with a store.");
-//        }
+    public boolean addStoreManagerSubscription(String storeID, String storeOwnerID, String subscriberID, List<String> permissions) {
+        if (!market.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+            return false;
+        }
+        if (market.isStoreOwner(storeID, subscriberID) || market.isStoreManager(storeID, storeOwnerID)) { //The subscriber is already the store owner / manager
+            return false;
+        }
+        //Check if the subscriber accepts the appointment and only if so continue.
+        return market.makeStoreManager(storeID, subscriberID, permissions);
     }
 
     // Method to change permissions of a store manager
-    public void changeManagerPermissions(String storeCreatorID, String storeManagerID, String permission, String value) {
-//        storeManager.setPermissions(permissions);
-//        System.out.println("Permissions changed successfully for store manager: " + storeManager.getUsername());
+    public boolean addManagerPermissions(String storeID, String storeOwnerID, String storeManagerID, String permission) {
+        if (!market.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+            return false;
+        }
+        return market.addManagerPermissions(storeID, storeManagerID, permission);
+    }
+
+    public boolean removeManagerPermissions(String storeID, String storeOwnerID, String storeManagerID, String permission) {
+        if (!market.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+            return false;
+        }
+        return market.removeManagerPermissions(storeID, storeManagerID, permission);
     }
 
     // Method to close a store
-    public void closeStore(String storeCreatorID) {
-//        if (storeOwner instanceof StoreOwner) {
-//            // Close the store
-//            storeOwner.closeStore();
-//            System.out.println("Store closed successfully.");
-//        } else {
-//            System.out.println("Invalid operation. User is not a store owner.");
-//        }
+    public boolean closeStore(String storeID, String storeCreatorID) {
+        if (!market.isStoreCreator(storeID, storeCreatorID)) { //The storeCreatorID is not the store owner
+            return false;
+        }
+        //notify all owners and managers
+        //MORE TO IMPLEMENT
+        return true;
     }
 
     // Method to prompt the subscriber to accept the subscription
