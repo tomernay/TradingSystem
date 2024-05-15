@@ -1,5 +1,7 @@
 package Domain.Market;
 
+import Utilities.Response;
+
 import java.util.List;
 
 public class Market {
@@ -9,7 +11,7 @@ public class Market {
         return marketFacade.isStoreOwner(storeID, storeOwnerID);
     }
 
-    public boolean makeStoreOwner(String storeID, String subscriberID) {
+    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
         return marketFacade.makeStoreOwner(storeID, subscriberID);
     }
 
@@ -17,15 +19,15 @@ public class Market {
         return marketFacade.isStoreManager(storeID, storeOwnerID);
     }
 
-    public boolean makeStoreManager(String storeID, String subscriberID, List<String> permissions) {
+    public Response<String> makeStoreManager(String storeID, String subscriberID, List<String> permissions) {
         return marketFacade.makeStoreManager(storeID, subscriberID, permissions);
     }
 
-    public boolean addManagerPermissions(String storeID, String storeManagerID, String permission) {
+    public Response<String> addManagerPermissions(String storeID, String storeManagerID, String permission) {
         return marketFacade.addManagerPermissions(storeID, storeManagerID, permission);
     }
 
-    public boolean removeManagerPermissions(String storeID, String storeManagerID, String permission) {
+    public Response<String> removeManagerPermissions(String storeID, String storeManagerID, String permission) {
         return marketFacade.removeManagerPermissions(storeID, storeManagerID, permission);
     }
 
@@ -33,7 +35,7 @@ public class Market {
         return marketFacade.isStoreCreator(storeID, storeCreatorID);
     }
 
-    public boolean messageResponse(String subscriberID, boolean answer) {
+    public Response<String> messageResponse(String subscriberID, boolean answer) {
         return marketFacade.messageResponse(subscriberID, answer);
     }
 

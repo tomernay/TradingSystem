@@ -6,6 +6,7 @@ import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
 import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 
 
@@ -64,12 +65,18 @@ public class Store {
         this.inventory = inventory;
     }
 
-    public boolean isStoreOwner(String storeCreatorID) {
-        return subscribers.get(storeCreatorID) instanceof StoreOwner;
+    public boolean isStoreOwner(String storeOwnerID) {
+        if (subscribers.get(storeOwnerID) == null) {
+            return false;
+        }
+        return subscribers.get(storeOwnerID) instanceof StoreOwner;
     }
 
-    public boolean isStoreManager(String storeOwnerID) {
-        return subscribers.get(storeOwnerID) instanceof StoreManager;
+    public boolean isStoreManager(String storeManagerID) {
+        if (subscribers.get(storeManagerID) == null) {
+            return false;
+        }
+        return subscribers.get(storeManagerID) instanceof StoreManager;
     }
 
     public void setState(String subscriberID, SubscriberState newState) {
@@ -99,34 +106,31 @@ public class Store {
         managerPermissions.put(subscriberID, permissions);
     }
 
-    public boolean addManagerPermissions(String storeManagerID, String permission) {
-        if (managerPermissions.get(storeManagerID) != null) {
-            List<Permissions> permissions = managerPermissions.get(storeManagerID);
-            if (permissions.contains(Permissions.valueOf(permission))) {
-                return false;
-            }
-            permissions.add(Permissions.valueOf(permission));
-            managerPermissions.put(storeManagerID, permissions);
-            return true;
-        } else {
-            return false;
+    public Response<String> addManagerPermissions(String storeManagerID, String permission) {
+        List<Permissions> permissions = managerPermissions.get(storeManagerID);
+        if (permissions.contains(Permissions.valueOf(permission))) {
+            return Response.error("The manager: " + storeManagerID + " already has the permission: " + permission + " on the store: " + name, null);
         }
+        permissions.add(Permissions.valueOf(permission));
+        managerPermissions.put(storeManagerID, permissions);
+        return Response.success("Added the permission: " + permission + " to the manager: " + storeManagerID + " of store: " + name, null);
+
     }
 
-    public boolean removeManagerPermissions(String storeManagerID, String permission) {
-        if (managerPermissions.get(storeManagerID) != null) {
-            List<Permissions> permissions = managerPermissions.get(storeManagerID);
-            if (!permissions.remove(Permissions.valueOf(permission))) {
-                return false;
-            }
-            managerPermissions.put(storeManagerID, permissions);
-            return true;
-        } else {
-            return false;
+    public Response<String> removeManagerPermissions(String storeManagerID, String permission) {
+        List<Permissions> permissions = managerPermissions.get(storeManagerID);
+        if (!permissions.remove(Permissions.valueOf(permission))) {
+            return Response.error("The manager: " + storeManagerID + " doesn't have the permission: " + permission + " on the store: " + name, null);
         }
+        managerPermissions.put(storeManagerID, permissions);
+        return Response.success("Removed the permission: " + permission + " from the manager: " + storeManagerID + " of store: " + name, null);
+
     }
 
     public boolean isStoreCreator(String storeCreatorID) {
+        if (subscribers.get(storeCreatorID) == null) {
+            return false;
+        }
         return subscribers.get(storeCreatorID) instanceof StoreCreator;
     }
 

@@ -4,6 +4,7 @@ import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Messages.Message;
 
 import Domain.Users.User;
+import Utilities.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,21 +34,23 @@ public class Subscriber extends User {
         stores.add(storeID);
     }
 
-    public boolean makeStoreOwner(Message message) {
+    public Response<String> makeStoreOwner(Message message) {
         messages.add(message);
-        return true;
+        return Response.success("Owner nomination request sent to user " + username, null);
     }
 
-    public boolean messageResponse(boolean answer) {
+    public Response<String> messageResponse(boolean answer) {
         Message message = messages.poll();
-        assert message != null;
+        if (message == null) {
+            return Response.error("No messages to respond to.", null);
+        }
         message.response(answer);
-        return answer;
+        return Response.success("Message responded.", null);
     }
 
-    public boolean makeStoreManager(Message message) {
+    public Response<String> makeStoreManager(Message message) {
         messages.add(message);
-        return true;
+        return Response.success("Manager nomination request sent to user " + username, null);
     }
 
     public String getToken() {

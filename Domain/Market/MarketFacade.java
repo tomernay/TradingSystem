@@ -3,6 +3,7 @@ package Domain.Market;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Response;
 
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class MarketFacade {
         return storeRepository.isStoreOwner(storeID, storeCreatorID);
     }
 
-    public boolean makeStoreOwner(String storeID, String subscriberID) {
+    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
         Message message = storeRepository.makeNominateOwnerMessage(storeID, subscriberID);
         return userRepository.makeStoreOwner(subscriberID, message);
     }
@@ -30,16 +31,16 @@ public class MarketFacade {
         return storeRepository.isStoreManager(storeID, storeOwnerID);
     }
 
-    public boolean makeStoreManager(String storeID, String subscriberID, List<String> permissions) {
+    public Response<String> makeStoreManager(String storeID, String subscriberID, List<String> permissions) {
         Message message = storeRepository.makeNominateManagerMessage(storeID, subscriberID, permissions);
         return userRepository.makeStoreManager(subscriberID, message);
     }
 
-    public boolean addManagerPermissions(String storeID, String storeManagerID, String permission) {
+    public Response<String> addManagerPermissions(String storeID, String storeManagerID, String permission) {
         return storeRepository.addManagerPermissions(storeID, storeManagerID, permission);
     }
 
-    public boolean removeManagerPermissions(String storeID, String storeManagerID, String permission) {
+    public Response<String> removeManagerPermissions(String storeID, String storeManagerID, String permission) {
         return storeRepository.removeManagerPermissions(storeID, storeManagerID, permission);
     }
 
@@ -47,7 +48,7 @@ public class MarketFacade {
         return storeRepository.isStoreCreator(storeID, storeCreatorID);
     }
 
-    public boolean messageResponse(String subscriberID, boolean answer) {
+    public Response<String> messageResponse(String subscriberID, boolean answer) {
         return userRepository.messageResponse(subscriberID, answer);
     }
 
