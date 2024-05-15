@@ -1,5 +1,6 @@
 package Domain.Users.Subscriber;
 
+import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Messages.Message;
 
 import Domain.Users.User;
@@ -12,10 +13,16 @@ import java.util.Queue;
 public class Subscriber extends User {
     private List<String> stores;
     private Queue<Message> messages;
+    String username;
+    String password;
+    String Token;
 
-    public Subscriber() {
+    public Subscriber(String username,String password) {
         this.stores = new ArrayList<>();
         this.messages = new PriorityQueue<>();
+        this.password=password;
+        this.username=username;
+        Token=Security.generateJWT(username);
     }
 
     public void addStore(String storeID) {
@@ -39,4 +46,11 @@ public class Subscriber extends User {
         return true;
     }
 
+    public String getToken() {
+        return Token;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }
