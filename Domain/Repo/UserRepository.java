@@ -14,11 +14,11 @@ public class UserRepository {
         return users.get(Integer.parseInt(subscriberID)).makeStoreOwner(message);
     }
 
-    public boolean makeStoreManager(String subscriberID, Message message) {
+    public Response<String> makeStoreManager(String subscriberID, Message message) {
         return users.get(Integer.parseInt(subscriberID)).makeStoreManager(message);
     }
 
-    public boolean messageResponse(String subscriberID, boolean answer) {
+    public Response<String> messageResponse(String subscriberID, boolean answer) {
         return users.get(Integer.parseInt(subscriberID)).messageResponse(answer);
     }
 

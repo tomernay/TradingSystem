@@ -5,6 +5,7 @@ import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Response;
 
 
 import java.util.HashMap;
@@ -34,11 +35,11 @@ public class StoreRepository {
         return stores.get(storeID).makeNominateManagerMessage(subscriberID, permissions);
     }
 
-    public boolean addManagerPermissions(String storeID, String storeManagerID, String permission) {
+    public Response<String> addManagerPermissions(String storeID, String storeManagerID, String permission) {
         return stores.get(storeID).addManagerPermissions(storeManagerID, permission);
     }
 
-    public boolean removeManagerPermissions(String storeID, String storeManagerID, String permission) {
+    public Response<String> removeManagerPermissions(String storeID, String storeManagerID, String permission) {
         return stores.get(storeID).removeManagerPermissions(storeManagerID, permission);
     }
 
