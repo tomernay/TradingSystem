@@ -30,4 +30,7 @@ public class StoreService {
     }
 
 
+    public boolean isStoreOwner(String storeID, String storeOwnerID) {
+        return market.isStoreOwner(storeID, storeOwnerID);
+    }
 }

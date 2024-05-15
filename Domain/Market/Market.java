@@ -1,5 +1,7 @@
 package Domain.Market;
 
+import Utilities.Response;
+
 import java.util.List;
 
 public class Market {
@@ -9,7 +11,7 @@ public class Market {
         return marketFacade.isStoreOwner(storeID, storeOwnerID);
     }
 
-    public boolean makeStoreOwner(String storeID, String subscriberID) {
+    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
         return marketFacade.makeStoreOwner(storeID, subscriberID);
     }
 

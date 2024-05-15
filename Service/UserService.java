@@ -3,6 +3,7 @@ package Service;
 import Domain.Market.Market;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 import java.util.List;
 
@@ -15,13 +16,7 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public boolean addStoreOwnerSubscription(String storeID, String storeOwnerID, String subscriberID) {
-        if (!market.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
-            return false;
-        }
-        if (market.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner
-            return false;
-        }
+    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
         return market.makeStoreOwner(storeID, subscriberID);
     }
 

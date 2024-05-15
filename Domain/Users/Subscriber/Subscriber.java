@@ -4,6 +4,7 @@ import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Messages.Message;
 
 import Domain.Users.User;
+import Utilities.Response;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +32,9 @@ public class Subscriber extends User {
         stores.add(storeID);
     }
 
-    public boolean makeStoreOwner(Message message) {
+    public Response<String> makeStoreOwner(Message message) {
         messages.add(message);
-        return true;
+        return Response.success("Owner nomination request sent to user " + username, null);
     }
 
     public boolean messageResponse(boolean answer) {

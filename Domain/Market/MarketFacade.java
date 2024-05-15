@@ -3,6 +3,7 @@ package Domain.Market;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Response;
 
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class MarketFacade {
         return storeRepository.isStoreOwner(storeID, storeCreatorID);
     }
 
-    public boolean makeStoreOwner(String storeID, String subscriberID) {
+    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
         Message message = storeRepository.makeNominateOwnerMessage(storeID, subscriberID);
         return userRepository.makeStoreOwner(subscriberID, message);
     }
