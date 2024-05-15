@@ -50,4 +50,12 @@ public class MarketFacade {
     public boolean messageResponse(String subscriberID, boolean answer) {
         return userRepository.messageResponse(subscriberID, answer);
     }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public StoreRepository getStoreRepository() {
+        return storeRepository;
+    }
 }

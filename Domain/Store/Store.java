@@ -1,9 +1,11 @@
 package Domain.Store;
 
 import Domain.Store.Inventory.Inventory;
+import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
 import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Subscriber;
 
 
 import java.util.HashMap;
@@ -17,14 +19,19 @@ public class Store {
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberID, SubscriberState>
     private Map<String, List<Permissions>> managerPermissions; //<ManagerID, List<Permissions>>
+    //yair added
+    private HashMap<String,PayByBid> payByBids;
 
     // Constructor
-    public Store(int id, String name, Inventory inventory) {
+    public Store(int id, String name, Inventory inventory, String creator) {
         this.id = id;
         this.name = name;
         this.inventory = inventory;
+        SubscriberState create=new StoreCreator(this,creator);
         subscribers = new HashMap<>();
+        subscribers.put(creator,create);
         managerPermissions = new HashMap<>();
+        payByBids=new HashMap<>();
     }
 
     // Getter and setter for id
@@ -121,4 +128,18 @@ public class Store {
     public boolean isStoreCreator(String storeCreatorID) {
         return subscribers.get(storeCreatorID) instanceof StoreCreator;
     }
+
+//yair added
+    public Map<String, SubscriberState> getSubscribers() {
+        return subscribers;
+    }
+
+    public void addPayByBid(PayByBid p,String user){
+        payByBids.put(user,p);
+    }
+    public void removePayByBid(String user){
+        payByBids.remove(user);
+    }
+
+
 }

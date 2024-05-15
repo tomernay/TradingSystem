@@ -28,4 +28,8 @@ public abstract class SubscriberState {
     public Message makeNominateManagerMessage(String subscriberID, List<String> permissions) {
         return new nominateManagerMessage(store, Permissions.convertStringList(permissions), subscriberID);
     }
+
+    public String getSubscriberID() {
+        return subscriberID;
+    }
 }

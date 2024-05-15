@@ -16,6 +16,7 @@ public class Subscriber extends User {
     String username;
     String password;
     String Token;
+    String credit;
 
     public Subscriber(String username,String password) {
         this.stores = new ArrayList<>();
@@ -23,6 +24,7 @@ public class Subscriber extends User {
         this.password=password;
         this.username=username;
         Token=Security.generateJWT(username);
+        System.out.println(Token);
     }
 
     public void addStore(String storeID) {
@@ -52,5 +54,18 @@ public class Subscriber extends User {
 
     public String getUsername() {
         return username;
+    }
+
+    //yair added
+    public void addMessage(Message m){
+        messages.add(m);
+    }
+
+    public String getCredit() {
+        return credit;
+    }
+
+    public void setCredit(String credit) {
+        this.credit = credit;
     }
 }

@@ -1,5 +1,8 @@
 package Domain.Repo;
 
+import Domain.Store.Inventory.Inventory;
+import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
+import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 
@@ -41,5 +44,21 @@ public class StoreRepository {
 
     public boolean isStoreCreator(String storeID, String storeCreatorID) {
         return stores.get(storeID).isStoreCreator(storeCreatorID);
+    }
+
+    //yair added
+    public void addPayByBid(HashMap<Integer,Integer> products, double fee, String store,String user){
+        Store s=stores.get(store);
+        PayByBid pay=new PayByBid(products,fee,s);
+        s.addPayByBid(pay,user);
+    }
+
+    public void addStore(String storeID,String creator) {
+        Store store=new Store(0,storeID,new Inventory(),creator);
+        stores.put(storeID, store);
+    }
+
+    public Store getStore(String name) {
+        return stores.get(name);
     }
 }

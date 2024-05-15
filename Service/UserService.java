@@ -1,11 +1,14 @@
 package Service;
 
 import Domain.Market.Market;
+import Domain.Repo.UserRepository;
+import Domain.Users.Subscriber.Subscriber;
 
 import java.util.List;
 
 public class UserService {
     private Market market;
+
 
     public UserService(Market market) {
         this.market = market;
@@ -69,4 +72,24 @@ public class UserService {
         // and wait for user input to accept or decline the subscription
         return true; // Assume subscription is accepted
     }
+
+
+    //yair added
+    //register a new user
+    public boolean register(String username,String password){
+        Subscriber subscriber=new Subscriber(username,password);
+        if(!market.getMarketFacade().getUserRepository().isUserExist(username)) {
+            market.getMarketFacade().getUserRepository().addUser(subscriber);
+            return true;
+        }
+        else {
+            return  false;
+        }
+    }
+
+    public Subscriber getUser(String username){
+        return market.getMarketFacade().getUserRepository().getUser(username);
+    }
+
+
 }
