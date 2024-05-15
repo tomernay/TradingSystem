@@ -1,8 +1,11 @@
 package Service;
 
 import Domain.Market.Market;
+<<<<<<< Updated upstream
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Subscriber;
+=======
+>>>>>>> Stashed changes
 
 import java.util.List;
 

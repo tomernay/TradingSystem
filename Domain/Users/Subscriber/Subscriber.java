@@ -18,6 +18,7 @@ public class Subscriber extends User {
     String Token;
     String credit;
 
+
     public Subscriber(String username,String password) {
         this.stores = new ArrayList<>();
         this.messages = new PriorityQueue<>();
@@ -25,6 +26,7 @@ public class Subscriber extends User {
         this.username=username;
         Token=Security.generateJWT(username);
         System.out.println(Token);
+
     }
 
     public void addStore(String storeID) {
