@@ -31,7 +31,7 @@ public class Service {
 
     // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeID, String storeOwnerID, String subscriberID) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner / creator
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         if (storeService.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner
@@ -42,7 +42,7 @@ public class Service {
 
     // Method to add a store manager subscription
     public Response<String> makeStoreManager(String storeID, String storeOwnerID, String subscriberID, List<String> permissions) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner / creator
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         if (storeService.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner
@@ -56,7 +56,7 @@ public class Service {
 
     // Method to change permissions of a store manager
     public Response<String> addManagerPermissions(String storeID, String storeOwnerID, String storeManagerID, String permission) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner / creator
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         if (!storeService.isStoreManager(storeID, storeManagerID)) { //The subscriber is not the store manager
@@ -66,7 +66,7 @@ public class Service {
     }
 
     public Response<String> removeManagerPermissions(String storeID, String storeOwnerID, String storeManagerID, String permission) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
+        if (!storeService.isStoreOwner(storeID, storeOwnerID) && !storeService.isStoreCreator(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner / creator
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         if (!storeService.isStoreManager(storeID, storeManagerID)) { //The subscriber is not the store manager
