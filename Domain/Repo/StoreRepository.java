@@ -19,12 +19,12 @@ public class StoreRepository {
         this.stores = new HashMap<>();
     }
 
-    public boolean isStoreOwner(String storeID, String storeCreatorID) {
-        return stores.get(storeID).isStoreOwner(storeCreatorID);
+    public boolean isStoreOwner(String storeID, String currentUsername) {
+        return stores.get(storeID).isStoreOwner(currentUsername);
     }
 
-    public boolean isStoreManager(String storeID, String storeOwnerID) {
-        return stores.get(storeID).isStoreManager(storeOwnerID);
+    public boolean isStoreManager(String storeID, String currentUsername) {
+        return stores.get(storeID).isStoreManager(currentUsername);
     }
 
     public Message makeNominateOwnerMessage(String storeID, String subscriberID) {
@@ -43,8 +43,8 @@ public class StoreRepository {
         return stores.get(storeID).removeManagerPermissions(storeManagerID, permission);
     }
 
-    public boolean isStoreCreator(String storeID, String storeCreatorID) {
-        return stores.get(storeID).isStoreCreator(storeCreatorID);
+    public boolean isStoreCreator(String storeID, String currentUsername) {
+        return stores.get(storeID).isStoreCreator(currentUsername);
     }
 
     //yair added
@@ -55,7 +55,7 @@ public class StoreRepository {
     }
 
     public void addStore(String storeID,String creator) {
-        Store store=new Store(0,storeID,new Inventory(),creator);
+        Store store=new Store("0",storeID,new Inventory(),creator);
         stores.put(storeID, store);
     }
 

@@ -17,26 +17,26 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
-        return market.makeStoreOwner(storeID, subscriberID);
+    public Response<String> makeStoreOwner(String storeID, String subscriberUsername) {
+        return market.makeStoreOwner(storeID, subscriberUsername);
     }
 
     // Method to add a store manager subscription
-    public Response<String> makeStoreManager(String storeID, String subscriberID, List<String> permissions) {
-        return market.makeStoreManager(storeID, subscriberID, permissions);
+    public Response<String> makeStoreManager(String storeID, String subscriberUsername, List<String> permissions) {
+        return market.makeStoreManager(storeID, subscriberUsername, permissions);
     }
 
     // Method to change permissions of a store manager
-    public Response<String> addManagerPermissions(String storeID, String storeManagerID, String permission) {
-        return market.addManagerPermissions(storeID, storeManagerID, permission);
+    public Response<String> addManagerPermissions(String storeID, String subscriberUsername, String permission) {
+        return market.addManagerPermissions(storeID, subscriberUsername, permission);
     }
 
-    public Response<String> removeManagerPermissions(String storeID, String storeManagerID, String permission) {
-        return market.removeManagerPermissions(storeID, storeManagerID, permission);
+    public Response<String> removeManagerPermissions(String storeID, String subscriberUsername, String permission) {
+        return market.removeManagerPermissions(storeID, subscriberUsername, permission);
     }
 
-    public Response<String> messageResponse(String subscriberID, boolean answer) {
-        return market.messageResponse(subscriberID, answer);
+    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
+        return market.messageResponse(subscriberUsername, answer);
     }
 
     // Method to prompt the subscriber to accept the subscription

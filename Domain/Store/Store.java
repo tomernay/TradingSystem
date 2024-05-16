@@ -16,16 +16,16 @@ import java.util.Map;
 
 public class Store {
   
-    private int id;
+    private String id;
     private String name;
     private Inventory inventory;
-    private Map<String, SubscriberState> subscribers; //<SubscriberID, SubscriberState>
-    private Map<String, List<Permissions>> managerPermissions; //<ManagerID, List<Permissions>>
+    private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
+    private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     //yair added
     private HashMap<String,PayByBid> payByBids;
 
     // Constructor
-    public Store(int id, String name, Inventory inventory, String creator) {
+    public Store(String id, String name, Inventory inventory, String creator) {
         this.id = id;
         this.name = name;
         this.inventory = inventory;
@@ -37,11 +37,11 @@ public class Store {
     }
 
     // Getter and setter for id
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -65,18 +65,18 @@ public class Store {
         this.inventory = inventory;
     }
 
-    public boolean isStoreOwner(String storeOwnerID) {
-        if (subscribers.get(storeOwnerID) == null) {
+    public boolean isStoreOwner(String currentUsername) {
+        if (subscribers.get(currentUsername) == null) {
             return false;
         }
-        return subscribers.get(storeOwnerID) instanceof StoreOwner;
+        return subscribers.get(currentUsername) instanceof StoreOwner;
     }
 
-    public boolean isStoreManager(String storeManagerID) {
-        if (subscribers.get(storeManagerID) == null) {
+    public boolean isStoreManager(String currentUsername) {
+        if (subscribers.get(currentUsername) == null) {
             return false;
         }
-        return subscribers.get(storeManagerID) instanceof StoreManager;
+        return subscribers.get(currentUsername) instanceof StoreManager;
     }
 
     public void setState(String subscriberID, SubscriberState newState) {
@@ -127,11 +127,11 @@ public class Store {
 
     }
 
-    public boolean isStoreCreator(String storeCreatorID) {
-        if (subscribers.get(storeCreatorID) == null) {
+    public boolean isStoreCreator(String currentUsername) {
+        if (subscribers.get(currentUsername) == null) {
             return false;
         }
-        return subscribers.get(storeCreatorID) instanceof StoreCreator;
+        return subscribers.get(currentUsername) instanceof StoreCreator;
     }
 
 //yair added

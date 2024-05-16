@@ -10,16 +10,16 @@ import java.util.Map;
 
 public class UserRepository {
     private Map<String, Subscriber> users = new HashMap<>();
-    public Response<String> makeStoreOwner(String subscriberID, Message message) {
-        return users.get(Integer.parseInt(subscriberID)).makeStoreOwner(message);
+    public Response<String> makeStoreOwner(String subscriberUsername, Message message) {
+        return users.get(subscriberUsername).makeStoreOwner(message);
     }
 
-    public Response<String> makeStoreManager(String subscriberID, Message message) {
-        return users.get(Integer.parseInt(subscriberID)).makeStoreManager(message);
+    public Response<String> makeStoreManager(String subscriberUsername, Message message) {
+        return users.get(subscriberUsername).makeStoreManager(message);
     }
 
-    public Response<String> messageResponse(String subscriberID, boolean answer) {
-        return users.get(Integer.parseInt(subscriberID)).messageResponse(answer);
+    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
+        return users.get(subscriberUsername).messageResponse(answer);
     }
 
     public void sendMessageToUser(String user,Message message){

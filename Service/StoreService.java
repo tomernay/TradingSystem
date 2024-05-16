@@ -30,15 +30,15 @@ public class StoreService {
     }
 
 
-    public boolean isStoreOwner(String storeID, String storeOwnerID) {
-        return market.isStoreOwner(storeID, storeOwnerID);
+    public boolean isStoreOwner(String storeID, String currentUsername) {
+        return market.isStoreOwner(storeID, currentUsername);
     }
 
-    public boolean isStoreManager(String storeID, String storeOwnerID) {
-        return market.isStoreManager(storeID, storeOwnerID);
+    public boolean isStoreManager(String storeID, String currentUsername) {
+        return market.isStoreManager(storeID, currentUsername);
     }
 
-    public boolean isStoreCreator(String storeID, String storeCreatorID) {
-        return market.isStoreCreator(storeID, storeCreatorID);
+    public boolean isStoreCreator(String storeID, String currentUsername) {
+        return market.isStoreCreator(storeID, currentUsername);
     }
 }
