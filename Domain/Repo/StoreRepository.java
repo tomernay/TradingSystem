@@ -14,9 +14,11 @@ import java.util.Map;
 
 public class StoreRepository {
     private Map<String, Store> stores;
+    private Integer storeID;
 
     public StoreRepository() {
         this.stores = new HashMap<>();
+        this.storeID = 0;
     }
 
     public boolean isStoreOwner(String storeID, String storeCreatorID) {
@@ -54,9 +56,17 @@ public class StoreRepository {
         s.addPayByBid(pay,user);
     }
 
-    public void addStore(String storeID,String creator) {
-        Store store=new Store(0,storeID,new Inventory(),creator);
-        stores.put(storeID, store);
+    public Response<String> addStore(String storeName,String creator) {
+
+        try {
+            Store store = new Store(storeID.toString() ,storeName ,new Inventory(),creator);
+            storeID++;
+            stores.put(storeName, store);
+            return Response.success("successfully opened the store "+ storeName, null);
+        }
+        catch (Exception e) {
+            return Response.error("couldn't open store "+ storeName, null);
+        }
     }
 
     public Store getStore(String name) {

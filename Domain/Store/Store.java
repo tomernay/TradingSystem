@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class Store {
   
-    private int id;
+    private String id;
     private String name;
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberID, SubscriberState>
@@ -25,7 +25,7 @@ public class Store {
     private HashMap<String,PayByBid> payByBids;
 
     // Constructor
-    public Store(int id, String name, Inventory inventory, String creator) {
+    public Store(String id, String name, Inventory inventory, String creator) {
         this.id = id;
         this.name = name;
         this.inventory = inventory;
@@ -37,11 +37,11 @@ public class Store {
     }
 
     // Getter and setter for id
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

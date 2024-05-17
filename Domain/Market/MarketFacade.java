@@ -52,6 +52,10 @@ public class MarketFacade {
         return userRepository.messageResponse(subscriberID, answer);
     }
 
+    public Response<String> openStore(String storeID, String creator) {
+        return storeRepository.addStore(storeID, creator);
+    }
+
     public UserRepository getUserRepository() {
         return userRepository;
     }

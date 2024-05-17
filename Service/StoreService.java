@@ -4,6 +4,7 @@ import Domain.Externals.Security.Security;
 import Domain.Market.Market;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 public class StoreService {
     Market market;
@@ -25,16 +26,11 @@ public class StoreService {
 //        }
 //    }
 
-    public void addStore(String name, String creator,String token){
-
+    public Response<String> addStore(String name, String creator, String token) {
         if(Security.isValidJWT(token,creator)) {
-            if(  market.getMarketFacade().getUserRepository().isUserExist(creator) ){
-                market.getMarketFacade().getStoreRepository().addStore(name, creator);
-            }
+            market.openStore(name,creator);
         }
-        else{
-            System.out.println("invalid token");
-        }
+        return Response.error("user's token is invalid", null);
     }
 
     public Store getStore(String name){
