@@ -75,4 +75,13 @@ public enum Permissions {
         }
         return permissionList;
     }
+
+    public static boolean exists(String permission) {
+        try {
+            Permissions.valueOf(permission);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return true;
+    }
 }
