@@ -67,14 +67,18 @@ public class UserService {
 
     public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token){
         if(Security.isValidJWT(token,userName)) {
-            return market.requestEmployeesStatus(storeID);
+            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+                return market.requestEmployeesStatus(storeID);
+            }
         }
         return Response.error("invalid token", null);
     }
 
     public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token){
         if(Security.isValidJWT(token,userName)) {
-            return market.requestManagersPermissions(storeID);
+            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+                return market.requestManagersPermissions(storeID);
+            }
         }
         return Response.error("invalid token", null);
     }
