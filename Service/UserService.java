@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Externals.Security.Security;
 import Domain.Market.Market;
 import Domain.Repo.UserRepository;
 import Domain.Store.StoreData.Permissions;
@@ -64,12 +65,18 @@ public class UserService {
         }
     }
 
-    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
-        return market.requestEmployeesStatus(storeID);
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token){
+        if(Security.isValidJWT(token,userName)) {
+            return market.requestEmployeesStatus(storeID);
+        }
+        return Response.error("invalid token", null);
     }
 
-    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
-        return market.requestManagersPermissions(storeID);
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token){
+        if(Security.isValidJWT(token,userName)) {
+            return market.requestManagersPermissions(storeID);
+        }
+        return Response.error("invalid token", null);
     }
 
     public Subscriber getUser(String username){
