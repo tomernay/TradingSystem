@@ -28,12 +28,12 @@ public class PayByBid {
 
     @Test
     public void payByBidEmptyProducts(){
-      boolean result=  service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
+      boolean result = service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
       Assert.assertFalse(result);
     }
     @Test
     public void payByBidProducts(){
-        boolean result=  service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
+        boolean result = service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
         Assert.assertFalse(result);
     }
 }

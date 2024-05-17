@@ -2,7 +2,9 @@ package Service;
 
 import Domain.Market.Market;
 import Domain.Repo.UserRepository;
+import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
 import Utilities.Response;
 
 
@@ -47,7 +49,16 @@ public class UserService {
         return true; // Assume subscription is accepted
     }
 
+    public Response<String> loginAsGuest(){
+        return market.loginAsGuest();
 
+    }
+
+    //function as a Guest - exit from the website
+    public User logoutAsGuest(User user){
+        user.logout();
+        return user;
+    }
     //yair added
     //register a new user
     public boolean register(String username,String password){
