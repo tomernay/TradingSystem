@@ -4,6 +4,8 @@ import Domain.Store.Inventory.Inventory;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 import Domain.Store.Store;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Messages.Message;
 import Utilities.Response;
 
@@ -41,6 +43,24 @@ public class StoreRepository {
 
     public Response<String> removeManagerPermissions(String storeID, String storeManagerID, String permission) {
         return stores.get(storeID).removeManagerPermissions(storeManagerID, permission);
+    }
+
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
+        try{
+            return stores.get(storeID).getSubscribersResponse();
+        }
+        catch (Exception e){
+            return Response.error("Invalid storeID.", null);
+        }
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
+        try{
+            return stores.get(storeID).getManagersPermissionsResponse();
+        }
+        catch (Exception e){
+            return Response.error("Invalid storeID.", null);
+        }
     }
 
     public boolean isStoreCreator(String storeID, String currentUsername) {

@@ -3,11 +3,14 @@ package Domain.Market;
 import Domain.Repo.OrderRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Messages.Message;
 import Utilities.Response;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class MarketFacade {
     private UserRepository userRepository;
@@ -53,6 +56,14 @@ public class MarketFacade {
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
         return userRepository.messageResponse(subscriberUsername, answer);
+    }
+
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
+        return storeRepository.requestEmployeesStatus(storeID);
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
+        return storeRepository.requestManagersPermissions(storeID);
     }
 
     public UserRepository getUserRepository() {

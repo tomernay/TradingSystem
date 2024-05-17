@@ -2,11 +2,14 @@ package Service;
 
 import Domain.Market.Market;
 import Domain.Repo.UserRepository;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class UserService {
     private Market market;
@@ -57,8 +60,16 @@ public class UserService {
             return true;
         }
         else {
-            return  false;
+            return false;
         }
+    }
+
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
+        return market.requestEmployeesStatus(storeID);
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
+        return market.requestManagersPermissions(storeID);
     }
 
     public Subscriber getUser(String username){
