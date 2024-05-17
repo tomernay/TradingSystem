@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Subscriber extends User {
     private List<String> stores;
@@ -22,7 +24,7 @@ public class Subscriber extends User {
 
     public Subscriber(String username,String password) {
         this.stores = new ArrayList<>();
-        this.messages = new PriorityQueue<>();
+        this.messages = new LinkedBlockingQueue<>();
         this.password=password;
         this.username=username;
         Token=Security.generateJWT(username);
