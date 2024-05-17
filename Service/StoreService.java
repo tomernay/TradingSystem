@@ -18,7 +18,7 @@ public class StoreService {
      * @param token
      */
     public void addStore(String name, String creator,String token){
-        if(Security.isValidJWT(creator,token)) {
+        if(Security.isValidJWT(token,creator)) {
           if(  market.getMarketFacade().getUserRepository().isUserExist(creator) ){
                 market.getMarketFacade().getStoreRepository().addStore(name, creator);
             }

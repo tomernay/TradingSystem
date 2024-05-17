@@ -1,5 +1,6 @@
 package Domain.Market;
 
+import Domain.Repo.OrderRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Messages.Message;
@@ -11,10 +12,12 @@ import java.util.List;
 public class MarketFacade {
     private UserRepository userRepository;
     private StoreRepository storeRepository;
+    private OrderRepository orderRepository;
 
     public MarketFacade() {
         this.userRepository = new UserRepository();
         this.storeRepository = new StoreRepository();
+        this.orderRepository = new OrderRepository();
     }
 
 

@@ -1,6 +1,5 @@
 package Domain.Store.PurchasePolicy.PaymentTypes;
 
-<<<<<<< Updated upstream
 import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Store.Store;
 import Domain.Users.StateOfSubscriber.StoreCreator;
@@ -47,7 +46,5 @@ public class PayByBid extends PurchaseType {
     public HashMap<String, PayByBidStatus> getIsAgreed() {
         return isAgreed;
     }
-=======
-public class PayByBid extends PurchaseType {
->>>>>>> Stashed changes
+
 }

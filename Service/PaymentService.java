@@ -34,7 +34,7 @@ public class PaymentService {
      * @param products
      */
     public boolean sendPayByBid(String token,Store s,  Subscriber user, double fee, HashMap<Integer,Integer> products){
-        if(Security.isValidJWT(user.getUsername(),token) ){
+        if(Security.isValidJWT(token, user.getUsername()) ){
               if(!products.isEmpty()) {
                   for (SubscriberState subscriberState : s.getSubscribers().values()) {
                       if (s.isStoreCreator(subscriberState.getSubscriberID()) || s.isStoreOwner(subscriberState.getSubscriberID())) {
