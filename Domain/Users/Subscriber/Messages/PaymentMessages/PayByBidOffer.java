@@ -2,11 +2,8 @@ package Domain.Users.Subscriber.Messages.PaymentMessages;
 
 import Domain.Externals.Payment.DefaultPay;
 import Domain.Externals.Payment.PaymentAdapter;
-import Domain.Market.Market;
-import Domain.Repo.UserRepository;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.Store;
-import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;

@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Externals.Security.Security;
 import Domain.Market.Market;
 import Utilities.Response;
 
@@ -30,62 +31,64 @@ public class Service {
     }
 
     // Method to add a store owner subscription
-    public Response<String> makeStoreOwner(String storeID, String storeOwnerID, String subscriberID) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
-            return Response.error("The user trying to do this action is not the store owner.",null);
+    public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!userService.userExists(subscriberUsername)) {
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return userService.makeStoreOwner(storeName, currentUsername, subscriberUsername);
         }
-        if (storeService.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner
-            return Response.error("The user you're trying to nominate is already the store owner.",null);
-        }
-        return userService.makeStoreOwner(storeID, subscriberID);
+        return Response.error("Invalid token",null);
     }
 
     // Method to add a store manager subscription
-    public Response<String> makeStoreManager(String storeID, String storeOwnerID, String subscriberID, List<String> permissions) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
-            return Response.error("The user trying to do this action is not the store owner.",null);
+    public Response<String> makeStoreManager(String storeName, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!userService.userExists(subscriberUsername)) {
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return userService.makeStoreManager(storeName, currentUsername, subscriberUsername, permissions);
         }
-        if (storeService.isStoreOwner(storeID, subscriberID)) { //The subscriber is already the store owner / manager
-            return Response.error("The user you're trying to nominate is already the store owner.",null);
-        }
-        if (storeService.isStoreManager(storeID, subscriberID)) { //The subscriber is already the store owner / manager
-            return Response.error("The user you're trying to nominate is already the store manager.",null);
-        }
-        return userService.makeStoreManager(storeID, subscriberID, permissions);
+        return Response.error("Invalid token",null);
     }
 
     // Method to change permissions of a store manager
-    public Response<String> addManagerPermissions(String storeID, String storeOwnerID, String storeManagerID, String permission) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
-            return Response.error("The user trying to do this action is not the store owner.",null);
+    public Response<String> addManagerPermissions(String storeName, String currentUsername, String subscriberUsername, String permission, String token) {
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!userService.userExists(subscriberUsername)) {
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return userService.addManagerPermissions(storeName, currentUsername, subscriberUsername, permission);
         }
-        if (!storeService.isStoreManager(storeID, storeManagerID)) { //The subscriber is not the store manager
-            return Response.error("The user you're trying to change permissions for is not the store manager.",null);
-        }
-        return userService.addManagerPermissions(storeID, storeManagerID, permission);
+        return Response.error("Invalid token",null);
     }
 
-    public Response<String> removeManagerPermissions(String storeID, String storeOwnerID, String storeManagerID, String permission) {
-        if (!storeService.isStoreOwner(storeID, storeOwnerID)) { //The storeCreatorID is not the store owner
-            return Response.error("The user trying to do this action is not the store owner.",null);
+    public Response<String> removeManagerPermissions(String storeName, String currentUsername, String subscriberUsername, String permission, String token) {
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!userService.userExists(subscriberUsername)) {
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return userService.removeManagerPermissions(storeName, currentUsername, subscriberUsername, permission);
         }
-        if (!storeService.isStoreManager(storeID, storeManagerID)) { //The subscriber is not the store manager
-            return Response.error("The user you're trying to change permissions for is not the store manager.",null);
-        }
-        return userService.removeManagerPermissions(storeID, storeManagerID, permission);
+        return Response.error("Invalid token",null);
     }
 
     // Method to close a store
-    public Response<String> closeStore(String storeID, String storeCreatorID) {
-        if (!storeService.isStoreCreator(storeID, storeCreatorID)) { //The storeCreatorID is not the store owner
-            return Response.error("The user trying to do this action is not the store creator.",null);
+    public Response<String> closeStore(String storeID, String currentUsername, String token) {
+        if(Security.isValidJWT(token,currentUsername)) {
+            Response<List<String>> storeCloseResponse = storeService.closeStore(storeID, currentUsername);
+            if (!storeCloseResponse.isSuccess()) {
+                return Response.error(storeCloseResponse.getMessage(), null);
+            }
+            return userService.sendCloseStoreNotification(storeCloseResponse.getData(), storeID);
         }
-        //notify all owners and managers
-        //MORE TO IMPLEMENT
-        return null;
+        return Response.error("Invalid token",null);
     }
 
-    public Response<String> messageResponse(String subscriberID, boolean answer) {
-        return userService.messageResponse(subscriberID, answer);
+    public Response<String> messageResponse(String currentUsername, boolean answer, String token) {
+        if(Security.isValidJWT(token,currentUsername)) {
+            return userService.messageResponse(currentUsername, answer);
+        }
+        return Response.error("Invalid token",null);
     }
 }

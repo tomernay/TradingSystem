@@ -1,6 +1,5 @@
 package Domain.Store.PurchasePolicy.PaymentTypes;
 
-<<<<<<< Updated upstream
 import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 import Domain.Store.Store;
@@ -21,9 +20,5 @@ public class ImmediatePay extends PurchaseType {
         }
         return false;
     }
-=======
-import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 
-public class ImmediatePay extends PurchaseType {
->>>>>>> Stashed changes
 }

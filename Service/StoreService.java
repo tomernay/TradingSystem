@@ -3,8 +3,11 @@ package Service;
 import Domain.Externals.Security.Security;
 import Domain.Market.Market;
 import Domain.Store.Store;
+import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
+
+import java.util.List;
 
 public class StoreService {
     Market market;
@@ -28,9 +31,9 @@ public class StoreService {
 
     public Response<String> addStore(String name, String creator, String token) {
         if(Security.isValidJWT(token,creator)) {
-            market.openStore(name,creator);
+            return market.openStore(name,creator);
         }
-        return Response.error("user's token is invalid", null);
+        return Response.error("Invalid token",null);
     }
 
     public Store getStore(String name){
@@ -38,15 +41,19 @@ public class StoreService {
     }
 
 
-    public boolean isStoreOwner(String storeID, String storeOwnerID) {
-        return market.isStoreOwner(storeID, storeOwnerID);
+    public boolean isStoreOwner(String storeID, String currentUsername) {
+        return market.isStoreOwner(storeID, currentUsername);
     }
 
-    public boolean isStoreManager(String storeID, String storeOwnerID) {
-        return market.isStoreManager(storeID, storeOwnerID);
+    public boolean isStoreManager(String storeID, String currentUsername) {
+        return market.isStoreManager(storeID, currentUsername);
     }
 
-    public boolean isStoreCreator(String storeID, String storeCreatorID) {
-        return market.isStoreCreator(storeID, storeCreatorID);
+    public boolean isStoreCreator(String storeID, String currentUsername) {
+        return market.isStoreCreator(storeID, currentUsername);
+    }
+
+    public Response<List<String>> closeStore(String storeID, String currentUsername) {
+        return market.closeStore(storeID, currentUsername);
     }
 }
