@@ -7,36 +7,36 @@ import java.util.List;
 public class Market {
     private  MarketFacade marketFacade = new MarketFacade();
 
-    public boolean isStoreOwner(String storeID, String storeOwnerID) {
-        return marketFacade.isStoreOwner(storeID, storeOwnerID);
+    public boolean isStoreOwner(String storeID, String currentUsername) {
+        return marketFacade.isStoreOwner(storeID, currentUsername);
     }
 
-    public Response<String> makeStoreOwner(String storeID, String subscriberID) {
-        return marketFacade.makeStoreOwner(storeID, subscriberID);
+    public Response<String> makeStoreOwner(String storeID, String subscriberUsername) {
+        return marketFacade.makeStoreOwner(storeID, subscriberUsername);
     }
 
-    public boolean isStoreManager(String storeID, String storeOwnerID) {
-        return marketFacade.isStoreManager(storeID, storeOwnerID);
+    public boolean isStoreManager(String storeID, String currentUsername) {
+        return marketFacade.isStoreManager(storeID, currentUsername);
     }
 
-    public Response<String> makeStoreManager(String storeID, String subscriberID, List<String> permissions) {
-        return marketFacade.makeStoreManager(storeID, subscriberID, permissions);
+    public Response<String> makeStoreManager(String storeID, String subscriberUsername, List<String> permissions) {
+        return marketFacade.makeStoreManager(storeID, subscriberUsername, permissions);
     }
 
-    public Response<String> addManagerPermissions(String storeID, String storeManagerID, String permission) {
-        return marketFacade.addManagerPermissions(storeID, storeManagerID, permission);
+    public Response<String> addManagerPermissions(String storeID, String subscriberUsername, String permission) {
+        return marketFacade.addManagerPermissions(storeID, subscriberUsername, permission);
     }
 
-    public Response<String> removeManagerPermissions(String storeID, String storeManagerID, String permission) {
-        return marketFacade.removeManagerPermissions(storeID, storeManagerID, permission);
+    public Response<String> removeManagerPermissions(String storeID, String subscriberUsername, String permission) {
+        return marketFacade.removeManagerPermissions(storeID, subscriberUsername, permission);
     }
 
-    public boolean isStoreCreator(String storeID, String storeCreatorID) {
-        return marketFacade.isStoreCreator(storeID, storeCreatorID);
+    public boolean isStoreCreator(String storeID, String currentUsername) {
+        return marketFacade.isStoreCreator(storeID, currentUsername);
     }
 
-    public Response<String> messageResponse(String subscriberID, boolean answer) {
-        return marketFacade.messageResponse(subscriberID, answer);
+    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
+        return marketFacade.messageResponse(subscriberUsername, answer);
     }
 
     public MarketFacade getMarketFacade() {
