@@ -22,6 +22,7 @@ public class StoreRepository {
         this.stores = new HashMap<>();
         this.storeID = 0;
         this.deactivatedStores = new HashMap<>();
+    }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return stores.get(storeID).isStoreOwner(currentUsername);
@@ -102,7 +103,7 @@ public class StoreRepository {
         try {
             Store store = new Store(storeID.toString() ,storeName ,new Inventory(),creator);
             storeID++;
-            stores.put(storeID, store);
+            stores.put(Integer.toString(storeID), store);
             return Response.success("successfully opened the store "+ storeName, null);
         }
         catch (Exception e) {

@@ -33,7 +33,7 @@ public class StoreRole {
         service.getUserService().register("notOwner","by4");
         notOwner=service.getUserService().getUser("notOwner");
 
-        service.getStoreService().addStore("1","yairStore","yair",subscriber.getToken());
+        service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
         store=service.getStoreService().getStore("1");
     }
 
