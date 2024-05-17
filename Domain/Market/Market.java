@@ -1,11 +1,19 @@
 package Domain.Market;
 
+import Domain.Users.User;
 import Utilities.Response;
 
 import java.util.List;
 
 public class Market {
     private  MarketFacade marketFacade = new MarketFacade();
+
+    public Response<String> loginAsGuest(){
+        return marketFacade.loginAsGuest();
+    }
+    public Response<String> logoutAsGuest(){
+        return marketFacade.logoutAsGuest();
+    }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return marketFacade.isStoreOwner(storeID, currentUsername);

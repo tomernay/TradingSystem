@@ -9,7 +9,7 @@ public class User {
     public static Response<String> loginAsGuest() {
         return Response.success("You signed in as a GUEST",null);
     }
-    public void logout(){
+    public void logoutAsGuest(){
         shoppingCart = null;
     }
 }

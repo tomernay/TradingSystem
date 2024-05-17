@@ -25,6 +25,10 @@ public class MarketFacade {
         return User.loginAsGuest();
     }
 
+    public Response<String> logoutAsGuest() {
+        return User.loginAsGuest();
+    }
+
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return storeRepository.isStoreOwner(storeID, currentUsername);
     }

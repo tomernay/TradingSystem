@@ -15,7 +15,6 @@ public class GuestLogin {
     @Before
     public void init(){
         service=new Service();
-        service.getUserService().loginAsGuest();
         guest1 = new User();
         guest2 = new User();
 
@@ -35,14 +34,14 @@ public class GuestLogin {
 
     @Test
     public void logoutAsGuestTest(){
-        User result = service.getUserService().logoutAsGuest(guest1);
-        Assert.assertTrue(result.shoppingCart==null);
+        Response<String> response = service.getUserService().logoutAsGuest();
+        Assert.assertTrue(response.isSuccess());
     }
 
     @Test
     public void notLogoutAsGuestTest(){
-        User result = service.getUserService().logoutAsGuest(guest1);
-        Assert.assertFalse(result.shoppingCart!=null);
+        Response<String> response = service.getUserService().logoutAsGuest();
+        Assert.assertFalse(response.isSuccess());
     }
 
 //    @Test
