@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 public class StoreRepository {
-    private Map<String, Store> stores; // <StoreID, Store>
+    private Map<String, Store> stores;
     private Map<String, Store> deactivatedStores; // <StoreID, Store>
+    private Integer storeID;
 
     public StoreRepository() {
         this.stores = new HashMap<>();
+        this.storeID = 0;
         this.deactivatedStores = new HashMap<>();
-    }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return stores.get(storeID).isStoreOwner(currentUsername);
@@ -96,9 +97,17 @@ public class StoreRepository {
         s.addPayByBid(pay,user);
     }
 
-    public void addStore(String storeId, String storeName,String creator) {
-        Store store=new Store(storeId, storeName,new Inventory(),creator);
-        stores.put(storeId, store);
+    public Response<String> addStore(String storeName,String creator) {
+
+        try {
+            Store store = new Store(storeID.toString() ,storeName ,new Inventory(),creator);
+            storeID++;
+            stores.put(storeID, store);
+            return Response.success("successfully opened the store "+ storeName, null);
+        }
+        catch (Exception e) {
+            return Response.error("couldn't open store "+ storeName, null);
+        }
     }
 
     public Store getStore(String name) {

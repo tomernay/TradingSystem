@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Store {
-
     private String id;
     private String name;
     private Inventory inventory;

@@ -36,6 +36,11 @@ public class Market {
         return marketFacade.isStoreCreator(storeID, currentUsername);
     }
 
+
+    public Response<String> openStore(String storeName, String creator) {
+        return marketFacade.openStore(storeName, creator);
+    }
+   
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
         return marketFacade.messageResponse(subscriberUsername, answer);
     }
