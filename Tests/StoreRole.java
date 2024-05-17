@@ -34,7 +34,7 @@ public class StoreRole {
         notOwner=service.getUserService().getUser("notOwner");
 
         service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
-        store=service.getStoreService().getStore("1");
+        store=service.getStoreService().getStore("0");
     }
 
     @Test

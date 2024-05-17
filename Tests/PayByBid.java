@@ -23,7 +23,7 @@ public class PayByBid {
         service.getUserService().register("yair2","by2");
         buyer=service.getUserService().getUser("yair2");
         service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
-        store=service.getStoreService().getStore("1");
+        store=service.getStoreService().getStore("0");
     }
 
     @Test
