@@ -11,12 +11,12 @@ public class StoreService {
         this.market=market;
     }
 
-    /**
-     * add store to market by creator
-     * @param name
-     * @param creator
-     * @param token
-     */
+//    /**
+//     * add store to market by creator
+//     * @param name
+//     * @param creator
+//     * @param token
+//     */
 //    public void addStore(String name, String creator,String token){
 //        if(Security.isValidJWT(creator,token)) {
 //          if(  market.getMarketFacade().getUserRepository().isUserExist(creator) ){
