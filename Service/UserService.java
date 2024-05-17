@@ -19,22 +19,22 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public Response<String> makeStoreOwner(String storeID, String subscriberUsername) {
-        return market.makeStoreOwner(storeID, subscriberUsername);
+    public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
+        return market.makeStoreOwner(storeID, currentUsername, subscriberUsername);
     }
 
     // Method to add a store manager subscription
-    public Response<String> makeStoreManager(String storeID, String subscriberUsername, List<String> permissions) {
-        return market.makeStoreManager(storeID, subscriberUsername, permissions);
+    public Response<String> makeStoreManager(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
+        return market.makeStoreManager(storeID, currentUsername, subscriberUsername, permissions);
     }
 
     // Method to change permissions of a store manager
-    public Response<String> addManagerPermissions(String storeID, String subscriberUsername, String permission) {
-        return market.addManagerPermissions(storeID, subscriberUsername, permission);
+    public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
+        return market.addManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
-    public Response<String> removeManagerPermissions(String storeID, String subscriberUsername, String permission) {
-        return market.removeManagerPermissions(storeID, subscriberUsername, permission);
+    public Response<String> removeManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
+        return market.removeManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
@@ -74,5 +74,13 @@ public class UserService {
 
     public Subscriber getUser(String username){
         return market.getMarketFacade().getUserRepository().getUser(username);
+    }
+
+    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
+        return market.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    public boolean userExists(String subscriberUsername) {
+        return market.getMarketFacade().getUserRepository().isUserExist(subscriberUsername);
     }
 }

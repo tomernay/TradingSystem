@@ -3,11 +3,13 @@ package Domain.Repo;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Domain.Users.Subscriber.Messages.Message;
 
+import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserRepository {
@@ -41,5 +43,12 @@ public class UserRepository {
 
     public Subscriber getUser(String username) {
         return subscribers.get(username);
+    }
+
+    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
+        for (String subscriberName : subscriberNames) {
+            users.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+        }
+        return Response.success("Notification sent successfully", null);
     }
 }

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Store {
-  
     private String id;
     private String name;
     private Inventory inventory;
@@ -44,8 +43,6 @@ public class Store {
     public void setId(String id) {
         this.id = id;
     }
-
-
 
     // Getter and setter for name
     public String getName() {
@@ -79,51 +76,57 @@ public class Store {
         return subscribers.get(currentUsername) instanceof StoreManager;
     }
 
-    public void setState(String subscriberID, SubscriberState newState) {
-        subscribers.put(subscriberID, newState);
+    public void setState(String subscriberName, SubscriberState newState) {
+        subscribers.put(subscriberName, newState);
     }
 
-    public Message makeNominateOwnerMessage(String subscriberID) {
-        if (subscribers.get(subscriberID) == null) {
-            subscribers.put(subscriberID, new NormalSubscriber(this, subscriberID));
+    public Response<Message> makeNominateOwnerMessage(String subscriberName) {
+        if (subscribers.get(subscriberName) == null) {
+            subscribers.put(subscriberName, new NormalSubscriber(this, subscriberName));
         }
-        return subscribers.get(subscriberID).makeNominateOwnerMessage(subscriberID);
+        return subscribers.get(subscriberName).makeNominateOwnerMessage(subscriberName);
     }
 
-    public Message makeNominateManagerMessage(String subscriberID, List<String> permissions) {
-        if (subscribers.get(subscriberID) == null) {
-            subscribers.put(subscriberID, new NormalSubscriber(this, subscriberID));
+    public Response<Message> makeNominateManagerMessage(String subscriberName, List<String> permissions) {
+        if (subscribers.get(subscriberName) == null) {
+            subscribers.put(subscriberName, new NormalSubscriber(this, subscriberName));
         }
-        return subscribers.get(subscriberID).makeNominateManagerMessage(subscriberID, permissions);
+        return subscribers.get(subscriberName).makeNominateManagerMessage(subscriberName, permissions);
     }
 
-    public void nominateOwner(String subscriberID) {
-        subscribers.get(subscriberID).changeState(this, subscriberID, new StoreOwner(this, subscriberID));
+    public void nominateOwner(String subscriberName) {
+        subscribers.get(subscriberName).changeState(this, subscriberName, new StoreOwner(this, subscriberName));
     }
 
-    public void nominateManager(String subscriberID, List<Permissions> permissions) {
-        subscribers.get(subscriberID).changeState(this, subscriberID, new StoreManager(this, subscriberID));
-        managerPermissions.put(subscriberID, permissions);
+    public void nominateManager(String subscriberName, List<Permissions> permissions) {
+        subscribers.get(subscriberName).changeState(this, subscriberName, new StoreManager(this, subscriberName));
+        managerPermissions.put(subscriberName, permissions);
     }
 
-    public Response<String> addManagerPermissions(String storeManagerID, String permission) {
-        List<Permissions> permissions = managerPermissions.get(storeManagerID);
+    public Response<String> addManagerPermissions(String subscriberName, String permission) {
+        List<Permissions> permissions = managerPermissions.get(subscriberName);
+        if (permissions == null || !Permissions.exists(permission)) {
+            return Response.error("The permission: " + permission + " doesn't exist", null);
+        }
         if (permissions.contains(Permissions.valueOf(permission))) {
-            return Response.error("The manager: " + storeManagerID + " already has the permission: " + permission + " on the store: " + name, null);
+            return Response.error("The manager: " + subscriberName + " already has the permission: " + permission + " on the store: " + name, null);
         }
         permissions.add(Permissions.valueOf(permission));
-        managerPermissions.put(storeManagerID, permissions);
-        return Response.success("Added the permission: " + permission + " to the manager: " + storeManagerID + " of store: " + name, null);
+        managerPermissions.put(subscriberName, permissions);
+        return Response.success("Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name, null);
 
     }
 
-    public Response<String> removeManagerPermissions(String storeManagerID, String permission) {
-        List<Permissions> permissions = managerPermissions.get(storeManagerID);
-        if (!permissions.remove(Permissions.valueOf(permission))) {
-            return Response.error("The manager: " + storeManagerID + " doesn't have the permission: " + permission + " on the store: " + name, null);
+    public Response<String> removeManagerPermissions(String subscriberName, String permission) {
+        List<Permissions> permissions = managerPermissions.get(subscriberName);
+        if (permissions == null || !Permissions.exists(permission)) {
+            return Response.error("The permission: " + permission + " doesn't exist", null);
         }
-        managerPermissions.put(storeManagerID, permissions);
-        return Response.success("Removed the permission: " + permission + " from the manager: " + storeManagerID + " of store: " + name, null);
+        if (!permissions.remove(Permissions.valueOf(permission))) {
+            return Response.error("The manager: " + subscriberName + " doesn't have the permission: " + permission + " on the store: " + name, null);
+        }
+        managerPermissions.put(subscriberName, permissions);
+        return Response.success("Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name, null);
 
     }
 

@@ -11,10 +11,6 @@ public class Market {
         return marketFacade.isStoreOwner(storeID, currentUsername);
     }
 
-    public Response<String> loginAsGuest() {
-        return marketFacade.loginAsGuest();
-    }
-
     public Response<String> makeStoreOwner(String storeID, String subscriberUsername) {
         return marketFacade.makeStoreOwner(storeID, subscriberUsername);
     }
@@ -26,7 +22,6 @@ public class Market {
     public Response<String> makeStoreManager(String storeID, String subscriberUsername, List<String> permissions) {
         return marketFacade.makeStoreManager(storeID, subscriberUsername, permissions);
     }
-
 
     public Response<String> addManagerPermissions(String storeID, String subscriberUsername, String permission) {
         return marketFacade.addManagerPermissions(storeID, subscriberUsername, permission);
