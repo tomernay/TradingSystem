@@ -102,9 +102,9 @@ public class StoreRepository {
 
         try {
             Store store = new Store(storeID.toString() ,storeName ,new Inventory(),creator);
-            storeID++;
             stores.put(Integer.toString(storeID), store);
-            return Response.success("successfully opened the store "+ storeName, null);
+            storeID++;
+            return Response.success("Successfully opened the store: "+ storeName + " with id: " + (storeID - 1), null);
         }
         catch (Exception e) {
             return Response.error("couldn't open store "+ storeName, null);
