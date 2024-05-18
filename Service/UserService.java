@@ -2,9 +2,7 @@ package Service;
 
 import Domain.Market.Market;
 import Domain.Repo.UserRepository;
-import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Domain.Users.Subscriber.Subscriber;
-import Domain.Users.User;
 import Utilities.Response;
 
 
@@ -20,21 +18,21 @@ public class UserService {
 
     // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
-        return market.makeStoreOwner( currentUsername, subscriberUsername);
+        return market.makeStoreOwner(storeID, currentUsername, subscriberUsername);
     }
 
     // Method to add a store manager subscription
     public Response<String> makeStoreManager(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
-        return market.makeStoreManager(currentUsername, subscriberUsername, permissions);
+        return market.makeStoreManager(storeID, currentUsername, subscriberUsername, permissions);
     }
 
     // Method to change permissions of a store manager
     public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
-        return market.addManagerPermissions(currentUsername, subscriberUsername, permission);
+        return market.addManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
     public Response<String> removeManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
-        return market.removeManagerPermissions(currentUsername, subscriberUsername, permission);
+        return market.removeManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
@@ -49,14 +47,7 @@ public class UserService {
         return true; // Assume subscription is accepted
     }
 
-    public Response<String> loginAsGuest(){
-        return market.loginAsGuest();
-    }
 
-    //function as a Guest - exit from the website
-    public Response<String> logoutAsGuest(){
-        return market.logoutAsGuest();
-    }
     //yair added
     //register a new user
     public boolean register(String username,String password){
