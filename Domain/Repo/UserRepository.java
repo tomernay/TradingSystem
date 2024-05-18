@@ -37,18 +37,38 @@ public class UserRepository {
         return subscribers.containsKey(username);
     }
 
-    public void addUser(Subscriber user) {
-        subscribers.put(user.getUsername(), user);
+    public void addSubscriber(Subscriber subscriber) {
+        subscribers.put(subscriber.getUsername(), subscriber);
     }
 
-    public Subscriber getUser(String username) {
+    public Subscriber getSubscriber(String username) {
         return subscribers.get(username);
     }
 
-    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
-        for (String subscriberName : subscriberNames) {
-            users.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+    public void addUser(User user) {
+        users.put(user.getShoppingCart(), user);
+    }
+
+    public User getUser(ShoppingCart shoppingCart) {
+        return users.get(shoppingCart);
+    }
+
+//    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
+//        for (String subscriberName : subscriberNames) {
+//            users.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+//        }
+//        return Response.success("Notification sent successfully", null);
+//    }
+
+    public Response<String> loginAsGuest(User user) {
+        users.put(user.getShoppingCart(), user);
+        return Response.success("You signed in as a GUEST", null);
+    }
+
+    public Response<String> logoutAsGuest(User user) {
+        if(user.logoutAsGuest()){
+            return Response.error("Error - can't signed out as a GUEST", null);
         }
-        return Response.success("Notification sent successfully", null);
+        return Response.success("You signed out as a GUEST", null);
     }
 }

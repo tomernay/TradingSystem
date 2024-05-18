@@ -17,30 +17,29 @@ public class GuestLogin {
         service=new Service();
         guest1 = new User();
         guest2 = new User();
-
     }
 
     @Test
     public void loginAsGuestTest(){
-        Response<String> response = service.getUserService().loginAsGuest();
+        Response<String> response = service.getUserService().loginAsGuest(guest1);
         Assert.assertTrue(response.isSuccess());
     }
 
     @Test
     public void notLoginAsGuestTest(){
-        Response<String> response = service.getUserService().loginAsGuest();
+        Response<String> response = service.getUserService().loginAsGuest(guest1);
         Assert.assertFalse(response.isSuccess());
     }
 
     @Test
     public void logoutAsGuestTest(){
-        Response<String> response = service.getUserService().logoutAsGuest();
+        Response<String> response = service.getUserService().logoutAsGuest(guest1);
         Assert.assertTrue(response.isSuccess());
     }
 
     @Test
     public void notLogoutAsGuestTest(){
-        Response<String> response = service.getUserService().logoutAsGuest();
+        Response<String> response = service.getUserService().logoutAsGuest(guest1);
         Assert.assertFalse(response.isSuccess());
     }
 

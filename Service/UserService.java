@@ -1,7 +1,6 @@
 package Service;
 
 import Domain.Market.Market;
-import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
@@ -20,21 +19,21 @@ public class UserService {
 
     // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
-        return market.makeStoreOwner( currentUsername, subscriberUsername);
+        return market.makeStoreOwner( storeID, currentUsername, subscriberUsername);
     }
 
     // Method to add a store manager subscription
     public Response<String> makeStoreManager(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
-        return market.makeStoreManager(currentUsername, subscriberUsername, permissions);
+        return market.makeStoreManager(storeID, currentUsername, subscriberUsername, permissions);
     }
 
     // Method to change permissions of a store manager
     public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
-        return market.addManagerPermissions(currentUsername, subscriberUsername, permission);
+        return market.addManagerPermissions(storeID,currentUsername, subscriberUsername, permission);
     }
 
     public Response<String> removeManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
-        return market.removeManagerPermissions(currentUsername, subscriberUsername, permission);
+        return market.removeManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
@@ -49,20 +48,23 @@ public class UserService {
         return true; // Assume subscription is accepted
     }
 
-    public Response<String> loginAsGuest(){
-        return market.loginAsGuest();
+    public Response<String> loginAsGuest(User user){
+        if(!user.loginAsGuest()){
+            return Response.error("Error - can't signed in as a GUEST", null);
+        }
+        return market.loginAsGuest(user);
     }
 
     //function as a Guest - exit from the website
-    public Response<String> logoutAsGuest(){
-        return market.logoutAsGuest();
+    public Response<String> logoutAsGuest(User user){
+        return market.logoutAsGuest(user);
     }
     //yair added
     //register a new user
     public boolean register(String username,String password){
-        Subscriber subscriber=new Subscriber(username,password);
+        Subscriber subscriber = new Subscriber(username,password);
         if(!market.getMarketFacade().getUserRepository().isUserExist(username)) {
-            market.getMarketFacade().getUserRepository().addUser(subscriber);
+            market.getMarketFacade().getUserRepository().addSubscriber(subscriber);
             return true;
         }
         else {
@@ -70,8 +72,12 @@ public class UserService {
         }
     }
 
-    public Subscriber getUser(String username){
-        return market.getMarketFacade().getUserRepository().getUser(username);
+    public Subscriber getSubscriber(String username){
+        return market.getMarketFacade().getUserRepository().getSubscriber(username);
+    }
+
+    public User getUser(ShoppingCart shoppingCart){
+        return market.getMarketFacade().getUserRepository().getUser(shoppingCart);
     }
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
@@ -81,4 +87,5 @@ public class UserService {
     public boolean userExists(String subscriberUsername) {
         return market.getMarketFacade().getUserRepository().isUserExist(subscriberUsername);
     }
+
 }
