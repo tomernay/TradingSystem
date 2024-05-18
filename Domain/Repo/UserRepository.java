@@ -23,9 +23,9 @@ public class UserRepository {
 
     public Response<String> logoutAsGuest(User user) {
         if(user.logoutAsGuest()){
-            return Response.error("Error - can't signed out as a GUEST", null);
+            return Response.success("You signed out as a GUEST", null);
         }
-        return Response.success("You signed out as a GUEST", null);
+        return Response.error("Error - can't signed out as a GUEST", null);
     }
 
     public void addGuest(User user) {
