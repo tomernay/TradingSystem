@@ -6,31 +6,32 @@ import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Messages.nominateManagerMessage;
 import Domain.Users.Subscriber.Messages.nominateOwnerMessage;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 
 import java.util.List;
 
 public abstract class SubscriberState {
-    private String subscriberID;
+    private String subscriberUsername;
     private Store store;
 
-    public SubscriberState(String subscriberID, Store store) {
-        this.subscriberID = subscriberID;
+    public SubscriberState(String subscriberUsername, Store store) {
+        this.subscriberUsername = subscriberUsername;
         this.store = store;
     }
 
 
-    public abstract void changeState(Store store, String SubscriberID, SubscriberState newState);
+    public abstract void changeState(Store store, String subscriberUsername, SubscriberState newState);
 
-    public Response<Message> makeNominateOwnerMessage(String subscriberID) {
-        return Response.success("Created message successfully", new nominateOwnerMessage(this.store, subscriberID));
+    public Response<Message> makeNominateOwnerMessage(String subscriberUsername) {
+        return Response.success("Created message successfully", new nominateOwnerMessage(this.store, subscriberUsername));
     }
 
-    public Response<Message> makeNominateManagerMessage(String subscriberID, List<String> permissions) {
-        return Response.success("Created message successfully", new nominateManagerMessage(this.store, Permissions.convertStringList(permissions), subscriberID));
+    public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions) {
+        return Response.success("Created message successfully", new nominateManagerMessage(this.store, Permissions.convertStringList(permissions), subscriberUsername));
     }
 
-    public String getSubscriberID() {
-        return subscriberID;
+    public String getSubscriberUsername() {
+        return subscriberUsername;
     }
 }

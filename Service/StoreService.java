@@ -6,6 +6,7 @@ import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.List;
 
@@ -23,9 +24,11 @@ public class StoreService {
 //     */
 
     public Response<String> addStore(String name, String creator, String token) {
+        SystemLogger.info("[START] User: " + creator + " is trying to create a store with name: " + name);
         if(Security.isValidJWT(token,creator)) {
             return market.openStore(name,creator);
         }
+        SystemLogger.error("[ERROR] User: " + creator + " tried to add a store but the token was invalid");
         return Response.error("Invalid token",null);
     }
 

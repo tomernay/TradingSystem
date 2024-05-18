@@ -7,7 +7,7 @@ import Domain.Users.StateOfSubscriber.*;
 import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
-
+import Utilities.SystemLogger;
 
 
 import java.util.HashMap;
@@ -80,18 +80,18 @@ public class Store {
         subscribers.put(subscriberName, newState);
     }
 
-    public Response<Message> makeNominateOwnerMessage(String subscriberName) {
-        if (subscribers.get(subscriberName) == null) {
-            subscribers.put(subscriberName, new NormalSubscriber(this, subscriberName));
+    public Response<Message> makeNominateOwnerMessage(String subscriberUsername) {
+        if (subscribers.get(subscriberUsername) == null) {
+            subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
         }
-        return subscribers.get(subscriberName).makeNominateOwnerMessage(subscriberName);
+        return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername);
     }
 
-    public Response<Message> makeNominateManagerMessage(String subscriberName, List<String> permissions) {
-        if (subscribers.get(subscriberName) == null) {
-            subscribers.put(subscriberName, new NormalSubscriber(this, subscriberName));
+    public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions) {
+        if (subscribers.get(subscriberUsername) == null) {
+            subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
         }
-        return subscribers.get(subscriberName).makeNominateManagerMessage(subscriberName, permissions);
+        return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions);
     }
 
     public void nominateOwner(String subscriberName) {
@@ -106,13 +106,16 @@ public class Store {
     public Response<String> addManagerPermissions(String subscriberName, String permission) {
         List<Permissions> permissions = managerPermissions.get(subscriberName);
         if (permissions == null || !Permissions.exists(permission)) {
+            SystemLogger.error("[ERROR] The permission: " + permission + " doesn't exist");
             return Response.error("The permission: " + permission + " doesn't exist", null);
         }
         if (permissions.contains(Permissions.valueOf(permission))) {
+            SystemLogger.error("[ERROR] The manager: " + subscriberName + " already has the permission: " + permission + " on the store: " + name);
             return Response.error("The manager: " + subscriberName + " already has the permission: " + permission + " on the store: " + name, null);
         }
         permissions.add(Permissions.valueOf(permission));
         managerPermissions.put(subscriberName, permissions);
+        SystemLogger.info("[INFO] Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name);
         return Response.success("Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name, null);
 
     }
@@ -126,6 +129,7 @@ public class Store {
             return Response.error("The manager: " + subscriberName + " doesn't have the permission: " + permission + " on the store: " + name, null);
         }
         managerPermissions.put(subscriberName, permissions);
+        SystemLogger.info("[INFO] Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name);
         return Response.success("Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name, null);
 
     }

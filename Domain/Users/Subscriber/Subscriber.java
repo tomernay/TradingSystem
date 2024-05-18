@@ -5,6 +5,7 @@ import Domain.Users.Subscriber.Messages.Message;
 
 import Domain.Users.User;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +39,14 @@ public class Subscriber extends User {
 
     public Response<String> makeStoreOwner(Message message) {
         messages.add(message);
+        SystemLogger.info("Owner nomination message successfully sent to: " + username);
         return Response.success("Owner nomination request sent to user " + username, null);
     }
 
     public Response<String> messageResponse(boolean answer) {
         Message message = messages.poll();
         if (message == null) {
+            SystemLogger.error("[ERROR] No messages to respond to.");
             return Response.error("No messages to respond to.", null);
         }
         message.response(answer);
@@ -52,6 +55,7 @@ public class Subscriber extends User {
 
     public Response<String> makeStoreManager(Message message) {
         messages.add(message);
+        SystemLogger.info("Manager nomination message successfully sent to: " + username);
         return Response.success("Manager nomination request sent to user " + username, null);
     }
 

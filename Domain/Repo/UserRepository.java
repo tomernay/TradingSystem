@@ -7,6 +7,7 @@ import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,7 @@ public class UserRepository {
         for (String subscriberName : subscriberNames) {
             users.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
         }
+        SystemLogger.info("Store " + storeID + " has been closed. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
     }
 }
