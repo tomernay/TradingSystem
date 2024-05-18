@@ -93,7 +93,7 @@ public class MarketFacade {
         return storeRepository.closeStore(storeID, currentUsername);
     }
 
-//    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
-//        return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
-//    }
+    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
+        return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
+    }
 }

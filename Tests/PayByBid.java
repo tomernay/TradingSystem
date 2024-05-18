@@ -17,10 +17,10 @@ public class PayByBid {
     public void init(){
         service=new Service();
         service.getUserService().register("yair","by");
-        subscriber=service.getUserService().getSubscriber("yair");
+        subscriber=service.getUserService().getUser("yair");
 
         service.getUserService().register("yair2","by2");
-        buyer=service.getUserService().getSubscriber("yair2");
+        buyer=service.getUserService().getUser("yair2");
         service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
         store=service.getStoreService().getStore("0");
     }
