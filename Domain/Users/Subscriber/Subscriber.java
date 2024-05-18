@@ -75,4 +75,8 @@ public class Subscriber extends User {
     public void setCredit(String credit) {
         this.credit = credit;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }

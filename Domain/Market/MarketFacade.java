@@ -4,6 +4,7 @@ import Domain.Repo.OrderRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
 
@@ -27,6 +28,13 @@ public class MarketFacade {
 
     public Response<String> logoutAsGuest(User user) {
         return userRepository.logoutAsGuest(user);
+    }
+
+    public Response<String> loginAsSubscriber(Subscriber subscriber){
+        return userRepository.loginAsSubscriber(subscriber);
+    }
+    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+        return userRepository.logoutAsSubscriber(subscriber);
     }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
@@ -95,5 +103,9 @@ public class MarketFacade {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    public Response<String> register(String username, String password) {
+        return userRepository.register(username, password);
     }
 }

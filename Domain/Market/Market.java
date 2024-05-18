@@ -1,6 +1,6 @@
 package Domain.Market;
 
-import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
 
@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Market {
     private  MarketFacade marketFacade = new MarketFacade();
+
+    public Response<String> loginAsSubscriber(Subscriber subscriber){
+        return marketFacade.loginAsSubscriber(subscriber);
+    }
+    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+        return marketFacade.logoutAsSubscriber(subscriber);
+    }
 
     public Response<String> loginAsGuest(User user){
         return marketFacade.loginAsGuest(user);
@@ -62,5 +69,9 @@ public class Market {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return marketFacade.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    public Response<String> register(String username, String password) {
+        return marketFacade.register(username, password);
     }
 }
