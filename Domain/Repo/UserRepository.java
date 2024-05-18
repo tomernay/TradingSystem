@@ -11,38 +11,38 @@ import java.util.List;
 import java.util.Map;
 
 public class UserRepository {
-    private Map<String, Subscriber> users = new HashMap<>();
+    private Map<String, Subscriber> Subscribers = new HashMap<>();
     public Response<String> makeStoreOwner(String subscriberUsername, Message message) {
-        return users.get(subscriberUsername).makeStoreOwner(message);
+        return Subscribers.get(subscriberUsername).makeStoreOwner(message);
     }
 
     public Response<String> makeStoreManager(String subscriberUsername, Message message) {
-        return users.get(subscriberUsername).makeStoreManager(message);
+        return Subscribers.get(subscriberUsername).makeStoreManager(message);
     }
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
-        return users.get(subscriberUsername).messageResponse(answer);
+        return Subscribers.get(subscriberUsername).messageResponse(answer);
     }
 
     public void sendMessageToUser(String user,Message message){
-        users.get(user).addMessage(message);
+        Subscribers.get(user).addMessage(message);
     }
 
     public boolean isUserExist(String username) {
-        return users.containsKey(username);
+        return Subscribers.containsKey(username);
     }
 
     public void addUser(Subscriber user) {
-        users.put(user.getUsername(), user);
+        Subscribers.put(user.getUsername(), user);
     }
 
     public Subscriber getUser(String username) {
-        return users.get(username);
+        return Subscribers.get(username);
     }
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         for (String subscriberName : subscriberNames) {
-            users.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+            Subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
         }
         return Response.success("Notification sent successfully", null);
     }
