@@ -17,6 +17,17 @@ public class UserService {
         this.market = market;
     }
 
+    public Response<String> loginAsSubscriber(Subscriber subscriber){
+        if(!subscriber.loginAsGuest()){
+            return Response.error("Error - can't signed in as a GUEST", null);
+        }
+        return market.loginAsSubscriber(subscriber);
+    }
+
+    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+        return market.logoutAsSubscriber(subscriber);
+    }
+
     public Response<String> loginAsGuest(User user){
         if(!user.loginAsGuest()){
             return Response.error("Error - can't signed in as a GUEST", null);
@@ -59,18 +70,9 @@ public class UserService {
         return true; // Assume subscription is accepted
     }
 
-
-    //yair added
     //register a new user
-    public boolean register(String username,String password){
-        Subscriber subscriber=new Subscriber(username,password);
-        if(!market.getMarketFacade().getUserRepository().isUserExist(username)) {
-            market.getMarketFacade().getUserRepository().addUser(subscriber);
-            return true;
-        }
-        else {
-            return  false;
-        }
+    public Response<String> register(String username,String password){
+        return market.register(username,password);
     }
 
     public Subscriber getUser(String username){
