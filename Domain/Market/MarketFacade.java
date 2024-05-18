@@ -4,7 +4,6 @@ import Domain.Repo.OrderRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Messages.Message;
-import Domain.Users.User;
 import Utilities.Response;
 
 
@@ -21,13 +20,6 @@ public class MarketFacade {
         this.orderRepository = new OrderRepository();
     }
 
-    public Response<String> loginAsGuest() {
-        return User.loginAsGuest();
-    }
-
-    public Response<String> logoutAsGuest() {
-        return User.loginAsGuest();
-    }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return storeRepository.isStoreOwner(storeID, currentUsername);
