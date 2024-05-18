@@ -1,6 +1,5 @@
 package Tests;
 
-import Domain.Market.Market;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.Service;

@@ -3,6 +3,7 @@ package Service;
 import Domain.Market.Market;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
 import Utilities.Response;
 
 
@@ -16,6 +17,17 @@ public class UserService {
         this.market = market;
     }
 
+    public Response<String> loginAsGuest(User user){
+        if(!user.loginAsGuest()){
+            return Response.error("Error - can't signed in as a GUEST", null);
+        }
+        return market.loginAsGuest(user);
+    }
+
+    //function as a Guest - exit from the website
+    public Response<String> logoutAsGuest(User user){
+        return market.logoutAsGuest(user);
+    }
     // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
         return market.makeStoreOwner(storeID, currentUsername, subscriberUsername);

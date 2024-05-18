@@ -41,7 +41,7 @@ public class Service {
         return Response.error("Invalid token",null);
     }
 
-    // Method to add a store manager subscription
+//     Method to add a store manager subscription
     public Response<String> makeStoreManager(String storeName, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
         if(Security.isValidJWT(token,currentUsername)) {
             if (!userService.userExists(subscriberUsername)) {

@@ -1,6 +1,7 @@
 package Domain.Market;
 
 import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.User;
 import Utilities.Response;
 
 import java.util.List;
@@ -8,6 +9,12 @@ import java.util.List;
 public class Market {
     private  MarketFacade marketFacade = new MarketFacade();
 
+    public Response<String> loginAsGuest(User user){
+        return marketFacade.loginAsGuest(user);
+    }
+    public Response<String> logoutAsGuest(User user){
+        return marketFacade.logoutAsGuest(user);
+    }
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return marketFacade.isStoreOwner(storeID, currentUsername);
     }
