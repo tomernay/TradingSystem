@@ -1,9 +1,11 @@
 package Domain.Repo;
 
+import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Domain.Users.Subscriber.Messages.Message;
 
 import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
 import Utilities.Response;
 
 import java.util.HashMap;
@@ -12,6 +14,28 @@ import java.util.Map;
 
 public class UserRepository {
     private Map<String, Subscriber> users = new HashMap<>();
+    private Map<ShoppingCart, User> guests = new HashMap<>();
+
+    public Response<String> loginAsGuest(User user) {
+        guests.put(user.getShoppingCart(), user);
+        return Response.success("You signed in as a GUEST", null);
+    }
+
+    public Response<String> logoutAsGuest(User user) {
+        if(user.logoutAsGuest()){
+            return Response.error("Error - can't signed out as a GUEST", null);
+        }
+        return Response.success("You signed out as a GUEST", null);
+    }
+
+    public void addGuest(User user) {
+        guests.put(user.getShoppingCart(), user);
+    }
+
+    public User getGuest(ShoppingCart shoppingCart) {
+        return guests.get(shoppingCart);
+    }
+
     public Response<String> makeStoreOwner(String subscriberUsername, Message message) {
         return users.get(subscriberUsername).makeStoreOwner(message);
     }
