@@ -1,14 +1,19 @@
 package src.main.java.Utilities;
 
 public class Response<T> {
-    private boolean success;
-    private String message;
+    private final boolean success;
+    private final String message;
     private T data;
 
     public Response(boolean success, String message, T data) {
         this.success = success;
         this.message = message;
         this.data = data;
+    }
+
+    public Response(boolean success, String message) {
+        this.success = success;
+        this.message = message;
     }
 
     public boolean isSuccess() {
@@ -30,5 +35,6 @@ public class Response<T> {
     public static <T> Response<T> error(String message, T data) {
         return new Response<>(false, message, data);
     }
+
 }
 
