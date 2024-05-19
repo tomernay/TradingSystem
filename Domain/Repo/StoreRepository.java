@@ -16,7 +16,7 @@ import java.util.Map;
 public class StoreRepository {
     private Map<String, Store> stores;
     private Map<String, Store> deactivatedStores; // <StoreID, Store>
-    private Integer storeID;
+    //private Integer storeID;
 
     public StoreRepository() {
         this.stores = new HashMap<>();
@@ -104,16 +104,19 @@ public class StoreRepository {
             Store store = new Store(storeName ,new Inventory(),creator);
             String storeID = store.getId();
             stores.put(storeID, store);
-            return Response.success("successfully opened the store "+ storeName, null);
+            return Response.success("successfully opened the store "+ storeName, storeID);
         }
         catch (Exception e) {
             return Response.error("couldn't open store "+ storeName, null);
         }
     }
 
-    public Store getStore(String name) {
-        return stores.get(name);
+    public Store getStore(String storeID) {
+        return stores.get(storeID);
     }
+
+
+
 
     public Response<List<String>> closeStore(String storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {

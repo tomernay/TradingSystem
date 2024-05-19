@@ -3,6 +3,7 @@ package Domain.Market;
 import Domain.Repo.OrderRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
+import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 import Utilities.Response;
 
@@ -69,8 +70,8 @@ public class MarketFacade {
         return userRepository.messageResponse(subscriberUsername, answer);
     }
 
-    public Response<String> openStore(String storeID, String creator) {
-        return storeRepository.addStore(storeID, creator);
+    public Response<String> openStore(String storeName, String creator) {
+        return storeRepository.addStore(storeName, creator);
     }
 
     public UserRepository getUserRepository() {
@@ -87,5 +88,10 @@ public class MarketFacade {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    public Store getStoreByID(String storeID){
+        return storeRepository.getStore(storeID);
+
     }
 }
