@@ -55,7 +55,7 @@ public class StoreRepository {
     }
 
     public void addStore(String storeID,String creator) {
-        Store store=new Store("0",storeID,new Inventory(),creator);
+        Store store=new Store("0",storeID,new Inventory(storeID),creator);
         stores.put(storeID, store);
     }
 
