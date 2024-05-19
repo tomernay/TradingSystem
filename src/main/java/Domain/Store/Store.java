@@ -156,5 +156,13 @@ public class Store {
         payByBids.remove(user);
     }
 
+    public Response<Map<String,SubscriberState>> getSubscribersResponse(){
+        return Response.success("successfuly fetched the subscribers states of the store", subscribers);
+    }
+
+    public Response<Map<String,List<Permissions>>> getManagersPermissionsResponse(){
+        return Response.success("successfuly fetched the managers permissions of the store", managerPermissions);
+    }
+
 
 }

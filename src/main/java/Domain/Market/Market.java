@@ -1,9 +1,12 @@
 package src.main.java.Domain.Market;
 
+import src.main.java.Domain.Store.StoreData.Permissions;
+import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
 
 import java.util.List;
+import java.util.Map;
 
 public class Market {
     private MarketFacade marketFacade = new MarketFacade();
@@ -49,6 +52,14 @@ public class Market {
    
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
         return marketFacade.messageResponse(subscriberUsername, answer);
+    }
+
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID) {
+        return marketFacade.requestEmployeesStatus(storeID);
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID) {
+        return marketFacade.requestManagersPermissions(storeID);
     }
 
     public MarketFacade getMarketFacade() {
