@@ -138,6 +138,20 @@ public class Store {
         return subscribers.get(currentUsername) instanceof StoreCreator;
     }
 
+    public Map<String, List<Permissions>> getManagerPermissions() {
+        return managerPermissions;
+    }
+
+    public Response<Map<String,SubscriberState>> getSubscribersResponse(){
+        return Response.success("successfuly fetched the subscribers states of the store", subscribers);
+    }
+
+    public Response<Map<String,List<Permissions>>> getManagersPermissionsResponse(){
+        return Response.success("successfuly fetched the managers permissions of the store", managerPermissions);
+    }
+
+
+
 //yair added
     public Map<String, SubscriberState> getSubscribers() {
         return subscribers;

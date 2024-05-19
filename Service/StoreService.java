@@ -41,8 +41,4 @@ public class StoreService {
     public boolean isStoreCreator(String storeID, String currentUsername) {
         return market.isStoreCreator(storeID, currentUsername);
     }
-
-
-
-
 }
