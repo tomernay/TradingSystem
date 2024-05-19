@@ -16,7 +16,7 @@ public class PayByBid {
     @Before
     public void init(){
         service=new Service();
-        service.getUserService().register("yair","by");
+        System.out.println(service.getUserService().register("yair","password123").getMessage());
         subscriber=service.getUserService().getUser("yair");
 
         service.getUserService().register("yair2","by2");

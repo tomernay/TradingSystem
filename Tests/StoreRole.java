@@ -1,7 +1,6 @@
 package Tests;
 
 import Service.StoreService;
-import Service.UserService;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.Service;
@@ -20,30 +19,22 @@ public class StoreRole {
 
     @Before
     public void init(){
-        service = new Service();
-        UserService userService = service.getUserService();
-        // Register a new user
-        userService.register("yair1","password123");
-        // Create a Subscriber object and log in the user
-        Subscriber subscriberToLogin = new Subscriber("yair1","password123");
-        Response<String> loginResponse = userService.loginAsSubscriber(subscriberToLogin);
-        // Check if login was successful
-        if (loginResponse.isSuccess()) {
-            // Get the Subscriber object
-            subscriber = userService.getUser("yair1");
-        }
+        service=new Service();
+        storeService=service.getStoreService();
+        service.getUserService().register("yair12312","password123");
+        subscriber=service.getUserService().getUser("yair12312");
 
-        userService.register("newOwner","password123");
-        newOwner = userService.getUser("newOwner");
+        service.getUserService().register("newOwner","by2");
+        newOwner=service.getUserService().getUser("newOwner");
 
-        userService.register("newManager","password123");
-        newManager = userService.getUser("newManager");
+        service.getUserService().register("newManager","by3");
+        newManager=service.getUserService().getUser("newManager");
 
-        userService.register("notOwner","password123");
-        notOwner = userService.getUser("notOwner");
+        service.getUserService().register("notOwner","by4");
+        notOwner=service.getUserService().getUser("notOwner");
 
-        service.getStoreService().addStore("yairStore","yair1",userService.getUser(subscriber.getUsername()).getToken());
-        store = service.getStoreService().getStore("0");
+        service.getStoreService().addStore("yairStore","yair12312",subscriber.getToken());
+        store=service.getStoreService().getStore("0");
     }
 
     @Test
