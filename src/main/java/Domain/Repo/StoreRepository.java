@@ -121,11 +121,10 @@ public class StoreRepository {
     public Response<String> addStore(String storeName,String creator) {
 
         try {
-            Store store = new Store((storeID++).toString() ,storeName ,new Inventory(),creator);
-
-            String storeID = store.getId();
-            stores.put(storeID, store);
-            return Response.success("successfully opened the store "+ storeName, storeID);
+            Store store = new Store(storeID.toString() ,storeName ,new Inventory(storeID.toString()),creator);
+            stores.put(this.storeID.toString(), store);
+            this.storeID++;
+            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID-1));
         }
         catch (Exception e) {
             return Response.error("couldn't open store "+ storeName, null);

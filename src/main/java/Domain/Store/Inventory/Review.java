@@ -1,6 +1,6 @@
-package Domain.Store.Inventory;
+package src.main.java.Domain.Store.Inventory;
 
-import Domain.Users.User;
+import src.main.java.Domain.Users.User;
 
 public class Review {
     private int rate;

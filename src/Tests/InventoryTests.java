@@ -1,12 +1,10 @@
-package Tests;
+package src.Tests;
 
-import Domain.Store.Inventory.Inventory;
-import Domain.Users.Subscriber.Subscriber;
-import Service.Service;
-import Service.StoreService;
-import org.junit.Assert;
+import src.main.java.Domain.Store.Inventory.Inventory;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
 import org.junit.Before;
-import org.junit.Test;
+import src.main.java.Service.Service;
+import src.main.java.Service.StoreService;
 
 public class InventoryTests {
     Service service;

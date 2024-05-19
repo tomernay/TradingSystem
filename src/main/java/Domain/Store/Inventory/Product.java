@@ -1,7 +1,8 @@
 package src.main.java.Domain.Store.Inventory;
-import Utilities.Response;
+import src.main.java.Utilities.Response;
 import cn.hutool.json.ObjectMapper;
 import java.util.ArrayList;
+import src.main.java.Domain.Store.Inventory.Review;
 
 /**
  * Represents a product in the store inventory.

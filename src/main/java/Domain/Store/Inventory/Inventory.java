@@ -2,11 +2,12 @@ package src.main.java.Domain.Store.Inventory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import Utilities.Response;
+import src.main.java.Utilities.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import Domain.Store.Inventory.ProductDTO;
 
 public class Inventory {
     private String storeID; //Inventory for specific store
@@ -177,7 +178,7 @@ public class Inventory {
      * @return A DTO representing the product information.
      * @throws IllegalArgumentException If the provided product ID is null or if the product does not exist.
      */
-    public ProductDTO getProductInfo(Integer productID) {
+    public Domain.Store.Inventory.ProductDTO getProductInfo(Integer productID) {
         if (productID == null) {
             throw new IllegalArgumentException("Product ID cannot be null.");
         }
