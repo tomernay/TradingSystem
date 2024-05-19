@@ -1,10 +1,12 @@
-package Tests;
+package src.Tests;
 
-import Domain.Store.Store;
-import Domain.Users.Subscriber.Subscriber;
+import org.junit.Before;
+import org.junit.Test;
+import src.main.java.Domain.Store.Store;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
 //import Service.Service;
-import Service.*;
-import Utilities.Response;
+import src.main.java.Service.*;
+import src.main.java.Utilities.Response;
 import org.junit.Assert;
 
 public class StoreCreation {
@@ -14,6 +16,7 @@ public class StoreCreation {
     Subscriber subscriber;
     Store store;
 
+    @Before
     public void init(){
         service = new Service();
         service.getUserService().register("mia","22");
@@ -23,6 +26,7 @@ public class StoreCreation {
 
     }
 
+    @Test
     public void testStoreCreation(){
         init();
         Response<String> response = storeService.addStore("ziv", "mia",subscriber.getToken());
@@ -31,22 +35,23 @@ public class StoreCreation {
         Assert.assertNotNull(store);
     }
 
+    @Test
     public void testStoreOwner(){
         init();
         Response<String> response = storeService.addStore("ziv", "mia",subscriber.getToken());
         store = storeService.getStore(response.getData());
         Assert.assertFalse(storeService.isStoreOwner(store.getId(), "mia"));
     }
-    //TODO - is the creator become the owner or manager immediately after creating the store?
 
+    @Test
     public void testStoreManager(){
         init();
         Response<String> response = storeService.addStore("ziv", "mia",subscriber.getToken());
         store = storeService.getStore(response.getData());
         Assert.assertFalse(storeService.isStoreManager(store.getId(), "mia"));
     }
-    //TODO - is the creator become the owner or manager immediately after creating the store?
 
+    @Test
     public void testStoreCreator(){
         init();
         Response<String> response = storeService.addStore("ziv", "mia",subscriber.getToken());
@@ -55,6 +60,7 @@ public class StoreCreation {
     }
 
     //test that two stores have different IDs
+    @Test
     public void testStoreID(){
         init();
         Response<String> response = storeService.addStore("ziv", "mia",subscriber.getToken());
@@ -62,16 +68,6 @@ public class StoreCreation {
         Response<String> response2 = storeService.addStore("Dor", "mia",subscriber.getToken());
         store = storeService.getStore(response2.getData());
         Assert.assertNotEquals(response.getData(), response2.getData());
-    }
-
-
-    public static void main(String[] args) {
-        StoreCreation test = new StoreCreation();
-        test.testStoreCreation();
-        test.testStoreOwner();
-        test.testStoreManager();
-        test.testStoreCreator();
-        test.testStoreID();
     }
 
 

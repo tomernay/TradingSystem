@@ -2,7 +2,7 @@ package src.main.java.Domain.Market;
 
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
-import Domain.Market.MarketFacade;
+
 import java.util.List;
 
 public class Market {
