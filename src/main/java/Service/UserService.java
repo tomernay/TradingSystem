@@ -7,6 +7,7 @@ import src.main.java.Utilities.Response;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class UserService {
     private Market market;
@@ -68,8 +69,26 @@ public class UserService {
             return true;
         }
         else {
-            return  false;
+            return false;
         }
+    }
+
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token){
+        if(Security.isValidJWT(token,userName)) {
+            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+                return market.requestEmployeesStatus(storeID);
+            }
+        }
+        return Response.error("invalid token", null);
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token){
+        if(Security.isValidJWT(token,userName)) {
+            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+                return market.requestManagersPermissions(storeID);
+            }
+        }
+        return Response.error("invalid token", null);
     }
 
     public Subscriber getUser(String username){

@@ -87,6 +87,24 @@ public class StoreRepository {
         return stores.get(storeID).removeManagerPermissions(subscriberUsername, permission);
     }
 
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
+        try{
+            return stores.get(storeID).getSubscribersResponse();
+        }
+        catch (Exception e){
+            return Response.error("Invalid storeID.", null);
+        }
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
+        try{
+            return stores.get(storeID).getManagersPermissionsResponse();
+        }
+        catch (Exception e){
+            return Response.error("Invalid storeID.", null);
+        }
+    }
+
     public boolean isStoreCreator(String storeID, String currentUsername) {
         return stores.get(storeID).isStoreCreator(currentUsername);
     }
