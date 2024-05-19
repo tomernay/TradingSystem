@@ -951,7 +951,7 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="z1rswrZgB9SCLob50gjK-1" value="Domain" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="z1rswrZgB9SCLob50gjK-1" value="src.main.java.Domain" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="5" y="180" width="1315" height="180" as="geometry" />
         </mxCell>
         <mxCell id="z1rswrZgB9SCLob50gjK-2" value="User" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
@@ -981,7 +981,7 @@
         <mxCell id="m9M5vJSsLMZgpB0wTJ_l-1" value="Admin" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="1170" y="240" width="130" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="m9M5vJSsLMZgpB0wTJ_l-2" value="Service" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="m9M5vJSsLMZgpB0wTJ_l-2" value="src.main.java.Service" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="5" y="430" width="1315" height="180" as="geometry" />
         </mxCell>
         <mxCell id="m9M5vJSsLMZgpB0wTJ_l-3" value="UserService" style="html=1;whiteSpace=wrap;" vertex="1" parent="1">
