@@ -30,8 +30,8 @@ public class StoreService {
         return Response.error("Invalid token",null);
     }
 
-    public Store getStore(String name){
-        return market.getMarketFacade().getStoreRepository().getStore(name);
+    public Store getStore(String storeID){
+        return market.getMarketFacade().getStoreRepository().getStore(storeID);
     }
 
 
@@ -49,5 +49,9 @@ public class StoreService {
 
     public Response<List<String>> closeStore(String storeID, String currentUsername) {
         return market.closeStore(storeID, currentUsername);
+    }
+
+    public Market getMarket() {
+        return market;
     }
 }

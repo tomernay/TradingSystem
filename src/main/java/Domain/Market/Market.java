@@ -2,11 +2,11 @@ package src.main.java.Domain.Market;
 
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
-
+import Domain.Market.MarketFacade;
 import java.util.List;
 
 public class Market {
-    private  MarketFacade marketFacade = new MarketFacade();
+    private MarketFacade marketFacade = new MarketFacade();
 
     public Response<String> loginAsGuest(User user){
         return marketFacade.loginAsGuest(user);

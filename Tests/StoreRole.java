@@ -1,16 +1,14 @@
-package src.Tests;
+package Tests;
 
-import src.main.java.Service.StoreService;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Service.Service;
-import src.main.java.Utilities.Response;
+import Service.StoreService;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Subscriber;
+import Service.Service;
+import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class StoreRole {
@@ -36,7 +34,7 @@ public class StoreRole {
         notOwner=service.getUserService().getUser("notOwner");
 
         service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
-        store=service.getStoreService().getStore("0");
+        store=service.getStoreService().getStore("1");
     }
 
     @Test

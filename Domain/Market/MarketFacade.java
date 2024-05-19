@@ -1,11 +1,11 @@
-package src.main.java.Domain.Market;
+package Domain.Market;
 
-import src.main.java.Domain.Repo.OrderRepository;
-import src.main.java.Domain.Repo.StoreRepository;
-import src.main.java.Domain.Repo.UserRepository;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
-import src.main.java.Domain.Users.User;
-import src.main.java.Utilities.Response;
+import Domain.Repo.OrderRepository;
+import Domain.Repo.StoreRepository;
+import Domain.Repo.UserRepository;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Response;
 
 
 import java.util.List;
@@ -21,13 +21,6 @@ public class MarketFacade {
         this.orderRepository = new OrderRepository();
     }
 
-    public Response<String> loginAsGuest(User user){
-        return userRepository.loginAsGuest(user);
-    }
-
-    public Response<String> logoutAsGuest(User user) {
-        return userRepository.logoutAsGuest(user);
-    }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return storeRepository.isStoreOwner(storeID, currentUsername);
@@ -61,7 +54,7 @@ public class MarketFacade {
         return userRepository.makeStoreManager(subscriberUsername, message.getData());
     }
 
-    public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission ) {
+    public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
         return storeRepository.addManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
@@ -77,8 +70,8 @@ public class MarketFacade {
         return userRepository.messageResponse(subscriberUsername, answer);
     }
 
-    public Response<String> openStore(String storeID, String creator) {
-        return storeRepository.addStore(storeID, creator);
+    public Response<String> openStore(String storeName, String creator) {
+        return storeRepository.addStore(storeName, creator);
     }
 
     public UserRepository getUserRepository() {
@@ -95,5 +88,10 @@ public class MarketFacade {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    public Store getStoreByID(String storeID){
+        return storeRepository.getStore(storeID);
+
     }
 }
