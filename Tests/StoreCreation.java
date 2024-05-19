@@ -54,6 +54,16 @@ public class StoreCreation {
         Assert.assertTrue(storeService.isStoreCreator(store.getId(), "mia"));
     }
 
+    //test that two stores have different IDs
+    public void testStoreID(){
+        init();
+        Response<String> response = storeService.addStore("ziv", "mia",subscriber.getToken());
+        store = storeService.getStore(response.getData());
+        Response<String> response2 = storeService.addStore("Dor", "mia",subscriber.getToken());
+        store = storeService.getStore(response2.getData());
+        Assert.assertNotEquals(response.getData(), response2.getData());
+    }
+
 
     public static void main(String[] args) {
         StoreCreation test = new StoreCreation();
@@ -61,6 +71,7 @@ public class StoreCreation {
         test.testStoreOwner();
         test.testStoreManager();
         test.testStoreCreator();
+        test.testStoreID();
     }
 
 

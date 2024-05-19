@@ -16,7 +16,7 @@ import java.util.Map;
 public class StoreRepository {
     private Map<String, Store> stores;
     private Map<String, Store> deactivatedStores; // <StoreID, Store>
-    //private Integer storeID;
+    private Integer storeID = 0;
 
     public StoreRepository() {
         this.stores = new HashMap<>();
@@ -101,7 +101,8 @@ public class StoreRepository {
     public Response<String> addStore(String storeName,String creator) {
 
         try {
-            Store store = new Store(storeName ,new Inventory(),creator);
+            Store store = new Store((storeID++).toString() ,storeName ,new Inventory(),creator);
+
             String storeID = store.getId();
             stores.put(storeID, store);
             return Response.success("successfully opened the store "+ storeName, storeID);
