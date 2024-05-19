@@ -1,12 +1,11 @@
 package DataBase.Files;
 
-import cn.hutool.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class FilesHandler {
 
@@ -17,7 +16,7 @@ public class FilesHandler {
      * @param file       The file to write to.
      * @throws IOException If an I/O error occurs.
      */
-    public static void writeJSONObjectToFile(JSONObject jsonObject, File file) throws IOException {
+    public static void writeJSONObjectToFile(JsonNode jsonObject, File file) throws IOException {
         FileWriter fileWriter = null;
         try {
             fileWriter = new FileWriter(file);
@@ -36,10 +35,11 @@ public class FilesHandler {
      * @return The JSONObject read from the file.
      * @throws IOException If an I/O error occurs.
      */
-    public static JSONObject readJSONObjectFromFile(File file) throws IOException {
-        String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+    public static JsonNode readJSONObjectFromFile(File file) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonObject = mapper.readTree(file);
         deleteFile(file);
-        return new JSONObject(content);
+        return jsonObject;
     }
 
     /**

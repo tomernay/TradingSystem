@@ -1,12 +1,13 @@
 package DataBase.PublicPay;
 
-import DataBase.FireBaseConstants;
 import DataBase.Files.FilesHandler;
+import DataBase.FireBaseConstants;
 import DataBase.ServiceAccountDetails.Init;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.PurchasePolicy.PaymentTypes.PublicPay;
 import Domain.Store.Store;
 import cn.hutool.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.firebase.database.*;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public class PublicPayDTO {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 try {
                     Object o=dataSnapshot.getValue();
-                     JSONObject json=PublicPayDAO.convertToJsonObject(o);
+                     JsonNode json=PublicPayDAO.convertToJsonObject(o);
                     FilesHandler.writeJSONObjectToFile(json,new File(FireBaseConstants.publicPay+storeName+".json"));
 
 

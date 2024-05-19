@@ -79,4 +79,8 @@ public class Subscriber extends User {
     public Queue<Message> getMessages() {
         return messages;
     }
+
+    public String getPassword() {
+        return password;
+    }
 }

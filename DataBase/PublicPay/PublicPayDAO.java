@@ -2,53 +2,46 @@ package DataBase.PublicPay;
 
 import Domain.Store.PurchasePolicy.PaymentTypes.PublicPay;
 import Domain.Store.Store;
-import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
 
 public class PublicPayDAO {
-    public static PublicPay convertJsonToPublicPay(String publicPay) {
 
+    /**
+     * Convert a PublicPay object to a JSONObject.
+     * @param publicPayJson
+     * @return
+     */
+    public static PublicPay convertJsonToPublicPay(JsonNode publicPayJson) {
         try {
-
-            // Parse JSON string
-            JSONObject jsonObject = new JSONObject(publicPay);
+            // Convert JsonNode to JSONObject using Jackson
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(publicPayJson);
+            JSONObject jsonObject = new JSONObject(jsonString);
 
             // Extract date
-            JSONObject dateObject = jsonObject.getJSONArray("table").getJSONObject(0).getJSONObject("date");
+            JSONObject dateObject = jsonObject.getJSONObject("date");
             Date date = new Date(dateObject.getLong("time"));
 
-
             // Extract maxFee
-            double maxFee = jsonObject.getJSONArray("table").getJSONObject(2).getDouble("maxFee");
+            double maxFee = jsonObject.getDouble("maxFee");
 
             // Extract card
-            String card = jsonObject.getJSONArray("table").getJSONObject(3).getStr("card");
-            HashMap<String, Integer> products = new HashMap<>();
-            try {
-
-
-                // Extract products
-                JSONArray productsArray = jsonObject.getJSONArray("table").getJSONObject(4).getJSONArray("products");
-
-                for (int i = 0; i < productsArray.size(); i++) {
-                    products.put(String.valueOf(productsArray.getInt(i)), productsArray.getInt(i));
-                }
-            }catch (Exception e) {  }
+            String card = jsonObject.getStr("card");
 
             // Extract store
-            JSONObject storeObject = jsonObject.getJSONArray("table").getJSONObject(1).getJSONObject("store");
-
-            // Create Store object
+            JSONObject storeObject = jsonObject.getJSONObject("store");
             Store store = new Store();
-            store.setName(storeObject.getStr("name")); // Example: replace with actual field name
+            store.setName(storeObject.getStr("name"));
             store.setId(storeObject.getStr("id"));
 
-            // Create and return PublicPay object
-            return new PublicPay(maxFee, date, store, card, products);
+            // Create and return PublicPay object (assuming products field is not used in the JSON)
+            return new PublicPay(maxFee, date, store, card, new HashMap<>());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,18 +49,17 @@ public class PublicPayDAO {
         }
     }
 
-    public  static JSONObject convertToJsonObject(Object obj) throws IllegalAccessException {
-        JSONObject jsonObject = new JSONObject();
+    /**
+     * Convert a Object to a JsonNode.
+     * @param obj
+     * @return
+     * @throws IllegalAccessException
+     */
+    public  static JsonNode convertToJsonObject(Object obj) throws IllegalAccessException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        JsonNode node= mapper.valueToTree(obj);
 
-        // Get all fields of the class, including private fields
-        Field[] fields = obj.getClass().getDeclaredFields();
-
-        for (Field field : fields) {
-            field.setAccessible(true); // Allow access to private fields
-            Object value = field.get(obj);
-            jsonObject.put(field.getName(), value);
-        }
-
-        return jsonObject;
+        return node;
     }
 }

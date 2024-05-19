@@ -14,6 +14,7 @@ import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
 import Domain.Users.Subscriber.Messages.PaymentMessages.PayByBidOffer;
 import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 import java.util.HashMap;
 
@@ -38,16 +39,16 @@ public class PaymentService {
      */
     public boolean sendPayByBid(String token,Store s,  Subscriber user, double fee, HashMap<Integer,Integer> products){
         if(Security.isValidJWT(token, user.getUsername()) ){
-              if(!products.isEmpty()) {
-                  for (SubscriberState subscriberState : s.getSubscribers().values()) {
-                      if (s.isStoreCreator(subscriberState.getSubscriberID()) || s.isStoreOwner(subscriberState.getSubscriberID())) {
-                          PayByBidOffer payByBidOffer = new PayByBidOffer(s, subscriberState.getSubscriberID(), user, fee, products);
-                          market.getMarketFacade().getUserRepository().sendMessageToUser(subscriberState.getSubscriberID(), payByBidOffer);
-                      }
-                  }
-                  return true;
-              }
-              return false;
+            if(!products.isEmpty()) {
+                for (SubscriberState subscriberState : s.getSubscribers().values()) {
+                    if (s.isStoreCreator(subscriberState.getSubscriberID()) || s.isStoreOwner(subscriberState.getSubscriberID())) {
+                        PayByBidOffer payByBidOffer = new PayByBidOffer(s, subscriberState.getSubscriberID(), user, fee, products);
+                        market.getMarketFacade().getUserRepository().sendMessageToUser(subscriberState.getSubscriberID(), payByBidOffer);
+                    }
+                }
+                return true;
+            }
+            return false;
 
         }
         else {
@@ -90,24 +91,27 @@ public class PaymentService {
         return false;
     }
 
-    public boolean counterPublicPay(String user, String token, PublicPay publicPay){
+    public Response<String> counterPublicPay(String user, String token, PublicPay publicPay){
         if(Security.isValidJWT(token,user) ) {
             try {
                 System.out.println(publicPay.getDate().getTime()-System.currentTimeMillis());
 
-                if(publicPay.getDate().getTime() >System.currentTimeMillis())
+                if(publicPay.getDate().getTime() >System.currentTimeMillis()){
 
                     PublicPayDTO.addPublicPayment(publicPay);
+                    return  new Response<>(true,"counter success",null);
+                }
                 else{
                     System.out.println("times up");
+                    return  new Response<>(false,"times up",null);
                 }
 
-                return  true;
+
             } catch (Exception e){
 
             }
 
         }
-        return false;
+        return new Response<>(true,"failed",null);
     }
 }

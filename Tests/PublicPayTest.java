@@ -1,8 +1,8 @@
 package Tests;
 
-import DataBase.FireBaseConstants;
 import DataBase.Files.FilesHandler;
 
+import DataBase.FireBaseConstants;
 import DataBase.PublicPay.PublicPayDAO;
 import DataBase.PublicPay.PublicPayDTO;
 import Domain.Externals.Security.Security;
@@ -10,7 +10,9 @@ import Domain.Store.PurchasePolicy.PaymentTypes.PublicPay;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.Service;
-import cn.hutool.json.JSONObject;
+import Utilities.Response;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -51,18 +53,20 @@ public class PublicPayTest {
         publicPayDTO.retrievePublicPayment("yairStore");
         TimeUnit.SECONDS.sleep(3);
         File publicPayFile=new File(FireBaseConstants.publicPay+"yairStore.json");
-        JSONObject json=FilesHandler.readJSONObjectFromFile(publicPayFile);
+        JsonNode json=FilesHandler.readJSONObjectFromFile(publicPayFile);
         System.out.println(json);
-        PublicPay publicPay= PublicPayDAO.convertJsonToPublicPay(json.toString());
+        PublicPay publicPay= PublicPayDAO.convertJsonToPublicPay(json);
         System.out.println(publicPay.getStore().getName());
         publicPay.setCard("1213453132");
         publicPay.setMaxFee(publicPay.getMaxFee()+7);
-        service.getPaymentService().counterPublicPay(buyer.getUsername(),buyer.getToken(),publicPay);
-
+        Response<String> response=service.getPaymentService().counterPublicPay(buyer.getUsername(),buyer.getToken(),publicPay);
+        Assert.assertTrue(response.isSuccess());
         TimeUnit.SECONDS.sleep(13);
         publicPay.setCard("1213453132");
         publicPay.setMaxFee(publicPay.getMaxFee()+9);
-        service.getPaymentService().counterPublicPay(buyer.getUsername(),buyer.getToken(),publicPay);
+
+        response=service.getPaymentService().counterPublicPay(buyer.getUsername(),buyer.getToken(),publicPay);
+        Assert.assertFalse(response.isSuccess());
         Thread.sleep(100000000);
     }
 }
