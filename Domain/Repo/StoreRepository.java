@@ -4,7 +4,6 @@ import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
-import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 import Utilities.Response;
@@ -93,8 +92,8 @@ public class StoreRepository {
         return getStore(storeID).removeProduct(productID);
     }
 
-    public void setProductCategory(int productID, ArrayList<String> categories, String storeID) {
-        getStore(storeID).setProductCategory(productID, categories);
+    public Response<Integer> setProductCategory(int productID, ArrayList<String> categories, String storeID) {
+        return getStore(storeID).setProductCategory(productID, categories);
     }
 
     public void removeProductFromAllCategories(int productID, String storeID) {
@@ -109,7 +108,7 @@ public class StoreRepository {
         return getStore(storeID).isProductExist(productID);
     }
 
-    public String getProductsByCategory(int productId, String storeID) throws JsonProcessingException {
+    public Response<String> getProductsByCategory(int productId, String storeID) throws JsonProcessingException {
         return getStore(storeID).getProductsByCategory(productId);
     }
 
@@ -117,64 +116,64 @@ public class StoreRepository {
         return getStore(storeID).getProductCategory(productID);
     }
 
-    public void setProductID(Integer oldProductID, Integer newProductID, String storeID) {
-        getStore(storeID).setProductID(oldProductID, newProductID);
+    public Response<Integer> setProductID(Integer oldProductID, Integer newProductID, String storeID) {
+        return getStore(storeID).setProductID(oldProductID, newProductID);
     }
 
-    public Product getProduct(Integer productID, String storeID) {
+    public Response<Product> getProduct(Integer productID, String storeID) {
         return getStore(storeID).getProduct(productID);
     }
 
-    public void setProductName(Integer productID, String newName, String storeID) {
-        getStore(storeID).setProductName(productID, newName);
+    public Response<Integer> setProductName(Integer productID, String newName, String storeID) {
+        return getStore(storeID).setProductName(productID, newName);
     }
 
-    public void setProductDesc(Integer productID, String newDesc, String storeID) {
-        getStore(storeID).setProductDesc(productID, newDesc);
+    public Response<Integer> setProductDesc(Integer productID, String newDesc, String storeID) {
+        return getStore(storeID).setProductDesc(productID, newDesc);
     }
 
-    public void setPrice(Integer productID, int newPrice, String storeID) {
-        getStore(storeID).setPrice(productID, newPrice);
+    public Response<Integer> setPrice(Integer productID, int newPrice, String storeID) {
+        return getStore(storeID).setPrice(productID, newPrice);
     }
 
-    public void setQuantity(Integer productID, int newQuantity, String storeID) {
-        getStore(storeID).setQuantity(productID, newQuantity);
+    public Response<Integer> setQuantity(Integer productID, int newQuantity, String storeID) {
+        return getStore(storeID).setQuantity(productID, newQuantity);
     }
 
-    public void addQuantity(Integer productID, int valueToAdd, String storeID) {
-        getStore(storeID).addQuantity(productID, valueToAdd);
+    public Response<Integer> addQuantity(Integer productID, int valueToAdd, String storeID) {
+        return getStore(storeID).addQuantity(productID, valueToAdd);
     }
 
-    public int getQuantity(int productID, String storeID) throws Exception {
+    public Response<Integer> getQuantity(int productID, String storeID) throws Exception {
         return getStore(storeID).getQuantity(productID);
     }
 
-    public String getProductDescription(int productID, String storeID) throws Exception {
+    public Response<String> getProductDescription(int productID, String storeID) throws Exception {
         return getStore(storeID).getProductDescription(productID);
     }
 
-    public int getProductPrice(int productID, String storeID) throws Exception {
+    public Response<Integer> getProductPrice(int productID, String storeID) throws Exception {
         return getStore(storeID).getProductPrice(productID);
     }
 
-    public void setStoreIDToProduct(int productID, String storeID){
-        getStore(storeID).setStoreIDToProduct(productID ,storeID);
+    public Response<Integer> setStoreIDToProduct(int productID, String storeID){
+        return getStore(storeID).setStoreIDToProduct(productID ,storeID);
     }
 
-    public void getProductName(int productID, String storeID) {
-        getStore(storeID).getProductName(productID);
+    public Response<String> getProductName(int productID, String storeID) {
+        return getStore(storeID).getProductName(productID);
     }
 
-    public void setProductName(String storeID ,int productID ,String storeName) {
-        getStore(storeID).setProductName(productID ,storeName);
+    public Response<Integer> setProductName(String storeID ,int productID ,String storeName) {
+        return getStore(storeID).setProductName(productID ,storeName);
     }
 
     public Response<String> removeCategoryFromProduct(int productID ,String category, String storeID) {
         return getStore(storeID).removeCategoryFromProduct(productID, category);
     }
 
-    public void setStoreNameToProduct(int productID ,String storeName, String storeID) {
-        getStore(storeID).setStoreNameToProduct(productID,storeName);
+    public Response<Integer> setStoreNameToProduct(int productID ,String storeName, String storeID) {
+        return getStore(storeID).setStoreNameToProduct(productID,storeName);
     }
 
 

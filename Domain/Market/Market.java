@@ -53,8 +53,8 @@ public class Market {
         return marketFacade.getStore(StoreID);
     }
 
-    public void setInventoryToStore(Inventory inventory, String storeID){
-        marketFacade.setInventoryToStore(inventory, storeID);
+    public Response<String> setInventoryToStore(Inventory inventory, String storeID){
+        return marketFacade.setInventoryToStore(inventory, storeID);
     }
 
     public Inventory getInventory(String storeID){
@@ -69,8 +69,8 @@ public class Market {
         return marketFacade.removeProduct(productID, storeID);
     }
 
-    public void setProductCategory(int productID, ArrayList<String> categories, String storeID) {
-        marketFacade.setProductCategory(productID, categories, storeID);
+    public Response<Integer> setProductCategory(int productID, ArrayList<String> categories, String storeID) {
+        return marketFacade.setProductCategory(productID, categories, storeID);
     }
 
     public void removeProductFromAllCategories(int productID, String storeID) {
@@ -85,7 +85,7 @@ public class Market {
         return marketFacade.isProductExist(productID, storeID);
     }
 
-    public String getProductsByCategory(int productId, String storeID) throws JsonProcessingException {
+    public Response<String> getProductsByCategory(int productId, String storeID) throws JsonProcessingException {
         return marketFacade.getProductsByCategory(productId, storeID);
     }
 
@@ -93,63 +93,63 @@ public class Market {
         return marketFacade.getProductCategory(productID, storeID);
     }
 
-    public void setProductID(Integer oldProductID, Integer newProductID, String storeID) {
-        marketFacade.setProductID(oldProductID, newProductID, storeID);
+    public Response<Integer> setProductID(Integer oldProductID, Integer newProductID, String storeID) {
+        return marketFacade.setProductID(oldProductID, newProductID, storeID);
     }
 
-    public Product getProduct(Integer productID, String storeID) {
+    public Response<Product> getProduct(Integer productID, String storeID) {
         return marketFacade.getProduct(productID, storeID);
     }
 
-    public void setProductName(Integer productID, String newName, String storeID) {
-        marketFacade.setProductName(productID, newName, storeID);
+    public Response<Integer> setProductName(Integer productID, String newName, String storeID) {
+        return marketFacade.setProductName(productID, newName, storeID);
     }
 
-    public void setProductDesc(Integer productID, String newDesc, String storeID) {
-        marketFacade.setProductDesc(productID, newDesc, storeID);
+    public Response<Integer> setProductDesc(Integer productID, String newDesc, String storeID) {
+        return marketFacade.setProductDesc(productID, newDesc, storeID);
     }
 
-    public void setPrice(Integer productID, int newPrice, String storeID) {
-        marketFacade.setPrice(productID, newPrice, storeID);
+    public Response<Integer> setPrice(Integer productID, int newPrice, String storeID) {
+        return marketFacade.setPrice(productID, newPrice, storeID);
     }
 
-    public void setQuantity(Integer productID, int newQuantity, String storeID) {
-        marketFacade.setQuantity(productID, newQuantity, storeID);
+    public Response<Integer> setQuantity(Integer productID, int newQuantity, String storeID) {
+        return marketFacade.setQuantity(productID, newQuantity, storeID);
     }
 
-    public void addQuantity(Integer productID, int valueToAdd, String storeID) {
-        marketFacade.addQuantity(productID, valueToAdd, storeID);
+    public Response<Integer> addQuantity(Integer productID, int valueToAdd, String storeID) {
+        return marketFacade.addQuantity(productID, valueToAdd, storeID);
     }
 
-    public int getQuantity(int productID, String storeID) throws Exception {
+    public Response<Integer> getQuantity(int productID, String storeID) throws Exception {
         return marketFacade.getQuantity(productID, storeID);
     }
 
-    public String getProductDescription(int productID, String storeID) throws Exception {
+    public Response<String> getProductDescription(int productID, String storeID) throws Exception {
         return marketFacade.getProductDescription(productID, storeID);
     }
 
-    public int getProductPrice(int productID, String storeID) throws Exception {
+    public Response<Integer> getProductPrice(int productID, String storeID) throws Exception {
         return marketFacade.getProductPrice(productID, storeID);
     }
 
-    public void setStoreIDToProduct(int productID, String storeID){
-        marketFacade.setStoreIDToProduct(productID ,storeID);
+    public Response<Integer> setStoreIDToProduct(int productID, String storeID){
+       return marketFacade.setStoreIDToProduct(productID ,storeID);
     }
 
-    public void getProductName(int productID, String storeID) {
-        marketFacade.getProductName(productID, storeID);
+    public Response<String> getProductName(int productID, String storeID) {
+        return marketFacade.getProductName(productID, storeID);
     }
 
-    public void setProductName(String storeID ,int productID ,String storeName) {
-        marketFacade.setProductName(storeID ,productID ,storeName);
+    public Response<Integer> setProductName(String storeID ,int productID ,String storeName) {
+        return marketFacade.setProductName(storeID ,productID ,storeName);
     }
 
     public Response<String> removeCategoryFromProduct(int productID ,String category, String storeID) {
         return marketFacade.removeCategoryFromProduct(productID, category, storeID);
     }
 
-    public void setStoreNameToProduct(int productID ,String storeName, String storeID) {
-        marketFacade.setStoreNameToProduct(productID,storeName, storeID);
+    public Response<Integer> setStoreNameToProduct(int productID ,String storeName, String storeID) {
+        return marketFacade.setStoreNameToProduct(productID,storeName, storeID);
     }
 }

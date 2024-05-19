@@ -7,7 +7,6 @@ import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
 import Domain.Users.Subscriber.Messages.Message;
-import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Store {
   
@@ -191,8 +191,8 @@ public class Store {
      * @param categories The list of categories to be set for the product.
      * @throws IllegalArgumentException if the provided productID is not valid.
      */
-    public void setProductCategory(int productID, ArrayList<String> categories) {
-        inventory.setProductCategory(productID, categories);
+    public Response<Integer> setProductCategory(int productID, ArrayList<String> categories) {
+        return inventory.setProductCategory(productID, categories);
     }
 
     /**
@@ -235,7 +235,7 @@ public class Store {
      * @return A JSON string representing the list of category names that include the given product ID.
      * @throws JsonProcessingException If there is an error during JSON processing.
      */
-    public synchronized String getProductsByCategory(int productId) throws JsonProcessingException {
+    public synchronized Response<String> getProductsByCategory(int productId) throws JsonProcessingException {
         return inventory.getProductsByCategory(productId);
     }
 
@@ -255,8 +255,8 @@ public class Store {
      * @param oldProductID The current ID of the product.
      * @param newProductID The new ID to set for the product.
      */
-    public void setProductID(Integer oldProductID, Integer newProductID) {
-        inventory.setProductID(oldProductID, newProductID);
+    public Response<Integer> setProductID(Integer oldProductID, Integer newProductID) {
+        return inventory.setProductID(oldProductID, newProductID);
     }
 
     /**
@@ -265,17 +265,18 @@ public class Store {
      * @param productID The ID of the product to retrieve.
      * @return The Product object corresponding to the given product ID.
      */
-    public Product getProduct(Integer productID) {
+    public Response<Product> getProduct(Integer productID) {
         return inventory.getProduct(productID);
     }
 
     /**
      * Sets the name of the product with the specified product ID.
+     *
      * @param productID The ID of the product.
-     * @param newName The new name to set for the product.
+     * @param newName   The new name to set for the product.
      */
-    public void setProductName(Integer productID, String newName) {
-        inventory.setProductName(productID, newName);
+    public Response<Integer> setProductName(Integer productID, String newName) {
+        return inventory.setProductName(productID, newName);
     }
 
     /**
@@ -283,8 +284,8 @@ public class Store {
      * @param productID The ID of the product.
      * @param newDesc The new description to set for the product.
      */
-    public void setProductDesc(Integer productID, String newDesc) {
-        inventory.setProductDesc(productID, newDesc);
+    public Response<Integer> setProductDesc(Integer productID, String newDesc) {
+        return inventory.setProductDesc(productID, newDesc);
     }
 
     /**
@@ -292,8 +293,8 @@ public class Store {
      * @param productID The ID of the product.
      * @param newPrice The new price to set for the product.
      */
-    public void setPrice(Integer productID, int newPrice) {
-        inventory.setPrice(productID, newPrice);
+    public Response<Integer> setPrice(Integer productID, int newPrice) {
+        return inventory.setPrice(productID, newPrice);
     }
 
     /**
@@ -301,8 +302,8 @@ public class Store {
      * @param productID The ID of the product.
      * @param newQuantity The new quantity to set for the product.
      */
-    public void setQuantity(Integer productID, int newQuantity) {
-        inventory.setQuantity(productID, newQuantity);
+    public Response<Integer> setQuantity(Integer productID, int newQuantity) {
+        return inventory.setQuantity(productID, newQuantity);
     }
 
     /**
@@ -310,58 +311,69 @@ public class Store {
      * @param productID The ID of the product.
      * @param valueToAdd The value to add to the quantity of the product.
      */
-    public void addQuantity(Integer productID, int valueToAdd) {
-        inventory.addQuantity(productID, valueToAdd);
+    public Response<Integer> addQuantity(Integer productID, int valueToAdd) {
+        return inventory.addQuantity(productID, valueToAdd);
     }
 
     /**
      * Retrieves the quantity of the product with the specified product ID.
+     *
      * @param productID The ID of the product.
      * @return The quantity of the product.
      * @throws Exception If the product does not exist.
      */
-    public int getQuantity(int productID) throws Exception {
+    public Response<Integer> getQuantity(int productID) throws Exception {
         return inventory.getQuantity(productID);
     }
 
     /**
      * Retrieves the description of the product with the specified product ID.
+     *
      * @param productID The ID of the product.
      * @return The description of the product.
      * @throws Exception If the product does not exist.
      */
-    public String getProductDescription(int productID) throws Exception {
+    public Response<String> getProductDescription(int productID) throws Exception {
         return inventory.getProductDescription(productID);
     }
 
     /**
      * Retrieves the price of the product with the specified product ID.
+     *
      * @param productID The ID of the product.
      * @return The price of the product.
      * @throws Exception If the product does not exist.
      */
-    public int getProductPrice(int productID) throws Exception {
+    public Response<Integer> getProductPrice(int productID) throws Exception {
         return inventory.getProductPrice(productID);
     }
 
-    public void setStoreIDToProduct(int productID, String storeID){
-        inventory.setStoreIDToProduct(productID ,storeID);
+    public Response<Integer> setStoreIDToProduct(int productID, String storeID){
+        return inventory.setStoreIDToProduct(productID ,storeID);
     }
 
-    public void getProductName(int productID) {
-        inventory.getProductName(productID);
+    public Response<String> getProductName(int productID) {
+        return inventory.getProductName(productID);
     }
 
-    public void setProductName(int productID ,String storeName) {
-        inventory.setProductName(productID ,storeName);
+    public Response<Integer> setProductName(int productID ,String storeName) {
+        return inventory.setProductName(productID ,storeName);
     }
 
     public Response<String> removeCategoryFromProduct(int productID ,String category) {
         return inventory.removeCategoryFromProduct(productID, category);
     }
 
-    public void setStoreNameToProduct(int productID ,String storeName) {
-        inventory.setStoreNameToProduct(productID,storeName);
+    public Response<Integer> setStoreNameToProduct(int productID ,String storeName) {
+        return inventory.setStoreNameToProduct(productID,storeName);
+    }
+
+    public ConcurrentHashMap<Integer, Product> getProductsList() {
+        return inventory.getProductsList();
+    }
+
+    public ConcurrentHashMap<String, ArrayList<Integer>> getCategories() {
+        return inventory.getCategories();
     }
 
 

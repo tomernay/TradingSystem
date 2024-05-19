@@ -35,5 +35,6 @@ public class Response<T> {
     public static <T> Response<T> error(String message, T data) {
         return new Response<>(false, message, data);
     }
+
 }
 

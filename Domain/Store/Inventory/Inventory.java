@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Utilities.Response;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Inventory {
@@ -51,12 +53,23 @@ public class Inventory {
      * If a category does not already exist in the map, it is created.
      *
      * @param product The product to add to the categories.
+     * @return A response indicating the success or failure of the operation.
      */
-    public void addProductToCategory(Product product) {
-        for (String category : product.getCategories()) {
-            categories.computeIfAbsent(category, k -> new ArrayList<>()).add(product.getProductID());
+    public synchronized Response<Boolean> addProductToCategory(Product product) {
+        try {
+            if (product.getCategories() != null && !product.getCategories().isEmpty()) {
+                for (String category : product.getCategories()) {
+                    categories.computeIfAbsent(category, k -> new ArrayList<>()).add(product.getProductID());
+                }
+                return new Response<>(true, "Product added to categories successfully", true);
+            } else {
+                return new Response<>(false, "Product categories are null or empty", false);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to add product to categories: " + e.getMessage(), false);
         }
     }
+
 
     /**
      * Removes a product from the inventory.
@@ -67,13 +80,12 @@ public class Inventory {
      * @return A Response object containing the result of the removal operation.
      *         - If successful, returns a success response with the product ID.
      *         - If the product does not exist, returns an error response with the product ID.
-     * @throws IllegalArgumentException if the provided productID is not valid.
      */
     public synchronized Response<Integer> removeProduct(int productID) {
         if (isProductExist(productID)) {
             productsList.remove(productID); // Remove from products list
             removeProductFromAllCategories(productID); // Remove from categories
-            return Response.success("The product removed successfully", productID);
+            return Response.success("The product has been removed successfully", productID);
         } else {
             return Response.error("The product does not exist in the system, the removal is cancelled", productID);
         }
@@ -86,14 +98,20 @@ public class Inventory {
      * @param categories The list of categories to be set for the product.
      * @throws IllegalArgumentException if the provided productID is not valid.
      */
-    public void setProductCategory(int productID, ArrayList<String> categories) {
+    public Response<Integer> setProductCategory(int productID, ArrayList<String> categories) {
         if (isProductExist(productID)) {
-            Product product = productsList.get(productID);
-            product.setCategories(categories);
+            if (categories != null) {
+                Product product = productsList.get(productID);
+                product.setCategories(categories);
+                return new Response<>(true, "Product category set successfully", productID);
+            } else {
+                return new Response<>(false, "Product's category can't be null", productID);
+            }
         } else {
-            throw new IllegalArgumentException("Product with ID " + productID + " does not exist.");
+            return new Response<>(false, "The product does not exist in the system", productID);
         }
     }
+
 
 
     /**
@@ -102,23 +120,53 @@ public class Inventory {
      * If a category becomes empty after the removal, the category is also removed from the map.
      *
      * @param productID The ID of the product to be removed from all categories.
-     * @throws IllegalArgumentException if the provided productID is not valid.
+     * @return Response object containing success status, message, and the product ID.
      */
-    public synchronized void removeProductFromAllCategories(int productID) {
-        for (String category : categories.keySet()) {
-            ArrayList<Integer> productList = categories.get(category);
+    public synchronized Response<Integer> removeProductFromAllCategories(int productID) {
+        boolean productRemoved = false;
+        boolean productExists = false;
+
+        // Create a temporary list to avoid ConcurrentModificationException
+        List<String> categoriesToRemove = new ArrayList<>();
+
+        for (Map.Entry<String, ArrayList<Integer>> entry : categories.entrySet()) {
+            String category = entry.getKey();
+            ArrayList<Integer> productList = entry.getValue();
+
             if (productList != null) { // Ensure the product list is not null
-                productList.remove(Integer.valueOf(productID)); // Remove the product ID from the list
-                // Remove the category if the product list becomes empty
+                if (productList.contains(productID)) {
+                    productExists = true;
+                }
+
+                boolean removed = productList.remove(Integer.valueOf(productID)); // Remove the product ID from the list
+                if (removed) {
+                    productRemoved = true;
+                }
+                // Schedule the category for removal if the product list becomes empty
                 if (productList.isEmpty()) {
-                    categories.remove(category);
+                    categoriesToRemove.add(category);
                 }
             }
         }
+
+        // Remove empty categories after iteration to avoid ConcurrentModificationException
+        for (String category : categoriesToRemove) {
+            categories.remove(category);
+        }
+
+        if (productRemoved) {
+            return new Response<>(true, "Product removed from all categories successfully", productID);
+        } else if (!productExists) {
+            return new Response<>(false, "Product does not exist in any category", productID);
+        } else {
+            return new Response<>(false, "Failed to remove product from categories", productID);
+        }
     }
 
+
+
     public Response<String> removeCategoryFromProduct(int productID ,String category) {
-        return getProduct(productID).removeCategory(category);
+        return getProduct(productID).getData().removeCategory(category);
     }
 
 
@@ -142,9 +190,16 @@ public class Inventory {
         return objectMapper.convertValue(product, ProductDTO.class);
     }
 
-    public boolean isProductExist(Integer productID){
-        return productsList.contains(productID);
+    /**
+     * Checks if the product with the specified ID exists in the products list.
+     *
+     * @param productID The ID of the product to check.
+     * @return true if the product exists, false otherwise.
+     */
+    public boolean isProductExist(Integer productID) {
+        return productsList.containsKey(productID);
     }
+
 
     /**
      * Retrieves the categories that contain the specified product ID.
@@ -153,18 +208,24 @@ public class Inventory {
      * The result is returned as a JSON string.
      *
      * @param productId The ID of the product to search for in the categories.
-     * @return A JSON string representing the list of category names that include the given product ID.
-     * @throws JsonProcessingException If there is an error during JSON processing.
+     * @return A Response object containing the JSON string representing the list of category names that include the given product ID.
      */
-    public synchronized String getProductsByCategory(int productId) throws JsonProcessingException {
-        ArrayList<String> relatedCategories = new ArrayList<>();
-        for(String category : categories.keySet()){
-            if(categories.get(category).contains(productId)){
+    public synchronized Response<String> getProductsByCategory(int productId) {
+        List<String> relatedCategories = new ArrayList<>();
+        for (String category : categories.keySet()) {
+            List<Integer> productList = categories.get(category);
+            if (productList != null && productList.contains(productId)) {
                 relatedCategories.add(category);
             }
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(relatedCategories);
+        String jsonString;
+        try {
+            jsonString = objectMapper.writeValueAsString(relatedCategories);
+            return new Response<>(true, "Successfully retrieved categories for product ID " + productId, jsonString);
+        } catch (JsonProcessingException e) {
+            return new Response<>(false, "Error processing JSON: " + e.getMessage());
+        }
     }
 
 
@@ -183,101 +244,299 @@ public class Inventory {
     }
 
 
-    public void setProductID(Integer oldProductID, Integer newProductID) {
+    public synchronized Response<Integer> setProductID(Integer oldProductID, Integer newProductID) {
+        // Check if the old product ID exists
+        if (!isProductExist(oldProductID)) {
+            return new Response<>(false, "Old product ID does not exist: " + oldProductID);
+        }
+        // Check if the new product ID is valid
+        if (newProductID == null || newProductID <= 0) {
+            return new Response<>(false, "Invalid new product ID: " + newProductID);
+        }
+        // Check if the new product ID already exists
+        if (isProductExist(newProductID)) {
+            return new Response<>(false, "New product ID already exists: " + newProductID);
+        }
+        // Retrieve the product with the old ID
         Product product = productsList.get(oldProductID);
-        productsList.remove(oldProductID);
-        removeProductFromAllCategories(oldProductID);
+        if (product == null) {
+            return new Response<>(false, "Product not found with old product ID: " + oldProductID);
+        }
 
+        // Remove the old product ID from all categories
+        Response<Integer> removeResponse = removeProductFromAllCategories(oldProductID);
+        if (!removeResponse.isSuccess()) {
+            return new Response<>(false, "Failed to remove product from categories: " + removeResponse.getMessage());
+        }
+
+        // Set the new product ID
         product.setProductID(newProductID);
+
+        // Add the product to the products list with the new ID
+        productsList.remove(oldProductID);
         productsList.put(newProductID, product);
-        addProductToCategory(product);
+
+        // Add the product to the categories
+        Response<Boolean> addResponse = addProductToCategory(product);
+        if (!addResponse.isSuccess()) {
+            return new Response<>(false, "Failed to add product to categories: " + addResponse.getMessage());
+        }
+
+        return new Response<>(true, "Product ID updated successfully from " + oldProductID + " to " + newProductID);
     }
 
-    public Product getProduct(Integer productID) {
-        return productsList.get(productID);
-    }
 
-
-    public void setProductName(Integer productID, String newName) {
-        if(isProductExist(productID)){
-            getProduct(productID).setName(newName);
+    public synchronized Response<Product> getProduct(Integer productID) {
+        if (productID == null || productID <= 0) {
+            return new Response<>(false, "Invalid product ID: " + productID);
+        }
+        Product product = productsList.get(productID);
+        if (product != null) {
+            return new Response<>(true, "Product retrieved successfully", product);
+        } else {
+            return new Response<>(false, "Product not found with ID: " + productID);
         }
     }
 
-    public void setProductDesc(Integer productID, String newDesc) {
-        if(isProductExist(productID)){
-            getProduct(productID).setDesc(newDesc);
+
+
+    public synchronized Response<Integer> setProductName(Integer productID, String newName) {
+        if (productID == null || productID <= 0) {
+            return new Response<>(false, "Invalid product ID: " + productID);
+        }
+
+        if (newName == null || newName.isEmpty()) {
+            return new Response<>(false, "New product name is null or empty");
+        }
+
+        if (!isProductExist(productID)) {
+            return new Response<>(false, "Product does not exist with ID: " + productID);
+        }
+
+        Product product = getProduct(productID).getData();
+        if (product != null) {
+            product.setName(newName);
+            return new Response<>(true, "Product name updated successfully");
+        } else {
+            return new Response<>(false, "Failed to update product name");
         }
     }
 
-    public void setPrice(Integer productID, int newPrice) {
-        if(isProductExist(productID)){
-            getProduct(productID).setPrice(newPrice);
+
+    public synchronized Response<Integer> setProductDesc(Integer productID, String newDesc) {
+        if (productID == null || productID <= 0) {
+            return new Response<>(false, "Invalid product ID: " + productID);
+        }
+
+        if (newDesc == null) {
+            return new Response<>(false, "New product description is null");
+        }
+
+        if (!isProductExist(productID)) {
+            return new Response<>(false, "Product does not exist with ID: " + productID);
+        }
+
+        Product product = getProduct(productID).getData();
+        if (product != null) {
+            product.setDesc(newDesc);
+            return new Response<>(true, "Product description updated successfully");
+        } else {
+            return new Response<>(false, "Failed to update product description");
         }
     }
 
-    public void setQuantity(Integer productID, int newQuantity) {
-        if(isProductExist(productID)){
-            getProduct(productID).setQuantity(newQuantity);
+
+    public synchronized Response<Integer> setPrice(Integer productID, int newPrice) {
+        if (productID == null || productID <= 0) {
+            return new Response<>(false, "Invalid product ID: " + productID);
+        }
+
+        if (newPrice <= 0) {
+            return new Response<>(false, "Invalid new price: " + newPrice);
+        }
+
+        if (!isProductExist(productID)) {
+            return new Response<>(false, "Product does not exist with ID: " + productID);
+        }
+
+        Product product = getProduct(productID).getData();
+        if (product != null) {
+            product.setPrice(newPrice);
+            return new Response<>(true, "Product price updated successfully");
+        } else {
+            return new Response<>(false, "Failed to update product price");
         }
     }
 
-    public void addQuantity(Integer productID, int valueToAdd) {
-        if(isProductExist(productID)){
-            getProduct(productID).addQuantity(valueToAdd);
+
+    public synchronized Response<Integer> setQuantity(Integer productID, int newQuantity) {
+        if (productID == null || productID <= 0) {
+            return new Response<>(false, "Invalid product ID: " + productID);
+        }
+
+        if (newQuantity < 0) {
+            return new Response<>(false, "Invalid new quantity: " + newQuantity);
+        }
+
+        if (!isProductExist(productID)) {
+            return new Response<>(false, "Product does not exist with ID: " + productID);
+        }
+
+        Product product = getProduct(productID).getData();
+        if (product != null) {
+            product.setQuantity(newQuantity);
+            return new Response<>(true, "Product quantity updated successfully");
+        } else {
+            return new Response<>(false, "Failed to update product quantity");
         }
     }
 
-    public int getQuantity(int productID) throws Exception{
-        if(isProductExist(productID)){
-            return getProduct(productID).getQuantity();
+
+    public synchronized Response<Integer> addQuantity(Integer productID, int valueToAdd) {
+        if (productID == null || productID <= 0) {
+            return new Response<>(false, "Invalid product ID: " + productID);
         }
-        throw new Exception("The product doesn't exist");
-    }
 
-    public String getStoreID(int productID) throws Exception {
-        if (isProductExist(productID)) {
-            return getProduct(productID).getStoreID();
+        if (valueToAdd <= 0) {
+            return new Response<>(false, "Invalid quantity value to add: " + valueToAdd);
         }
-        throw new Exception("The product doesn't exist.");
-    }
 
-    public String getStoreName(int productID) throws Exception {
-        if (isProductExist(productID)) {
-            return getProduct(productID).getStoreName();
+        if (!isProductExist(productID)) {
+            return new Response<>(false, "Product does not exist with ID: " + productID);
         }
-        throw new Exception("The product doesn't exist.");
-    }
 
-    public String getProductDescription(int productID) throws Exception {
-        if (isProductExist(productID)) {
-            return getProduct(productID).getDesc();
+        Product product = getProduct(productID).getData();
+        if (product != null) {
+            product.addQuantity(valueToAdd);
+            return new Response<>(true, "Quantity added to product successfully");
+        } else {
+            return new Response<>(false, "Failed to add quantity to product");
         }
-        throw new Exception("The product doesn't exist.");
     }
 
-    public int getProductPrice(int productID) throws Exception {
-        if (isProductExist(productID)) {
-            return getProduct(productID).getPrice();
+
+    public synchronized Response<Integer> getQuantity(int productID) {
+        try {
+            if (isProductExist(productID)) {
+                int quantity = getProduct(productID).getData().getQuantity();
+                return new Response<>(true, "Quantity retrieved successfully", quantity);
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to retrieve quantity: " + e.getMessage());
         }
-        throw new Exception("The product doesn't exist.");
     }
 
-    public void setStoreIDToProduct(int productID, String storeID){
-        getProduct(productID).setStoreID(storeID);
+
+    public synchronized Response<String> getStoreID(int productID) {
+        try {
+            if (isProductExist(productID)) {
+                String storeID = getProduct(productID).getData().getStoreID();
+                return new Response<>(true, "Store ID retrieved successfully", storeID);
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to retrieve store ID: " + e.getMessage());
+        }
     }
 
-    public void getProductName(int productID) {
-        getProduct(productID).getName();
+
+    public synchronized Response<String> getStoreName(int productID) {
+        try {
+            if (isProductExist(productID)) {
+                String storeName = getProduct(productID).getData().getStoreName();
+                return new Response<>(true, "Store name retrieved successfully", storeName);
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to retrieve store name: " + e.getMessage());
+        }
     }
 
-    public void setProductName(int productID ,String storeName) {
-        getProduct(productID).setName(storeName);
+
+    public synchronized Response<String> getProductDescription(int productID) {
+        try {
+            if (isProductExist(productID)) {
+                String description = getProduct(productID).getData().getDesc();
+                return new Response<>(true, "Product description retrieved successfully", description);
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to retrieve product description: " + e.getMessage());
+        }
     }
 
-    public void setStoreNameToProduct(int productID ,String storeName) {
-        getProduct(productID).setStoreName(storeName);
+
+    public synchronized Response<Integer> getProductPrice(int productID) {
+        try {
+            if (isProductExist(productID)) {
+                int price = getProduct(productID).getData().getPrice();
+                return new Response<>(true, "Product price retrieved successfully", price);
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to retrieve product price: " + e.getMessage());
+        }
     }
+
+
+    public synchronized Response<Integer> setStoreIDToProduct(int productID, String storeID) {
+        try {
+            if (isProductExist(productID)) {
+                getProduct(productID).getData().setStoreID(storeID);
+                return new Response<>(true, "Store ID set to product successfully");
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to set store ID to product: " + e.getMessage());
+        }
+    }
+
+    public synchronized Response<String> getProductName(int productID) {
+        try {
+            if (isProductExist(productID)) {
+                String productName = getProduct(productID).getData().getName();
+                return new Response<>(true, "Product name retrieved successfully", productName);
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to retrieve product name: " + e.getMessage());
+        }
+    }
+
+    public synchronized Response<Integer> setProductName(int productID, String productName) {
+        try {
+            if (isProductExist(productID)) {
+                getProduct(productID).getData().setName(productName);
+                return new Response<>(true, "Product name set successfully");
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to set product name: " + e.getMessage());
+        }
+    }
+
+    public synchronized Response<Integer> setStoreNameToProduct(int productID, String storeName) {
+        try {
+            if (isProductExist(productID)) {
+                getProduct(productID).getData().setStoreName(storeName);
+                return new Response<>(true, "Store name set to product successfully");
+            } else {
+                return new Response<>(false, "Product does not exist with ID: " + productID);
+            }
+        } catch (Exception e) {
+            return new Response<>(false, "Failed to set store name to product: " + e.getMessage());
+        }
+    }
+
 
 
 

@@ -158,9 +158,6 @@ public class Product {
 
     // Setters
     public void setStoreID(String _storeID) {
-        if (_storeID == null || _storeID.isEmpty()) {
-            throw new IllegalArgumentException("Store ID cannot be null or empty");
-        }
         this.storeID = _storeID;
     }
 
@@ -169,9 +166,6 @@ public class Product {
     }
 
     public void setProductID(int productID) {
-        if (productID <= 0) {
-            throw new IllegalArgumentException("Product ID must be greater than 0");
-        }
         this.productID = productID;
     }
 
@@ -185,15 +179,11 @@ public class Product {
     }
 
     public void setPrice(int _price) {
-        if (_price <= 0) {
-            throw new IllegalArgumentException("Price must be greater than 0");
-        }
         this.price = _price;
     }
 
     /**
      * Sets the categories for the product.
-     *
      * @param _categories The list of categories to be set for the product.
      */
     public void setCategories(ArrayList<String> _categories) {
@@ -202,9 +192,8 @@ public class Product {
 
     /**
      * Removes a category from the product's category list.
-     *
      * @param category The category to be removed.
-     * @return true if the category was successfully removed, false otherwise.
+     * @return Response true if the category was successfully removed,Response false otherwise.
      */
     public Response<String> removeCategory(String category) {
         if(categories.contains(category)){
@@ -220,12 +209,8 @@ public class Product {
      * Sets the quantity to the specified value.
      *
      * @param newQuantity the new quantity to set
-     * @throws IllegalArgumentException if the new quantity is less than 0
      */
     public synchronized void setQuantity(int newQuantity) {
-        if (newQuantity < 0) {
-            throw new IllegalArgumentException("Quantity must be non-negative");
-        }
         this.quantity = newQuantity;
     }
 
@@ -233,9 +218,7 @@ public class Product {
     /**
      * Adds the specified amount to the current quantity.
      *
-     * @param amountToAdd the amount to add to the current quantity
-     * @throws IllegalArgumentException if the resulting quantity is less than 0
-     */
+     * @param amountToAdd the amount to add to the current quantity*/
     public synchronized void addQuantity(int amountToAdd) {
         setQuantity(this.quantity + amountToAdd);
     }
