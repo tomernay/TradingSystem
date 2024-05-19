@@ -1,9 +1,9 @@
-package Tests;
+package src.Tests;
 
-import Domain.Market.Market;
-import Domain.Store.Store;
-import Domain.Users.Subscriber.Subscriber;
-import Service.Service;
+import src.main.java.Domain.Market.Market;
+import src.main.java.Domain.Store.Store;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
+import src.main.java.Service.Service;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class PayByBid {
         service.getUserService().register("yair2","by2");
         buyer=service.getUserService().getUser("yair2");
         service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
-        store=service.getStoreService().getStore("1");
+        store=service.getStoreService().getStore("0");
     }
 
     @Test

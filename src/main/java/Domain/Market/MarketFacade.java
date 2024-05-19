@@ -1,12 +1,12 @@
-package Domain.Market;
+package src.main.java.Domain.Market;
 
-import Domain.Repo.OrderRepository;
-import Domain.Repo.StoreRepository;
-import Domain.Repo.UserRepository;
-import Domain.Store.StoreData.Permissions;
-import Domain.Users.StateOfSubscriber.SubscriberState;
-import Domain.Users.Subscriber.Messages.Message;
-import Utilities.Response;
+import src.main.java.Domain.Repo.OrderRepository;
+import src.main.java.Domain.Repo.StoreRepository;
+import src.main.java.Domain.Repo.UserRepository;
+import src.main.java.Domain.Store.Store;
+import src.main.java.Domain.Users.Subscriber.Messages.Message;
+import src.main.java.Domain.Users.User;
+import src.main.java.Utilities.Response;
 
 
 import java.util.List;
@@ -21,6 +21,14 @@ public class MarketFacade {
         this.userRepository = new UserRepository();
         this.storeRepository = new StoreRepository();
         this.orderRepository = new OrderRepository();
+    }
+
+    public Response<String> loginAsGuest(User user){
+        return userRepository.loginAsGuest(user);
+    }
+
+    public Response<String> logoutAsGuest(User user) {
+        return userRepository.logoutAsGuest(user);
     }
 
 
