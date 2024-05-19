@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="cn.dev33.sa.token.jwt" type="repository">
+    <properties maven-id="cn.dev33:sa-token-jwt:1.37.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/cn/dev33/sa-token-jwt/1.37.0/sa-token-jwt-1.37.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/cn/dev33/sa-token-core/1.37.0/sa-token-core-1.37.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/cn/hutool/hutool-jwt/5.8.20/hutool-jwt-5.8.20.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/cn/hutool/hutool-json/5.8.20/hutool-json-5.8.20.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/cn/hutool/hutool-core/5.8.20/hutool-core-5.8.20.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/cn/hutool/hutool-crypto/5.8.20/hutool-crypto-5.8.20.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

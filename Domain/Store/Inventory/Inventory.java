@@ -11,6 +11,8 @@ public class Inventory {
         this.productsQuantityMap = new HashMap<>();
     }
 
+
+
     // Method to add a product to the inventory
     public void addProduct(Product product, int quantity) {
         productsQuantityMap.put(product, quantity);

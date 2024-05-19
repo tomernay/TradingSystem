@@ -1,9 +1,12 @@
 package Service;
 
+
+import DataBase.PublicPay.PublicPayDTO;
 import Domain.Externals.Payment.DefaultPay;
 import Domain.Externals.Security.Security;
 import Domain.Market.Market;
 import Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
+import Domain.Store.PurchasePolicy.PaymentTypes.PublicPay;
 import Domain.Store.Store;
 import Domain.Users.StateOfSubscriber.StoreCreator;
 import Domain.Users.StateOfSubscriber.StoreOwner;
@@ -71,7 +74,7 @@ public class PaymentService {
     }
 
     public void alternativePay(String user,String token,HashMap<Integer,Integer> products, Store store, Subscriber subscriber,double fee){
-        if(Security.isValidJWT(user,token) ) {
+        if(Security.isValidJWT(token,user) ) {
             Alternative_Offer payment=new Alternative_Offer(fee,products, store,subscriber);
             subscriber.addMessage(payment);
         }
@@ -79,5 +82,32 @@ public class PaymentService {
     }
 
 
+    public boolean createPublicPay(String user,String token,HashMap<String,Integer> products, Store store,double fee,int time){
+        if(Security.isValidJWT(token,user) ) {
+            PublicPay publicPay=new PublicPay(fee,time,store,"111111111",products);
+            return  true;
+        }
+        return false;
+    }
 
+    public boolean counterPublicPay(String user, String token, PublicPay publicPay){
+        if(Security.isValidJWT(token,user) ) {
+            try {
+                System.out.println(publicPay.getDate().getTime()-System.currentTimeMillis());
+
+                if(publicPay.getDate().getTime() >System.currentTimeMillis())
+
+                    PublicPayDTO.addPublicPayment(publicPay);
+                else{
+                    System.out.println("times up");
+                }
+
+                return  true;
+            } catch (Exception e){
+
+            }
+
+        }
+        return false;
+    }
 }
