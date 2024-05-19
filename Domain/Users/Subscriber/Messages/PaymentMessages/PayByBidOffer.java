@@ -38,6 +38,7 @@ public class PayByBidOffer extends Message {
              }
              PaymentAdapter paymentAdapter=new DefaultPay(user.getUsername());
              paymentAdapter.pay(user.getCredit(),store,fee);
+             user.addMessage(new NormalMessage("payment was successful"));
          }
          else{
              store.removePayByBid(user.getUsername());
