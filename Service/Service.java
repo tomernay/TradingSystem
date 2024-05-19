@@ -14,7 +14,7 @@ public class Service {
         market=new Market();
         userService=new UserService(market);
         paymentService=new PaymentService(market);
-          storeService=new StoreService(market);
+        storeService=new StoreService(market);
     }
 
     public PaymentService getPaymentService() {
@@ -88,4 +88,7 @@ public class Service {
     public Response<String> messageResponse(String subscriberID, boolean answer) {
         return userService.messageResponse(subscriberID, answer);
     }
+
+
+
 }
