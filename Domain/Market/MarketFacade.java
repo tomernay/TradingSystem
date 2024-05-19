@@ -3,10 +3,16 @@ package Domain.Market;
 import Domain.Repo.OrderRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
+import Domain.Store.Inventory.Inventory;
+import Domain.Store.Inventory.Product;
+import Domain.Store.Inventory.ProductDTO;
+import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 import Utilities.Response;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MarketFacade {
@@ -61,5 +67,89 @@ public class MarketFacade {
 
     public StoreRepository getStoreRepository() {
         return storeRepository;
+    }
+
+    public Store getStore(String StoreID){
+        return storeRepository.getStore(StoreID);
+    }
+
+    public void setInventoryToStore(Inventory inventory, String storeID){
+        storeRepository.setInventoryToStore(inventory, storeID);
+    }
+
+    public Inventory getInventory(String storeID){
+        return storeRepository.getInventory(storeID);
+    }
+
+    public Response<Integer> addNewProduct(Product.Builder builder, Integer productID, String storeID){
+        return storeRepository.addNewProduct(builder, productID, storeID);
+    }
+
+    public Response<Integer> removeProduct(int productID, String storeID) {
+        return storeRepository.removeProduct(productID, storeID);
+    }
+
+    public void setProductCategory(int productID, ArrayList<String> categories, String storeID) {
+        storeRepository.setProductCategory(productID, categories, storeID);
+    }
+
+    public void removeProductFromAllCategories(int productID, String storeID) {
+        storeRepository.removeProductFromAllCategories(productID, storeID);
+    }
+
+    public ProductDTO getProductInfo(Integer productID, String storeID) {
+        return storeRepository.getProductInfo(productID, storeID);
+    }
+
+    public boolean isProductExist(Integer productID, String storeID) {
+        return storeRepository.isProductExist(productID, storeID);
+    }
+
+    public String getProductsByCategory(int productId, String storeID) throws JsonProcessingException {
+        return storeRepository.getProductsByCategory(productId, storeID);
+    }
+
+    public synchronized ProductDTO getProductCategory(int productID, String storeID) {
+        return storeRepository.getProductCategory(productID, storeID);
+    }
+
+    public void setProductID(Integer oldProductID, Integer newProductID, String storeID) {
+        storeRepository.setProductID(oldProductID, newProductID, storeID);
+    }
+
+    public Product getProduct(Integer productID, String storeID) {
+        return storeRepository.getProduct(productID, storeID);
+    }
+
+    public void setProductName(Integer productID, String newName, String storeID) {
+        storeRepository.setProductName(productID, newName, storeID);
+    }
+
+    public void setProductDesc(Integer productID, String newDesc, String storeID) {
+        storeRepository.setProductDesc(productID, newDesc, storeID);
+    }
+
+    public void setPrice(Integer productID, int newPrice, String storeID) {
+        storeRepository.setPrice(productID, newPrice, storeID);
+    }
+
+    public void setQuantity(Integer productID, int newQuantity, String storeID) {
+        storeRepository.setQuantity(productID, newQuantity, storeID);
+    }
+
+    public void addQuantity(Integer productID, int valueToAdd, String storeID) {
+        storeRepository.addQuantity(productID, valueToAdd, storeID);
+    }
+
+    public int getQuantity(int productID, String storeID) throws Exception {
+        return storeRepository.getQuantity(productID, storeID);
+    }
+
+    public String getProductDescription(int productID, String storeID) throws Exception {
+        return storeRepository.getProductDescription(productID, storeID);
+    }
+
+    public int getProductPrice(int productID, String storeID) throws Exception {
+        return storeRepository.getProductPrice(productID, storeID);
     }
 }

@@ -64,7 +64,7 @@ public class Store {
         return inventory;
     }
 
-    public void setInventory(Inventory inventory) {
+    public void setInventoryToStore(Inventory inventory) {
         this.inventory = inventory;
     }
 
@@ -214,7 +214,7 @@ public class Store {
      * @throws IllegalArgumentException If the provided product ID is null or if the product does not exist.
      */
     public ProductDTO getProductInfo(Integer productID) {
-        return inventory.getProductINFO(productID);
+        return inventory.getProductInfo(productID);
     }
 
     /**

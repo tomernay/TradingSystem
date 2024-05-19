@@ -125,7 +125,7 @@ public class Inventory {
      * @return A DTO representing the product information.
      * @throws IllegalArgumentException If the provided product ID is null or if the product does not exist.
      */
-    public ProductDTO getProductINFO(Integer productID) {
+    public ProductDTO getProductInfo(Integer productID) {
         if (productID == null) {
             throw new IllegalArgumentException("Product ID cannot be null.");
         }
