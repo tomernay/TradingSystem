@@ -117,6 +117,10 @@ public class Inventory {
         }
     }
 
+    public Response<String> removeCategoryFromProduct(int productID ,String category) {
+        return getProduct(productID).removeCategory(category);
+    }
+
 
     /**
      * Retrieves product information in the form of a DTO (Data Transfer Object) given a product ID.
@@ -258,6 +262,23 @@ public class Inventory {
         }
         throw new Exception("The product doesn't exist.");
     }
+
+    public void setStoreIDToProduct(int productID, String storeID){
+        getProduct(productID).setStoreID(storeID);
+    }
+
+    public void getProductName(int productID) {
+        getProduct(productID).getName();
+    }
+
+    public void setProductName(int productID ,String storeName) {
+        getProduct(productID).setName(storeName);
+    }
+
+    public void setStoreNameToProduct(int productID ,String storeName) {
+        getProduct(productID).setStoreName(storeName);
+    }
+
 
 
 

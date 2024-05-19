@@ -152,4 +152,27 @@ public class MarketFacade {
     public int getProductPrice(int productID, String storeID) throws Exception {
         return storeRepository.getProductPrice(productID, storeID);
     }
+
+    public void setStoreIDToProduct(int productID, String storeID){
+        storeRepository.setStoreIDToProduct(productID ,storeID);
+    }
+
+    public void getProductName(int productID, String storeID) {
+        storeRepository.getProductName(productID, storeID);
+    }
+
+    public void setProductName(String storeID ,int productID ,String storeName) {
+        storeRepository.setProductName(storeID ,productID ,storeName);
+    }
+
+    public Response<String> removeCategoryFromProduct(int productID ,String category, String storeID) {
+        return storeRepository.removeCategoryFromProduct(productID, category, storeID);
+    }
+
+    public void setStoreNameToProduct(int productID ,String storeName, String storeID) {
+        storeRepository.setStoreNameToProduct(productID,storeName, storeID);
+    }
+
+
+
 }

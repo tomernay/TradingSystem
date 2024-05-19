@@ -1,4 +1,5 @@
 package Domain.Store.Inventory;
+import Utilities.Response;
 import cn.hutool.json.ObjectMapper;
 import java.util.ArrayList;
 
@@ -205,8 +206,14 @@ public class Product {
      * @param category The category to be removed.
      * @return true if the category was successfully removed, false otherwise.
      */
-    public boolean removeCategory(String category) {
-        return categories.remove(category);
+    public Response<String> removeCategory(String category) {
+        if(categories.contains(category)){
+            categories.remove(category);
+            return new Response<>(true, "Category has been successfully removed", category);
+        }
+        else {
+            return new Response<>(false, "Category doesn't exist", category);
+        }
     }
 
     /**

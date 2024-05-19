@@ -71,8 +71,13 @@ public class StoreRepository {
         return stores.get(StoreID);
     }
 
-    public void setInventoryToStore(Inventory inventory, String storeID){
-        getStore(storeID).setInventoryToStore(inventory);
+    public Response<String> setInventoryToStore(Inventory inventory, String storeID){
+        if(getStore(storeID) != null){
+            return getStore(storeID).setInventoryToStore(inventory);
+        }
+        else {
+            return new Response<>(false, "The store doesn't exist", "");
+        }
     }
 
     public Inventory getInventory(String storeID){
@@ -150,6 +155,26 @@ public class StoreRepository {
 
     public int getProductPrice(int productID, String storeID) throws Exception {
         return getStore(storeID).getProductPrice(productID);
+    }
+
+    public void setStoreIDToProduct(int productID, String storeID){
+        getStore(storeID).setStoreIDToProduct(productID ,storeID);
+    }
+
+    public void getProductName(int productID, String storeID) {
+        getStore(storeID).getProductName(productID);
+    }
+
+    public void setProductName(String storeID ,int productID ,String storeName) {
+        getStore(storeID).setProductName(productID ,storeName);
+    }
+
+    public Response<String> removeCategoryFromProduct(int productID ,String category, String storeID) {
+        return getStore(storeID).removeCategoryFromProduct(productID, category);
+    }
+
+    public void setStoreNameToProduct(int productID ,String storeName, String storeID) {
+        getStore(storeID).setStoreNameToProduct(productID,storeName);
     }
 
 

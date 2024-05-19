@@ -64,8 +64,9 @@ public class Store {
         return inventory;
     }
 
-    public void setInventoryToStore(Inventory inventory) {
+    public Response<String> setInventoryToStore(Inventory inventory) {
         this.inventory = inventory;
+        return new Response<>(true, "", "" );
     }
 
     public boolean isStoreOwner(String currentUsername) {
@@ -341,6 +342,26 @@ public class Store {
      */
     public int getProductPrice(int productID) throws Exception {
         return inventory.getProductPrice(productID);
+    }
+
+    public void setStoreIDToProduct(int productID, String storeID){
+        inventory.setStoreIDToProduct(productID ,storeID);
+    }
+
+    public void getProductName(int productID) {
+        inventory.getProductName(productID);
+    }
+
+    public void setProductName(int productID ,String storeName) {
+        inventory.setProductName(productID ,storeName);
+    }
+
+    public Response<String> removeCategoryFromProduct(int productID ,String category) {
+        return inventory.removeCategoryFromProduct(productID, category);
+    }
+
+    public void setStoreNameToProduct(int productID ,String storeName) {
+        inventory.setStoreNameToProduct(productID,storeName);
     }
 
 

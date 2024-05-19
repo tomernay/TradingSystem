@@ -132,4 +132,24 @@ public class Market {
     public int getProductPrice(int productID, String storeID) throws Exception {
         return marketFacade.getProductPrice(productID, storeID);
     }
+
+    public void setStoreIDToProduct(int productID, String storeID){
+        marketFacade.setStoreIDToProduct(productID ,storeID);
+    }
+
+    public void getProductName(int productID, String storeID) {
+        marketFacade.getProductName(productID, storeID);
+    }
+
+    public void setProductName(String storeID ,int productID ,String storeName) {
+        marketFacade.setProductName(storeID ,productID ,storeName);
+    }
+
+    public Response<String> removeCategoryFromProduct(int productID ,String category, String storeID) {
+        return marketFacade.removeCategoryFromProduct(productID, category, storeID);
+    }
+
+    public void setStoreNameToProduct(int productID ,String storeName, String storeID) {
+        marketFacade.setStoreNameToProduct(productID,storeName, storeID);
+    }
 }
