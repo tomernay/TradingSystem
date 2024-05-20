@@ -2,13 +2,17 @@ package src.main.java.Service;
 
 
 
+import src.main.java.Domain.Externals.Security.Security;
 import src.main.java.Domain.Market.Market;
+import src.main.java.Domain.Store.StoreData.Permissions;
+import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
 
 
 import java.util.List;
+import java.util.Map;
 
 public class UserService {
     private Market market;
@@ -86,5 +90,23 @@ public class UserService {
 
     public boolean userExists(String subscriberUsername) {
         return market.getMarketFacade().getUserRepository().isUserExist(subscriberUsername);
+    }
+
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token){
+        if(Security.isValidJWT(token,userName)) {
+            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+                return market.requestEmployeesStatus(storeID);
+            }
+        }
+        return Response.error("invalid token", null);
+    }
+
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token){
+        if(Security.isValidJWT(token,userName)) {
+            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+                return market.requestManagersPermissions(storeID);
+            }
+        }
+        return Response.error("invalid token", null);
     }
 }
