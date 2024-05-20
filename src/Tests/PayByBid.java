@@ -7,6 +7,7 @@ import src.main.java.Service.Service;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import src.main.java.Utilities.Response;
 
 import java.util.HashMap;
 
@@ -28,12 +29,12 @@ public class PayByBid {
 
     @Test
     public void payByBidEmptyProducts(){
-      boolean result=  service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
-      Assert.assertFalse(result);
+      Response<String> result=  service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
+      Assert.assertFalse(result.isSuccess());
     }
     @Test
     public void payByBidProducts(){
-        boolean result=  service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
-        Assert.assertFalse(result);
+        Response<String> result=  service.getPaymentService().sendPayByBid(subscriber.getToken(),store,buyer,50,new HashMap<Integer,Integer>());
+        Assert.assertFalse(result.isSuccess());
     }
 }

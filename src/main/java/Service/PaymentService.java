@@ -2,6 +2,7 @@ package src.main.java.Service;
 
 import src.main.java.Domain.Externals.Payment.DefaultPay;
 import src.main.java.Domain.Externals.Security.Security;
+
 import src.main.java.Domain.Market.Market;
 import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
 import src.main.java.Domain.Store.Store;
@@ -9,6 +10,7 @@ import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
 import src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages.PayByBidOffer;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
+import src.main.java.Utilities.Response;
 
 import java.util.HashMap;
 
@@ -31,8 +33,8 @@ public class PaymentService {
      * @param fee
      * @param products
      */
-    public boolean sendPayByBid(String token,Store s,  Subscriber user, double fee, HashMap<Integer,Integer> products){
-        if(Security.isValidJWT(token, user.getUsername()) ){
+    public Response<String> sendPayByBid(String token, Store s, Subscriber user, double fee, HashMap<Integer,Integer> products){
+      /*  if(Security.isValidJWT(token, user.getUsername()) ){
               if(!products.isEmpty()) {
                   for (SubscriberState subscriberState : s.getSubscribers().values()) {
                       if (s.isStoreCreator(subscriberState.getSubscriberUsername()) || s.isStoreOwner(subscriberState.getSubscriberUsername())) {
@@ -47,9 +49,9 @@ public class PaymentService {
         }
         else {
             return false;
-        }
-
-
+        }*/
+        //TODO: implement
+        return null;
     }
 
     /**

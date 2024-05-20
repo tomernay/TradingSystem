@@ -36,5 +36,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="google.firebase.admin" level="project" />
+    <orderEntry type="library" name="apache.logging.log4j.1.2.api" level="project" />
   </component>
 </module>

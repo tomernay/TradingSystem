@@ -1,13 +1,15 @@
-package Domain.Market;
+package src.main.java.Domain.Market;
 
-import Domain.Users.Subscriber.Subscriber;
-import Domain.Users.User;
-import Utilities.Response;
+
+import src.main.java.Domain.Market.MarketFacade;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
+import src.main.java.Domain.Users.User;
+import src.main.java.Utilities.Response;
 
 import java.util.List;
 
 public class Market {
-    private  MarketFacade marketFacade = new MarketFacade();
+    private MarketFacade marketFacade = new MarketFacade();
 
     public Response<String> loginAsSubscriber(Subscriber subscriber){
         return marketFacade.loginAsSubscriber(subscriber);

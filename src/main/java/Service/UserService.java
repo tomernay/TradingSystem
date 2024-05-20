@@ -1,10 +1,11 @@
-package Service;
+package src.main.java.Service;
 
-import Domain.Market.Market;
-import Domain.Repo.UserRepository;
-import Domain.Users.Subscriber.Subscriber;
-import Domain.Users.User;
-import Utilities.Response;
+
+
+import src.main.java.Domain.Market.Market;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
+import src.main.java.Domain.Users.User;
+import src.main.java.Utilities.Response;
 
 
 import java.util.List;
