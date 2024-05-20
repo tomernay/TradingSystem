@@ -371,3 +371,5 @@
 23:39:09.046 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: Dor
 23:39:15.296 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair is trying to create a store with name: yairStore
 23:39:15.404 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair is trying to create a store with name: yairStore
+23:58:08.648 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:59:34.799 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
