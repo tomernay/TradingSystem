@@ -37,6 +37,8 @@ public class Store {
         payByBids=new HashMap<>();
     }
 
+    public  Store(){}
+
     // Getter and setter for id
     public String getId() {
         return storeID;
@@ -64,6 +66,8 @@ public class Store {
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
+
+
 
     public boolean isStoreOwner(String currentUsername) {
         if (subscribers.get(currentUsername) == null) {

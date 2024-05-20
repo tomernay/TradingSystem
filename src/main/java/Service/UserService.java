@@ -1,16 +1,13 @@
-package src.main.java.Service;
+package Service;
 
-import src.main.java.Domain.Externals.Security.Security;
-import src.main.java.Domain.Market.Market;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Domain.Users.User;
-import src.main.java.Utilities.Response;
+import Domain.Market.Market;
+import Domain.Repo.UserRepository;
+import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
+import Utilities.Response;
 
 
 import java.util.List;
-import java.util.Map;
 
 public class UserService {
     private Market market;
@@ -18,6 +15,17 @@ public class UserService {
 
     public UserService(Market market) {
         this.market = market;
+    }
+
+    public Response<String> loginAsSubscriber(Subscriber subscriber){
+        if(!subscriber.loginAsGuest()){
+            return Response.error("Error - can't signed in as a GUEST", null);
+        }
+        return market.loginAsSubscriber(subscriber);
+    }
+
+    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+        return market.logoutAsSubscriber(subscriber);
     }
 
     public Response<String> loginAsGuest(User user){
@@ -62,36 +70,9 @@ public class UserService {
         return true; // Assume subscription is accepted
     }
 
-
-    //yair added
     //register a new user
-    public boolean register(String username,String password){
-        Subscriber subscriber=new Subscriber(username,password);
-        if(!market.getMarketFacade().getUserRepository().isUserExist(username)) {
-            market.getMarketFacade().getUserRepository().addUser(subscriber);
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token){
-        if(Security.isValidJWT(token,userName)) {
-            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
-                return market.requestEmployeesStatus(storeID);
-            }
-        }
-        return Response.error("invalid token", null);
-    }
-
-    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token){
-        if(Security.isValidJWT(token,userName)) {
-            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
-                return market.requestManagersPermissions(storeID);
-            }
-        }
-        return Response.error("invalid token", null);
+    public Response<String> register(String username,String password){
+        return market.register(username,password);
     }
 
     public Subscriber getUser(String username){
