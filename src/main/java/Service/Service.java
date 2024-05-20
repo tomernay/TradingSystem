@@ -12,6 +12,7 @@ public class Service {
     private UserService userService;
     private PaymentService paymentService;
     private StoreService storeService;
+    private AdminService adminService;
     private Market market;
 
     public Service(){
@@ -19,6 +20,7 @@ public class Service {
         userService=new UserService(market);
         paymentService=new PaymentService(market);
           storeService=new StoreService(market);
+          adminService = new AdminService(market);
     }
 
     public PaymentService getPaymentService() {
@@ -32,6 +34,8 @@ public class Service {
     public StoreService getStoreService() {
         return storeService;
     }
+
+    public AdminService getAdminService(){return adminService;}
 
     // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
