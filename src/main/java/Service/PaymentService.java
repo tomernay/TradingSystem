@@ -33,7 +33,7 @@ public class PaymentService {
      * @param fee
      * @param products
      */
-    public Response<String> sendPayByBid(String token, Store s, Subscriber user, double fee, HashMap<Integer,Integer> products){
+    public Response<String> sendPayByBid(String token, String store, String user, double fee, HashMap<Integer,Integer> products){
       /*  if(Security.isValidJWT(token, user.getUsername()) ){
               if(!products.isEmpty()) {
                   for (SubscriberState subscriberState : s.getSubscribers().values()) {
@@ -62,21 +62,24 @@ public class PaymentService {
      * @param credit
      * @param token
      */
-    public void immediatePay(String user,double fee,Store s,String credit,String token){
+    public Response<String> immediatePay(String user,double fee,Store s,String credit,String token){
         if(Security.isValidJWT(user,token) ) {
             ImmediatePay payment=new ImmediatePay(fee,s,credit);
-            payment.pay(new DefaultPay(user));
+            boolean pay=payment.pay(new DefaultPay(user));
+            return new Response<>(pay,"payment Status"+String.valueOf(pay),null);
         }
+        return new Response<>(false,"token is invalid",null);
+
 
     }
 
-    public void alternativePay(String user,String token,HashMap<Integer,Integer> products, Store store, Subscriber subscriber,double fee){
+   /* public void alternativePay(String user,String token,HashMap<Integer,Integer> products, Store store, Subscriber subscriber,double fee){
         if(Security.isValidJWT(user,token) ) {
             Alternative_Offer payment=new Alternative_Offer(fee,products, store,subscriber);
             subscriber.addMessage(payment);
         }
 
-    }
+    }*/
 
 
 
