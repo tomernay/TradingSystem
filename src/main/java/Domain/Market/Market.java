@@ -1,15 +1,22 @@
 package src.main.java.Domain.Market;
 
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
+
+import src.main.java.Domain.Market.MarketFacade;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
 
 import java.util.List;
-import java.util.Map;
 
 public class Market {
     private MarketFacade marketFacade = new MarketFacade();
+
+    public Response<String> loginAsSubscriber(Subscriber subscriber){
+        return marketFacade.loginAsSubscriber(subscriber);
+    }
+    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+        return marketFacade.logoutAsSubscriber(subscriber);
+    }
 
     public Response<String> loginAsGuest(User user){
         return marketFacade.loginAsGuest(user);
@@ -54,14 +61,6 @@ public class Market {
         return marketFacade.messageResponse(subscriberUsername, answer);
     }
 
-    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID) {
-        return marketFacade.requestEmployeesStatus(storeID);
-    }
-
-    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID) {
-        return marketFacade.requestManagersPermissions(storeID);
-    }
-
     public MarketFacade getMarketFacade() {
         return marketFacade;
     }
@@ -72,5 +71,9 @@ public class Market {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return marketFacade.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    public Response<String> register(String username, String password) {
+        return marketFacade.register(username, password);
     }
 }

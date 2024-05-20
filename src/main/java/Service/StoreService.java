@@ -1,6 +1,7 @@
 package src.main.java.Service;
 
 import src.main.java.Domain.Externals.Security.Security;
+
 import src.main.java.Domain.Market.Market;
 import src.main.java.Domain.Store.Store;
 import src.main.java.Utilities.Response;
@@ -9,7 +10,7 @@ import src.main.java.Utilities.SystemLogger;
 import java.util.List;
 
 public class StoreService {
-    Market market;
+  Market market;
     public StoreService(Market market){
         this.market=market;
     }

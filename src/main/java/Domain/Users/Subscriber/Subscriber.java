@@ -77,4 +77,12 @@ public class Subscriber extends User {
     public void setCredit(String credit) {
         this.credit = credit;
     }
+
+    public Queue<Message> getMessages() {
+        return messages;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

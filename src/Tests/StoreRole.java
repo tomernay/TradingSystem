@@ -21,8 +21,8 @@ public class StoreRole {
     public void init(){
         service=new Service();
         storeService=service.getStoreService();
-        service.getUserService().register("yair","by");
-        subscriber=service.getUserService().getUser("yair");
+        service.getUserService().register("yair12312","password123");
+        subscriber=service.getUserService().getUser("yair12312");
 
         service.getUserService().register("newOwner","by2");
         newOwner=service.getUserService().getUser("newOwner");
@@ -33,7 +33,7 @@ public class StoreRole {
         service.getUserService().register("notOwner","by4");
         notOwner=service.getUserService().getUser("notOwner");
 
-        service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
+        service.getStoreService().addStore("yairStore","yair12312",subscriber.getToken());
         store=service.getStoreService().getStore("0");
     }
 

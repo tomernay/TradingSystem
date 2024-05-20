@@ -1,18 +1,17 @@
 package src.main.java.Domain.Market;
 
+
+
+
 import src.main.java.Domain.Repo.OrderRepository;
 import src.main.java.Domain.Repo.StoreRepository;
 import src.main.java.Domain.Repo.UserRepository;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.Subscriber.Messages.Message;
+import src.main.java.Domain.Users.Subscriber.Subscriber;
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
 
-
 import java.util.List;
-import java.util.Map;
 
 public class MarketFacade {
     private UserRepository userRepository;
@@ -33,6 +32,12 @@ public class MarketFacade {
         return userRepository.logoutAsGuest(user);
     }
 
+    public Response<String> loginAsSubscriber(Subscriber subscriber){
+        return userRepository.loginAsSubscriber(subscriber);
+    }
+    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+        return userRepository.logoutAsSubscriber(subscriber);
+    }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return storeRepository.isStoreOwner(storeID, currentUsername);
@@ -66,7 +71,7 @@ public class MarketFacade {
         return userRepository.makeStoreManager(subscriberUsername, message.getData());
     }
 
-    public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
+    public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission ) {
         return storeRepository.addManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
@@ -82,16 +87,8 @@ public class MarketFacade {
         return userRepository.messageResponse(subscriberUsername, answer);
     }
 
-    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
-        return storeRepository.requestEmployeesStatus(storeID);
-    }
-
-    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
-        return storeRepository.requestManagersPermissions(storeID);
-    }
-
-    public Response<String> openStore(String storeName, String creator) {
-        return storeRepository.addStore(storeName, creator);
+    public Response<String> openStore(String storeID, String creator) {
+        return storeRepository.addStore(storeID, creator);
     }
 
     public UserRepository getUserRepository() {
@@ -110,8 +107,7 @@ public class MarketFacade {
         return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
     }
 
-    public Store getStoreByID(String storeID){
-        return storeRepository.getStore(storeID);
-
+    public Response<String> register(String username, String password) {
+        return userRepository.register(username, password);
     }
 }

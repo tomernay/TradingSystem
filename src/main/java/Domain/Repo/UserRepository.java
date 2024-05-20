@@ -24,9 +24,33 @@ public class UserRepository {
 
     public Response<String> logoutAsGuest(User user) {
         if(user.logoutAsGuest()){
+            guests.remove(user.getShoppingCart());
             return Response.success("You signed out as a GUEST", null);
         }
         return Response.error("Error - can't signed out as a GUEST", null);
+    }
+
+    public Response<String> loginAsSubscriber(Subscriber subscriberToLogin) {
+        if (isUserExist(subscriberToLogin.getUsername())) {
+            Subscriber subscriber = getUser(subscriberToLogin.getUsername());
+            if (subscriber.getPassword().equals(subscriberToLogin.getPassword())) {
+                // Log in the user and set the Subscriber object
+                users.put(subscriber.getUsername(), subscriber);
+                return Response.success("Logged in successfully", null);
+            } else {
+                return Response.error("Incorrect password", null);
+            }
+        } else {
+            return Response.error("User does not exist", null);
+        }
+    }
+
+    public Response<String> logoutAsSubscriber(Subscriber subscriber) {
+        if(!users.containsKey(subscriber.getUsername())) {
+            return Response.error("User is already logged out", null);
+        }
+        users.remove(subscriber.getUsername());
+        return Response.success("You signed out as a SUBSCRIBER", null);
     }
 
     public void addGuest(User user) {
@@ -71,5 +95,54 @@ public class UserRepository {
         }
         SystemLogger.info("Store " + storeID + " has been closed. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
+    }
+
+    public Response<String> register(String username, String password) {
+        if(!isUsernameValid(username)) {
+            return Response.error("Username does not meet the requirements", null);
+        }
+        else if(isUserExist(username)) {
+            return  Response.error("User already exists", null);
+        }
+//        else if (!isPasswordValid(password)) {
+//            return Response.error("Password does not meet the requirements", null);
+//        }
+        else {
+            Subscriber subscriber = new Subscriber(username,password);
+            addUser(subscriber);
+            return Response.success("User registered successfully", null);
+        }
+    }
+
+//    public boolean isPasswordValid(String password) {
+//        if (password.length() < 3) {
+//            return false;
+//        }
+//        if (!password.matches(".*[A-Z].*")) {
+//            return false;
+//        }
+//        if (!password.matches(".*[a-z].*")) {
+//            return false;
+//        }
+//        if (!password.matches(".*\\d.*")) {
+//            return false;
+//        }
+//        return true;
+//    }
+
+    public boolean isUsernameValid(String username) {
+        // Check if the username is null or empty
+        if (username == null || username.isEmpty()) {
+            return false;
+        }
+        // Check if the username is less than 3 characters long
+        if (username.length() < 3) {
+            return false;
+        }
+        // Check if the username contains only alphanumeric characters
+        if (!username.matches("[A-Za-z0-9]*")) {
+            return false;
+        }
+        return true;
     }
 }
