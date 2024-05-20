@@ -35,7 +35,13 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="google.firebase.admin" level="project" />
-    <orderEntry type="library" name="apache.logging.log4j.1.2.api" level="project" />
+    <orderEntry type="library" name="logback-classic-1.5.6" level="project" />
+    <orderEntry type="library" name="logback-core-1.5.6" level="project" />
+    <orderEntry type="library" name="slf4j.api_2.0.13" level="project" />
+    <orderEntry type="library" exported="" name="log4j-api-2.23.1" level="project" />
+    <orderEntry type="library" name="log4j-api-2.23.1 (2)" level="project" />
+    <orderEntry type="library" name="log4j-core-2.23.1" level="project" />
+    <orderEntry type="library" name="log4j-api-2.23.1 (2)" level="project" />
+    <orderEntry type="library" name="log4j-core-2.23.1" level="project" />
   </component>
 </module>
