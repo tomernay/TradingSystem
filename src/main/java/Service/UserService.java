@@ -22,28 +22,29 @@ public class UserService {
         this.market = market;
     }
 
-    public Response<String> loginAsSubscriber(Subscriber subscriber){
-        if(!subscriber.loginAsGuest()){
+    public Response<String> loginAsSubscriber(Subscriber subscriber) {
+        if (!subscriber.loginAsGuest()) {
             return Response.error("Error - can't signed in as a GUEST", null);
         }
         return market.loginAsSubscriber(subscriber);
     }
 
-    public Response<String> logoutAsSubscriber(Subscriber subscriber){
+    public Response<String> logoutAsSubscriber(Subscriber subscriber) {
         return market.logoutAsSubscriber(subscriber);
     }
 
-    public Response<String> loginAsGuest(User user){
-        if(!user.loginAsGuest()){
+    public Response<String> loginAsGuest(User user) {
+        if (!user.loginAsGuest()) {
             return Response.error("Error - can't signed in as a GUEST", null);
         }
         return market.loginAsGuest(user);
     }
 
     //function as a Guest - exit from the website
-    public Response<String> logoutAsGuest(User user){
+    public Response<String> logoutAsGuest(User user) {
         return market.logoutAsGuest(user);
     }
+
     // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
         return market.makeStoreOwner(storeID, currentUsername, subscriberUsername);
@@ -76,11 +77,11 @@ public class UserService {
     }
 
     //register a new user
-    public Response<String> register(String username,String password){
-        return market.register(username,password);
+    public Response<String> register(String username, String password) {
+        return market.register(username, password);
     }
 
-    public Subscriber getUser(String username){
+    public Subscriber getUser(String username) {
         return market.getMarketFacade().getUserRepository().getUser(username);
     }
 
@@ -92,21 +93,29 @@ public class UserService {
         return market.getMarketFacade().getUserRepository().isUserExist(subscriberUsername);
     }
 
-    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token){
-        if(Security.isValidJWT(token,userName)) {
-            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID, String userName, String token) {
+        if (Security.isValidJWT(token, userName)) {
+            if (market.getMarketFacade().getStoreRepository().isStoreOwner(storeID, userName)) {
                 return market.requestEmployeesStatus(storeID);
             }
         }
         return Response.error("invalid token", null);
     }
 
-    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token){
-        if(Security.isValidJWT(token,userName)) {
-            if(market.getMarketFacade().getStoreRepository().isStoreOwner(storeID,userName)){
+    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID, String userName, String token) {
+        if (Security.isValidJWT(token, userName)) {
+            if (market.getMarketFacade().getStoreRepository().isStoreOwner(storeID, userName)) {
                 return market.requestManagersPermissions(storeID);
             }
         }
         return Response.error("invalid token", null);
+    }
+
+    public Response<String> addProductToShoppingCart(String storeID, String productID, String userName, String token, int quantity) {
+        if (Security.isValidJWT(token, userName)) {
+            return market.addProductToShoppingCart(storeID, productID, userName, quantity);
+        }
+        return Response.error("invalid token", null);
+
     }
 }

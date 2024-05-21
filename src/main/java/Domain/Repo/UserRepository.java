@@ -145,4 +145,10 @@ public class UserRepository {
         }
         return true;
     }
+
+
+
+    public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
+        return users.get(userName).addProductToShoppingCart(storeID, productID,quantity);
+    }
 }

@@ -1,4 +1,4 @@
 package src.main.java.Domain.Store.Discount;
 
-public class DiscountPolicy {
+public class  DiscountPolicy {
 }
