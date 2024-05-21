@@ -1,0 +1,27 @@
+<component name="libraryTable">
+  <library name="stormpath.spring.security.core" type="repository">
+    <properties maven-id="com.stormpath.spring.security:stormpath-spring-security-core:0.3.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/stormpath/spring/security/stormpath-spring-security-core/0.3.0/stormpath-spring-security-core-0.3.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/stormpath/sdk/stormpath-sdk-httpclient/1.0.RC2/stormpath-sdk-httpclient-1.0.RC2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/stormpath/sdk/stormpath-sdk-impl/1.0.RC2/stormpath-sdk-impl-1.0.RC2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/stormpath/sdk/stormpath-sdk-api/1.0.RC2/stormpath-sdk-api-1.0.RC2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.9.11/jackson-mapper-asl-1.9.11.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.9.11/jackson-core-asl-1.9.11.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.2.2/httpclient-4.2.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpcore/4.2.2/httpcore-4.2.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.6/commons-codec-1.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/jcl-over-slf4j/1.6.6/jcl-over-slf4j-1.6.6.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-core/3.2.0.RELEASE/spring-security-core-3.2.0.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/3.2.6.RELEASE/spring-aop-3.2.6.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/3.2.6.RELEASE/spring-beans-3.2.6.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/3.2.6.RELEASE/spring-context-3.2.6.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/3.2.6.RELEASE/spring-core-3.2.6.RELEASE.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-expression/3.2.6.RELEASE/spring-expression-3.2.6.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
