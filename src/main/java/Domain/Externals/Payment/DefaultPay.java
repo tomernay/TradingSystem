@@ -16,6 +16,9 @@ public class DefaultPay extends PaymentAdapter {
 
     @Override
     public Response<String> pay(CreditCard buyer, CreditCard receiver, double fee) {
+        if(buyer==null||receiver==null){
+            return new Response<String>(false, "invalid credit card number");
+        }
         if(fee<=0){
             return new Response<String>(false, "fee must be positive");
         }

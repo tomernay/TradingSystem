@@ -1,7 +1,11 @@
 package src.main.java.Domain.Externals.Suppliers;
 
+import src.main.java.Domain.Externals.Payment.CreditCard;
+import src.main.java.Domain.Externals.Payment.PaymentAdapter;
 import src.main.java.Domain.Store.Inventory.Product;
+import src.main.java.Domain.Store.Inventory.checkSupplyLegal;
 import src.main.java.Domain.Store.Store;
+import src.main.java.Utilities.Response;
 
 public abstract class SupplierAdapter {
     String name;
@@ -18,5 +22,6 @@ public abstract class SupplierAdapter {
         this.name = name;
     }
 
-    public abstract boolean supply(Product product, Store s);
+
+    public abstract Response<String> supply(Product product, String s, CreditCard buyer, CreditCard supplier, double fee, PaymentAdapter paymentAdapter, int amount, checkSupplyLegal checkSupplyLegal);
 }
