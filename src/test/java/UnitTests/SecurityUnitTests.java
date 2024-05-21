@@ -1,3 +1,5 @@
+package UnitTests;
+
 import Domain.Externals.Security.PasswordEncoderUtil;
 import Domain.Externals.Security.Security;
 import org.junit.Assert;
