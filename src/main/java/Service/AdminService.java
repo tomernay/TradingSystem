@@ -6,8 +6,8 @@ public class AdminService {
 
     private Market market;
 
-    public AdminService(Market market){
-        this.market = market;
+    public AdminService(){
+        this.market = Market.getInstance();
     }
 
     public void closeStore() {

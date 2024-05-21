@@ -16,8 +16,8 @@ import java.util.HashMap;
 
 public class PaymentService {
     private Market market;
-    public PaymentService(Market market){
-        this.market=market;
+    public PaymentService(){
+        this.market = Market.getInstance();
     }
 
     public Market getMarket() {
@@ -27,7 +27,7 @@ public class PaymentService {
     /**
      * send pay by bid offer to all subscribers of types StoreOwner and StoreCreator
      * @param token
-     * @param s
+     * @param
 
      * @param user
      * @param fee

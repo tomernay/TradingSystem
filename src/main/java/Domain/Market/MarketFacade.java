@@ -189,4 +189,7 @@ public class MarketFacade {
     }
 
 
+    public boolean userExists(String subscriberUsername) {
+        return userRepository.isUserExist(subscriberUsername);
+    }
 }

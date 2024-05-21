@@ -7,7 +7,6 @@ import src.main.java.Domain.Store.Store;
 import src.main.java.Domain.Store.StoreData.Permissions;
 import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Service.Service;
 import src.main.java.Service.StoreService;
 import src.main.java.Service.UserService;
 import src.main.java.Utilities.Response;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 public class InfoRequestsByOwner {
-    Service service;
     StoreService storeService;
     Subscriber subscriber;
     Store store;
@@ -24,11 +22,10 @@ public class InfoRequestsByOwner {
 
     @Before
     public void init(){
-        service = new Service();
-        service.getUserService().register("mia","22");
-        subscriber = service.getUserService().getUser("mia");
-        storeService = service.getStoreService();
-        userService = service.getUserService();
+        storeService = new StoreService();
+        userService = new UserService();
+        userService.register("mia","22");
+        subscriber = userService.getUser("mia");
         Response<String> response = storeService.addStore("ziv", "mia", subscriber.getToken());
         store = storeService.getStore(response.getData());
     }

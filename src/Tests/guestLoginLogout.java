@@ -1,7 +1,6 @@
 package src.Tests;
 
 import src.main.java.Domain.Users.User;
-import src.main.java.Service.Service;
 import src.main.java.Service.UserService;
 import src.main.java.Utilities.Response;
 import org.junit.Assert;
@@ -9,15 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class guestLoginLogout {
-    Service service;
     UserService userService;
     User guest1;
     User guest2;
 
     @Before
     public void init(){
-        service=new Service();
-        userService = service.getUserService();
+        userService = new UserService();
         guest1 = new User();
         guest2 = new User();
     }

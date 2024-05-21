@@ -6,18 +6,15 @@ import org.junit.Before;
 import org.junit.Test;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
 import src.main.java.Domain.Users.User;
-import src.main.java.Service.Service;
 import src.main.java.Service.UserService;
 import src.main.java.Utilities.Response;
 
 public class UserRegisterLoginLogout {
-    Service service;
     UserService userService;
     User guest1;
     @Before
     public void init(){
-        service = new Service();
-        userService = service.getUserService();
+        userService = new UserService();
         guest1 = new User();
     }
 
