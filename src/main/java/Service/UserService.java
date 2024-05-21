@@ -83,6 +83,8 @@ public class UserService {
         return market.removeManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
+
+
     public Response<String> messageResponse(String currentUsername, boolean answer, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to respond to a message");
         if(Security.isValidJWT(token,currentUsername)) {

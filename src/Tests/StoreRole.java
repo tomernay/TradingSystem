@@ -183,28 +183,5 @@ public class StoreRole {
         Assert.assertFalse(response.isSuccess());
     }
 
-    @Test
-    public void closeStoreSuccessTest(){
-        Response<String> response = service.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
-        Assert.assertTrue(response.isSuccess());
-    }
 
-    @Test
-    public void closeStoreNotCreatorTest(){
-        Response<String> response = service.closeStore(store.getId(), notOwner.getUsername(), subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
-    }
-
-    @Test
-    public void closeNonExistentStoreTest(){
-        Response<String> response = service.closeStore("nonExistentStoreId", subscriber.getUsername(), subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
-    }
-
-    @Test
-    public void closeAlreadyClosedStoreTest(){
-        service.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
-        Response<String> response = service.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
-    }
 }

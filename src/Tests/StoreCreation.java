@@ -13,7 +13,7 @@ public class StoreCreation {
 
     Service service;
     StoreService storeService;
-    Subscriber subscriber;
+    Subscriber subscriber, notOwner;
     Store store;
 
     @Before
@@ -22,6 +22,8 @@ public class StoreCreation {
         service.getUserService().register("mia","22");
         subscriber=service.getUserService().getUser("mia");
         storeService = service.getStoreService();
+        service.getUserService().register("notOwner","by4");
+        notOwner=service.getUserService().getUser("notOwner");
 
 
     }
@@ -68,6 +70,31 @@ public class StoreCreation {
         Response<String> response2 = storeService.addStore("Dor", "mia",subscriber.getToken());
         store = storeService.getStore(response2.getData());
         Assert.assertNotEquals(response.getData(), response2.getData());
+    }
+
+    @Test
+    public void closeStoreSuccessTest(){
+        Response<String> response = storeService.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
+        Assert.assertTrue(response.isSuccess());
+    }
+
+    @Test
+    public void closeStoreNotCreatorTest(){
+        Response<String> response = storeService.closeStore(store.getId(), notOwner.getUsername(), subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void closeNonExistentStoreTest(){
+        Response<String> response = storeService.closeStore("nonExistentStoreId", subscriber.getUsername(), subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void closeAlreadyClosedStoreTest(){
+        storeService.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
+        Response<String> response = storeService.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
     }
 
 
