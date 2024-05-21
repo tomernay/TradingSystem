@@ -11,6 +11,22 @@ import java.util.List;
 import java.util.Map;
 
 public class Market {
+
+    private static Market instance;
+
+    // Private constructor to prevent instantiation
+    private Market() {
+        marketFacade = new MarketFacade();
+    }
+
+    // Static method to get the single instance
+    public static synchronized Market getInstance() {
+        if (instance == null) {
+            instance = new Market();
+        }
+        return instance;
+    }
+
     private MarketFacade marketFacade = new MarketFacade();
 
     public Response<String> loginAsSubscriber(Subscriber subscriber){
@@ -106,5 +122,9 @@ public class Market {
 
     public Response<String> purchaseShoppingCart(String userName) {
         return marketFacade.purchaseShoppingCart(userName);
+    }
+
+    public boolean userExists(String subscriberUsername) {
+        return marketFacade.userExists(subscriberUsername);
     }
 }

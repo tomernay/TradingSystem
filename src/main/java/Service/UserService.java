@@ -19,8 +19,8 @@ public class UserService {
     private Market market;
 
 
-    public UserService(Market market) {
-        this.market = market;
+    public UserService() {
+        this.market = Market.getInstance();
     }
 
     public Response<String> loginAsSubscriber(Subscriber subscriber) {

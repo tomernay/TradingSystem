@@ -11,8 +11,8 @@ import java.util.List;
 
 public class StoreService {
   Market market;
-    public StoreService(Market market){
-        this.market=market;
+    public StoreService(){
+        this.market = Market.getInstance();
     }
 
 //    /**
@@ -58,6 +58,32 @@ public class StoreService {
             return market.sendCloseStoreNotification(storeCloseResponse.getData(), storeID);
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to close store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
+
+    public Response<String> addManagerPermissions(String storeName, String currentUsername, String subscriberUsername, String permission, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to add permissions: " + permission + " to " + subscriberUsername);
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!market.userExists(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return market.addManagerPermissions(storeName, currentUsername, subscriberUsername, permission);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to add permissions: " + permission + " to " + subscriberUsername + " but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
+
+    public Response<String> removeManagerPermissions(String storeName, String currentUsername, String subscriberUsername, String permission, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to remove permissions: " + permission + " from " + subscriberUsername);
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!market.userExists(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return market.removeManagerPermissions(storeName, currentUsername, subscriberUsername, permission);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to remove permissions: " + permission + " from " + subscriberUsername + " but the token was invalid");
         return Response.error("Invalid token",null);
     }
 

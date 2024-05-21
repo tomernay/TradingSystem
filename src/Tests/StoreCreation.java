@@ -11,19 +11,19 @@ import org.junit.Assert;
 
 public class StoreCreation {
 
-    Service service;
     StoreService storeService;
+    UserService userService;
     Subscriber subscriber, notOwner;
     Store store;
 
     @Before
     public void init(){
-        service = new Service();
-        service.getUserService().register("mia","22");
-        subscriber=service.getUserService().getUser("mia");
-        storeService = service.getStoreService();
-        service.getUserService().register("notOwner","by4");
-        notOwner=service.getUserService().getUser("notOwner");
+        userService = new UserService();
+        userService.register("mia","22");
+        subscriber=userService.getUser("mia");
+        storeService = new StoreService();
+        userService.register("notOwner","by4");
+        notOwner=userService.getUser("notOwner");
 
 
     }

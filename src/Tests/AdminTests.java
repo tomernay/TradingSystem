@@ -2,39 +2,39 @@ package src.Tests;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import src.main.java.Service.Service;
+import src.main.java.Service.AdminService;
 
 public class AdminTests {
-    static Service service;
+    static AdminService adminService;
 
     @BeforeClass
     public static void init(){
-        service = new Service();
+        adminService = new AdminService();
 
     }
     @Test
     public void closeStore(){
-        service.getAdminService().closeStore();
+        adminService.closeStore();
     }
 
     @Test
     public void removeSubscriber(){
-        service.getAdminService().removeSubscriber();
+        adminService.removeSubscriber();
     }
 
     @Test
     public void recieveInfoWithResponse(){
-        service.getAdminService().recieveInfoWithResponse();
+        adminService.recieveInfoWithResponse();
     }
 
     @Test
     public void getPurchasesHistory(){
-        service.getAdminService().getPurchaseHistory();
+        adminService.getPurchaseHistory();
     }
 
     @Test
     public void recieveSystemInfo(){
-        service.getAdminService().recieveSystemInfo();
+        adminService.recieveSystemInfo();
     }
 
 

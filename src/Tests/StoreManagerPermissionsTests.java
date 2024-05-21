@@ -4,24 +4,27 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import src.main.java.Domain.Store.Store;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Service.Service;
+import src.main.java.Service.StoreService;
+import src.main.java.Service.UserService;
 
 public class StoreManagerPermissionsTests {
-    static Service service;
+    static UserService userService;
+    static StoreService storeService;
     static Store store;
     static Subscriber subscriber;
     static Subscriber buyer;
 
     @BeforeClass
     public static void init(){
-        service = new Service();
-        service.getUserService().register("yair","by");
-        subscriber=service.getUserService().getUser("yair");
+        userService=new UserService();
+        storeService=new StoreService();
+        userService.register("yair","by");
+        subscriber=userService.getUser("yair");
 
-        service.getUserService().register("yair2","by2");
-        buyer=service.getUserService().getUser("yair2");
-        service.getStoreService().addStore("yairStore","yair",subscriber.getToken());
-        store=service.getStoreService().getStore("0");
+        userService.register("yair2","by2");
+        buyer=userService.getUser("yair2");
+        storeService.addStore("yairStore","yair",subscriber.getToken());
+        store=storeService.getStore("0");
 
         //add manager
 
