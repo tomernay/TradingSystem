@@ -4,6 +4,7 @@ package src.main.java.Domain.Market;
 
 
 import src.main.java.Domain.Repo.OrderRepository;
+import src.main.java.Domain.Repo.PaymentRepository;
 import src.main.java.Domain.Repo.StoreRepository;
 import src.main.java.Domain.Repo.UserRepository;
 import src.main.java.Domain.Store.StoreData.Permissions;
@@ -21,10 +22,15 @@ public class MarketFacade {
     private StoreRepository storeRepository;
     private OrderRepository orderRepository;
 
+    private PaymentRepository paymentRepository;
+
+
     public MarketFacade() {
         this.userRepository = new UserRepository();
         this.storeRepository = new StoreRepository();
         this.orderRepository = new OrderRepository();
+        this.paymentRepository = new PaymentRepository();
+
     }
 
     public Response<String> loginAsGuest(User user){
@@ -161,5 +167,26 @@ public class MarketFacade {
             return Response.success("get ShoppingCart Contents successfully",cartContents.toString());
         }
     }
+
+    public Response<String> purchaseShoppingCart(String userName) {
+        Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
+        Response lockResponse = storeRepository.tryLockShoppingCart(shoppingCartContents);
+        if(lockResponse.isSuccess()){
+            Response payResponse = paymentRepository.userPayment(userName,lockResponse.getData());
+
+            if(payResponse.isSuccess()) {
+                for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
+                    String storeName = storeEntry.getKey();
+                    orderRepository.addOrder(userName, storeName, lockResponse.getData());
+                }
+            }
+            else{
+                return Response.error("Error - can't purchase shopping cart", null);
+            }
+        return lockResponse;
+        }
+
+    }
+
 
 }

@@ -139,5 +139,12 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
+    public Response<String> purchaseShoppingCart(String userName, String token) {
+        if (Security.isValidJWT(token, userName)) {
+            return market.purchaseShoppingCart(userName);
+        }
+        return Response.error("invalid token", null);
+    }
+
 
 }

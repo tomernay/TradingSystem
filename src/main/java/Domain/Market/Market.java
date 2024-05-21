@@ -103,4 +103,8 @@ public class Market {
     public Response<String> getShoppingCartContents(String userName) {
         return marketFacade.getShoppingCartContents(userName);
     }
+
+    public Response<String> purchaseShoppingCart(String userName) {
+        return marketFacade.purchaseShoppingCart(userName);
+    }
 }
