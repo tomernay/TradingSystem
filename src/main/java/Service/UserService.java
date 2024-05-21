@@ -47,8 +47,17 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername) {
-        return market.makeStoreOwner(storeName, currentUsername, subscriberUsername);
+    public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store owner");
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!userExists(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return market.makeStoreOwner(storeName, currentUsername, subscriberUsername);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store owner but the token was invalid");
+        return Response.error("Invalid token",null);
     }
 
     // Method to add a store manager subscription

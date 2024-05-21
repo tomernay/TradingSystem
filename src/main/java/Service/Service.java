@@ -37,18 +37,7 @@ public class Service {
 
     public AdminService getAdminService(){return adminService;}
 
-    public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
-        SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store owner");
-        if(Security.isValidJWT(token,currentUsername)) {
-            if (!userService.userExists(subscriberUsername)) {
-                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
-                return Response.error("User: " + subscriberUsername + " does not exist", null);
-            }
-            return userService.makeStoreOwner(storeName, currentUsername, subscriberUsername);
-        }
-        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store owner but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
+
 
     // Method to change permissions of a store manager
     public Response<String> addManagerPermissions(String storeName, String currentUsername, String subscriberUsername, String permission, String token) {

@@ -41,7 +41,7 @@ public class StoreRole {
 
     @Test
     public void makeStoreOwnerTest(){
-        Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
+        Response<String> response = userService.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
         Response<String> response1 = userService.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
         Assert.assertTrue(response1.isSuccess());
@@ -59,7 +59,7 @@ public class StoreRole {
 
     @Test
     public void makeStoreOwnerDeclineTest(){
-        Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
+        Response<String> response = userService.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
         Response<String> response1 = userService.messageResponse(newOwner.getUsername(), false, newOwner.getToken());
         Assert.assertTrue(response1.isSuccess());
@@ -77,7 +77,7 @@ public class StoreRole {
 
     @Test
     public void notOwnerMakeStoreOwnerTest(){
-        Response<String> response = service.makeStoreOwner(store.getId(), notOwner.getUsername(), newOwner.getUsername(), subscriber.getToken());
+        Response<String> response = userService.makeStoreOwner(store.getId(), notOwner.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 
@@ -89,9 +89,9 @@ public class StoreRole {
 
     @Test
     public void makeExistingStoreOwnerTest(){
-        service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
+        userService.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         userService.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
-        Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
+        Response<String> response = userService.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 
@@ -145,7 +145,7 @@ public class StoreRole {
 
     @Test
     public void makeStoreOwnerNonExistentUserTest(){
-        Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), "nonExistentUser", subscriber.getToken());
+        Response<String> response = userService.makeStoreOwner(store.getId(), subscriber.getUsername(), "nonExistentUser", subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 
