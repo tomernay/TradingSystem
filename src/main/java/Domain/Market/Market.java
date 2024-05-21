@@ -1,7 +1,6 @@
 package src.main.java.Domain.Market;
 
 
-import src.main.java.Domain.Market.MarketFacade;
 import src.main.java.Domain.Store.StoreData.Permissions;
 import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
@@ -90,5 +89,18 @@ public class Market {
 
     public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
         return marketFacade.addProductToShoppingCart(storeID, productID, userName, quantity);
+    }
+
+    public Response<String> removeProductFromShoppingCart(String userName ,String storeID, String productID) {
+        return marketFacade.removeProductFromShoppingCart(userName,storeID, productID);
+    }
+
+    public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, int quantity) {
+        return marketFacade.updateProductInShoppingCart(storeID, productID, userName, quantity);
+    }
+
+
+    public Response<String> getShoppingCartContents(String userName) {
+        return marketFacade.getShoppingCartContents(userName);
     }
 }

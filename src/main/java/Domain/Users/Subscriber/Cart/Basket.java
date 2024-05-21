@@ -30,4 +30,24 @@ public class Basket {
     public String getStoreID() {
         return storeID;
     }
+
+    public Response<String> removeProductFromBasket(String productID) {
+        if(productsQuantityMap.containsKey(productID)){
+            productsQuantityMap.remove(productID);
+            return Response.success("Product removed from basket successfully",null);
+        }
+        return Response.error("Error - can't remove product from basket",null);
+    }
+
+    public Response<String> updateProductInBasket(String productID, int quantity) {
+        if(productsQuantityMap.containsKey(productID)){
+            productsQuantityMap.put(productID, quantity);
+            return Response.success("Product updated in basket successfully",null);
+        }
+        return Response.error("Error - can't update product in basket",null);
+    }
+
+    public Map<String, Integer> getProductsQuantityMap() {
+        return productsQuantityMap;
+    }
 }
