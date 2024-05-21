@@ -1,16 +1,13 @@
-package src.Tests;
-
 import org.junit.Before;
 import org.junit.Test;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-//import Service.Service;
-import src.main.java.Service.*;
-import src.main.java.Utilities.Response;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Subscriber;
+import Service.StoreService;
+import Service.UserService;
+import Utilities.Response;
 import org.junit.Assert;
 
 public class StoreCreation {
-
     StoreService storeService;
     UserService userService;
     Subscriber subscriber, notOwner;

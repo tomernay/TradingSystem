@@ -1,8 +1,8 @@
-package src.main.java.Domain.Store.Inventory;
+package Domain.Store.Inventory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import src.main.java.Utilities.Response;
+import Utilities.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

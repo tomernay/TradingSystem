@@ -1,10 +1,10 @@
-package src.main.java.Domain.Store.PurchasePolicy.PaymentTypes;
+package Domain.Store.PurchasePolicy.PaymentTypes;
 
-import src.main.java.Domain.Externals.Payment.PaymentAdapter;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.StateOfSubscriber.StoreCreator;
-import src.main.java.Domain.Users.StateOfSubscriber.StoreOwner;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Externals.Payment.PaymentAdapter;
+import Domain.Store.Store;
+import Domain.Users.StateOfSubscriber.StoreCreator;
+import Domain.Users.StateOfSubscriber.StoreOwner;
+import Domain.Users.StateOfSubscriber.SubscriberState;
 
 import java.util.HashMap;
 import java.util.Map;

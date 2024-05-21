@@ -1,8 +1,6 @@
-package src.Tests;
-
-import src.main.java.Domain.Users.User;
-import src.main.java.Service.UserService;
-import src.main.java.Utilities.Response;
+import Domain.Users.User;
+import Service.UserService;
+import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

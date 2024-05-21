@@ -1,14 +1,14 @@
-package src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages;
+package Domain.Users.Subscriber.Messages.PaymentMessages;
 
-import src.main.java.DataBase.FireBaseConstants;
-import src.main.java.Domain.Externals.Payment.CreditCard;
-import src.main.java.Domain.Externals.Payment.DefaultPay;
-import src.main.java.Domain.Externals.Payment.PaymentAdapter;
-import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
-import src.main.java.Domain.Users.Subscriber.Messages.NormalMessage;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
+import DataBase.FireBaseConstants;
+import Domain.Externals.Payment.CreditCard;
+import Domain.Externals.Payment.DefaultPay;
+import Domain.Externals.Payment.PaymentAdapter;
+import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Messages.NormalMessage;
+import Domain.Users.Subscriber.Subscriber;
 
 import java.util.HashMap;
 

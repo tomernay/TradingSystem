@@ -1,5 +1,5 @@
-package src.main.java.Domain.Externals.Security;
-
+import Domain.Externals.Security.PasswordEncoderUtil;
+import Domain.Externals.Security.Security;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,8 +9,8 @@ public class SecurityUnitTests {
     static String encodedPassword;
     @BeforeClass
     public static void init(){
-        token=Security.generateJWT("yair");
-        encodedPassword=PasswordEncoderUtil.encode("yairby");
+        token= Security.generateJWT("yair");
+        encodedPassword= PasswordEncoderUtil.encode("yairby");
     }
 
     @Test

@@ -1,6 +1,6 @@
-package src.main.java.Domain.Users.StateOfSubscriber;
+package Domain.Users.StateOfSubscriber;
 
-import src.main.java.Domain.Store.Store;
+import Domain.Store.Store;
 
 
 public class StoreManager extends SubscriberState {

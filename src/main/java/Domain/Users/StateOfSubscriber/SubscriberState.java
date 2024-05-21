@@ -1,11 +1,11 @@
-package src.main.java.Domain.Users.StateOfSubscriber;
+package Domain.Users.StateOfSubscriber;
 
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
-import src.main.java.Domain.Users.Subscriber.Messages.nominateManagerMessage;
-import src.main.java.Domain.Users.Subscriber.Messages.nominateOwnerMessage;
-import src.main.java.Utilities.Response;
+import Domain.Store.Store;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Messages.nominateManagerMessage;
+import Domain.Users.Subscriber.Messages.nominateOwnerMessage;
+import Utilities.Response;
 
 
 import java.util.List;

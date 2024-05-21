@@ -1,6 +1,6 @@
-package src.main.java.Domain.Externals.Payment;
+package Domain.Externals.Payment;
 
-import src.main.java.Utilities.Response;
+import Utilities.Response;
 
 public abstract class PaymentAdapter {
    String paymentName;

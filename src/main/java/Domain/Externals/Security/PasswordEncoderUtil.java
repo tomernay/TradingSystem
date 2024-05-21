@@ -1,4 +1,4 @@
-package src.main.java.Domain.Externals.Security;
+package Domain.Externals.Security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

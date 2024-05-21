@@ -1,7 +1,7 @@
-package src.main.java.Domain.Users;
+package Domain.Users;
 
-import src.main.java.Domain.Users.Subscriber.Cart.ShoppingCart;
-import src.main.java.Utilities.Response;
+import Domain.Users.Subscriber.Cart.ShoppingCart;
+import Utilities.Response;
 
 import java.util.Map;
 

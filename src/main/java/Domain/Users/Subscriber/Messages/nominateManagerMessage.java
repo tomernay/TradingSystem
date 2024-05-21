@@ -1,8 +1,8 @@
-package src.main.java.Domain.Users.Subscriber.Messages;
+package Domain.Users.Subscriber.Messages;
 
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Utilities.SystemLogger;
+import Domain.Store.StoreData.Permissions;
+import Domain.Store.Store;
+import Utilities.SystemLogger;
 
 import java.util.List;
 

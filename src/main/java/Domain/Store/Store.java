@@ -1,12 +1,12 @@
-package src.main.java.Domain.Store;
+package Domain.Store;
 
-import src.main.java.Domain.Store.Inventory.Inventory;
-import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.*;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
-import src.main.java.Utilities.Response;
-import src.main.java.Utilities.SystemLogger;
+import Domain.Store.Inventory.Inventory;
+import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.*;
+import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Response;
+import Utilities.SystemLogger;
 
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package src.main.java.DataBase.Files;
+package DataBase.Files;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package src.main.java.Domain.Externals.Payment;
+package Domain.Externals.Payment;
 
 public class CreditCard {
     private String creditCardNumber;

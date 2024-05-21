@@ -1,4 +1,4 @@
-package src.main.java.Domain.Store.PurchasePolicy;
+package Domain.Store.PurchasePolicy;
 
 public abstract class PurchasePolicy {
 }

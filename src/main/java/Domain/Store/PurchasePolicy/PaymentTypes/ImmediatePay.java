@@ -1,9 +1,7 @@
-package src.main.java.Domain.Store.PurchasePolicy.PaymentTypes;
+package Domain.Store.PurchasePolicy.PaymentTypes;
 
-import src.main.java.Domain.Externals.Payment.CreditCard;
-import src.main.java.Domain.Externals.Payment.PaymentAdapter;
-import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
-import src.main.java.Domain.Store.Store;
+import Domain.Externals.Payment.CreditCard;
+import Domain.Externals.Payment.PaymentAdapter;
 
 public class ImmediatePay extends PurchaseType {
     CreditCard credit;

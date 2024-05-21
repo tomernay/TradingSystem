@@ -1,4 +1,4 @@
-package src.main.java.DataBase;
+package DataBase;
 
 public class FireBaseConstants {
     public static final String publicPay="publicPay";

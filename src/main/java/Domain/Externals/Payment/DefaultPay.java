@@ -1,7 +1,6 @@
-package src.main.java.Domain.Externals.Payment;
+package Domain.Externals.Payment;
 
-import src.main.java.Domain.Store.Store;
-import src.main.java.Utilities.Response;
+import Utilities.Response;
 
 import java.util.Objects;
 import java.util.regex.Matcher;

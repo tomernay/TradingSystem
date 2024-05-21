@@ -1,11 +1,9 @@
-package src.Tests;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Service.StoreService;
-import src.main.java.Service.UserService;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Subscriber;
+import Service.StoreService;
+import Service.UserService;
 
 public class StoreManagerPermissionsTests {
     static UserService userService;

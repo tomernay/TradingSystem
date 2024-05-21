@@ -1,7 +1,7 @@
-package src.main.java.Domain.Users.Subscriber.Messages;
+package Domain.Users.Subscriber.Messages;
 
-import src.main.java.Domain.Store.Store;
-import src.main.java.Utilities.SystemLogger;
+import Domain.Store.Store;
+import Utilities.SystemLogger;
 
 public class nominateOwnerMessage extends Message {
     public Store store;

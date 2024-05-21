@@ -1,13 +1,13 @@
-package src.main.java.Domain.Repo;
+package Domain.Repo;
 
-import src.main.java.Domain.Users.Subscriber.Cart.ShoppingCart;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Cart.ShoppingCart;
+import Domain.Users.Subscriber.Messages.Message;
 
-import src.main.java.Domain.Users.Subscriber.Messages.NormalMessage;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Domain.Users.User;
-import src.main.java.Utilities.Response;
-import src.main.java.Utilities.SystemLogger;
+import Domain.Users.Subscriber.Messages.NormalMessage;
+import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
+import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.HashMap;
 import java.util.List;

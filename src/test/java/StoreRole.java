@@ -1,10 +1,8 @@
-package src.Tests;
-
-import src.main.java.Service.StoreService;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Service.UserService;
-import src.main.java.Utilities.Response;
+import Service.StoreService;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Subscriber;
+import Service.UserService;
+import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

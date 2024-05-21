@@ -1,4 +1,4 @@
-package src.main.java.Domain.Users.Admin;
+package Domain.Users.Admin;
 
 public class Admin {
 }

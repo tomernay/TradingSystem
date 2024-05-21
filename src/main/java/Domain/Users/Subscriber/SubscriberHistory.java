@@ -1,4 +1,4 @@
-package src.main.java.Domain.Users.Subscriber;
+package Domain.Users.Subscriber;
 
 public class SubscriberHistory {
 }

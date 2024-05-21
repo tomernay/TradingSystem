@@ -1,13 +1,10 @@
-package src.Tests;
-
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Domain.Users.User;
-import src.main.java.Service.UserService;
-import src.main.java.Utilities.Response;
+import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
+import Service.UserService;
+import Utilities.Response;
 
 public class UserRegisterLoginLogout {
     UserService userService;

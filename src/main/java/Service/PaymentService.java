@@ -1,16 +1,16 @@
-package src.main.java.Service;
+package Service;
 
-import src.main.java.Domain.Externals.Payment.DefaultPay;
-import src.main.java.Domain.Externals.Security.Security;
+import Domain.Externals.Payment.DefaultPay;
+import Domain.Externals.Security.Security;
 
-import src.main.java.Domain.Market.Market;
-import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
-import src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
-import src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages.PayByBidOffer;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Utilities.Response;
+import Domain.Market.Market;
+import Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
+import Domain.Store.Store;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
+import Domain.Users.Subscriber.Messages.PaymentMessages.PayByBidOffer;
+import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 import java.util.HashMap;
 
