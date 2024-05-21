@@ -1,11 +1,9 @@
-package src.Tests;
-
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Subscriber;
 import org.junit.Before;
 import org.junit.Test;
-import src.main.java.Service.StoreService;
-import src.main.java.Service.UserService;
+import Service.StoreService;
+import Service.UserService;
 
 public class PayByBid {
     Subscriber subscriber,buyer;

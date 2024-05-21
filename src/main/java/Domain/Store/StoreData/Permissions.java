@@ -1,4 +1,4 @@
-package src.main.java.Domain.Store.StoreData;
+package Domain.Store.StoreData;
 
 import java.util.ArrayList;
 import java.util.List;

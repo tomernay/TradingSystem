@@ -1,8 +1,6 @@
-package src.Tests;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-import src.main.java.Service.AdminService;
+import Service.AdminService;
 
 public class AdminTests {
     static AdminService adminService;

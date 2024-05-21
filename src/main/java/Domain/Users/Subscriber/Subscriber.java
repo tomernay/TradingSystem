@@ -1,11 +1,11 @@
-package src.main.java.Domain.Users.Subscriber;
+package Domain.Users.Subscriber;
 
-import src.main.java.Domain.Externals.Security.Security;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
+import Domain.Externals.Security.Security;
+import Domain.Users.Subscriber.Messages.Message;
 
-import src.main.java.Domain.Users.User;
-import src.main.java.Utilities.Response;
-import src.main.java.Utilities.SystemLogger;
+import Domain.Users.User;
+import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.ArrayList;
 import java.util.List;

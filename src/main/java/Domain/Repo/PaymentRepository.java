@@ -1,4 +1,4 @@
-package src.main.java.Domain.Repo;
+package Domain.Repo;
 
 public class PaymentRepository {
 }

@@ -1,16 +1,16 @@
-package src.main.java.Domain.Externals.Suppliers.UnitTests;
+package UnitTests;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import src.main.java.DataBase.FireBaseConstants;
-import src.main.java.Domain.Externals.Payment.CreditCard;
-import src.main.java.Domain.Externals.Payment.DefaultPay;
-import src.main.java.Domain.Externals.Suppliers.DefaultSupplier;
-import src.main.java.Domain.Externals.Suppliers.SupplierAdapter;
-import src.main.java.Domain.Store.Inventory.Product;
-import src.main.java.Domain.Store.Inventory.checkSupplyLegal;
-import src.main.java.Utilities.Response;
+import DataBase.FireBaseConstants;
+import Domain.Externals.Payment.CreditCard;
+import Domain.Externals.Payment.DefaultPay;
+import Domain.Externals.Suppliers.DefaultSupplier;
+import Domain.Externals.Suppliers.SupplierAdapter;
+import Domain.Store.Inventory.Product;
+import Domain.Store.Inventory.checkSupplyLegal;
+import Utilities.Response;
 
 public class proxySupplierUnitTests {
 

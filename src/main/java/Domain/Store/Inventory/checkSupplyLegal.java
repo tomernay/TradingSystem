@@ -1,6 +1,6 @@
-package src.main.java.Domain.Store.Inventory;
+package Domain.Store.Inventory;
 
-import src.main.java.Utilities.Response;
+import Utilities.Response;
 
 public interface checkSupplyLegal {
     public boolean isSupplyLegal(Product product,String storeID);

@@ -1,15 +1,13 @@
-package src.Tests;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Service.StoreService;
-import src.main.java.Service.UserService;
-import src.main.java.Utilities.Response;
+import Domain.Store.Store;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Subscriber;
+import Service.StoreService;
+import Service.UserService;
+import Utilities.Response;
 
 import java.util.List;
 import java.util.Map;

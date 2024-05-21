@@ -1,5 +1,5 @@
-package src.main.java.Domain.Users.Subscriber.Cart;
-import src.main.java.Utilities.Response;
+package Domain.Users.Subscriber.Cart;
+import Utilities.Response;
 
 import java.util.ArrayList;
 import java.util.HashMap;

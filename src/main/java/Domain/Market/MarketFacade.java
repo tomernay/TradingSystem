@@ -1,18 +1,18 @@
-package src.main.java.Domain.Market;
+package Domain.Market;
 
 
 
 
-import src.main.java.Domain.Repo.OrderRepository;
-import src.main.java.Domain.Repo.PaymentRepository;
-import src.main.java.Domain.Repo.StoreRepository;
-import src.main.java.Domain.Repo.UserRepository;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Domain.Users.User;
-import src.main.java.Utilities.Response;
+import Domain.Repo.OrderRepository;
+import Domain.Repo.PaymentRepository;
+import Domain.Repo.StoreRepository;
+import Domain.Repo.UserRepository;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
+import Utilities.Response;
 
 import java.util.List;
 import java.util.Map;

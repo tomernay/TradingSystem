@@ -1,11 +1,11 @@
-package src.main.java.Domain.Externals.Suppliers;
+package Domain.Externals.Suppliers;
 
-import src.main.java.Domain.Externals.Payment.CreditCard;
-import src.main.java.Domain.Externals.Payment.PaymentAdapter;
-import src.main.java.Domain.Store.Inventory.Product;
-import src.main.java.Domain.Store.Inventory.checkSupplyLegal;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Utilities.Response;
+import Domain.Externals.Payment.CreditCard;
+import Domain.Externals.Payment.PaymentAdapter;
+import Domain.Store.Inventory.Product;
+import Domain.Store.Inventory.checkSupplyLegal;
+import Domain.Store.Store;
+import Utilities.Response;
 
 public abstract class SupplierAdapter {
     String name;

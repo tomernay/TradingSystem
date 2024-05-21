@@ -1,4 +1,4 @@
-package src.main.java.Domain.Users.Subscriber.Messages;
+package Domain.Users.Subscriber.Messages;
 
 public class NormalMessage extends Message{
 

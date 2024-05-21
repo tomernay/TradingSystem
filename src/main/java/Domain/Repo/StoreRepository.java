@@ -1,13 +1,13 @@
-package src.main.java.Domain.Repo;
+package Domain.Repo;
 
-import src.main.java.Domain.Store.Inventory.Inventory;
-import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
-import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
-import src.main.java.Domain.Store.Store;
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
-import src.main.java.Domain.Users.Subscriber.Messages.Message;
-import src.main.java.Utilities.Response;
+import Domain.Store.Inventory.Inventory;
+import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
+import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
+import Domain.Store.Store;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Response;
 
 
 import java.util.ArrayList;

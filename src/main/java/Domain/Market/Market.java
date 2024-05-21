@@ -1,11 +1,11 @@
-package src.main.java.Domain.Market;
+package Domain.Market;
 
 
-import src.main.java.Domain.Store.StoreData.Permissions;
-import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
-import src.main.java.Domain.Users.Subscriber.Subscriber;
-import src.main.java.Domain.Users.User;
-import src.main.java.Utilities.Response;
+import Domain.Store.StoreData.Permissions;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
+import Utilities.Response;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,7 @@
-package src.main.java.Domain.Users.Subscriber.Cart;
+package Domain.Users.Subscriber.Cart;
 
-import src.main.java.Domain.Store.Inventory.Product;
-import src.main.java.Utilities.Response;
+import Domain.Store.Inventory.Product;
+import Utilities.Response;
 
 import java.util.HashMap;
 import java.util.Map;

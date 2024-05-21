@@ -1,18 +1,14 @@
-package src.main.java.Domain.Externals.Security;
+package Domain.Externals.Security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Date;
 
-import java.util.Date;
-import java.util.Random;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 
 import java.security.Key;

@@ -1,4 +1,4 @@
-package src.main.java.Utilities;
+package Utilities;
 
 public class Response<T> {
     private final boolean success;
