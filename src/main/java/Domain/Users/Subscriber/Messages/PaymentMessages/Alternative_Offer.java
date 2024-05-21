@@ -1,5 +1,6 @@
 package src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages;
 
+import src.main.java.DataBase.FireBaseConstants;
 import src.main.java.Domain.Externals.Payment.DefaultPay;
 import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
 import src.main.java.Domain.Store.Store;
@@ -24,7 +25,7 @@ public class Alternative_Offer extends Message {
     @Override
     public void response(boolean answer) {
         if(answer){
-            ImmediatePay immediatePay=new ImmediatePay(fee,store,subscriber.getCredit());
+            ImmediatePay immediatePay=new ImmediatePay(fee, FireBaseConstants.visa,subscriber.getCredit());
             immediatePay.pay(new DefaultPay(subscriber.getUsername()));
             subscriber.addMessage(new NormalMessage("payment was successful"));
         }

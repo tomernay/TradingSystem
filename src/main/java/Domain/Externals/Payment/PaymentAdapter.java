@@ -1,6 +1,6 @@
 package src.main.java.Domain.Externals.Payment;
 
-import src.main.java.Domain.Store.Store;
+import src.main.java.Utilities.Response;
 
 public abstract class PaymentAdapter {
    String paymentName;
@@ -12,12 +12,12 @@ public abstract class PaymentAdapter {
       return paymentName;
    }
 
-
    /**
-    * create payment
-    * @param credit
-    * @param s
+    * creates a new payment
+    * @param buyer
+    * @param receiver
     * @param fee
+    * @return
     */
-   public abstract boolean pay(String credit, Store s, double fee);
+   public abstract Response<String> pay(CreditCard buyer, CreditCard receiver, double fee);
 }

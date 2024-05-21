@@ -64,7 +64,7 @@ public class PaymentService {
      */
     public Response<String> immediatePay(String user,double fee,Store s,String credit,String token){
         if(Security.isValidJWT(user,token) ) {
-            ImmediatePay payment=new ImmediatePay(fee,s,credit);
+            ImmediatePay payment=new ImmediatePay(fee,"111111115",credit);
             boolean pay=payment.pay(new DefaultPay(user));
             return new Response<>(pay,"payment Status"+String.valueOf(pay),null);
         }
