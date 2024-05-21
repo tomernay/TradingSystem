@@ -87,4 +87,8 @@ public class Market {
     public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID) {
         return marketFacade.requestManagersPermissions(storeID);
     }
+
+    public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
+        return marketFacade.addProductToShoppingCart(storeID, productID, userName, quantity);
+    }
 }

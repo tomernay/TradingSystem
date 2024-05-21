@@ -1,9 +1,11 @@
 package src.main.java.Domain.Users;
 
 import src.main.java.Domain.Users.Subscriber.Cart.ShoppingCart;
+import src.main.java.Utilities.Response;
 
 public class User {
     private ShoppingCart shoppingCart = null;
+
 
     public boolean loginAsGuest() {
         if(shoppingCart == null){
@@ -26,4 +28,10 @@ public class User {
     }
 
 
+    public Response<String> addProductToShoppingCart(String storeID,String productID,int quantity) {
+        if(shoppingCart != null){
+            return shoppingCart.addProductToCart(storeID, productID, quantity);
+        }
+        return Response.error("Error - can't add product to cart", null);
+    }
 }

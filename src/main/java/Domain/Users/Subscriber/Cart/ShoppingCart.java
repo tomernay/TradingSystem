@@ -1,5 +1,6 @@
 package src.main.java.Domain.Users.Subscriber.Cart;
 import src.main.java.Domain.Store.Inventory.Product;
+import src.main.java.Utilities.Response;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,53 +18,14 @@ public class ShoppingCart {
         return baskets;
     }
 
-    public void addProduct(Product product) {
-        String storeName = product.getStoreName();
-
-        // Iterate over existing baskets
+    public Response<String> addProductToCart(String storeID, String productID, int quantity) {
         for (Basket basket : baskets) {
-            // Check if basket belongs to the same store
-            if (basket.getStoreName().equals(storeName)) {
-                // Add product to the basket
-                basket.addProduct(product);
-                break;
+            if (basket.getStoreID().equals(storeID)) {
+                return basket.addProductToBasket(productID, quantity);
             }
         }
-    }
-
-    public void removeProduct(Product product) {
-        String storeName = product.getStoreName();
-
-        // Iterate over existing baskets
-        for (Basket basket : baskets) {
-            // Check if basket belongs to the same store
-            if (basket.getStoreName().equals(storeName)) {
-                // Add product to the basket
-                basket.removeProduct(product);
-                break;
-            }
-        }
-    }
-
-    public void setBaskets(List<Basket> baskets) {
-        this.baskets = baskets;
-    }
-
-    public void purchase() {
-        Map<String, Integer> storeOrders = new HashMap<>();
-        boolean can_purchase = true;
-        for (Basket basket : baskets) {
-            int id_order = basket.try_purchase_basekt();
-            if (basket.try_purchase_basekt() != 0) {
-                storeOrders.put(basket.getStoreName(), id_order);
-            }
-            else {
-                can_purchase = false;
-                break ;
-            }
-            if (can_purchase){
-                // service_shop.purchase(storeOrders)
-            }
-        }
+        Basket newBasket = new Basket(storeID);
+        baskets.add(newBasket);
+        return newBasket.addProductToBasket(productID, quantity);
     }
 }

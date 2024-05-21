@@ -121,4 +121,8 @@ public class MarketFacade {
     public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
         return storeRepository.requestManagersPermissions(storeID);
     }
+
+    public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity){
+            return userRepository.addProductToShoppingCart(storeID, productID, userName, quantity);
+    }
 }
