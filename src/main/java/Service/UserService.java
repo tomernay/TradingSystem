@@ -9,6 +9,7 @@ import src.main.java.Domain.Users.StateOfSubscriber.SubscriberState;
 import src.main.java.Domain.Users.Subscriber.Subscriber;
 import src.main.java.Domain.Users.User;
 import src.main.java.Utilities.Response;
+import src.main.java.Utilities.SystemLogger;
 
 
 import java.util.List;
@@ -46,13 +47,22 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
-        return market.makeStoreOwner(storeID, currentUsername, subscriberUsername);
+    public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername) {
+        return market.makeStoreOwner(storeName, currentUsername, subscriberUsername);
     }
 
     // Method to add a store manager subscription
-    public Response<String> makeStoreManager(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
-        return market.makeStoreManager(storeID, currentUsername, subscriberUsername, permissions);
+    public Response<String> makeStoreManager(String storeName, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store manager");
+        if(Security.isValidJWT(token,currentUsername)) {
+            if (!userExists(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return market.makeStoreManager(storeName, currentUsername, subscriberUsername, permissions);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store manager but the token was invalid");
+        return Response.error("Invalid token",null);
     }
 
     // Method to change permissions of a store manager

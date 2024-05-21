@@ -37,7 +37,6 @@ public class Service {
 
     public AdminService getAdminService(){return adminService;}
 
-    // Method to add a store owner subscription
     public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store owner");
         if(Security.isValidJWT(token,currentUsername)) {
@@ -48,20 +47,6 @@ public class Service {
             return userService.makeStoreOwner(storeName, currentUsername, subscriberUsername);
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store owner but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
-
-//     Method to add a store manager subscription
-    public Response<String> makeStoreManager(String storeName, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
-        SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store manager");
-        if(Security.isValidJWT(token,currentUsername)) {
-            if (!userService.userExists(subscriberUsername)) {
-                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
-                return Response.error("User: " + subscriberUsername + " does not exist", null);
-            }
-            return userService.makeStoreManager(storeName, currentUsername, subscriberUsername, permissions);
-        }
-        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store manager but the token was invalid");
         return Response.error("Invalid token",null);
     }
 
