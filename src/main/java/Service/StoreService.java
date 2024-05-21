@@ -48,8 +48,17 @@ public class StoreService {
         return market.isStoreCreator(storeID, currentUsername);
     }
 
-    public Response<List<String>> closeStore(String storeID, String currentUsername) {
-        return market.closeStore(storeID, currentUsername);
+    public Response<String> closeStore(String storeID, String currentUsername, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to close store: " + storeID);
+        if(Security.isValidJWT(token,currentUsername)) {
+            Response<List<String>> storeCloseResponse = market.closeStore(storeID, currentUsername);
+            if (!storeCloseResponse.isSuccess()) {
+                return Response.error(storeCloseResponse.getMessage(), null);
+            }
+            return market.sendCloseStoreNotification(storeCloseResponse.getData(), storeID);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to close store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token",null);
     }
 
     public Market getMarket() {
