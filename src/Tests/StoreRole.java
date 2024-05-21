@@ -43,7 +43,7 @@ public class StoreRole {
     public void makeStoreOwnerTest(){
         Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = service.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
+        Response<String> response1 = userService.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
         Assert.assertTrue(response1.isSuccess());
         Assert.assertTrue(storeService.isStoreOwner(store.getId(), newOwner.getUsername()));
     }
@@ -52,7 +52,7 @@ public class StoreRole {
     public void makeStoreManagerTest(){
         Response<String> response = userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = service.messageResponse(newManager.getUsername(), true, newManager.getToken());
+        Response<String> response1 = userService.messageResponse(newManager.getUsername(), true, newManager.getToken());
         Assert.assertTrue(response1.isSuccess());
         Assert.assertTrue(storeService.isStoreManager(store.getId(), newManager.getUsername()));
     }
@@ -61,7 +61,7 @@ public class StoreRole {
     public void makeStoreOwnerDeclineTest(){
         Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = service.messageResponse(newOwner.getUsername(), false, newOwner.getToken());
+        Response<String> response1 = userService.messageResponse(newOwner.getUsername(), false, newOwner.getToken());
         Assert.assertTrue(response1.isSuccess());
         Assert.assertFalse(storeService.isStoreManager(store.getId(), newOwner.getUsername()));
     }
@@ -70,7 +70,7 @@ public class StoreRole {
     public void makeStoreManagerDeclineTest(){
         Response<String> response = userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = service.messageResponse(newManager.getUsername(), false, newManager.getToken());
+        Response<String> response1 = userService.messageResponse(newManager.getUsername(), false, newManager.getToken());
         Assert.assertTrue(response1.isSuccess());
         Assert.assertFalse(storeService.isStoreManager(store.getId(), newManager.getUsername()));
     }
@@ -90,7 +90,7 @@ public class StoreRole {
     @Test
     public void makeExistingStoreOwnerTest(){
         service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
-        service.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
+        userService.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
         Response<String> response = service.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
@@ -98,7 +98,7 @@ public class StoreRole {
     @Test
     public void makeExistingStoreManagerTest(){
         userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        service.messageResponse(newManager.getUsername(), true, newManager.getToken());
+        userService.messageResponse(newManager.getUsername(), true, newManager.getToken());
         Response<String> response = userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
@@ -106,7 +106,7 @@ public class StoreRole {
     @Test
     public void addPermissionSuccessTest(){
         userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        service.messageResponse(newManager.getUsername(), true, newManager.getToken());
+        userService.messageResponse(newManager.getUsername(), true, newManager.getToken());
         Response<String> response = service.addManagerPermissions(store.getId(), subscriber.getUsername(), newManager.getUsername(), "ADD_PRODUCT", subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
     }
@@ -114,7 +114,7 @@ public class StoreRole {
     @Test
     public void removePermissionSuccessTest(){
         userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        service.messageResponse(newManager.getUsername(), true, newManager.getToken());
+        userService.messageResponse(newManager.getUsername(), true, newManager.getToken());
         Response<String> response = service.removeManagerPermissions(store.getId(), subscriber.getUsername(), newManager.getUsername(), "REMOVE_PRODUCT", subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
     }
@@ -170,7 +170,7 @@ public class StoreRole {
     @Test
     public void addNonExistentPermissionTest(){
         userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        service.messageResponse(newManager.getUsername(), true, subscriber.getToken());
+        userService.messageResponse(newManager.getUsername(), true, subscriber.getToken());
         Response<String> response = service.addManagerPermissions(store.getId(), subscriber.getUsername(), newManager.getUsername(), "NON_EXISTENT_PERMISSION", subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
@@ -178,7 +178,7 @@ public class StoreRole {
     @Test
     public void removeNonExistentPermissionTest(){
         userService.makeStoreManager(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        service.messageResponse(newManager.getUsername(), true, subscriber.getToken());
+        userService.messageResponse(newManager.getUsername(), true, subscriber.getToken());
         Response<String> response = service.removeManagerPermissions(store.getId(), subscriber.getUsername(), newManager.getUsername(), "NON_EXISTENT_PERMISSION", subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }

@@ -90,13 +90,4 @@ public class Service {
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to close store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token",null);
     }
-
-    public Response<String> messageResponse(String currentUsername, boolean answer, String token) {
-        SystemLogger.info("[START] User: " + currentUsername + " is trying to respond to a message");
-        if(Security.isValidJWT(token,currentUsername)) {
-            return userService.messageResponse(currentUsername, answer);
-        }
-        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to respond to a message but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
 }

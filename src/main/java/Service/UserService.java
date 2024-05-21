@@ -74,8 +74,13 @@ public class UserService {
         return market.removeManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
-    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
-        return market.messageResponse(subscriberUsername, answer);
+    public Response<String> messageResponse(String currentUsername, boolean answer, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to respond to a message");
+        if(Security.isValidJWT(token,currentUsername)) {
+            return market.messageResponse(currentUsername, answer);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to respond to a message but the token was invalid");
+        return Response.error("Invalid token",null);
     }
 
     // Method to prompt the subscriber to accept the subscription
