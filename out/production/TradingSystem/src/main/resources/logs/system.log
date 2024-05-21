@@ -374,3 +374,120 @@
 23:58:08.648 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
 23:59:34.799 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
 00:00:11.590 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.175 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair is trying to create a store with name: yairStore
+23:04:43.316 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.321 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.326 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.330 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.334 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.336 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: Dor
+23:04:43.376 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair is trying to create a store with name: yairStore
+23:04:43.381 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair is trying to create a store with name: yairStore
+23:04:43.387 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.392 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: mia is trying to create a store with name: ziv
+23:04:43.406 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.414 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newOwner is trying to remove permissions: EDIT_PRODUCT from yair12312
+23:04:43.416 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: newOwner tried to remove permissions: EDIT_PRODUCT from yair12312 but the token was invalid
+23:04:43.422 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.424 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: notOwner is trying to remove permissions: EDIT_PRODUCT from newManager
+23:04:43.426 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: notOwner tried to remove permissions: EDIT_PRODUCT from newManager but the token was invalid
+23:04:43.430 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.433 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to close store: nonExistentStoreId
+23:04:43.438 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.441 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: notOwner is trying to make newManager a store manager
+23:04:43.443 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: notOwner tried to make newManager a store manager but the token was invalid
+23:04:43.447 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.448 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.474 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.474 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.475 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: newManager tried to respond to a message but the token was invalid
+23:04:43.475 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to remove permissions: NON_EXISTENT_PERMISSION from newManager
+23:04:43.479 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.480 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newOwner is trying to add permissions: EDIT_PRODUCT to yair12312
+23:04:43.481 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: newOwner tried to add permissions: EDIT_PRODUCT to yair12312 but the token was invalid
+23:04:43.483 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.485 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: notOwner is trying to add permissions: REMOVE_PRODUCT to newManager
+23:04:43.485 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: notOwner tried to add permissions: REMOVE_PRODUCT to newManager but the token was invalid
+23:04:43.491 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.492 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to add permissions: REMOVE_PRODUCT to nonExistentUser
+23:04:43.493 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: nonExistentUser does not exist
+23:04:43.497 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.499 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newOwner a store owner
+23:04:43.510 [main] INFO  src.main.java.Utilities.SystemLogger - Owner nomination message successfully sent to: newOwner
+23:04:43.511 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newOwner is trying to respond to a message
+23:04:43.512 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newOwner has accepted the Owner nomination request for the store: yairStore.
+23:04:43.513 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newOwner has been nominated as an owner of the store: yairStore
+23:04:43.516 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.517 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to close store: 0
+23:04:43.518 [main] INFO  src.main.java.Utilities.SystemLogger - Store 0 has been closed. Notifications sent to all related subscribers.
+23:04:43.518 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to close store: 0
+23:04:43.526 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.527 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: notOwner is trying to close store: 0
+23:04:43.528 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: notOwner tried to close store: 0 but the token was invalid
+23:04:43.533 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.534 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.537 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.537 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.538 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has accepted the Manager nomination for the store: yairStore.
+23:04:43.539 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has been nominated as a manager of the store: yairStore.
+23:04:43.539 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to add permissions: ADD_PRODUCT to newManager
+23:04:43.541 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] Added the permission: ADD_PRODUCT to the manager: newManager of store: yairStore
+23:04:43.546 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.547 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.549 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.549 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.550 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has accepted the Manager nomination for the store: yairStore.
+23:04:43.550 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has been nominated as a manager of the store: yairStore.
+23:04:43.550 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to remove permissions: REMOVE_PRODUCT from newManager
+23:04:43.553 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] Removed the permission: REMOVE_PRODUCT from the manager: newManager of store: yairStore
+23:04:43.560 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.561 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newOwner a store owner
+23:04:43.562 [main] INFO  src.main.java.Utilities.SystemLogger - Owner nomination message successfully sent to: newOwner
+23:04:43.563 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newOwner is trying to respond to a message
+23:04:43.563 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newOwner has declined the Owner nomination request for the store: yairStore.
+23:04:43.571 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.573 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.575 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.576 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.576 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has accepted the Manager nomination for the store: yairStore.
+23:04:43.577 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has been nominated as a manager of the store: yairStore.
+23:04:43.580 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.582 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make nonExistentUser a store manager
+23:04:43.584 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: nonExistentUser does not exist
+23:04:43.589 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.592 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to close store: 0
+23:04:43.593 [main] INFO  src.main.java.Utilities.SystemLogger - Store 0 has been closed. Notifications sent to all related subscribers.
+23:04:43.597 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.598 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newOwner a store owner
+23:04:43.600 [main] INFO  src.main.java.Utilities.SystemLogger - Owner nomination message successfully sent to: newOwner
+23:04:43.600 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newOwner is trying to respond to a message
+23:04:43.601 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newOwner has accepted the Owner nomination request for the store: yairStore.
+23:04:43.602 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newOwner has been nominated as an owner of the store: yairStore
+23:04:43.602 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newOwner a store owner
+23:04:43.611 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.612 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.613 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.613 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.614 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has declined the Manager nomination for the store: yairStore.
+23:04:43.619 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.623 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to remove permissions: permission from nonExistentUser
+23:04:43.626 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: nonExistentUser does not exist
+23:04:43.632 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.633 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make nonExistentUser a store owner
+23:04:43.634 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: nonExistentUser does not exist
+23:04:43.639 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.641 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.642 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.642 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.643 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: newManager tried to respond to a message but the token was invalid
+23:04:43.644 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to add permissions: NON_EXISTENT_PERMISSION to newManager
+23:04:43.648 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.649 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: notOwner is trying to make newOwner a store owner
+23:04:43.651 [main] ERROR src.main.java.Utilities.SystemLogger - [ERROR] User: notOwner tried to make newOwner a store owner but the token was invalid
+23:04:43.655 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to create a store with name: yairStore
+23:04:43.659 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager
+23:04:43.659 [main] INFO  src.main.java.Utilities.SystemLogger - Manager nomination message successfully sent to: newManager
+23:04:43.660 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: newManager is trying to respond to a message
+23:04:43.660 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has accepted the Manager nomination for the store: yairStore.
+23:04:43.661 [main] INFO  src.main.java.Utilities.SystemLogger - [INFO] User newManager has been nominated as a manager of the store: yairStore.
+23:04:43.661 [main] INFO  src.main.java.Utilities.SystemLogger - [START] User: yair12312 is trying to make newManager a store manager

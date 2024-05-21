@@ -9,4 +9,6 @@ public class FireBaseConstants {
     public static String store="store";
     public static String maxFee="maxFee";
     public static String date="date";
+
+    public static String visa="4111111111111111";
 }

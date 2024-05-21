@@ -1,5 +1,7 @@
 package src.main.java.Domain.Users.Subscriber.Messages.PaymentMessages;
 
+import src.main.java.DataBase.FireBaseConstants;
+import src.main.java.Domain.Externals.Payment.CreditCard;
 import src.main.java.Domain.Externals.Payment.DefaultPay;
 import src.main.java.Domain.Externals.Payment.PaymentAdapter;
 import src.main.java.Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
@@ -37,7 +39,7 @@ public class PayByBidOffer extends Message {
                  }
              }
              PaymentAdapter paymentAdapter=new DefaultPay(user.getUsername());
-             paymentAdapter.pay(user.getCredit(),store,fee);
+             paymentAdapter.pay(new CreditCard(user.getCredit()),new CreditCard(FireBaseConstants.visa),fee);
              user.addMessage(new NormalMessage("payment was successful"));
          }
          else{
