@@ -1,3 +1,5 @@
+package AcceptanceTests;
+
 import Service.StoreService;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;

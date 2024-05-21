@@ -1,3 +1,5 @@
+package AcceptanceTests;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import Domain.Store.Store;

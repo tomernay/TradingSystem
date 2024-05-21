@@ -1,3 +1,5 @@
+package AcceptanceTests;
+
 import Domain.Users.User;
 import Service.UserService;
 import Utilities.Response;

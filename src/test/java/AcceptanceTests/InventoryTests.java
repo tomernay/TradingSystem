@@ -1,3 +1,5 @@
+package AcceptanceTests;
+
 import Domain.Store.Inventory.Inventory;
 import Domain.Users.Subscriber.Subscriber;
 import org.junit.Before;
