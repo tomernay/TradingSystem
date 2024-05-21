@@ -14,8 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 public class UserRepository {
+
+    ////מה לעזאל קורה פה !!!!!!!
     private Map<String, Subscriber> users = new HashMap<>();
     private Map<ShoppingCart, User> guests = new HashMap<>();
+
+    private Map<String, User> usersMap = new HashMap<>(); // <username, User>
 
     public Response<String> loginAsGuest(User user) {
         guests.put(user.getShoppingCart(), user);
@@ -149,6 +153,21 @@ public class UserRepository {
 
 
     public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
-        return users.get(userName).addProductToShoppingCart(storeID, productID,quantity);
+        return usersMap.get(userName).addProductToShoppingCart(storeID, productID,quantity);
+    }
+
+
+    public Response<String> removeProductFromShoppingCart(String userName, String storeID, String productID) {
+        return usersMap.get(userName).removeProductFromShoppingCart(storeID,productID);
+    }
+
+    public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, int quantity) {
+        return usersMap.get(userName).updateProductInShoppingCart(storeID, productID, quantity);
+    }
+
+
+
+    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
+        return usersMap.get(userName).getShoppingCartContents();
     }
 }

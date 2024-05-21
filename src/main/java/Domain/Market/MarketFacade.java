@@ -125,4 +125,41 @@ public class MarketFacade {
     public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity){
             return userRepository.addProductToShoppingCart(storeID, productID, userName, quantity);
     }
+
+    public Response<String> removeProductFromShoppingCart(String userName,String storeID, String productID) {
+        return userRepository.removeProductFromShoppingCart(userName,storeID, productID);
+    }
+
+    public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, int quantity) {
+        return userRepository.updateProductInShoppingCart(storeID, productID, userName, quantity);
+    }
+
+
+
+    public Response<String> getShoppingCartContents(String userName) {
+        Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
+        if (shoppingCartContents == null) {
+            return Response.error("Error - can't get shopping cart contents", null);
+        } else {
+            StringBuilder cartContents = new StringBuilder();
+            for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
+                String storeName = storeEntry.getKey();
+                Map<String, Integer> products = storeEntry.getValue();
+
+                cartContents.append("Store: ").append(storeName).append("\n");
+
+                for (Map.Entry<String, Integer> productEntry : products.entrySet()) {
+                    String productName = productEntry.getKey();
+                    int quantity = productEntry.getValue();
+
+                    cartContents.append("Product: ").append(productName)
+                            .append(", Quantity: ").append(quantity)
+                            .append("\n");
+                }
+                cartContents.append("\n");
+            }
+            return Response.success("get ShoppingCart Contents successfully",cartContents.toString());
+        }
+    }
+
 }

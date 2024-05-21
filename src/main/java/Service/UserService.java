@@ -116,6 +116,28 @@ public class UserService {
             return market.addProductToShoppingCart(storeID, productID, userName, quantity);
         }
         return Response.error("invalid token", null);
-
     }
+
+    public Response<String> removeProductFromShoppingCart(String storeID, String productID, String userName, String token) {
+        if (Security.isValidJWT(token, userName)) {
+            return market.removeProductFromShoppingCart(userName,storeID, productID);
+        }
+        return Response.error("invalid token", null);
+    }
+
+    public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, String token, int quantity) {
+        if (Security.isValidJWT(token, userName)) {
+            return market.updateProductInShoppingCart(storeID, productID, userName, quantity);
+        }
+        return Response.error("invalid token", null);
+    }
+
+    public Response<String> getShoppingCartContents(String userName, String token) {
+        if (Security.isValidJWT(token, userName)) {
+            return market.getShoppingCartContents(userName);
+        }
+        return Response.error("invalid token", null);
+    }
+
+
 }
