@@ -10,12 +10,14 @@ public class nominateManagerMessage extends Message {
     public Store store;
     List<Permissions> permissions;
     public String subscriberUsername;
+    boolean isSubscribed;
 
-    public nominateManagerMessage(Store store, List<Permissions> permissions, String subscriberUsername) {
+    public nominateManagerMessage(Store store, List<Permissions> permissions, String subscriberUsername, boolean isSubscribed) {
         super("Nominate manager message");
         this.store = store;
         this.permissions = permissions;
         this.subscriberUsername = subscriberUsername;
+        this.isSubscribed = isSubscribed;
     }
 
     public List<Permissions> getPermissions() {
@@ -31,6 +33,9 @@ public class nominateManagerMessage extends Message {
         }
         else {
             SystemLogger.info("[INFO] User " + subscriberUsername + " has declined the Manager nomination for the store: " + store.getName() + ".");
+            if (!isSubscribed) {
+                store.removeSubscriber(subscriberUsername);
+            }
         }
     }
 }

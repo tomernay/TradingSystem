@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class UserRepository {
 
-    ////מה לעזאל קורה פה !!!!!!!
     private Map<String, Subscriber> users = new HashMap<>();
     private Map<ShoppingCart, User> guests = new HashMap<>();
 

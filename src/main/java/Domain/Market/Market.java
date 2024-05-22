@@ -1,6 +1,7 @@
 package Domain.Market;
 
 
+import Domain.Store.Store;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Subscriber;
@@ -28,6 +29,10 @@ public class Market {
     }
 
     private MarketFacade marketFacade = new MarketFacade();
+
+    public void reset() {
+        instance = new Market();
+    }
 
     public Response<String> loginAsSubscriber(Subscriber subscriber){
         return marketFacade.loginAsSubscriber(subscriber);
@@ -126,5 +131,13 @@ public class Market {
 
     public boolean userExists(String subscriberUsername) {
         return marketFacade.userExists(subscriberUsername);
+    }
+
+    public Subscriber getUser(String subscriberUsername) {
+        return marketFacade.getUser(subscriberUsername);
+    }
+
+    public Store getStore(String storeID) {
+        return marketFacade.getStore(storeID);
     }
 }
