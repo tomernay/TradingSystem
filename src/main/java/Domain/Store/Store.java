@@ -90,15 +90,17 @@ public class Store {
     public Response<Message> makeNominateOwnerMessage(String subscriberUsername) {
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
+            return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, false);
         }
-        return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername);
+        return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, true);
     }
 
     public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions) {
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
+            return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, false);
         }
-        return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions);
+        return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, true);
     }
 
     public void nominateOwner(String subscriberName) {
@@ -168,5 +170,17 @@ public class Store {
         return Response.success("successfuly fetched the managers permissions of the store", managerPermissions);
     }
 
+    public Map<String, SubscriberState> getSubscribersMap() {
+        return subscribers;
+    }
 
+    public Map<String, List<Permissions>> getManagersPermissions() {
+        return managerPermissions;
+    }
+
+    public void removeSubscriber(String subscriberUsername) {
+        if (subscribers.containsKey(subscriberUsername)) {
+            subscribers.remove(subscriberUsername);
+        }
+    }
 }

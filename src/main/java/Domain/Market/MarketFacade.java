@@ -7,6 +7,7 @@ import Domain.Repo.OrderRepository;
 import Domain.Repo.PaymentRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Repo.UserRepository;
+import Domain.Store.Store;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Messages.Message;
@@ -169,27 +170,36 @@ public class MarketFacade {
     }
 
     public Response<String> purchaseShoppingCart(String userName) {
-        Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
-        Response lockResponse = storeRepository.tryLockShoppingCart(shoppingCartContents);
-        if(lockResponse.isSuccess()){
-            Response payResponse = paymentRepository.userPayment(userName,lockResponse.getData());
-
-            if(payResponse.isSuccess()) {
-                for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
-                    String storeName = storeEntry.getKey();
-                    orderRepository.addOrder(userName, storeName, lockResponse.getData());
-                }
-            }
-            else{
-                return Response.error("Error - can't purchase shopping cart", null);
-            }
-        return lockResponse;
-        }
+//        Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
+//        Response lockResponse = storeRepository.tryLockShoppingCart(shoppingCartContents);
+//        if(lockResponse.isSuccess()){
+//            Response payResponse = paymentRepository.userPayment(userName,lockResponse.getData());
+//
+//            if(payResponse.isSuccess()) {
+//                for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
+//                    String storeName = storeEntry.getKey();
+//                    orderRepository.addOrder(userName, storeName, lockResponse.getData());
+//                }
+//            }
+//            else{
+//                return Response.error("Error - can't purchase shopping cart", null);
+//            }
+//        return lockResponse;
+//        }
+        return Response.error("NOT IMPLEMENETED", null);
 
     }
 
 
     public boolean userExists(String subscriberUsername) {
         return userRepository.isUserExist(subscriberUsername);
+    }
+
+    public Subscriber getUser(String subscriberUsername) {
+        return userRepository.getUser(subscriberUsername);
+    }
+
+    public Store getStore(String storeID) {
+        return storeRepository.getStore(storeID);
     }
 }

@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Domain.Market.Market;
 import Service.StoreService;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
@@ -19,7 +20,7 @@ public class StoreRole {
 
     @Before
     public void init(){
-
+        Market.getInstance().reset();
         storeService=new StoreService();
         userService=new UserService();
         userService.register("yair12312","password123");
@@ -36,6 +37,30 @@ public class StoreRole {
 
         storeService.addStore("yairStore","yair12312",subscriber.getToken());
         store=storeService.getStore("0");
+    }
+
+    @Test
+    public void selfNominationStoreOwnerTest(){
+        Response<String> response = userService.makeStoreOwner(store.getId(), subscriber.getUsername(), subscriber.getUsername(), subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void selfNominationStoreManagerTest(){
+        Response<String> response = userService.makeStoreManager(store.getId(), subscriber.getUsername(), subscriber.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void selfAddPermissionTest(){
+        Response<String> response = storeService.addManagerPermissions(store.getId(), subscriber.getUsername(), subscriber.getUsername(), "ADD_PRODUCT", subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void selfRemovePermissionTest(){
+        Response<String> response = storeService.removeManagerPermissions(store.getId(), subscriber.getUsername(), subscriber.getUsername(), "REMOVE_PRODUCT", subscriber.getToken());
+        Assert.assertFalse(response.isSuccess());
     }
 
     @Test

@@ -50,6 +50,10 @@ public class UserService {
     public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store owner");
         if(Security.isValidJWT(token,currentUsername)) {
+            if (currentUsername.equals(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " is trying to make himself a store manager");
+                return Response.error("User: " + subscriberUsername + " is trying to make himself a store manager", null);
+            }
             if (!userExists(subscriberUsername)) {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
                 return Response.error("User: " + subscriberUsername + " does not exist", null);
@@ -64,6 +68,10 @@ public class UserService {
     public Response<String> makeStoreManager(String storeName, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store manager");
         if(Security.isValidJWT(token,currentUsername)) {
+            if (currentUsername.equals(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " is trying to make himself a store manager");
+                return Response.error("User: " + subscriberUsername + " is trying to make himself a store manager", null);
+            }
             if (!userExists(subscriberUsername)) {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
                 return Response.error("User: " + subscriberUsername + " does not exist", null);
@@ -72,15 +80,6 @@ public class UserService {
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store manager but the token was invalid");
         return Response.error("Invalid token",null);
-    }
-
-    // Method to change permissions of a store manager
-    public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
-        return market.addManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
-    }
-
-    public Response<String> removeManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
-        return market.removeManagerPermissions(storeID, currentUsername, subscriberUsername, permission);
     }
 
 

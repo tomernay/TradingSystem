@@ -22,12 +22,12 @@ public abstract class SubscriberState {
 
     public abstract void changeState(Store store, String subscriberUsername, SubscriberState newState);
 
-    public Response<Message> makeNominateOwnerMessage(String subscriberUsername) {
-        return Response.success("Created message successfully", new nominateOwnerMessage(this.store, subscriberUsername));
+    public Response<Message> makeNominateOwnerMessage(String subscriberUsername, boolean isSubscribed) {
+        return Response.success("Created message successfully", new nominateOwnerMessage(this.store, subscriberUsername, isSubscribed));
     }
 
-    public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions) {
-        return Response.success("Created message successfully", new nominateManagerMessage(this.store, Permissions.convertStringList(permissions), subscriberUsername));
+    public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions, boolean isSubscribed) {
+        return Response.success("Created message successfully", new nominateManagerMessage(this.store, Permissions.convertStringList(permissions), subscriberUsername, isSubscribed));
     }
 
     public String getSubscriberUsername() {

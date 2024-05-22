@@ -6,12 +6,14 @@ import Utilities.SystemLogger;
 public class nominateOwnerMessage extends Message {
     public Store store;
     public String subscriberUsername;
+    public boolean isSubscribed;
 
 
-    public nominateOwnerMessage(Store store, String subscriberID) {
+    public nominateOwnerMessage(Store store, String subscriberID, boolean isSubscribed) {
         super("Nominate owner message");
         this.store = store;
         this.subscriberUsername = subscriberID;
+        this.isSubscribed = isSubscribed;
     }
 
     @Override
@@ -23,6 +25,9 @@ public class nominateOwnerMessage extends Message {
         }
         else {
             SystemLogger.info("[INFO] User " + subscriberUsername + " has declined the Owner nomination request for the store: " + store.getName() + ".");
+            if (!isSubscribed) {
+                store.removeSubscriber(subscriberUsername);
+            }
         }
     }
 }
