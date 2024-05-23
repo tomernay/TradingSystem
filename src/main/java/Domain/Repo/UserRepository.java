@@ -72,7 +72,7 @@ public class UserRepository {
         return users.get(subscriberUsername).makeStoreManager(message);
     }
 
-    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
+    public Response<Message> messageResponse(String subscriberUsername, boolean answer) {
         return users.get(subscriberUsername).messageResponse(answer);
     }
 

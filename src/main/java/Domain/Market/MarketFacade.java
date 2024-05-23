@@ -11,6 +11,9 @@ import Domain.Store.Store;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Messages.NormalMessage;
+import Domain.Users.Subscriber.Messages.nominateManagerMessage;
+import Domain.Users.Subscriber.Messages.nominateOwnerMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
@@ -94,7 +97,17 @@ public class MarketFacade {
     }
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
-        return userRepository.messageResponse(subscriberUsername, answer);
+        Response<Message> message = userRepository.messageResponse(subscriberUsername, answer);
+        if (message.getData() instanceof nominateOwnerMessage) {
+            userRepository.sendMessageToUser(((nominateOwnerMessage) message.getData()).getNominator(), new NormalMessage("Your request to nominate " + subscriberUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
+        }
+        if (message.getData() instanceof nominateManagerMessage) {
+            userRepository.sendMessageToUser(((nominateManagerMessage) message.getData()).getNominator(), new NormalMessage("Your request to nominate " + subscriberUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
+        }
+        if (message.isSuccess()) {
+            return Response.success(message.getMessage(), null);
+        }
+        return Response.error(message.getMessage(), null);
     }
 
     public Response<String> openStore(String storeID, String creator) {
