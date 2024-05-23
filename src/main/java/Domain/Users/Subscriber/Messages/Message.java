@@ -1,5 +1,7 @@
 package Domain.Users.Subscriber.Messages;
 
+import Utilities.Response;
+
 import java.util.Date;
 
 public abstract class Message {
@@ -11,5 +13,5 @@ public abstract class Message {
         this.date = new Date();
     }
 
-    public abstract void response(boolean answer);
+    public abstract Response<Message> response(boolean answer);
 }

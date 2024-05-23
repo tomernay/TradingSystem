@@ -41,14 +41,13 @@ public class Subscriber extends User {
         return Response.success("Owner nomination request sent to user " + username, null);
     }
 
-    public Response<String> messageResponse(boolean answer) {
+    public Response<Message> messageResponse(boolean answer) {
         Message message = messages.poll();
         if (message == null) {
             SystemLogger.error("[ERROR] No messages to respond to.");
             return Response.error("No messages to respond to.", null);
         }
-        message.response(answer);
-        return Response.success("Message responded.", null);
+        return message.response(answer);
     }
 
     public Response<String> makeStoreManager(Message message) {

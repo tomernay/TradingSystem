@@ -1,5 +1,7 @@
 package Domain.Users.Subscriber.Messages;
 
+import Utilities.Response;
+
 public class NormalMessage extends Message{
 
     public NormalMessage(String message) {
@@ -7,7 +9,7 @@ public class NormalMessage extends Message{
     }
 
     @Override
-    public void response(boolean answer) {
-
+    public Response<Message> response(boolean answer) {
+        return null;
     }
 }
