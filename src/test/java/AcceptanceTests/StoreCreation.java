@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Domain.Market.Market;
 import org.junit.Before;
 import org.junit.Test;
 import Domain.Store.Store;
@@ -17,14 +18,15 @@ public class StoreCreation {
 
     @Before
     public void init(){
+        Market.getInstance().reset();
         userService = new UserService();
         userService.register("mia","22");
         subscriber=userService.getUser("mia");
         storeService = new StoreService();
         userService.register("notOwner","by4");
         notOwner=userService.getUser("notOwner");
-
-
+        storeService.addStore("newStore", "mia",subscriber.getToken());
+        store = storeService.getMarket().getStore("0");
     }
 
     @Test

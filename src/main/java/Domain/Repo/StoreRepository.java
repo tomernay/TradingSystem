@@ -158,4 +158,12 @@ public class StoreRepository {
         stores.remove(storeID);
         return Response.success("Store with ID: " + storeID + " was closed successfully", new ArrayList<>(deactivatedStores.get(storeID).getSubscribers().keySet()));
     }
+
+    public boolean isClosedStore(String storeID){
+        return deactivatedStores.containsKey(storeID);
+    }
+
+    public boolean isOpenedStore(String storeID){
+        return stores.containsKey(storeID);
+    }
 }
