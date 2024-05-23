@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Store {
+public class Store  {
 
     //private Integer id = 0;
     private String storeID;
@@ -87,28 +87,28 @@ public class Store {
         subscribers.put(subscriberName, newState);
     }
 
-    public Response<Message> makeNominateOwnerMessage(String subscriberUsername) {
+    public Response<Message> makeNominateOwnerMessage(String subscriberUsername, String nominatorUsername) {
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
-            return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, false);
+            return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, false, nominatorUsername);
         }
-        return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, true);
+        return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, true, nominatorUsername);
     }
 
-    public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions) {
+    public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions, String nominatorUsername) {
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
-            return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, false);
+            return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, false, nominatorUsername);
         }
-        return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, true);
+        return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, true, nominatorUsername);
     }
 
-    public void nominateOwner(String subscriberName) {
-        subscribers.get(subscriberName).changeState(this, subscriberName, new StoreOwner(this, subscriberName));
+    public void nominateOwner(String subscriberName, String nominatorUsername) {
+        subscribers.get(subscriberName).changeState(this, subscriberName, new StoreOwner(this, subscriberName, nominatorUsername));
     }
 
-    public void nominateManager(String subscriberName, List<Permissions> permissions) {
-        subscribers.get(subscriberName).changeState(this, subscriberName, new StoreManager(this, subscriberName));
+    public void nominateManager(String subscriberName, List<Permissions> permissions, String nominatorUsername) {
+        subscribers.get(subscriberName).changeState(this, subscriberName, new StoreManager(this, subscriberName, nominatorUsername));
         managerPermissions.put(subscriberName, permissions);
     }
 

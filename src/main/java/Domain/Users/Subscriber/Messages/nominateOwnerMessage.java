@@ -7,20 +7,22 @@ public class nominateOwnerMessage extends Message {
     public Store store;
     public String subscriberUsername;
     public boolean isSubscribed;
+    public String nominatorUsername;
 
 
-    public nominateOwnerMessage(Store store, String subscriberID, boolean isSubscribed) {
+    public nominateOwnerMessage(Store store, String subscriberID, boolean isSubscribed, String nominatorUsername) {
         super("Nominate owner message");
         this.store = store;
         this.subscriberUsername = subscriberID;
         this.isSubscribed = isSubscribed;
+        this.nominatorUsername = nominatorUsername;
     }
 
     @Override
     public void response(boolean answer) {
         if (answer) {
             SystemLogger.info("[INFO] User " + subscriberUsername + " has accepted the Owner nomination request for the store: " + store.getName() + ".");
-            store.nominateOwner(subscriberUsername);
+            store.nominateOwner(subscriberUsername, nominatorUsername);
             SystemLogger.info("[INFO] User " + subscriberUsername + " has been nominated as an owner of the store: " + store.getName());
         }
         else {

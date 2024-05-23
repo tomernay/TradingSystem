@@ -9,7 +9,7 @@ import Utilities.SystemLogger;
 
 import java.util.List;
 
-public class StoreService {
+public class StoreService  {
   Market market;
     public StoreService(){
         this.market = Market.getInstance();
