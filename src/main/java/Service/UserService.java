@@ -47,7 +47,7 @@ public class UserService {
     }
 
     // Method to add a store owner subscription
-    public Response<String> makeStoreOwner(String storeName, String currentUsername, String subscriberUsername, String token) {
+    public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store owner");
         if(Security.isValidJWT(token,currentUsername)) {
             if (currentUsername.equals(subscriberUsername)) {
@@ -58,14 +58,14 @@ public class UserService {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
                 return Response.error("User: " + subscriberUsername + " does not exist", null);
             }
-            return market.makeStoreOwner(storeName, currentUsername, subscriberUsername);
+            return market.makeStoreOwner(storeID, currentUsername, subscriberUsername);
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store owner but the token was invalid");
         return Response.error("Invalid token",null);
     }
 
     // Method to add a store manager subscription
-    public Response<String> makeStoreManager(String storeName, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
+    public Response<String> makeStoreManager(String storeID, String currentUsername, String subscriberUsername, List<String> permissions, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store manager");
         if(Security.isValidJWT(token,currentUsername)) {
             if (currentUsername.equals(subscriberUsername)) {
@@ -76,7 +76,7 @@ public class UserService {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
                 return Response.error("User: " + subscriberUsername + " does not exist", null);
             }
-            return market.makeStoreManager(storeName, currentUsername, subscriberUsername, permissions);
+            return market.makeStoreManager(storeID, currentUsername, subscriberUsername, permissions);
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store manager but the token was invalid");
         return Response.error("Invalid token",null);

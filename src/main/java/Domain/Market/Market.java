@@ -1,6 +1,7 @@
 package Domain.Market;
 
 
+import Domain.Repo.StoreRepository;
 import Domain.Store.Store;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.SubscriberState;
@@ -139,5 +140,9 @@ public class Market {
 
     public Store getStore(String storeID) {
         return marketFacade.getStore(storeID);
+    }
+
+    public StoreRepository getStoreRepository() {
+        return marketFacade.getStoreRepository();
     }
 }
