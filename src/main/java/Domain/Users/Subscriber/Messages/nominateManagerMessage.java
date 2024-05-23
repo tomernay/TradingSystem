@@ -11,13 +11,15 @@ public class nominateManagerMessage extends Message {
     List<Permissions> permissions;
     public String subscriberUsername;
     boolean isSubscribed;
+    public String nominatorUsername;
 
-    public nominateManagerMessage(Store store, List<Permissions> permissions, String subscriberUsername, boolean isSubscribed) {
+    public nominateManagerMessage(Store store, List<Permissions> permissions, String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
         super("Nominate manager message");
         this.store = store;
         this.permissions = permissions;
         this.subscriberUsername = subscriberUsername;
         this.isSubscribed = isSubscribed;
+        this.nominatorUsername = nominatorUsername;
     }
 
     public List<Permissions> getPermissions() {
@@ -28,7 +30,7 @@ public class nominateManagerMessage extends Message {
     public void response(boolean answer) {
         if (answer) {
             SystemLogger.info("[INFO] User " + subscriberUsername + " has accepted the Manager nomination for the store: " + store.getName() + ".");
-            store.nominateManager(subscriberUsername, permissions);
+            store.nominateManager(subscriberUsername, permissions, nominatorUsername);
             SystemLogger.info("[INFO] User " + subscriberUsername + " has been nominated as a manager of the store: " + store.getName() + ".");
         }
         else {

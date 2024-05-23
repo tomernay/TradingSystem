@@ -4,9 +4,11 @@ import Domain.Store.Store;
 
 
 public class StoreManager extends SubscriberState {
+    String currentUsername;
 
-    public StoreManager(Store store, String subscriberID) {
+    public StoreManager(Store store, String subscriberID, String currentUsername) {
         super(subscriberID, store);
+        this.currentUsername = currentUsername;
     }
 
     @Override

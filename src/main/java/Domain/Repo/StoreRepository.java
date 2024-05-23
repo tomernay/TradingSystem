@@ -44,7 +44,7 @@ public class StoreRepository {
         if (isStoreOwner(storeID, subscriberUsername)) { //The subscriber is already the store owner
             return Response.error("The user you're trying to nominate is already the store owner.",null);
         }
-        return stores.get(storeID).makeNominateOwnerMessage(subscriberUsername);
+        return stores.get(storeID).makeNominateOwnerMessage(subscriberUsername, currentUsername);
     }
 
     public Response<Message> makeNominateManagerMessage(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
@@ -60,7 +60,7 @@ public class StoreRepository {
         if (isStoreManager(storeID, subscriberUsername)) { //The subscriber is already the store manager
             return Response.error("The user you're trying to nominate is already the store manager.",null);
         }
-        return stores.get(storeID).makeNominateManagerMessage(subscriberUsername, permissions);
+        return stores.get(storeID).makeNominateManagerMessage(subscriberUsername, permissions, currentUsername);
     }
 
     public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
