@@ -16,4 +16,30 @@ public class Order {
         this.username = username;
         this.products = products;
     }
+
+    public int getOrderID() {
+        return orderID;
+    }
+
+    public Map<String, Map<String, String>> getProducts() {
+        return products;
+    }
+
+    public String getStoreID() {
+        return storeID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderID=" + orderID +
+                ", storeID='" + storeID + '\'' +
+                ", username='" + username + '\'' +
+                ", products=" + products +
+                '}';
+    }
 }

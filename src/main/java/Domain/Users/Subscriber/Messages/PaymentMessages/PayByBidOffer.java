@@ -9,6 +9,7 @@ import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 import java.util.HashMap;
 
@@ -30,12 +31,12 @@ public class PayByBidOffer extends Message {
         this.store=store;
     }
     @Override
-    public void response(boolean answer) {
+    public Response<Message> response(boolean answer) {
          if (answer){
              payByBid.acceptCreator(creator);
              for(PayByBid.PayByBidStatus payByBidStatus:payByBid.getIsAgreed().values()){
                  if(payByBidStatus.compareTo(PayByBid.PayByBidStatus.Accept)!=0){
-                     return;
+                     return null;
                  }
              }
              PaymentAdapter paymentAdapter=new DefaultPay(user.getUsername());
@@ -47,5 +48,6 @@ public class PayByBidOffer extends Message {
              Message message=new NormalMessage("canceled pay by bid");
              user.addMessage(message);
          }
+         return null;
     }
 }

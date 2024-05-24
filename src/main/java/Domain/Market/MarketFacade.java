@@ -203,6 +203,9 @@ public class MarketFacade {
 
     }
 
+    public OrderRepository getOrderRepository() {
+        return orderRepository;
+    }
 
     public boolean userExists(String subscriberUsername) {
         return userRepository.isUserExist(subscriberUsername);
