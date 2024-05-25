@@ -145,4 +145,8 @@ public class Market {
     public StoreRepository getStoreRepository() {
         return marketFacade.getStoreRepository();
     }
+
+    public Response<String> waiveOwnership(String storeID, String currentUsername) {
+        return marketFacade.waiveOwnership(storeID, currentUsername);
+    }
 }

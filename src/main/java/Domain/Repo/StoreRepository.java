@@ -10,10 +10,7 @@ import Domain.Users.Subscriber.Messages.Message;
 import Utilities.Response;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StoreRepository {
     private Map<String, Store> stores;
@@ -165,5 +162,15 @@ public class StoreRepository {
 
     public boolean isOpenedStore(String storeID){
         return stores.containsKey(storeID);
+    }
+
+    public Response<Set<String>> waiveOwnership(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        if (!isStoreOwner(storeID, currentUsername)) { //The subscriber is not the store owner
+            return Response.error("The user trying to do this action is not the store owner.",null);
+        }
+        return stores.get(storeID).waiveOwnership(currentUsername);
     }
 }

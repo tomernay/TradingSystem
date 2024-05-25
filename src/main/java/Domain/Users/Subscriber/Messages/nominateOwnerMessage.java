@@ -32,7 +32,7 @@ public class nominateOwnerMessage extends Message {
             if (!isSubscribed) {
                 store.removeSubscriber(subscriberUsername);
             }
-            return Response.error("User " + subscriberUsername + " has declined the Owner nomination request for the store: " + store.getName() + ".", this);
+            return Response.success("User " + subscriberUsername + " has declined the Owner nomination request for the store: " + store.getName() + ".", this);
         }
     }
 

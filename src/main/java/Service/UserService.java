@@ -82,6 +82,15 @@ public class UserService {
         return Response.error("Invalid token",null);
     }
 
+    public Response<String> waiveOwnership(String storeID, String currentUsername, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to waive his ownership of the store");
+        if(Security.isValidJWT(token,currentUsername)) {
+            return market.waiveOwnership(storeID, currentUsername);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to waive his ownership of the store but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
+
 
 
     public Response<String> messageResponse(String currentUsername, boolean answer, String token) {

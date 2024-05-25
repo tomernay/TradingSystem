@@ -23,6 +23,7 @@ import Utilities.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MarketFacade {
     private UserRepository userRepository;
@@ -235,5 +236,13 @@ public class MarketFacade {
 
     public void addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
         suppliers.put(name, supplierAdapter);
+    }
+
+    public Response<String> waiveOwnership(String storeID, String currentUsername) {
+        Set<String> usernames = storeRepository.waiveOwnership(storeID, currentUsername).getData();
+        for (String username : usernames) {
+            userRepository.sendMessageToUser(username, new NormalMessage("The owner of the store has self-waived and have been removed from the store"));
+        }
+        return Response.success("The owner of the store has self-waived and all of its' nominess have been removed as well.", null);
     }
 }
