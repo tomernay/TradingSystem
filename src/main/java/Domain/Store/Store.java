@@ -9,9 +9,7 @@ import Utilities.Response;
 import Utilities.SystemLogger;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Store  {
 
@@ -21,6 +19,8 @@ public class Store  {
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
+    private Map<String, List<String>> nominationGraph;
+    private Map<String, String> reverseNominationMap;
     //yair added
     private HashMap<String,PayByBid> payByBids;
 
@@ -35,6 +35,8 @@ public class Store  {
         subscribers.put(creator,create);
         managerPermissions = new HashMap<>();
         payByBids=new HashMap<>();
+        nominationGraph = new HashMap<>();
+        reverseNominationMap = new HashMap<>();
     }
 
     public  Store(){}
@@ -104,10 +106,16 @@ public class Store  {
     }
 
     public void nominateOwner(String subscriberName, String nominatorUsername) {
+        nominationGraph.putIfAbsent(nominatorUsername, new ArrayList<>());
+        nominationGraph.get(nominatorUsername).add(subscriberName);
+        reverseNominationMap.put(subscriberName, nominatorUsername);
         subscribers.get(subscriberName).changeState(this, subscriberName, new StoreOwner(this, subscriberName, nominatorUsername));
     }
 
     public void nominateManager(String subscriberName, List<Permissions> permissions, String nominatorUsername) {
+        nominationGraph.putIfAbsent(nominatorUsername, new ArrayList<>());
+        nominationGraph.get(nominatorUsername).add(subscriberName);
+        reverseNominationMap.put(subscriberName, nominatorUsername);
         subscribers.get(subscriberName).changeState(this, subscriberName, new StoreManager(this, subscriberName, nominatorUsername));
         managerPermissions.put(subscriberName, permissions);
     }
@@ -182,5 +190,41 @@ public class Store  {
         if (subscribers.containsKey(subscriberUsername)) {
             subscribers.remove(subscriberUsername);
         }
+    }
+
+    public Response<Set<String>> waiveOwnership(String currentUsername) {
+        if (subscribers.get(currentUsername) == null) {
+            return Response.error("The user you're trying to waive ownership for is not the store owner.", null);
+        }
+        if (subscribers.get(currentUsername) instanceof StoreOwner) {
+            Set<String> toRemove = new HashSet<>();
+            Queue<String> queue = new LinkedList<>();
+            queue.add(currentUsername);
+            while (!queue.isEmpty()) {
+                String current = queue.poll();
+                if (nominationGraph.containsKey(current)) {
+                    for (String nominee : nominationGraph.get(current)) {
+                        queue.add(nominee);
+                    }
+                }
+                toRemove.add(current);
+            }
+            // Remove all collected nodes
+            for (String subscriber : toRemove) {
+                subscribers.remove(subscriber);
+                if (managerPermissions.containsKey(subscriber)) {
+                    managerPermissions.remove(subscriber);
+                }
+                nominationGraph.remove(subscriber);
+                reverseNominationMap.remove(subscriber);
+                // Remove from any nominator's list
+                if (reverseNominationMap.containsKey(subscriber)) {
+                    String nominator = reverseNominationMap.get(subscriber);
+                    nominationGraph.get(nominator).remove(subscriber);
+                }
+            }
+            return Response.success("Successfully waived ownership of the store and remove all of nominees", toRemove);
+        }
+        return Response.error("The user you're trying to waive ownership for is not the store owner.", null);
     }
 }

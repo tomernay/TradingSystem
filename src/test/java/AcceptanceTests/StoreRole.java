@@ -207,5 +207,19 @@ public class StoreRole {
         Assert.assertFalse(response.isSuccess());
     }
 
+    @Test
+    public void waiveOwnerRoleTest() {
+        Response<String> response = userService.makeStoreOwner(store.getId(), subscriber.getUsername(), newOwner.getUsername(), subscriber.getToken());
+        Assert.assertTrue(response.isSuccess());
+        Response<String> response1 = userService.messageResponse(newOwner.getUsername(), true, newOwner.getToken());
+        Assert.assertTrue(response1.isSuccess());
+        Assert.assertTrue(storeService.isStoreOwner(store.getId(), newOwner.getUsername()));
+
+        // New owner waives their role
+        Response<String> waiveResponse = userService.waiveOwnership(store.getId(), newOwner.getUsername(), newOwner.getToken());
+        Assert.assertTrue(waiveResponse.isSuccess());
+        Assert.assertFalse(storeService.isStoreOwner(store.getId(), newOwner.getUsername()));
+    }
+
 
 }

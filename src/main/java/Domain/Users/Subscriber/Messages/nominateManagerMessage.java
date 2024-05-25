@@ -40,7 +40,7 @@ public class nominateManagerMessage extends Message {
             if (!isSubscribed) {
                 store.removeSubscriber(subscriberUsername);
             }
-            return Response.error("User " + subscriberUsername + " has declined the Manager nomination for the store: " + store.getName() + ".", this);
+            return Response.success("User " + subscriberUsername + " has declined the Manager nomination for the store: " + store.getName() + ".", this);
         }
     }
 
