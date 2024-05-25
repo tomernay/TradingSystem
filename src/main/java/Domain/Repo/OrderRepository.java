@@ -18,4 +18,7 @@ public class OrderRepository {
         counterId++;
     }
 
+    public Map<Integer, Order> getOrders() {
+        return orders;
+    }
 }

@@ -3,6 +3,8 @@ package Domain.Market;
 
 
 
+import Domain.Externals.Payment.PaymentAdapter;
+import Domain.Externals.Suppliers.SupplierAdapter;
 import Domain.Repo.OrderRepository;
 import Domain.Repo.PaymentRepository;
 import Domain.Repo.StoreRepository;
@@ -18,6 +20,7 @@ import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +28,9 @@ public class MarketFacade {
     private UserRepository userRepository;
     private StoreRepository storeRepository;
     private OrderRepository orderRepository;
+
+    private HashMap<String, PaymentAdapter> payments;
+    private HashMap<String, SupplierAdapter> suppliers;
 
     private PaymentRepository paymentRepository;
 
@@ -35,7 +41,11 @@ public class MarketFacade {
         this.orderRepository = new OrderRepository();
         this.paymentRepository = new PaymentRepository();
 
+        this.payments = new HashMap<>();
+        this.suppliers = new HashMap<>();
+
     }
+
 
     public Response<String> loginAsGuest(User user){
         return userRepository.loginAsGuest(user);
@@ -203,6 +213,9 @@ public class MarketFacade {
 
     }
 
+    public OrderRepository getOrderRepository() {
+        return orderRepository;
+    }
 
     public boolean userExists(String subscriberUsername) {
         return userRepository.isUserExist(subscriberUsername);
@@ -214,5 +227,13 @@ public class MarketFacade {
 
     public Store getStore(String storeID) {
         return storeRepository.getStore(storeID);
+    }
+
+    public void addPaymentAdapter(PaymentAdapter paymentAdapter, String name){
+        payments.put(name, paymentAdapter);
+    }
+
+    public void addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
+        suppliers.put(name, supplierAdapter);
     }
 }
