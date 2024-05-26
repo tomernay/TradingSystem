@@ -12,7 +12,7 @@ public class SecurityUnitTests {
     @BeforeClass
     public static void init(){
         token= Security.generateJWT("yair");
-        encodedPassword= PasswordEncoderUtil.encode("yairby");
+        encodedPassword= PasswordEncoderUtil.encode("Password123!");
     }
 
     @Test
@@ -24,8 +24,8 @@ public class SecurityUnitTests {
 
     @Test
     public void decodePassword(){
-        Assert.assertTrue(PasswordEncoderUtil.matches("yairby",encodedPassword));
-        Assert.assertFalse(PasswordEncoderUtil.matches("yairbyy",encodedPassword));
+        Assert.assertTrue(PasswordEncoderUtil.matches("Password123!",encodedPassword));
+        Assert.assertFalse(PasswordEncoderUtil.matches("Password1234!",encodedPassword));
 
     }
 }

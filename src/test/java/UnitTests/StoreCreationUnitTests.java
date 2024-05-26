@@ -23,9 +23,9 @@ class StoreCreationUnitTests {
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
         userService.register("yair12312", "password123");
-        userService.register("newOwner", "by2");
-        userService.register("newManager", "by3");
-        userService.register("notOwner", "by4");
+        userService.register("newOwner", "Password123!");
+        userService.register("newManager", "Password123!");
+        userService.register("notOwner", "Password123!");
 
         subscriber = userService.getUserFacade().getUserRepository().getUser("yair12312");
         newOwner = userService.getUserFacade().getUserRepository().getUser("newOwner");

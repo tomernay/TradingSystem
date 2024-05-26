@@ -16,10 +16,9 @@ import java.util.Map;
 
 public class UserRepository {
 
-    private Map<String, Subscriber> users = new HashMap<>();
+    private Map<String, Subscriber> subscribers = new HashMap<>();
     private Map<String, User> guests = new HashMap<>();
     private int userIDS = 0;
-    private Map<String, User> usersMap = new HashMap<>(); // <username, User>
 
     public Response<String> loginAsGuest() {
         String username = "Guest" + userIDS;
@@ -44,8 +43,6 @@ public class UserRepository {
         if (isUserExist(username)) {
             Subscriber subscriber = getUser(username);
             if (subscriber.getPassword().equals(password)) {
-                // Log in the user and set the Subscriber object
-                users.put(username, subscriber);
                 getUser(username).generateToken();
                 return Response.success("Logged in successfully", null);
             } else {
@@ -57,10 +54,10 @@ public class UserRepository {
     }
 
     public Response<String> logoutAsSubscriber(Subscriber subscriber) {
-        if(!users.containsKey(subscriber.getUsername())) {
+        if(!subscribers.containsKey(subscriber.getUsername())) {
             return Response.error("User is already logged out", null);
         }
-        users.remove(subscriber.getUsername());
+        subscribers.remove(subscriber.getUsername());
         return Response.success("You signed out as a SUBSCRIBER", null);
     }
 
@@ -73,36 +70,36 @@ public class UserRepository {
     }
 
     public Response<String> makeStoreOwner(String subscriberUsername, Message message) {
-        return users.get(subscriberUsername).makeStoreOwner(message);
+        return subscribers.get(subscriberUsername).makeStoreOwner(message);
     }
 
     public Response<String> makeStoreManager(String subscriberUsername, Message message) {
-        return users.get(subscriberUsername).makeStoreManager(message);
+        return subscribers.get(subscriberUsername).makeStoreManager(message);
     }
 
     public Response<Message> messageResponse(String subscriberUsername, boolean answer) {
-        return users.get(subscriberUsername).messageResponse(answer);
+        return subscribers.get(subscriberUsername).messageResponse(answer);
     }
 
     public void sendMessageToUser(String user,Message message){
-        users.get(user).addMessage(message);
+        subscribers.get(user).addMessage(message);
     }
 
     public boolean isUserExist(String username) {
-        return users.containsKey(username);
+        return subscribers.containsKey(username);
     }
 
     public void addUser(Subscriber user) {
-        users.put(user.getUsername(), user);
+        subscribers.put(user.getUsername(), user);
     }
 
     public Subscriber getUser(String username) {
-        return users.get(username);
+        return subscribers.get(username);
     }
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         for (String subscriberName : subscriberNames) {
-            users.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+            subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
         }
         SystemLogger.info("Store " + storeID + " has been closed. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
@@ -181,30 +178,54 @@ public class UserRepository {
 
 
     public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
-        return usersMap.get(userName).addProductToShoppingCart(storeID, productID,quantity);
+        if (subscribers.containsKey(userName)) {
+            return subscribers.get(userName).addProductToShoppingCart(storeID, productID, quantity);
+        }
+        else if (guests.containsKey(userName)) {
+            return guests.get(userName).addProductToShoppingCart(storeID, productID, quantity);
+        }
+        return Response.error("User does not exist", null);
     }
 
 
     public Response<String> removeProductFromShoppingCart(String userName, String storeID, String productID) {
-        return usersMap.get(userName).removeProductFromShoppingCart(storeID,productID);
+        if (subscribers.containsKey(userName)) {
+            return subscribers.get(userName).removeProductFromShoppingCart(storeID, productID);
+        }
+        else if (guests.containsKey(userName)) {
+            return guests.get(userName).removeProductFromShoppingCart(storeID, productID);
+        }
+        return Response.error("User does not exist", null);
     }
 
     public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, int quantity) {
-        return usersMap.get(userName).updateProductInShoppingCart(storeID, productID, quantity);
+        if (subscribers.containsKey(userName)) {
+            return subscribers.get(userName).updateProductInShoppingCart(storeID, productID, quantity);
+        }
+        else if (guests.containsKey(userName)) {
+            return guests.get(userName).updateProductInShoppingCart(storeID, productID, quantity);
+        }
+        return Response.error("User does not exist", null);
     }
 
 
 
     public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
-        return usersMap.get(userName).getShoppingCartContents();
+        if (subscribers.containsKey(userName)) {
+            return subscribers.get(userName).getShoppingCartContents();
+        }
+        else if (guests.containsKey(userName)) {
+            return guests.get(userName).getShoppingCartContents();
+        }
+        return Response.error("User does not exist", null);
     }
 
     public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
-        return users.get(currentUsername).ownerNominationResponse(answer);
+        return subscribers.get(currentUsername).ownerNominationResponse(answer);
     }
 
     public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
-        return users.get(currentUsername).managerNominationResponse(answer);
+        return subscribers.get(currentUsername).managerNominationResponse(answer);
     }
 
     public boolean isValidToken(String token, String currentUsername) {

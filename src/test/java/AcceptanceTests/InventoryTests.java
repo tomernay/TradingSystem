@@ -17,7 +17,7 @@ public class InventoryTests {
     public void init(){
         serviceInitializer = new ServiceInitializer();
         StoreService storeService = serviceInitializer.getStoreService();
-        userService.register("mor","shuker");
+        userService.register("mor","Password123!");
         storeService.addStore("morStore","mor",subscriber.getToken());
         storeService.getStoreFacade().getStoreRepository().getStore("morStore");
 

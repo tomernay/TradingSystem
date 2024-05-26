@@ -21,10 +21,10 @@ public class StoreCreation {
     public void init(){
         serviceInitializer = new ServiceInitializer();
         userService = serviceInitializer.getUserService();
-        userService.register("mia","22");
+        userService.register("mia","Password123!");
         subscriber=userService.getUserFacade().getUserRepository().getUser("mia");
         storeService = serviceInitializer.getStoreService();
-        userService.register("notOwner","by4");
+        userService.register("notOwner","Password123!");
         notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
         storeService.addStore("newStore", "mia",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");

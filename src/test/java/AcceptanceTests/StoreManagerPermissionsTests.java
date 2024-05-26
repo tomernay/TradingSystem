@@ -21,10 +21,10 @@ public class StoreManagerPermissionsTests {
         serviceInitializer = new ServiceInitializer();
         userService=serviceInitializer.getUserService();
         storeService=serviceInitializer.getStoreService();
-        userService.register("yair","by");
+        userService.register("yair","Password123!");
         subscriber=userService.getUserFacade().getUserRepository().getUser("yair");
 
-        userService.register("yair2","by2");
+        userService.register("yair2","Password123!");
         buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
         store=storeService.getStoreFacade().getStoreRepository().getStore("0");

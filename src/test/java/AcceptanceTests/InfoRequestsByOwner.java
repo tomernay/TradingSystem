@@ -27,7 +27,7 @@ public class InfoRequestsByOwner {
         serviceInitializer = new ServiceInitializer();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
-        userService.register("mia","22");
+        userService.register("mia","Password123!");
         subscriber = userService.getUserFacade().getUserRepository().getUser("mia");
         Response<String> response = storeService.addStore("ziv", "mia", subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
