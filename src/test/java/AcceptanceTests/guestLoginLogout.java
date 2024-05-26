@@ -8,11 +8,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class guestLoginLogout {
+    ServiceInitializer serviceInitializer;
     UserService userService;
 
     @Before
     public void init(){
-        userService = new UserService();
+        serviceInitializer = new ServiceInitializer();
+        userService = serviceInitializer.getUserService();
     }
 
     @Test

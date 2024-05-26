@@ -2,9 +2,9 @@ package Domain.Users.StateOfSubscriber;
 
 import Domain.Store.Store;
 import Domain.Store.StoreData.Permissions;
-import Domain.Users.Subscriber.Messages.Message;
-import Domain.Users.Subscriber.Messages.nominateManagerMessage;
-import Domain.Users.Subscriber.Messages.nominateOwnerMessage;
+import Utilities.Messages.Message;
+import Utilities.Messages.nominateManagerMessage;
+import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 
 
@@ -23,14 +23,18 @@ public abstract class SubscriberState {
     public abstract void changeState(Store store, String subscriberUsername, SubscriberState newState);
 
     public Response<Message> makeNominateOwnerMessage(String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
-        return Response.success("Created message successfully", new nominateOwnerMessage(this.store, subscriberUsername, isSubscribed, nominatorUsername));
+        return Response.success("Created message successfully", new nominateOwnerMessage(this.store.getId(), subscriberUsername, isSubscribed, nominatorUsername));
     }
 
     public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions, boolean isSubscribed, String nominatorUsername) {
-        return Response.success("Created message successfully", new nominateManagerMessage(this.store, Permissions.convertStringList(permissions), subscriberUsername, isSubscribed, nominatorUsername));
+        return Response.success("Created message successfully", new nominateManagerMessage(this.store.getId(), permissions, subscriberUsername, isSubscribed, nominatorUsername));
     }
 
     public String getSubscriberUsername() {
         return subscriberUsername;
     }
+
+    //Override toString()
+    @Override
+    public abstract String toString();
 }

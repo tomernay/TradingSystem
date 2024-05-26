@@ -76,6 +76,14 @@ public enum Permissions {
         return permissionList;
     }
 
+    public static List<String> convertPermissionList(List<Permissions> permissions) {
+        List<String> permissionList = new ArrayList<>();
+        for (Permissions permission : permissions) {
+            permissionList.add(permission.toString());
+        }
+        return permissionList;
+    }
+
     public static boolean exists(String permission) {
         try {
             Permissions.valueOf(permission);

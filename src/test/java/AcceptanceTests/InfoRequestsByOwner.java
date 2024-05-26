@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Service.ServiceInitializer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,30 +16,32 @@ import java.util.List;
 import java.util.Map;
 
 public class InfoRequestsByOwner {
-    StoreService storeService;
+    ServiceInitializer serviceInitializer;
     Subscriber subscriber;
     Store store;
+    StoreService storeService;
     UserService userService;
 
     @Before
     public void init(){
-        storeService = new StoreService();
-        userService = new UserService();
+        serviceInitializer = new ServiceInitializer();
+        storeService = serviceInitializer.getStoreService();
+        userService = serviceInitializer.getUserService();
         userService.register("mia","22");
-        subscriber = userService.getUser("mia");
+        subscriber = userService.getUserFacade().getUserRepository().getUser("mia");
         Response<String> response = storeService.addStore("ziv", "mia", subscriber.getToken());
-        store = storeService.getStore(response.getData());
+        store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
     }
 
     @Test
     public void testSubscribersListNoSubscribersToTheStore(){
-        Response <Map<String, SubscriberState>> response = userService.requestEmployeesStatus(store.getId(),"mia" ,subscriber.getToken());
+        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getId(),"mia" ,subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 
     @Test
     public void testManagersListNoManagersToTheStore(){
-        Response <Map<String, List<Permissions>>> response = userService.requestManagersPermissions(store.getId(),"mia" ,subscriber.getToken());
+        Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getId(),"mia" ,subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 

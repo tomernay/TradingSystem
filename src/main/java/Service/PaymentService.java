@@ -7,7 +7,7 @@ import Domain.Market.Market;
 import Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
 import Domain.Store.Store;
 import Domain.Users.StateOfSubscriber.SubscriberState;
-//import Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
+import Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
 import Domain.Users.Subscriber.Messages.PaymentMessages.PayByBidOffer;
 import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
@@ -15,13 +15,13 @@ import Utilities.Response;
 import java.util.HashMap;
 
 public class PaymentService {
-    private Market market;
+    private UserService userService;
+
     public PaymentService(){
-        this.market = Market.getInstance();
     }
 
-    public Market getMarket() {
-        return market;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -63,7 +63,7 @@ public class PaymentService {
      * @param token
      */
     public Response<String> immediatePay(String user,double fee,Store s,String credit,String token){
-        if(Security.isValidJWT(user,token) ) {
+        if(userService.isValidToken(user,token) ) {
             ImmediatePay payment=new ImmediatePay(fee,"111111115",credit);
             boolean pay=payment.pay(new DefaultPay(user));
             return new Response<>(pay,"payment Status"+String.valueOf(pay),null);

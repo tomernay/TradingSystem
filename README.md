@@ -2,3 +2,5 @@
 
 <h4>Link to use-cases</h4>https://docs.google.com/document/d/1vNO6_xK7hVnTdWi6pEBej4DQUyK4Fje9h5tHBA-OYq4/edit?usp=sharing
 
+<h4>Link to GUI pages</h4>https://docs.google.com/document/d/1cfAYpNht4ASmVwcA5-oyoe2WpjGTARnbkxJqKQklFSo/edit?usp=sharing
+

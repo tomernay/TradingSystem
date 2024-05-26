@@ -6,9 +6,13 @@ import Domain.Store.Store;
 public class StoreOwner extends SubscriberState {
     private String nominatorUsername;
 
-    public StoreOwner(Store store, String subscriberID, String nominatorUsername) {
-        super(subscriberID, store);
+    public StoreOwner(Store store, String subscriberUsername, String nominatorUsername) {
+        super(subscriberUsername, store);
         this.nominatorUsername = nominatorUsername;
+    }
+
+    public String getNominatorUsername() {
+        return nominatorUsername;
     }
 
     @Override
@@ -19,6 +23,11 @@ public class StoreOwner extends SubscriberState {
         } else {
             System.out.println("Invalid state transition");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "OWNER";
     }
 
 }

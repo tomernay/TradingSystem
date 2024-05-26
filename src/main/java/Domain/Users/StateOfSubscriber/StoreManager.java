@@ -4,11 +4,15 @@ import Domain.Store.Store;
 
 
 public class StoreManager extends SubscriberState {
-    String currentUsername;
+    String nominatorUsername;
 
-    public StoreManager(Store store, String subscriberID, String currentUsername) {
-        super(subscriberID, store);
-        this.currentUsername = currentUsername;
+    public StoreManager(Store store, String subscriberUsername, String nominatorUsername) {
+        super(subscriberUsername, store);
+        this.nominatorUsername = nominatorUsername;
+    }
+
+    public String getNominatorUsername() {
+        return nominatorUsername;
     }
 
     @Override
@@ -19,5 +23,10 @@ public class StoreManager extends SubscriberState {
         } else {
             System.out.println("Invalid state transition");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "MANAGER";
     }
 }

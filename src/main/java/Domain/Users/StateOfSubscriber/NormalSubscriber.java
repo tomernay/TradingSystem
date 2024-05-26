@@ -13,8 +13,14 @@ public class NormalSubscriber extends SubscriberState {
         if (newState instanceof StoreCreator || newState instanceof StoreManager || newState instanceof StoreOwner) {
             store.setState(SubscriberID, newState);
             System.out.println("State changed successfully to " + newState.getClass().getSimpleName());
-        } else {
+        }
+        else {
             System.out.println("Invalid state transition");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "SUBSCRIBER";
     }
 }
