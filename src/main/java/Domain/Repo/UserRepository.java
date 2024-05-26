@@ -40,12 +40,13 @@ public class UserRepository {
         return Response.error("Error - can't signed out as a GUEST", null);
     }
 
-    public Response<String> loginAsSubscriber(Subscriber subscriberToLogin) {
-        if (isUserExist(subscriberToLogin.getUsername())) {
-            Subscriber subscriber = getUser(subscriberToLogin.getUsername());
-            if (subscriber.getPassword().equals(subscriberToLogin.getPassword())) {
+    public Response<String> loginAsSubscriber(String username, String password) {
+        if (isUserExist(username)) {
+            Subscriber subscriber = getUser(username);
+            if (subscriber.getPassword().equals(password)) {
                 // Log in the user and set the Subscriber object
-                users.put(subscriber.getUsername(), subscriber);
+                users.put(username, subscriber);
+                getUser(username).generateToken();
                 return Response.success("Logged in successfully", null);
             } else {
                 return Response.error("Incorrect password", null);
@@ -108,8 +109,11 @@ public class UserRepository {
     }
 
     public Response<String> register(String username, String password) {
-        if(!isUsernameValid(username) || password == null || password.isEmpty()) {
+        if(!isUsernameValid(username) ) {
             return Response.error("Username does not meet the requirements", null);
+        }
+        else if(!isValidPassword(password)) {
+            return Response.error("Password does not meet the requirements", null);
         }
         else if(isUserExist(username)) {
             return  Response.error("User already exists", null);
@@ -136,6 +140,42 @@ public class UserRepository {
             return false;
         }
         return true;
+    }
+
+    public static boolean isValidPassword(String password) {
+        // Define the password criteria
+        int minLength = 8;
+        boolean hasUpperCase = false;
+        boolean hasLowerCase = false;
+        boolean hasDigit = false;
+        boolean hasSpecialChar = false;
+
+        // Check the length of the password
+        if (password.length() < minLength) {
+            return false;
+        }
+
+        // Check each character of the password
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                hasUpperCase = true;
+            } else if (Character.isLowerCase(c)) {
+                hasLowerCase = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
+            } else if (isSpecialCharacter(c)) {
+                hasSpecialChar = true;
+            }
+        }
+
+        // Return true if all criteria are met
+        return hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar;
+    }
+
+    // Helper method to check if a character is a special character
+    private static boolean isSpecialCharacter(char c) {
+        String specialCharacters = "!@#$%^&*()-+";
+        return specialCharacters.indexOf(c) >= 0;
     }
 
 
