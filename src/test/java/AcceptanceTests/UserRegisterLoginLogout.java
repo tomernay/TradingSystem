@@ -14,7 +14,6 @@ public class UserRegisterLoginLogout {
     @Before
     public void init(){
         userService = new UserService();
-        guest1 = new User();
     }
 
     @Test

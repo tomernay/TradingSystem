@@ -15,7 +15,6 @@ import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Messages.nominateManagerMessage;
 import Domain.Users.Subscriber.Messages.nominateOwnerMessage;
 import Domain.Users.Subscriber.Subscriber;
-import Domain.Users.User;
 import Utilities.Response;
 
 import java.util.List;
@@ -37,19 +36,24 @@ public class MarketFacade {
 
     }
 
-    public Response<String> loginAsGuest(User user){
-        return userRepository.loginAsGuest(user);
+    public Response<String> loginAsGuest(){
+        return userRepository.loginAsGuest();
     }
 
-    public Response<String> logoutAsGuest(User user) {
-        return userRepository.logoutAsGuest(user);
+    public Response<String> logoutAsGuest(String username) {
+        return userRepository.logoutAsGuest(username);
     }
 
     public Response<String> loginAsSubscriber(Subscriber subscriber){
         return userRepository.loginAsSubscriber(subscriber);
     }
+
     public Response<String> logoutAsSubscriber(Subscriber subscriber){
         return userRepository.logoutAsSubscriber(subscriber);
+    }
+
+    public Response<String> register(String username, String password) {
+        return userRepository.register(username, password);
     }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
@@ -130,9 +134,7 @@ public class MarketFacade {
         return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
     }
 
-    public Response<String> register(String username, String password) {
-        return userRepository.register(username, password);
-    }
+
 
     public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
         return storeRepository.requestEmployeesStatus(storeID);

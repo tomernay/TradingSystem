@@ -6,9 +6,7 @@ import Domain.Store.Store;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Subscriber;
-import Domain.Users.User;
 import Utilities.Response;
-
 import java.util.List;
 import java.util.Map;
 
@@ -42,15 +40,21 @@ public class Market {
         return marketFacade.logoutAsSubscriber(subscriber);
     }
 
-    public Response<String> loginAsGuest(User user){
-        return marketFacade.loginAsGuest(user);
+    public Response<String> loginAsGuest(){
+        return marketFacade.loginAsGuest();
     }
-    public Response<String> logoutAsGuest(User user){
-        return marketFacade.logoutAsGuest(user);
+    public Response<String> logoutAsGuest(String username){
+        return marketFacade.logoutAsGuest(username);
     }
+
+    public Response<String> register(String username, String password) {
+        return marketFacade.register(username, password);
+    }
+
     public boolean isStoreOwner(String storeID, String currentUsername) {
         return marketFacade.isStoreOwner(storeID, currentUsername);
     }
+
 
     public Response<String> makeStoreOwner(String storeID, String currentUsername, String subscriberUsername) {
         return marketFacade.makeStoreOwner(storeID, currentUsername, subscriberUsername);
@@ -76,7 +80,6 @@ public class Market {
         return marketFacade.isStoreCreator(storeID, currentUsername);
     }
 
-
     public Response<String> openStore(String storeName, String creator) {
         return marketFacade.openStore(storeName, creator);
     }
@@ -95,10 +98,6 @@ public class Market {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return marketFacade.sendCloseStoreNotification(subscriberNames, storeID);
-    }
-
-    public Response<String> register(String username, String password) {
-        return marketFacade.register(username, password);
     }
 
     public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID) {

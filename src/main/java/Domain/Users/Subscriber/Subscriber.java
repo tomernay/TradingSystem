@@ -22,10 +22,10 @@ public class Subscriber extends User {
 
 
     public Subscriber(String username,String password) {
+        super(username);
         this.stores = new ArrayList<>();
         this.messages = new LinkedBlockingQueue<>();
         this.password=password;
-        this.username=username;
         Token=Security.generateJWT(username);
         System.out.println(Token);
 
@@ -61,7 +61,7 @@ public class Subscriber extends User {
     }
 
     public String getUsername() {
-        return username;
+        return super.getUsername();
     }
 
     //yair added

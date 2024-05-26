@@ -7,6 +7,7 @@ import Domain.Store.Store;
 import Domain.Users.Subscriber.Messages.Message;
 import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
+import Utilities.Response;
 
 import java.util.HashMap;
 
@@ -23,13 +24,14 @@ public class Alternative_Offer extends Message {
         this.subscriber=subscriber;
     }
     @Override
-    public void response(boolean answer) {
+    public Response<Message> response(boolean answer) {
         if(answer){
             ImmediatePay immediatePay=new ImmediatePay(fee, FireBaseConstants.visa,subscriber.getCredit());
             immediatePay.pay(new DefaultPay(subscriber.getUsername()));
             subscriber.addMessage(new NormalMessage("payment was successful"));
         }
 
+        return null;
     }
 
     public double getFee() {
