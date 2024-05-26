@@ -21,9 +21,11 @@ public class UserRepository {
     private Map<String, User> usersMap = new HashMap<>(); // <username, User>
 
     public Response<String> loginAsGuest() {
-        User user = new User("Guest" + userIDS++);
-        guests.put(user.getUsername(), user);
-        return Response.success("You signed in as a GUEST", null);
+        String username = "Guest" + userIDS;
+        User user = new User(username);
+        userIDS++;
+        guests.put(username, user);
+        return Response.success("You signed in as a GUEST", username);
     }
 
     public Response<String> logoutAsGuest(String username) {

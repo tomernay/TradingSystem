@@ -17,8 +17,11 @@ public class guestLoginLogout {
 
     @Test
     public void loginAsGuestTest(){
+        // 2 users login as guests.
         Response<String> response = userService.loginAsGuest();
         Assert.assertTrue(response.isSuccess());
+        Response<String> response2 = userService.loginAsGuest();
+        Assert.assertTrue(response2.isSuccess());
     }
 
 
