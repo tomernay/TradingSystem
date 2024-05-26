@@ -2,18 +2,13 @@ package Domain.Repo;
 
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
-import Domain.Store.PurchasePolicy.PaymentTypes.PurchaseType;
 import Domain.Store.Store;
-import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.SubscriberState;
-import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Messages.Message;
 import Utilities.Response;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StoreRepository {
     private Map<String, Store> stores;
@@ -38,27 +33,12 @@ public class StoreRepository {
         if (!stores.containsKey(storeID)) {
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
-        if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The currentUsername is not the store owner / creator
-            return Response.error("The user trying to do this action is not the store owner.",null);
-        }
-        if (isStoreOwner(storeID, subscriberUsername)) { //The subscriber is already the store owner
-            return Response.error("The user you're trying to nominate is already the store owner.",null);
-        }
         return stores.get(storeID).makeNominateOwnerMessage(subscriberUsername, currentUsername);
     }
 
     public Response<Message> makeNominateManagerMessage(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
         if (!stores.containsKey(storeID)) {
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
-        }
-        if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The currentUsername is not the store owner / creator
-            return Response.error("The user trying to do this action is not the store owner.",null);
-        }
-        if (isStoreOwner(storeID, subscriberUsername)) { //The subscriber is already the store owner
-            return Response.error("The user you're trying to nominate is already the store owner.",null);
-        }
-        if (isStoreManager(storeID, subscriberUsername)) { //The subscriber is already the store manager
-            return Response.error("The user you're trying to nominate is already the store manager.",null);
         }
         return stores.get(storeID).makeNominateManagerMessage(subscriberUsername, permissions, currentUsername);
     }
@@ -89,7 +69,7 @@ public class StoreRepository {
         return stores.get(storeID).removeManagerPermissions(subscriberUsername, permission);
     }
 
-    public Response<Map<String, SubscriberState>> requestEmployeesStatus(String storeID){
+    public Response<Map<String, String>> requestEmployeesStatus(String storeID){
         try{
             return stores.get(storeID).getSubscribersResponse();
         }
@@ -98,7 +78,7 @@ public class StoreRepository {
         }
     }
 
-    public Response<Map<String, List<Permissions>>> requestManagersPermissions(String storeID){
+    public Response<Map<String, List<String>>> requestManagersPermissions(String storeID){
         try{
             return stores.get(storeID).getManagersPermissionsResponse();
         }
@@ -164,6 +144,42 @@ public class StoreRepository {
     }
 
     public boolean isOpenedStore(String storeID){
+        return stores.containsKey(storeID);
+    }
+
+    public Response<Set<String>> waiveOwnership(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        if (!isStoreOwner(storeID, currentUsername)) { //The subscriber is not the store owner
+            return Response.error("The user trying to do this action is not the store owner.",null);
+        }
+        return stores.get(storeID).waiveOwnership(currentUsername);
+    }
+
+    public Response<String> nominateOwner(String storeID, String currentUsername, String nominatorUsername) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        return stores.get(storeID).nominateOwner(currentUsername, nominatorUsername);
+    }
+
+    public Response<String> removeStoreSubscription(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        return stores.get(storeID).removeStoreSubscription(currentUsername);
+    }
+
+    public Response<String> nominateManager(String storeID, String currentUsername, List<String> permissions, String nominatorUsername) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        return stores.get(storeID).nominateManager(currentUsername, permissions, nominatorUsername);
+    }
+
+
+    public boolean storeExists(String storeID) {
         return stores.containsKey(storeID);
     }
 }

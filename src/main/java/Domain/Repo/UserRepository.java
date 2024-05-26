@@ -1,9 +1,10 @@
 package Domain.Repo;
 
+import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
-import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Messages.Message;
 
-import Domain.Users.Subscriber.Messages.NormalMessage;
+import Utilities.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
@@ -16,18 +17,24 @@ import java.util.Map;
 public class UserRepository {
 
     private Map<String, Subscriber> users = new HashMap<>();
-    private Map<ShoppingCart, User> guests = new HashMap<>();
-
+    private Map<String, User> guests = new HashMap<>();
+    private int userIDS = 0;
     private Map<String, User> usersMap = new HashMap<>(); // <username, User>
 
-    public Response<String> loginAsGuest(User user) {
-        guests.put(user.getShoppingCart(), user);
-        return Response.success("You signed in as a GUEST", null);
+    public Response<String> loginAsGuest() {
+        String username = "Guest" + userIDS;
+        User user = new User(username);
+        userIDS++;
+        guests.put(username, user);
+        return Response.success("You signed in as a GUEST", username);
     }
 
-    public Response<String> logoutAsGuest(User user) {
-        if(user.logoutAsGuest()){
-            guests.remove(user.getShoppingCart());
+    public Response<String> logoutAsGuest(String username) {
+        if(guests.get(username) == null) {
+            return Response.error("User is already logged out", null);
+        }
+        if(!guests.get(username).logoutAsGuest()){
+            guests.remove(username);
             return Response.success("You signed out as a GUEST", null);
         }
         return Response.error("Error - can't signed out as a GUEST", null);
@@ -57,7 +64,7 @@ public class UserRepository {
     }
 
     public void addGuest(User user) {
-        guests.put(user.getShoppingCart(), user);
+        guests.put(user.getUsername(), user);
     }
 
     public User getGuest(ShoppingCart shoppingCart) {
@@ -101,37 +108,19 @@ public class UserRepository {
     }
 
     public Response<String> register(String username, String password) {
-        if(!isUsernameValid(username)) {
+        if(!isUsernameValid(username) || password == null || password.isEmpty()) {
             return Response.error("Username does not meet the requirements", null);
         }
         else if(isUserExist(username)) {
             return  Response.error("User already exists", null);
         }
-//        else if (!isPasswordValid(password)) {
-//            return Response.error("Password does not meet the requirements", null);
-//        }
         else {
             Subscriber subscriber = new Subscriber(username,password);
             addUser(subscriber);
-            return Response.success("User registered successfully", null);
+            return Response.success("User registered successfully", username);
         }
     }
 
-//    public boolean isPasswordValid(String password) {
-//        if (password.length() < 3) {
-//            return false;
-//        }
-//        if (!password.matches(".*[A-Z].*")) {
-//            return false;
-//        }
-//        if (!password.matches(".*[a-z].*")) {
-//            return false;
-//        }
-//        if (!password.matches(".*\\d.*")) {
-//            return false;
-//        }
-//        return true;
-//    }
 
     public boolean isUsernameValid(String username) {
         // Check if the username is null or empty
@@ -168,5 +157,17 @@ public class UserRepository {
 
     public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
         return usersMap.get(userName).getShoppingCartContents();
+    }
+
+    public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
+        return users.get(currentUsername).ownerNominationResponse(answer);
+    }
+
+    public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
+        return users.get(currentUsername).managerNominationResponse(answer);
+    }
+
+    public boolean isValidToken(String token, String currentUsername) {
+        return Security.isValidJWT(token,currentUsername);
     }
 }

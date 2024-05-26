@@ -4,14 +4,12 @@ import Domain.Store.Inventory.Inventory;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
-import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Store  {
 
@@ -21,6 +19,8 @@ public class Store  {
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
+    private Map<String, List<String>> nominationGraph;
+    private Map<String, String> reverseNominationMap;
     //yair added
     private HashMap<String,PayByBid> payByBids;
 
@@ -35,6 +35,8 @@ public class Store  {
         subscribers.put(creator,create);
         managerPermissions = new HashMap<>();
         payByBids=new HashMap<>();
+        nominationGraph = new HashMap<>();
+        reverseNominationMap = new HashMap<>();
     }
 
     public  Store(){}
@@ -88,6 +90,12 @@ public class Store  {
     }
 
     public Response<Message> makeNominateOwnerMessage(String subscriberUsername, String nominatorUsername) {
+        if (!isStoreOwner(nominatorUsername) && !isStoreCreator(nominatorUsername)) { //The currentUsername is not the store owner / creator
+            return Response.error("The user trying to do this action is not the store owner.",null);
+        }
+        if (isStoreOwner(subscriberUsername)) { //The subscriber is already the store owner
+            return Response.error("The user you're trying to nominate is already the store owner.",null);
+        }
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
             return subscribers.get(subscriberUsername).makeNominateOwnerMessage(subscriberUsername, false, nominatorUsername);
@@ -96,6 +104,15 @@ public class Store  {
     }
 
     public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions, String nominatorUsername) {
+        if (!isStoreOwner(nominatorUsername) && !isStoreCreator(nominatorUsername)) { //The currentUsername is not the store owner / creator
+            return Response.error("The user trying to do this action is not the store owner.",null);
+        }
+        if (isStoreOwner(subscriberUsername)) { //The subscriber is already the store owner
+            return Response.error("The user you're trying to nominate is already the store owner.",null);
+        }
+        if (isStoreManager(subscriberUsername)) { //The subscriber is already the store manager
+            return Response.error("The user you're trying to nominate is already the store manager.",null);
+        }
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
             return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, false, nominatorUsername);
@@ -103,13 +120,33 @@ public class Store  {
         return subscribers.get(subscriberUsername).makeNominateManagerMessage(subscriberUsername, permissions, true, nominatorUsername);
     }
 
-    public void nominateOwner(String subscriberName, String nominatorUsername) {
+    public Response<String> nominateOwner(String subscriberName, String nominatorUsername) {
+        if (!isStoreOwner(nominatorUsername) && !isStoreCreator(nominatorUsername)) { //The nominatorUsername is not the store owner / creator
+            return Response.error("The user trying to do this action is not the store owner.",null);
+        }
+        if (isStoreOwner(subscriberName)) { //The nominated is already the store owner
+            return Response.error("The user you're trying to nominate is already the store owner.",null);
+        }
+        nominationGraph.putIfAbsent(nominatorUsername, new ArrayList<>());
+        nominationGraph.get(nominatorUsername).add(subscriberName);
+        reverseNominationMap.put(subscriberName, nominatorUsername);
         subscribers.get(subscriberName).changeState(this, subscriberName, new StoreOwner(this, subscriberName, nominatorUsername));
+        return Response.success("The user: " + subscriberName + " has been nominated as the store owner", null);
     }
 
-    public void nominateManager(String subscriberName, List<Permissions> permissions, String nominatorUsername) {
+    public Response<String> nominateManager(String subscriberName, List<String> permissions, String nominatorUsername) {
+        if (!isStoreOwner(nominatorUsername) && !isStoreCreator(nominatorUsername)) { //The currentUsername is not the store owner / creator
+            return Response.error("The user trying to do this action is not the store owner.",null);
+        }
+        if (isStoreOwner(subscriberName) || isStoreManager(subscriberName)) { //The subscriber is already the store owner / manager
+            return Response.error("The user you're trying to nominate is already the store owner / manager.",null);
+        }
+        nominationGraph.putIfAbsent(nominatorUsername, new ArrayList<>());
+        nominationGraph.get(nominatorUsername).add(subscriberName);
+        reverseNominationMap.put(subscriberName, nominatorUsername);
         subscribers.get(subscriberName).changeState(this, subscriberName, new StoreManager(this, subscriberName, nominatorUsername));
-        managerPermissions.put(subscriberName, permissions);
+        managerPermissions.put(subscriberName, Permissions.convertStringList(permissions));
+        return Response.success("The user: " + subscriberName + " has been nominated as the store manager", null);
     }
 
     public Response<String> addManagerPermissions(String subscriberName, String permission) {
@@ -162,11 +199,19 @@ public class Store  {
         payByBids.remove(user);
     }
 
-    public Response<Map<String,SubscriberState>> getSubscribersResponse(){
+    public Response<Map<String,String>> getSubscribersResponse(){
+        Map<String, String> subscribers = new HashMap<>();
+        for (Map.Entry<String, SubscriberState> entry : this.subscribers.entrySet()) {
+            subscribers.put(entry.getKey(), entry.getValue().toString());
+        }
         return Response.success("successfuly fetched the subscribers states of the store", subscribers);
     }
 
-    public Response<Map<String,List<Permissions>>> getManagersPermissionsResponse(){
+    public Response<Map<String,List<String>>> getManagersPermissionsResponse(){
+        Map<String, List<String>> managerPermissions = new HashMap<>();
+        for (Map.Entry<String, List<Permissions>> entry : this.managerPermissions.entrySet()) {
+            managerPermissions.put(entry.getKey(), Permissions.convertPermissionList(entry.getValue()));
+        }
         return Response.success("successfuly fetched the managers permissions of the store", managerPermissions);
     }
 
@@ -182,5 +227,49 @@ public class Store  {
         if (subscribers.containsKey(subscriberUsername)) {
             subscribers.remove(subscriberUsername);
         }
+    }
+
+    public Response<Set<String>> waiveOwnership(String currentUsername) {
+        if (subscribers.get(currentUsername) == null) {
+            return Response.error("The user you're trying to waive ownership for is not the store owner.", null);
+        }
+        if (subscribers.get(currentUsername) instanceof StoreOwner) {
+            Set<String> toRemove = new HashSet<>();
+            Queue<String> queue = new LinkedList<>();
+            queue.add(currentUsername);
+            while (!queue.isEmpty()) {
+                String current = queue.poll();
+                if (nominationGraph.containsKey(current)) {
+                    for (String nominee : nominationGraph.get(current)) {
+                        queue.add(nominee);
+                    }
+                }
+                toRemove.add(current);
+            }
+            // Remove all collected nodes
+            for (String subscriber : toRemove) {
+                subscribers.remove(subscriber);
+                if (managerPermissions.containsKey(subscriber)) {
+                    managerPermissions.remove(subscriber);
+                }
+                nominationGraph.remove(subscriber);
+                reverseNominationMap.remove(subscriber);
+                // Remove from any nominator's list
+                if (reverseNominationMap.containsKey(subscriber)) {
+                    String nominator = reverseNominationMap.get(subscriber);
+                    nominationGraph.get(nominator).remove(subscriber);
+                }
+            }
+            return Response.success("Successfully waived ownership of the store and remove all of nominees", toRemove);
+        }
+        return Response.error("The user you're trying to waive ownership for is not the store owner.", null);
+    }
+
+    public Response<String> removeStoreSubscription(String currentUsername) {
+        if (subscribers.get(currentUsername) == null) {
+            return Response.error("The user you're trying to remove the store subscription for is not a subscriber of the store.", null);
+        }
+        subscribers.remove(currentUsername);
+        return Response.success("Successfully removed the store subscription for the user: " + currentUsername, null);
     }
 }

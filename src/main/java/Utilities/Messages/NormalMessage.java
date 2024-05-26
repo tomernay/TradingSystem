@@ -1,4 +1,4 @@
-package Domain.Users.Subscriber.Messages;
+package Utilities.Messages;
 
 import Utilities.Response;
 

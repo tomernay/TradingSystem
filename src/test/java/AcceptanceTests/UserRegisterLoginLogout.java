@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Service.ServiceInitializer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,12 +10,13 @@ import Service.UserService;
 import Utilities.Response;
 
 public class UserRegisterLoginLogout {
+    ServiceInitializer serviceInitializer;
     UserService userService;
     User guest1;
     @Before
     public void init(){
-        userService = new UserService();
-        guest1 = new User();
+        serviceInitializer = new ServiceInitializer();
+        userService = serviceInitializer.getUserService();
     }
 
     @Test
@@ -36,7 +38,7 @@ public class UserRegisterLoginLogout {
     }
     @Test
     public void registerDuplicateUsernameTest(){
-        // Register a user with username "niv"
+        // Register a user with username
         userService.register("nivn96","Password123");
 
         // Try to register another user with the same username
@@ -46,14 +48,6 @@ public class UserRegisterLoginLogout {
         Assert.assertFalse(response.isSuccess());
     }
 
-//    @Test
-//    public void registerInvalidPasswordTest(){
-//        // Try to register a user with a password that does not meet the requirements
-//        Response<String> response = userService.register("nivn967","123");
-//
-//        // The registration should fail, so the success status should be false
-//        Assert.assertFalse(response.isSuccess());
-//    }
 
     @Test
     public void loginAsSubscriberTest(){

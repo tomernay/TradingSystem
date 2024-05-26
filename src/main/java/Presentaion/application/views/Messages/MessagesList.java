@@ -1,8 +1,8 @@
 package Presentaion.application.views.Messages;
 
 
-import Domain.Users.Subscriber.Messages.Message;
-import Domain.Users.Subscriber.Messages.NormalMessage;
+import Utilities.Messages.Message;
+import Utilities.Messages.NormalMessage;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
