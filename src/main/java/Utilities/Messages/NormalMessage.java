@@ -2,7 +2,9 @@ package Utilities.Messages;
 
 import Utilities.Response;
 
-public class NormalMessage extends Message{
+import java.io.Serializable;
+
+public class NormalMessage extends Message {
 
     public NormalMessage(String message) {
         super(message);

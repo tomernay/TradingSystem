@@ -87,6 +87,14 @@
             <artifactId>vaadin-spring-boot-starter</artifactId>
             <version>24.3.12</version> <!-- Use the latest version -->
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
