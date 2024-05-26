@@ -24,7 +24,7 @@ public class guestLoginLogoutTests {
         // Create an executor service with 2 threads
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        // Submit two tasks to login as guest
+        // Submit two tasks to log in as guest
         Future<Response<String>> future1 = executorService.submit(() -> userService.loginAsGuest());
         Future<Response<String>> future2 = executorService.submit(() -> userService.loginAsGuest());
 
