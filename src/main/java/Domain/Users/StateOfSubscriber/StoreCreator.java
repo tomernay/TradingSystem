@@ -18,4 +18,9 @@ public class StoreCreator extends SubscriberState {
             System.out.println("Invalid state transition");
         }
     }
+
+    @Override
+    public String toString() {
+        return "CREATOR";
+    }
 }

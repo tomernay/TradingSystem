@@ -1,9 +1,10 @@
 package Domain.Repo;
 
+import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
-import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Messages.Message;
 
-import Domain.Users.Subscriber.Messages.NormalMessage;
+import Utilities.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
@@ -168,5 +169,17 @@ public class UserRepository {
 
     public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
         return usersMap.get(userName).getShoppingCartContents();
+    }
+
+    public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
+        return users.get(currentUsername).ownerNominationResponse(answer);
+    }
+
+    public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
+        return users.get(currentUsername).managerNominationResponse(answer);
+    }
+
+    public boolean isValidToken(String token, String currentUsername) {
+        return Security.isValidJWT(token,currentUsername);
     }
 }

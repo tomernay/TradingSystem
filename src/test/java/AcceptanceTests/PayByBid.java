@@ -2,27 +2,30 @@ package AcceptanceTests;
 
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
+import Service.ServiceInitializer;
 import org.junit.Before;
 import org.junit.Test;
 import Service.StoreService;
 import Service.UserService;
 
 public class PayByBid {
+    ServiceInitializer serviceInitializer;
     Subscriber subscriber,buyer;
     Store store;
     UserService userService;
     StoreService storeService;
     @Before
     public void init(){
-        userService=new UserService();
-        storeService=new StoreService();
+        serviceInitializer=new ServiceInitializer();
+        userService=serviceInitializer.getUserService();
+        storeService=serviceInitializer.getStoreService();
         userService.register("yair","by");
-        subscriber=userService.getUser("yair");
+        subscriber=userService.getUserFacade().getUserRepository().getUser("yair");
 
         userService.register("yair2","by2");
-        buyer=userService.getUser("yair2");
+        buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
-        store=storeService.getStore("0");
+        store=storeService.getStoreFacade().getStoreRepository().getStore("0");
     }
 
     @Test

@@ -24,4 +24,9 @@ public class StoreManager extends SubscriberState {
             System.out.println("Invalid state transition");
         }
     }
+
+    @Override
+    public String toString() {
+        return "MANAGER";
+    }
 }

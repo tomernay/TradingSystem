@@ -1,6 +1,7 @@
 package AcceptanceTests;
 
 import Domain.Users.User;
+import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
@@ -8,15 +9,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class guestLoginLogout {
-    UserService userService;
+    ServiceInitializer serviceInitializer;
     User guest1;
     User guest2;
+    UserService userService;
 
     @Before
     public void init(){
-        userService = new UserService();
+        serviceInitializer = new ServiceInitializer();
         guest1 = new User();
         guest2 = new User();
+        userService = serviceInitializer.getUserService();
     }
 
     @Test
