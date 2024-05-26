@@ -25,4 +25,9 @@ public class StoreOwner extends SubscriberState {
         }
     }
 
+    @Override
+    public String toString() {
+        return "OWNER";
+    }
+
 }

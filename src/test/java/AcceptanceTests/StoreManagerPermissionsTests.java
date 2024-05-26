@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Service.ServiceInitializer;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import Domain.Store.Store;
@@ -8,6 +9,7 @@ import Service.StoreService;
 import Service.UserService;
 
 public class StoreManagerPermissionsTests {
+    static ServiceInitializer serviceInitializer;
     static UserService userService;
     static StoreService storeService;
     static Store store;
@@ -16,15 +18,16 @@ public class StoreManagerPermissionsTests {
 
     @BeforeClass
     public static void init(){
-        userService=new UserService();
-        storeService=new StoreService();
+        serviceInitializer = new ServiceInitializer();
+        userService=serviceInitializer.getUserService();
+        storeService=serviceInitializer.getStoreService();
         userService.register("yair","by");
-        subscriber=userService.getUser("yair");
+        subscriber=userService.getUserFacade().getUserRepository().getUser("yair");
 
         userService.register("yair2","by2");
-        buyer=userService.getUser("yair2");
+        buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
-        store=storeService.getStore("0");
+        store=storeService.getStoreFacade().getStoreRepository().getStore("0");
 
         //add manager
 

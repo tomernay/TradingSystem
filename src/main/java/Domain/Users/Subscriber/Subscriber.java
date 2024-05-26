@@ -1,7 +1,7 @@
 package Domain.Users.Subscriber;
 
 import Domain.Externals.Security.Security;
-import Domain.Users.Subscriber.Messages.Message;
+import Utilities.Messages.Message;
 
 import Domain.Users.User;
 import Utilities.Response;
@@ -83,5 +83,23 @@ public class Subscriber extends User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Response<Message> ownerNominationResponse(boolean answer) {
+        Message message = messages.poll();
+        if (message == null) {
+            SystemLogger.error("[ERROR] No messages to respond to.");
+            return Response.error("No messages to respond to.", null);
+        }
+        return message.response(answer);
+    }
+
+    public Response<Message> managerNominationResponse(boolean answer) {
+        Message message = messages.poll();
+        if (message == null) {
+            SystemLogger.error("[ERROR] No messages to respond to.");
+            return Response.error("No messages to respond to.", null);
+        }
+        return message.response(answer);
     }
 }
