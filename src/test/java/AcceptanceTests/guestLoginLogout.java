@@ -1,6 +1,5 @@
 package AcceptanceTests;
 
-import Domain.Users.User;
 import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
@@ -28,19 +27,19 @@ public class guestLoginLogout {
     }
 
 
-//    @Test
-//    public void logoutAsGuestTest(){
-//        userService.loginAsGuest();
-//        Response<String> response = userService.logoutAsGuest("guest 1");
-//        Assert.assertTrue(response.isSuccess());
-//    }
-//
-//
-//    @Test
-//    public void logoutAsGuestFailureTest(){
-//        // Assuming that the logoutAsGuest method returns failure when the user is not logged in
-//        Response<String> response = userService.logoutAsGuest("guest 1"); // Logout should fail as the user is not logged in
-//        Assert.assertTrue(!response.isSuccess());
-//    }
+    @Test
+    public void logoutAsGuestTest(){
+        userService.loginAsGuest();
+        Response<String> response = userService.logoutAsGuest("Guest0");
+        Assert.assertTrue(response.isSuccess());
+    }
+
+
+    @Test
+    public void logoutAsGuestFailureTest(){
+        // Assuming that the logoutAsGuest method returns failure when the user is not logged in
+        Response<String> response = userService.logoutAsGuest("Guest0"); // Logout should fail as the user is not logged in
+        Assert.assertFalse(response.isSuccess());
+    }
 
 }

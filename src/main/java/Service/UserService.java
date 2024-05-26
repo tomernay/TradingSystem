@@ -28,12 +28,12 @@ public class UserService {
     }
 
 
-    public Response<String> loginAsGuest() {
+    public synchronized Response<String> loginAsGuest() {
         return userFacade.loginAsGuest();
     }
 
     //function as a Guest - exit from the website
-    public Response<String> logoutAsGuest(String username) {
+    public synchronized Response<String> logoutAsGuest(String username) {
         return userFacade.logoutAsGuest(username);
     }
 

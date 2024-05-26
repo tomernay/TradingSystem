@@ -1,6 +1,5 @@
 package UnitTests;
 
-import Domain.Users.User;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
@@ -41,5 +40,27 @@ public class guestLoginLogoutTest {
         Assert.assertTrue(response.isSuccess());
         Assert.assertNotEquals("Guest1", response.getData());
 
+    }
+
+    @Test
+    public void logoutAsGuestSuccessTest(){
+        // Act: Login as a guest
+        Response<String> loginResponse = userService.loginAsGuest();
+        Assert.assertTrue(loginResponse.isSuccess());
+
+        // Act: Logout as the same guest
+        Response<String> logoutResponse = userService.logoutAsGuest(loginResponse.getData());
+
+        // Assert: Logout should be successful
+        Assert.assertTrue(logoutResponse.isSuccess());
+    }
+
+    @Test
+    public void logoutAsGuestFailureTest(){
+        // Act: Try to log out as a guest who is not logged in
+        Response<String> logoutResponse = userService.logoutAsGuest("NonExistentGuest");
+
+        // Assert: Logout should fail
+        Assert.assertFalse(logoutResponse.isSuccess());
     }
 }
