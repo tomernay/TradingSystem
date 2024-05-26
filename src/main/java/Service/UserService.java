@@ -28,6 +28,16 @@ public class UserService {
         this.storeService = storeService;
     }
 
+
+    public Response<String> loginAsGuest() {
+        return userFacade.loginAsGuest();
+    }
+
+    //function as a Guest - exit from the website
+    public Response<String> logoutAsGuest(String username) {
+        return userFacade.logoutAsGuest(username);
+    }
+
     public Response<String> loginAsSubscriber(Subscriber subscriber) {
         if (!subscriber.loginAsGuest()) {
             return Response.error("Error - can't signed in as a GUEST", null);
@@ -37,18 +47,6 @@ public class UserService {
 
     public Response<String> logoutAsSubscriber(Subscriber subscriber) {
         return userFacade.logoutAsSubscriber(subscriber);
-    }
-
-    public Response<String> loginAsGuest(User user) {
-        if (!user.loginAsGuest()) {
-            return Response.error("Error - can't signed in as a GUEST", null);
-        }
-        return userFacade.loginAsGuest(user);
-    }
-
-    //function as a Guest - exit from the website
-    public Response<String> logoutAsGuest(User user) {
-        return userFacade.logoutAsGuest(user);
     }
 
     // Method to add a store owner subscription

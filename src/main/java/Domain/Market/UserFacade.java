@@ -21,17 +21,18 @@ public class UserFacade {
     }
 
 
-    public Response<String> loginAsGuest(User user){
-        return userRepository.loginAsGuest(user);
+    public Response<String> loginAsGuest(){
+        return userRepository.loginAsGuest();
     }
 
-    public Response<String> logoutAsGuest(User user) {
-        return userRepository.logoutAsGuest(user);
+    public Response<String> logoutAsGuest(String username) {
+        return userRepository.logoutAsGuest(username);
     }
 
     public Response<String> loginAsSubscriber(Subscriber subscriber){
         return userRepository.loginAsSubscriber(subscriber);
     }
+
     public Response<String> logoutAsSubscriber(Subscriber subscriber){
         return userRepository.logoutAsSubscriber(subscriber);
     }

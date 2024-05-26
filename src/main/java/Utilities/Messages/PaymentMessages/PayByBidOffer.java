@@ -1,4 +1,4 @@
-package Utilities.Messages.PaymentMessages;
+package Domain.Users.Subscriber.Messages.PaymentMessages;
 
 import DataBase.FireBaseConstants;
 import Domain.Externals.Payment.CreditCard;
@@ -6,8 +6,8 @@ import Domain.Externals.Payment.DefaultPay;
 import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.Store;
-import Utilities.Messages.Message;
-import Utilities.Messages.NormalMessage;
+import Domain.Users.Subscriber.Messages.Message;
+import Domain.Users.Subscriber.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 

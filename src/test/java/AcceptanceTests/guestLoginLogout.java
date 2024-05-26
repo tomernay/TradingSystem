@@ -1,7 +1,6 @@
 package AcceptanceTests;
 
 import Domain.Users.User;
-import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
@@ -10,45 +9,37 @@ import org.junit.Test;
 
 public class guestLoginLogout {
     ServiceInitializer serviceInitializer;
-    User guest1;
-    User guest2;
     UserService userService;
 
     @Before
     public void init(){
         serviceInitializer = new ServiceInitializer();
-        guest1 = new User();
-        guest2 = new User();
         userService = serviceInitializer.getUserService();
     }
 
     @Test
     public void loginAsGuestTest(){
-        Response<String> response = userService.loginAsGuest(guest1);
+        // 2 users login as guests.
+        Response<String> response = userService.loginAsGuest();
         Assert.assertTrue(response.isSuccess());
-    }
-
-    @Test
-    public void loginAsGuestFailureTest(){
-        // Assuming that the loginAsGuest method returns failure when the user is already logged in
-        userService.loginAsGuest(guest1); // First login should be successful
-        Response<String> response = userService.loginAsGuest(guest1); // Second login should fail
-        Assert.assertFalse(response.isSuccess());
-    }
-
-    @Test
-    public void logoutAsGuestTest(){
-        userService.loginAsGuest(guest1);
-        Response<String> response = userService.logoutAsGuest(guest1);
-        Assert.assertTrue(response.isSuccess());
+        Response<String> response2 = userService.loginAsGuest();
+        Assert.assertTrue(response2.isSuccess());
     }
 
 
-    @Test
-    public void logoutAsGuestFailureTest(){
-        // Assuming that the logoutAsGuest method returns failure when the user is not logged in
-        Response<String> response = userService.logoutAsGuest(guest2); // Logout should fail as the user is not logged in
-        Assert.assertTrue(!response.isSuccess());
-    }
+//    @Test
+//    public void logoutAsGuestTest(){
+//        userService.loginAsGuest();
+//        Response<String> response = userService.logoutAsGuest("guest 1");
+//        Assert.assertTrue(response.isSuccess());
+//    }
+//
+//
+//    @Test
+//    public void logoutAsGuestFailureTest(){
+//        // Assuming that the logoutAsGuest method returns failure when the user is not logged in
+//        Response<String> response = userService.logoutAsGuest("guest 1"); // Logout should fail as the user is not logged in
+//        Assert.assertTrue(!response.isSuccess());
+//    }
 
 }

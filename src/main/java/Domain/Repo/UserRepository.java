@@ -17,18 +17,21 @@ import java.util.Map;
 public class UserRepository {
 
     private Map<String, Subscriber> users = new HashMap<>();
-    private Map<ShoppingCart, User> guests = new HashMap<>();
-
+    private Map<String, User> guests = new HashMap<>();
+    private int userIDS = 0;
     private Map<String, User> usersMap = new HashMap<>(); // <username, User>
 
-    public Response<String> loginAsGuest(User user) {
-        guests.put(user.getShoppingCart(), user);
-        return Response.success("You signed in as a GUEST", null);
+    public Response<String> loginAsGuest() {
+        String username = "Guest" + userIDS;
+        User user = new User(username);
+        userIDS++;
+        guests.put(username, user);
+        return Response.success("You signed in as a GUEST", username);
     }
 
-    public Response<String> logoutAsGuest(User user) {
-        if(user.logoutAsGuest()){
-            guests.remove(user.getShoppingCart());
+    public Response<String> logoutAsGuest(String username) {
+        if(guests.get(username).logoutAsGuest()){
+            guests.remove(username);
             return Response.success("You signed out as a GUEST", null);
         }
         return Response.error("Error - can't signed out as a GUEST", null);
@@ -58,7 +61,7 @@ public class UserRepository {
     }
 
     public void addGuest(User user) {
-        guests.put(user.getShoppingCart(), user);
+        guests.put(user.getUsername(), user);
     }
 
     public User getGuest(ShoppingCart shoppingCart) {

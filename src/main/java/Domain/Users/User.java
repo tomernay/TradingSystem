@@ -7,9 +7,12 @@ import java.util.Map;
 
 public class User {
     private String username;
-    private ShoppingCart shoppingCart = null;
+    private ShoppingCart shoppingCart;
 
-
+    public User(String username) {
+        this.username = username;
+        shoppingCart = null;
+    }
 
     public boolean loginAsGuest() {
         if(shoppingCart == null){
@@ -58,5 +61,8 @@ public class User {
             return shoppingCart.getShoppingCartContents();
         }
         return Response.error("Error - can't get shopping cart contents", null);
+    }
+    public String getUsername() {
+        return username;
     }
 }

@@ -1,9 +1,15 @@
 package Service;
 
 import Domain.Externals.Payment.DefaultPay;
+import Domain.Externals.Security.Security;
 
+import Domain.Market.Market;
 import Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
 import Domain.Store.Store;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Messages.PaymentMessages.Alternative_Offer;
+import Domain.Users.Subscriber.Messages.PaymentMessages.PayByBidOffer;
+import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 
 import java.util.HashMap;
