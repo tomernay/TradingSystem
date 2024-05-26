@@ -108,37 +108,19 @@ public class UserRepository {
     }
 
     public Response<String> register(String username, String password) {
-        if(!isUsernameValid(username)) {
+        if(!isUsernameValid(username) || password == null || password.isEmpty()) {
             return Response.error("Username does not meet the requirements", null);
         }
         else if(isUserExist(username)) {
             return  Response.error("User already exists", null);
         }
-//        else if (!isPasswordValid(password)) {
-//            return Response.error("Password does not meet the requirements", null);
-//        }
         else {
             Subscriber subscriber = new Subscriber(username,password);
             addUser(subscriber);
-            return Response.success("User registered successfully", null);
+            return Response.success("User registered successfully", username);
         }
     }
 
-//    public boolean isPasswordValid(String password) {
-//        if (password.length() < 3) {
-//            return false;
-//        }
-//        if (!password.matches(".*[A-Z].*")) {
-//            return false;
-//        }
-//        if (!password.matches(".*[a-z].*")) {
-//            return false;
-//        }
-//        if (!password.matches(".*\\d.*")) {
-//            return false;
-//        }
-//        return true;
-//    }
 
     public boolean isUsernameValid(String username) {
         // Check if the username is null or empty

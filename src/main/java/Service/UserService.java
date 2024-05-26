@@ -159,9 +159,6 @@ public class UserService {
         return userFacade.register(username, password);
     }
 
-//    public Subscriber getUser(String username) {
-//        return market.getMarketFacade().getUserRepository().getUser(username);
-//    }
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return userFacade.sendCloseStoreNotification(subscriberNames, storeID);

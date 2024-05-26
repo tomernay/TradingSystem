@@ -26,9 +26,7 @@ public class Subscriber extends User {
         this.stores = new ArrayList<>();
         this.messages = new LinkedBlockingQueue<>();
         this.password=password;
-        Token=Security.generateJWT(username);
-        System.out.println(Token);
-
+        this.Token=Security.generateJWT(username);
     }
 
     public void addStore(String storeID) {
