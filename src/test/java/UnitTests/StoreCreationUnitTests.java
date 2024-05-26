@@ -22,10 +22,14 @@ class StoreCreationUnitTests {
         serviceInitializer = new ServiceInitializer();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
-        userService.register("yair12312", "password123");
+        userService.register("yair12312", "Password123!");
+        userService.loginAsSubscriber("yair12312", "Password123!");
         userService.register("newOwner", "Password123!");
+        userService.loginAsSubscriber("newOwner", "Password123!");
         userService.register("newManager", "Password123!");
+        userService.loginAsSubscriber("newManager", "Password123!");
         userService.register("notOwner", "Password123!");
+        userService.loginAsSubscriber("notOwner", "Password123!");
 
         subscriber = userService.getUserFacade().getUserRepository().getUser("yair12312");
         newOwner = userService.getUserFacade().getUserRepository().getUser("newOwner");

@@ -29,9 +29,11 @@ public class AdminTests {
         storeService = serviceInitializer.getStoreService();
         adminService = serviceInitializer.getAdminService();
         userService.register("yair","Password123!");
+        userService.loginAsSubscriber("yair","Password123!");
         subscriber=userService.getUserFacade().getUserRepository().getUser("yair");
 
         userService.register("yair2","Password123!");
+        userService.loginAsSubscriber("yair2","Password123!");
         buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
         store=storeService.getStoreFacade().getStoreRepository().getStore("0");

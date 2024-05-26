@@ -15,10 +15,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Subscriber extends User {
     private List<String> stores;
     private Queue<Message> messages;
-    String username;
-    String password;
-    String Token;
-    String credit;
+    private String password;
+    private String Token;
+    private String credit;
 
 
     public Subscriber(String username,String password) {
@@ -33,7 +32,7 @@ public class Subscriber extends User {
     }
 
     public void generateToken() {
-        Token = Security.generateJWT(username);
+        Token = Security.generateJWT(this.username);
     }
 
 

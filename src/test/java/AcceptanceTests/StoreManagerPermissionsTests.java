@@ -33,24 +33,24 @@ public class StoreManagerPermissionsTests {
 
     }
 
-    @Test
-    public void executeAction(){
-        //add manager permission
-
-        //service.getUserService().addManagerPermissions("0",)
-
-        //execute action x
-
-        //assert action execute
-    }
-
-    public void failedActionExecution(){
-        //remove manager permission
-
-        //execute action x
-
-        //assert action not-execute
-    }
+//    @Test
+//    public void executeAction(){
+//        //add manager permission
+//
+//        //service.getUserService().addManagerPermissions("0",)
+//
+//        //execute action x
+//
+//        //assert action execute
+//    }
+//
+//    public void failedActionExecution(){
+//        //remove manager permission
+//
+//        //execute action x
+//
+//        //assert action not-execute
+//    }
 
 
 

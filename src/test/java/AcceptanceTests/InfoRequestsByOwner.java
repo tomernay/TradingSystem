@@ -27,21 +27,22 @@ public class InfoRequestsByOwner {
         serviceInitializer = new ServiceInitializer();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
-        userService.register("mia","Password123!");
-        subscriber = userService.getUserFacade().getUserRepository().getUser("mia");
-        Response<String> response = storeService.addStore("ziv", "mia", subscriber.getToken());
+        userService.register("miaa","Password123!");
+        userService.loginAsSubscriber("miaa","Password123!");
+        subscriber = userService.getUserFacade().getUserRepository().getUser("miaa");
+        Response<String> response = storeService.addStore("ziv", "miaa", subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
     }
 
     @Test
     public void testSubscribersListNoSubscribersToTheStore(){
-        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getId(),"mia" ,subscriber.getToken());
+        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getId(),"miaa" ,subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 
     @Test
     public void testManagersListNoManagersToTheStore(){
-        Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getId(),"mia" ,subscriber.getToken());
+        Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getId(),"miaa" ,subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 

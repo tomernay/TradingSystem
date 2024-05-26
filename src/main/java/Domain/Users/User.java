@@ -6,7 +6,7 @@ import Utilities.Response;
 import java.util.Map;
 
 public class User {
-    private String username;
+    protected String username;
     private ShoppingCart shoppingCart;
 
     public User(String username) {
