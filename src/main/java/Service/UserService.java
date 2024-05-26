@@ -37,11 +37,8 @@ public class UserService {
         return userFacade.logoutAsGuest(username);
     }
 
-    public Response<String> loginAsSubscriber(Subscriber subscriber) {
-        if (!subscriber.loginAsGuest()) {
-            return Response.error("Error - can't signed in as a GUEST", null);
-        }
-        return userFacade.loginAsSubscriber(subscriber);
+    public Response<String> loginAsSubscriber(String username, String password) {
+        return userFacade.loginAsSubscriber(username, password);
     }
 
     public Response<String> logoutAsSubscriber(Subscriber subscriber) {
@@ -155,7 +152,7 @@ public class UserService {
     }
 
     //register a new user
-    public Response<String> register(String username, String password) {
+    public synchronized Response<String> register(String username, String password) {
         return userFacade.register(username, password);
     }
 

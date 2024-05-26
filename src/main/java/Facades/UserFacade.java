@@ -27,8 +27,8 @@ public class UserFacade {
         return userRepository.logoutAsGuest(username);
     }
 
-    public Response<String> loginAsSubscriber(Subscriber subscriber){
-        return userRepository.loginAsSubscriber(subscriber);
+    public Response<String> loginAsSubscriber(String username, String password){
+        return userRepository.loginAsSubscriber(username, password);
     }
 
     public Response<String> logoutAsSubscriber(Subscriber subscriber){
