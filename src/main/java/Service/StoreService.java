@@ -1,8 +1,6 @@
 package Service;
 
-import Domain.Market.StoreFacade;
-import Domain.Market.UserFacade;
-import Domain.Repo.StoreRepository;
+import Facades.StoreFacade;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;

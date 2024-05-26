@@ -1,4 +1,4 @@
-package Domain.Market;
+package Facades;
 
 import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Repo.PaymentRepository;

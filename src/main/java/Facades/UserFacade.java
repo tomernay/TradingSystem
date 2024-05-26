@@ -1,13 +1,11 @@
-package Domain.Market;
+package Facades;
 
-import Domain.Externals.Security.Security;
 import Domain.Repo.UserRepository;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Domain.Users.Subscriber.Subscriber;
-import Domain.Users.User;
 import Utilities.Response;
 
 import java.util.List;

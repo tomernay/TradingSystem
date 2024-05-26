@@ -1,4 +1,4 @@
-package Domain.Market;
+package Facades;
 
 import Domain.Externals.Suppliers.SupplierAdapter;
 import Domain.Repo.SupplyRepository;

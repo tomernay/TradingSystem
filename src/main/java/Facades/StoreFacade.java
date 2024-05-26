@@ -1,8 +1,7 @@
-package Domain.Market;
+package Facades;
 
 import Domain.Repo.StoreRepository;
 import Domain.Store.Store;
-import Domain.Users.StateOfSubscriber.SubscriberState;
 import Utilities.Messages.Message;
 import Utilities.Response;
 
