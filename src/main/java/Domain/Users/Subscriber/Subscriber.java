@@ -24,7 +24,7 @@ public class Subscriber extends User {
         super(username);
         this.stores = new ArrayList<>();
         this.messages = new LinkedBlockingQueue<>();
-        this.password=password;
+        this.password = password;
     }
 
     public void addStore(String storeID) {
@@ -102,5 +102,9 @@ public class Subscriber extends User {
             return Response.error("No messages to respond to.", null);
         }
         return message.response(answer);
+    }
+
+    public void resetToken() {
+        Token = null;
     }
 }

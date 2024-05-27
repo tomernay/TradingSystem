@@ -214,4 +214,74 @@ public class UserRegisterLoginLogout {
         executorService.shutdown();
     }
 
+    @Test
+    public void logoutAsSubscriberSuccessTest() throws Exception {
+        // Create an executor service with 2 threads
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        // Register and login a new user
+        userService.register("nivn96","Password123!");
+        userService.loginAsSubscriber("nivn96","Password123!");
+
+        // Submit two tasks to log out as a subscriber
+        Future<Response<String>> future1 = executorService.submit(() -> userService.logoutAsSubscriber("nivn96"));
+        Future<Response<String>> future2 = executorService.submit(() -> userService.logoutAsSubscriber("nivn96"));
+
+        // Get the responses. This will block until the tasks are complete.
+        Response<String> response1 = future1.get();
+        Response<String> response2 = future2.get();
+
+        // Assert that the first one was success while the other should fail
+        Assert.assertTrue(response1.isSuccess());
+        Assert.assertFalse(response2.isSuccess());
+
+        // Shut down the executor service
+        executorService.shutdown();
+    }
+
+    @Test
+    public void logoutAsSubscriberNotLoggedInTest() throws Exception {
+        // Create an executor service with 2 threads
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        // Register a new user but do not log them in
+        userService.register("nivn96","Password123!");
+
+        // Submit two tasks to log out as a subscriber
+        Future<Response<String>> future1 = executorService.submit(() -> userService.logoutAsSubscriber("nivn96"));
+        Future<Response<String>> future2 = executorService.submit(() -> userService.logoutAsSubscriber("nivn96"));
+
+        // Get the responses. This will block until the tasks are complete.
+        Response<String> response1 = future1.get();
+        Response<String> response2 = future2.get();
+
+        // Assert that both logouts were unsuccessful
+        Assert.assertFalse(response1.isSuccess());
+        Assert.assertFalse(response2.isSuccess());
+
+        // Shut down the executor service
+        executorService.shutdown();
+    }
+
+    @Test
+    public void logoutAsNonExistentSubscriberTest() throws Exception {
+        // Create an executor service with 2 threads
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+        // Submit two tasks to log out a user who does not exist
+        Future<Response<String>> future1 = executorService.submit(() -> userService.logoutAsSubscriber("nonExistentUser"));
+        Future<Response<String>> future2 = executorService.submit(() -> userService.logoutAsSubscriber("nonExistentUser"));
+
+        // Get the responses. This will block until the tasks are complete.
+        Response<String> response1 = future1.get();
+        Response<String> response2 = future2.get();
+
+        // Assert that both logouts were unsuccessful
+        Assert.assertFalse(response1.isSuccess());
+        Assert.assertFalse(response2.isSuccess());
+
+        // Shut down the executor service
+        executorService.shutdown();
+    }
+
 }
