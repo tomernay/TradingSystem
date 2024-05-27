@@ -177,7 +177,7 @@ public class UserService {
 
     public Response<Map<String, List<String>>> requestManagersPermissions(String storeID, String userName, String token) {
         if (isValidToken(token, userName)) {
-            if (storeService.isStoreOwner(storeID, userName)) {
+            if (storeService.isStoreOwner(storeID, userName)||storeService.isStoreCreator(storeID, userName)) {
                 return storeService.requestManagersPermissions(storeID);
             }
         }
