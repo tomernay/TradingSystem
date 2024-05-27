@@ -113,4 +113,39 @@ public class UserRegisterLoginLogoutTests {
         // The token should be invalid for the original user, so isValid should be false
         Assert.assertFalse(isValid);
     }
+
+    @Test
+    public void logoutAsSubscriberSuccessTest(){
+        // Register and login a new user
+        userService.register("nivn96","Password123!");
+        userService.loginAsSubscriber("nivn96","Password123!");
+
+        // Attempt to log out as a subscriber
+        Response<String> response = userService.logoutAsSubscriber("nivn96");
+
+        // Assert that the logout was successful
+        Assert.assertTrue(response.isSuccess());
+    }
+
+    @Test
+    public void logoutAsSubscriberNotLoggedInTest(){
+        // Register a new user but do not log them in
+        userService.register("nivn96","Password123!");
+
+        // Attempt to log out as a subscriber
+        Response<String> response = userService.logoutAsSubscriber("nivn96");
+
+        // Assert that the logout was unsuccessful
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void logoutAsNonExistentSubscriberTest(){
+        // Attempt to log out a user who does not exist
+        Response<String> response = userService.logoutAsSubscriber("nonExistentUser");
+
+        // Assert that the logout was unsuccessful
+        Assert.assertFalse(response.isSuccess());
+    }
+
 }

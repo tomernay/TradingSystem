@@ -5,7 +5,6 @@ import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
-import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 
 import java.util.List;
@@ -31,8 +30,8 @@ public class UserFacade {
         return userRepository.loginAsSubscriber(username, password);
     }
 
-    public Response<String> logoutAsSubscriber(Subscriber subscriber){
-        return userRepository.logoutAsSubscriber(subscriber);
+    public Response<String> logoutAsSubscriber(String username){
+        return userRepository.logoutAsSubscriber(username);
     }
 
     public UserRepository getUserRepository() {
@@ -59,13 +58,7 @@ public class UserFacade {
         return userRepository.updateProductInShoppingCart(storeID, productID, userName, quantity);
     }
 
-    public boolean userExists(String subscriberUsername) {
-        return userRepository.isUserExist(subscriberUsername);
-    }
 
-    public Subscriber getUser(String subscriberUsername) {
-        return userRepository.getUser(subscriberUsername);
-    }
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
         Response<Message> message = userRepository.messageResponse(subscriberUsername, answer);

@@ -17,6 +17,7 @@ import java.util.Map;
 public class UserRepository {
 
     private Map<String, Subscriber> subscribers = new HashMap<>();
+    private Map<String, Subscriber> subscribersLoggedIn = new HashMap<>();
     private Map<String, User> guests = new HashMap<>();
     private int userIDS = 0;
 
@@ -24,7 +25,7 @@ public class UserRepository {
         String username = "Guest" + userIDS;
         User user = new User(username);
         userIDS++;
-        guests.put(username, user);
+        addGuest(user);
         return Response.success("You signed in as a GUEST", username);
     }
 
@@ -44,6 +45,7 @@ public class UserRepository {
             Subscriber subscriber = getUser(username);
             if (subscriber.getPassword().equals(password)) {
                 getUser(username).generateToken();
+                subscribersLoggedIn.put(username, subscriber);
                 return Response.success("Logged in successfully", null);
             } else {
                 return Response.error("Incorrect password", null);
@@ -53,11 +55,12 @@ public class UserRepository {
         }
     }
 
-    public Response<String> logoutAsSubscriber(Subscriber subscriber) {
-        if(!subscribers.containsKey(subscriber.getUsername())) {
+    public Response<String> logoutAsSubscriber(String username) {
+        if(!subscribersLoggedIn.containsKey(username)) {
             return Response.error("User is already logged out", null);
         }
-        subscribers.remove(subscriber.getUsername());
+        getUser(username).resetToken();
+        subscribersLoggedIn.remove(username);
         return Response.success("You signed out as a SUBSCRIBER", null);
     }
 

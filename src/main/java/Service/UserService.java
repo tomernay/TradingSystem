@@ -5,7 +5,6 @@ import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
-import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -37,12 +36,12 @@ public class UserService {
         return userFacade.logoutAsGuest(username);
     }
 
-    public Response<String> loginAsSubscriber(String username, String password) {
+    public synchronized Response<String> loginAsSubscriber(String username, String password) {
         return userFacade.loginAsSubscriber(username, password);
     }
 
-    public Response<String> logoutAsSubscriber(Subscriber subscriber) {
-        return userFacade.logoutAsSubscriber(subscriber);
+    public synchronized Response<String> logoutAsSubscriber(String username) {
+        return userFacade.logoutAsSubscriber(username);
     }
 
     // Method to add a store owner subscription

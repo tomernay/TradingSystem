@@ -4,7 +4,6 @@ import Service.ServiceInitializer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import Domain.Users.Subscriber.Subscriber;
 import Service.UserService;
 import Utilities.Response;
 
@@ -94,23 +93,33 @@ public class UserRegisterLoginLogout {
     public void logoutAsSubscriberTest(){
         // Register and login a new user
         userService.register("nivn96","Password123!");
-        Subscriber subscriber = new Subscriber("nivn96","Password123!");
         userService.loginAsSubscriber("nivn96","Password123!");
 
         // Attempt to log out as a subscriber
-        Response<String> response = userService.logoutAsSubscriber(subscriber);
+        Response<String> response = userService.logoutAsSubscriber("nivn96");
 
         // Assert that the logout was successful
         Assert.assertTrue(response.isSuccess());
     }
 
     @Test
-    public void logoutAsSubscriberFailureTest(){
-        // Attempt to log out as a subscriber who is not logged in
-        Subscriber subscriber = new Subscriber("nonExistentUser","Password123!");
-        Response<String> response = userService.logoutAsSubscriber(subscriber);
+    public void logoutAsSubscriberNotLoggedInTest(){
+        // Register a new user but do not log them in
+        userService.register("nivn96","Password123!");
 
-        // The logout should fail, so the success status should be false
+        // Attempt to log out as a subscriber
+        Response<String> response = userService.logoutAsSubscriber("nivn96");
+
+        // Assert that the logout was unsuccessful
+        Assert.assertFalse(response.isSuccess());
+    }
+
+    @Test
+    public void logoutAsNonExistentSubscriberTest(){
+        // Attempt to log out a user who does not exist
+        Response<String> response = userService.logoutAsSubscriber("nonExistentUser");
+
+        // Assert that the logout was unsuccessful
         Assert.assertFalse(response.isSuccess());
     }
 
