@@ -133,8 +133,8 @@ public class UserFacade {
 
     }
 
-    public void sendMessageToUser(String username, Message Message) {
-        userRepository.sendMessageToUser(username, Message);
+    public Response<String> sendMessageToUser(String username, Message Message) {
+        return userRepository.sendMessageToUser(username, Message);
     }
 
     public boolean isValidToken(String token, String currentUsername) {
