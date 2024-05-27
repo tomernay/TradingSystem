@@ -1,6 +1,7 @@
 package Domain.Users.StateOfSubscriber;
 
 import Domain.Store.Store;
+import Utilities.Response;
 
 
 public class StoreCreator extends SubscriberState {
@@ -10,12 +11,12 @@ public class StoreCreator extends SubscriberState {
     }
 
     @Override
-    public void changeState(Store store, String SubscriberID, SubscriberState newState) {
+    public Response<String> changeState(Store store, String SubscriberID, SubscriberState newState) {
         if (newState instanceof StoreManager || newState instanceof NormalSubscriber || newState instanceof StoreOwner) {
             store.setState(SubscriberID, newState);
-            System.out.println("State changed successfully to " + newState.getClass().getSimpleName());
+            return Response.success("State changed successfully to " + newState.getClass().getSimpleName(), null);
         } else {
-            System.out.println("Invalid state transition");
+            return Response.error("Invalid state transition", null);
         }
     }
 

@@ -84,8 +84,8 @@ public class UserRepository {
         return subscribers.get(subscriberUsername).messageResponse(answer);
     }
 
-    public void sendMessageToUser(String user,Message message){
-        subscribers.get(user).addMessage(message);
+    public Response<String> sendMessageToUser(String user,Message message){
+        return subscribers.get(user).addMessage(message);
     }
 
     public boolean isUserExist(String username) {

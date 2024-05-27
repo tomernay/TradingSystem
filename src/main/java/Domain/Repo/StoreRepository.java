@@ -6,6 +6,7 @@ import Domain.Store.Store;
 import Domain.Users.StateOfSubscriber.SubscriberState;
 import Utilities.Messages.Message;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 
 import java.util.*;
@@ -31,6 +32,7 @@ public class StoreRepository {
 
     public Response<Message> makeNominateOwnerMessage(String storeID, String currentUsername, String subscriberUsername) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to nominate " + subscriberUsername + " as owner in store: " + storeID + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
         return stores.get(storeID).makeNominateOwnerMessage(subscriberUsername, currentUsername);
@@ -38,6 +40,7 @@ public class StoreRepository {
 
     public Response<Message> makeNominateManagerMessage(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to nominate " + subscriberUsername + " as manager in store: " + storeID + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
         return stores.get(storeID).makeNominateManagerMessage(subscriberUsername, permissions, currentUsername);
@@ -45,12 +48,15 @@ public class StoreRepository {
 
     public Response<String> addManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to add permissions: " + permission + " to " + subscriberUsername + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
-        if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The storeCreatorID is not the store owner / creator
+        if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The currentUsername is not the store owner / creator
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to add permissions: " + permission + " to " + subscriberUsername + " but " + currentUsername + " is not the store owner / creator");
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         if (!isStoreManager(storeID, subscriberUsername)) { //The subscriber is not the store manager
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to add permissions: " + permission + " to " + subscriberUsername + " but " + subscriberUsername + " is not the store manager");
             return Response.error("The user you're trying to change permissions for is not the store manager.",null);
         }
         return stores.get(storeID).addManagerPermissions(subscriberUsername, permission);
@@ -58,12 +64,15 @@ public class StoreRepository {
 
     public Response<String> removeManagerPermissions(String storeID, String currentUsername, String subscriberUsername, String permission) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to remove permissions: " + permission + " from " + subscriberUsername + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
-        if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The storeCreatorID is not the store owner / creator
+        if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The currentUsername is not the store owner / creator
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to remove permissions: " + permission + " from " + subscriberUsername + " but " + currentUsername + " is not the store owner / creator");
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         if (!isStoreManager(storeID, subscriberUsername)) { //The subscriber is not the store manager
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to remove permissions: " + permission + " from " + subscriberUsername + " but " + subscriberUsername + " is not the store manager");
             return Response.error("The user you're trying to change permissions for is not the store manager.",null);
         }
         return stores.get(storeID).removeManagerPermissions(subscriberUsername, permission);

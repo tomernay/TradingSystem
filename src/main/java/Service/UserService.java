@@ -44,7 +44,6 @@ public class UserService {
         return userFacade.logoutAsSubscriber(username);
     }
 
-    // Method to add a store owner subscription
     public Response<String> SendStoreOwnerNomination(String storeID, String currentUsername, String subscriberUsername, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to make " + subscriberUsername + " a store owner");
         if(isValidToken(token,currentUsername)) {
@@ -58,8 +57,7 @@ public class UserService {
             }
             Message ownerNominationMessage = storeService.makeNominateOwnerMessage(storeID, currentUsername, subscriberUsername).getData();
             if (ownerNominationMessage != null) {
-                userFacade.sendMessageToUser(subscriberUsername, ownerNominationMessage);
-                return Response.success("The owner nomination message has been sent to the user", null);
+                return userFacade.sendMessageToUser(subscriberUsername, ownerNominationMessage);
             }
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store owner but the token was invalid");
@@ -80,8 +78,7 @@ public class UserService {
             }
             Message managerNominationMessage = storeService.makeNominateManagerMessage(storeID,currentUsername, subscriberUsername, permissions).getData();
             if (managerNominationMessage != null) {
-                userFacade.sendMessageToUser(subscriberUsername, managerNominationMessage);
-                return Response.success("The owner nomination message has been sent to the user", null);
+                return userFacade.sendMessageToUser(subscriberUsername, managerNominationMessage);
             }
         }
         SystemLogger.error("[ERROR] User: " + currentUsername + " tried to make " + subscriberUsername + " a store manager but the token was invalid");

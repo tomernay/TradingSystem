@@ -4,6 +4,8 @@ import Domain.Externals.Security.Security;
 import Utilities.Messages.Message;
 
 import Domain.Users.User;
+import Utilities.Messages.nominateManagerMessage;
+import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -66,8 +68,34 @@ public class Subscriber extends User {
     }
 
     //yair added
-    public void addMessage(Message m){
-        messages.add(m);
+    public synchronized Response<String> addMessage(Message m){
+        if (m instanceof nominateOwnerMessage) {
+            if (messages.stream().anyMatch(a -> a instanceof nominateOwnerMessage && ((nominateOwnerMessage) a).getStoreID().equals(((nominateOwnerMessage) m).getStoreID()))) {
+                SystemLogger.error("[ERROR] User already has a pending owner nomination message.");
+                return Response.error("User already has a pending owner nomination message.", null);
+            }
+            else {
+                messages.add(m);
+                SystemLogger.info("[SUCCESS] Owner nomination message successfully sent to: " + username);
+                return Response.success("Owner nomination message successfully sent to: " + username, null);
+            }
+        }
+        else if (m instanceof nominateManagerMessage) {
+            if (messages.stream().anyMatch(a -> a instanceof nominateManagerMessage && ((nominateManagerMessage) a).getStoreID().equals(((nominateManagerMessage) m).getStoreID()))) {
+                SystemLogger.error("[ERROR] User already has a pending manager nomination message.");
+                return Response.error("User already has a pending manager nomination message.", null);
+            }
+            else {
+                messages.add(m);
+                SystemLogger.info("[SUCCESS] Manager nomination message successfully sent to: " + username);
+                return Response.success("Manager nomination message successfully sent to: " + username, null);
+            }
+        }
+        else {
+            messages.add(m);
+            SystemLogger.info("[SUCCESS] Message successfully sent to: " + username);
+            return Response.success("Message successfully sent to: " + username, null);
+        }
     }
 
     public String getCredit() {

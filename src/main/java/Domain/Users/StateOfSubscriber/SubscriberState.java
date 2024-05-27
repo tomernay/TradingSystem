@@ -6,6 +6,7 @@ import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 
 import java.util.List;
@@ -20,7 +21,7 @@ public abstract class SubscriberState {
     }
 
 
-    public abstract void changeState(Store store, String subscriberUsername, SubscriberState newState);
+    public abstract Response<String> changeState(Store store, String subscriberUsername, SubscriberState newState);
 
     public Response<Message> makeNominateOwnerMessage(String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
         return Response.success("Created message successfully", new nominateOwnerMessage(this.store.getId(), subscriberUsername, isSubscribed, nominatorUsername));

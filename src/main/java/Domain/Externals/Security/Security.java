@@ -35,7 +35,6 @@ public class Security {
     public static boolean isValidJWT(String jwt, String username) {
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET_KEY).build().parseClaimsJws(jwt);
-            System.out.println("Claims: " + claimsJws.getBody()); // Add this line
             String subject = claimsJws.getBody().getSubject();
             return subject.equals(username);
         } catch (ExpiredJwtException e) {
