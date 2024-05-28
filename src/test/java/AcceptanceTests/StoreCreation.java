@@ -34,7 +34,6 @@ public class StoreCreation {
 
     @Test
     public void testStoreCreation(){
-        init();
         Response<String> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());

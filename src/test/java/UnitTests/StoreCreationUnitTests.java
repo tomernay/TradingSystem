@@ -1,5 +1,6 @@
 package UnitTests;
 
+import Domain.Repo.StoreRepository;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
@@ -16,12 +17,14 @@ class StoreCreationUnitTests {
     UserService userService;
     Subscriber subscriber, newOwner, newManager, notOwner;
     Store store;
+    StoreRepository storeRepository;
 
     @BeforeEach
     public void init() {
         serviceInitializer = new ServiceInitializer();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
+        storeRepository = storeService.getStoreFacade().getStoreRepository();
         userService.register("yair12312", "Password123!");
         userService.loginAsSubscriber("yair12312", "Password123!");
         userService.register("newOwner", "Password123!");
@@ -38,6 +41,50 @@ class StoreCreationUnitTests {
 
         storeService.addStore("yairStore", "yair12312", subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+    }
+
+    @Test
+    public void testStoreCreation() {
+        Response<String> response = storeService.addStore("newStore", "newOwner", newOwner.getToken());
+        Assertions.assertTrue(response.isSuccess());
+        store = storeRepository.getStore(response.getData());
+        Assertions.assertNotNull(store);
+    }
+
+
+    @Test
+    public void testStoreOwner() {
+//        init();
+        Response<String> response = storeService.addStore("newStore", "newOwner", newOwner.getToken());
+        store = storeRepository.getStore(response.getData());
+        Assertions.assertFalse(storeService.isStoreOwner(store.getId(), "newOwner"));
+    }
+
+    @Test
+    public void testStoreManager() {
+//        init();
+        Response<String> response = storeService.addStore("newStore", "newOwner", newOwner.getToken());
+        store = storeRepository.getStore(response.getData());
+        Assertions.assertFalse(storeService.isStoreManager(store.getId(), "newOwner"));
+    }
+
+    @Test
+    public void testStoreCreator() {
+//        init();
+        Response<String> response = storeService.addStore("newStore", "newOwner", newOwner.getToken());
+        store = storeRepository.getStore(response.getData());
+        Assertions.assertTrue(storeService.isStoreCreator(store.getId(), "newOwner"));
+    }
+
+
+    @Test
+    public void testStoreID() {
+//        init();
+        Response<String> response = storeService.addStore("newStore", "newOwner", newOwner.getToken());
+        store = storeRepository.getStore(response.getData());
+        Response<String> response2 = storeService.addStore("newStore", "newOwner", newOwner.getToken());
+        store = storeRepository.getStore(response2.getData());
+        Assertions.assertNotEquals(response.getData(), response2.getData());
     }
 
     @Test

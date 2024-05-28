@@ -110,6 +110,7 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String,String>> response = storeRepository.requestEmployeesStatus(res.getData());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),1);
     }
 
     @Test
@@ -118,6 +119,8 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String,String>> response = storeRepository.requestEmployeesStatus(res.getData());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertNotEquals(response.getData().size(),1);
+
     }
 
     @Test
@@ -125,6 +128,7 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String, List<String>>> response = storeRepository.requestManagersPermissions(res.getData());
         Assert.assertTrue(response.isSuccess()); //the creator is also a manager
+        Assert.assertEquals(response.getData().size(),1);
     }
 
 
@@ -134,6 +138,7 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String, List<String>>> response = storeRepository.requestManagersPermissions(res.getData());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertNotEquals(response.getData().size(),1);
 
     }
 
