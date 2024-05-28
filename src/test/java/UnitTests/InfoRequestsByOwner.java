@@ -64,9 +64,13 @@ public class InfoRequestsByOwner {
         //subscribe ziv
         userRepository.register("ziv","Password123!");
         userRepository.loginAsSubscriber("ziv","Password123!");
+        serviceInitializer.getUserService().SendStoreOwnerNomination(res.getData(), "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().ownerNominationResponse("ziv",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("ziv").getToken());
         //subscribe dor
         userRepository.register("dor","Password123!");
         userRepository.loginAsSubscriber("dor","Password123!");
+        serviceInitializer.getUserService().SendStoreOwnerNomination(res.getData(), "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().ownerNominationResponse("dor",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("dor").getToken());
         //subscribe niv
         userRepository.register("niv","Password123!");
         userRepository.loginAsSubscriber("niv","Password123!");
@@ -110,6 +114,7 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String,String>> response = storeRepository.requestEmployeesStatus(res.getData());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),1);
     }
 
     @Test
@@ -118,6 +123,8 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String,String>> response = storeRepository.requestEmployeesStatus(res.getData());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),3);
+
     }
 
     @Test
@@ -125,6 +132,7 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String, List<String>>> response = storeRepository.requestManagersPermissions(res.getData());
         Assert.assertTrue(response.isSuccess()); //the creator is also a manager
+        Assert.assertEquals(response.getData().size(),0);
     }
 
 
@@ -134,6 +142,7 @@ public class InfoRequestsByOwner {
         //use mock
         Response<Map<String, List<String>>> response = storeRepository.requestManagersPermissions(res.getData());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),1);
 
     }
 

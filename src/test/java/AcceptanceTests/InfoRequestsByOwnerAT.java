@@ -59,12 +59,19 @@ public class InfoRequestsByOwnerAT {
         //subscribe ziv
         userService.register("ziv","Password123!");
         userService.loginAsSubscriber("ziv","Password123!");
+        userService.SendStoreOwnerNomination(store.getData(), "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.ownerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
+
         //subscribe dor
         userService.register("dor","Password123!");
         userService.loginAsSubscriber("dor","Password123!");
+        userService.SendStoreOwnerNomination(store.getData(), "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.ownerNominationResponse("dor",true, userService.getUserFacade().getUserRepository().getUser("dor").getToken());
+
         //subscribe niv
         userService.register("niv","Password123!");
         userService.loginAsSubscriber("niv","Password123!");
+
     }
 
     public void initProducts(){
@@ -76,6 +83,7 @@ public class InfoRequestsByOwnerAT {
 //        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getId(),"miaa" ,subscriber.getToken());
         Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess()); //creator is a subscriber
+        Assert.assertEquals(response.getData().size(),1);
     }
 
     @Test
@@ -83,6 +91,7 @@ public class InfoRequestsByOwnerAT {
         initSubscribers();
         Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),3);
     }
 
     @Test
@@ -90,6 +99,7 @@ public class InfoRequestsByOwnerAT {
        // Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getId(),"miaa" ,subscriber.getToken());
         Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),0);
     }
 
     @Test
@@ -97,6 +107,7 @@ public class InfoRequestsByOwnerAT {
         initManagers();
         Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getData().size(),1);
         //subscribe ziv
 //        userService.register("ziv","Password123!");
 //        userService.loginAsSubscriber("ziv","Password123!");
