@@ -17,4 +17,8 @@ public class OrderService {
     public Response<Map<String, String>> getOrderHistorty(String storeID) {
         return orderFacade.getOrdersHistory(storeID);
     }
+
+    public OrderFacade getOrderFacade() {
+        return orderFacade;
+    }
 }

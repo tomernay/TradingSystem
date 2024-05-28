@@ -5,26 +5,24 @@ import Service.ServiceInitializer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import Domain.Store.Store;
-import Domain.Store.StoreData.Permissions;
-import Domain.Users.StateOfSubscriber.SubscriberState;
-import Domain.Users.Subscriber.Subscriber;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class InfoRequestsByOwner {
+public class InfoRequestsByOwnerAT {
     ServiceInitializer serviceInitializer;
-    //Subscriber subscriber;
-    //Store store;
     StoreService storeService;
     UserService userService;
     OrderService orderService;
     Response<String> store;
+
+
 
     @Before
     public void init(){
@@ -36,11 +34,12 @@ public class InfoRequestsByOwner {
         userService.loginAsSubscriber("mia","Password123!");
         store = storeService.addStore("newStore", "mia",userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         //make mia the store owner
-        storeService.addManagerPermissions(store.getData(), "mia", "ziv", "MANAGER", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+//        storeService.addManagerPermissions(store.getData(), "mia", "ziv", "MANAGER", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         //subscriber = userService.getUserFacade().getUserRepository().getUser("miaa");
         //Response<String> response = storeService.addStore("ziv", "miaa", subscriber.getToken());
         //store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
     }
+
 
     public void initManagers(){
         //subscribe ziv
@@ -56,11 +55,34 @@ public class InfoRequestsByOwner {
 
     }
 
+    public void initSubscribers(){
+        //subscribe ziv
+        userService.register("ziv","Password123!");
+        userService.loginAsSubscriber("ziv","Password123!");
+        //subscribe dor
+        userService.register("dor","Password123!");
+        userService.loginAsSubscriber("dor","Password123!");
+        //subscribe niv
+        userService.register("niv","Password123!");
+        userService.loginAsSubscriber("niv","Password123!");
+    }
+
+    public void initProducts(){
+        //add product
+    }
+
     @Test
     public void testSubscribersListNoSubscribersToTheStore(){
 //        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getId(),"miaa" ,subscriber.getToken());
         Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
-        Assert.assertFalse(response.isSuccess());
+        Assert.assertTrue(response.isSuccess()); //creator is a subscriber
+    }
+
+    @Test
+    public void testSubscribersList(){
+        initSubscribers();
+        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        Assert.assertTrue(response.isSuccess());
     }
 
     @Test
@@ -102,6 +124,8 @@ public class InfoRequestsByOwner {
     //test order history with orders
 //    @Test
 //    public void testOrderHistoryWithOrders(){
+//
+//    }
 //        //add product
 //        storeService.addProduct(store.getData(), "mia", "product", 10, 10, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
 //        //add product to cart
@@ -138,12 +162,13 @@ public class InfoRequestsByOwner {
 
 
 
-    public static void main(String[] args) {
-        InfoRequestsByOwner ownerInfoRequests = new InfoRequestsByOwner();
-        ownerInfoRequests.init();
-        ownerInfoRequests.testSubscribersListNoSubscribersToTheStore();
-        ownerInfoRequests.testManagersListNoManagersToTheStore();
-        ownerInfoRequests.testManagersList();
-    }
+//    public static void main(String[] args) {
+//        InfoRequestsByOwnerAT ownerInfoRequests = new InfoRequestsByOwnerAT();
+//        ownerInfoRequests.init();
+//        ownerInfoRequests.testSubscribersListNoSubscribersToTheStore();
+//        ownerInfoRequests.testManagersListNoAddedManagersToTheStore();
+//        ownerInfoRequests.testManagersList();
+//        ownerInfoRequests.testSubscribersList();
+//    }
 
 }

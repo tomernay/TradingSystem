@@ -167,7 +167,7 @@ public class UserService {
 
     public Response<Map<String, String>> requestEmployeesStatus(String storeID, String userName, String token) {
         if (isValidToken(token, userName)) {
-            if (storeService.isStoreOwner(storeID, userName)) {
+            if (storeService.isStoreOwner(storeID, userName) || storeService.isStoreCreator(storeID, userName)) {
                 return storeService.requestEmployeesStatus(storeID);
             }
             return Response.error("The user trying to do this action is not the store owner.", null);
@@ -177,7 +177,7 @@ public class UserService {
 
     public Response<Map<String, List<String>>> requestManagersPermissions(String storeID, String userName, String token) {
         if (isValidToken(token, userName)) {
-            if (storeService.isStoreOwner(storeID, userName)||storeService.isStoreCreator(storeID, userName)) {
+            if (storeService.isStoreOwner(storeID, userName) || storeService.isStoreCreator(storeID, userName)) {
                 return storeService.requestManagersPermissions(storeID);
             }
         }
@@ -186,7 +186,9 @@ public class UserService {
 
     public Response<String> addProductToShoppingCart(String storeID, String productID, String userName, String token, int quantity) {
         if (isValidToken(token, userName)) {
-            return userFacade.addProductToShoppingCart(storeID, productID, userName, quantity);
+            if (storeService.isStoreOwner(storeID, userName) || storeService.isStoreCreator(storeID, userName)) {
+                return userFacade.addProductToShoppingCart(storeID, productID, userName, quantity);
+            }
         }
         return Response.error("invalid token", null);
     }
