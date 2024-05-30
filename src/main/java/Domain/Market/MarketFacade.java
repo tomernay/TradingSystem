@@ -215,4 +215,9 @@ public class MarketFacade {
     public Store getStore(String storeID) {
         return storeRepository.getStore(storeID);
     }
-}
+
+    public Response<String> setQuantity(int productID, int newQuantity, String storeID, String userName) {
+        return storeRepository.setQuantity(productID, newQuantity, storeID, userName);
+        }
+    }
+

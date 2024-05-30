@@ -1,14 +1,14 @@
 package Domain.Store.Inventory;
 import Utilities.Response;
-import cn.hutool.json.ObjectMapper;
 import java.util.ArrayList;
-import Domain.Store.Inventory.Review;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Represents a product in the store inventory.
  * Each product has a unique product ID and is associated with a store.
  */
 public class Product {
+    private static final AtomicInteger counter = new AtomicInteger(0); // Counter for generating unique product IDs
     private String storeID;     // The ID of the store to which the product belongs,
     private String storeName;   // The name of the store
     private Integer productID;  // The unique ID of the product
@@ -18,7 +18,6 @@ public class Product {
     private int quantity;       // The quantity of the product available in the inventory
 
     private ArrayList<String> categories;  // The category that a product is related to
-    private ArrayList<Review> reviews;
 
 
     /**
@@ -52,15 +51,12 @@ public class Product {
         private int quantity;
         public ArrayList<String> categories;
 
-        public Builder(String storeID, int productID) {
+        public Builder(String storeID) {
             if (storeID == null || storeID.isEmpty()) {
                 throw new IllegalArgumentException("Store ID cannot be null or empty");
             }
-            if (productID <= 0) {
-                throw new IllegalArgumentException("Product ID must be greater than 0");
-            }
             this.storeID = storeID;
-            this.productID = productID;
+            this.productID = Product.counter.getAndIncrement(); // increment the counter to generate a unique product ID
         }
 
         public Builder storeID(String _storeID) {
@@ -206,22 +202,17 @@ public class Product {
         }
     }
 
-    /**
-     * Sets the quantity to the specified value.
-     *
-     * @param newQuantity the new quantity to set
-     */
-    public synchronized void setQuantity(int newQuantity) {
+    public synchronized Response<String> setQuantity(int newQuantity) {
+        if (newQuantity < 0) {
+            return Response.error("Invalid Quantity: Quantity cannot be negative", null);
+        }
         this.quantity = newQuantity;
+        return Response.success("Quantity set successfully for product: " + this.name, null);
     }
 
 
-    /**
-     * Adds the specified amount to the current quantity.
-     *
-     * @param amountToAdd the amount to add to the current quantity*/
-    public synchronized void addQuantity(int amountToAdd) {
-        setQuantity(this.quantity + amountToAdd);
+    public synchronized Response<String> addQuantity(int amountToAdd) {
+        return setQuantity(this.quantity + amountToAdd);
     }
 
     @Override

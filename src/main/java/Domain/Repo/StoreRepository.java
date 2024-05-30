@@ -121,7 +121,7 @@ public class StoreRepository {
     public Response<String> addStore(String storeName,String creator) {
 
         try {
-            Store store = new Store(storeID.toString() ,storeName ,new Inventory(storeID.toString()),creator);
+            Store store = new Store(storeID.toString() ,storeName ,creator);
             stores.put(this.storeID.toString(), store);
             this.storeID++;
             return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID-1));
@@ -165,5 +165,17 @@ public class StoreRepository {
 
     public boolean isOpenedStore(String storeID){
         return stores.containsKey(storeID);
+    }
+
+    public Response<String> setQuantity(int productID, int newQuantity, String storeID, String userName) {
+        if (!stores.containsKey(storeID)) {
+            if (!deactivatedStores.containsKey(storeID)) {
+                return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+            }
+            else{
+                return Response.error("Store with ID: " + storeID + " is already closed", null);
+            }
+        }
+        return stores.get(storeID).setQuantity(productID, newQuantity, userName);
     }
 }

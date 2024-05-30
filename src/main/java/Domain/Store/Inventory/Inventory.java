@@ -167,7 +167,7 @@ public class Inventory {
 
 
     public Response<String> removeCategoryFromProduct(int productID ,String category) {
-        return getProduct(productID).getData().removeCategory(category);
+        return getProduct(productID).removeCategory(category);
     }
 
 
@@ -287,20 +287,6 @@ public class Inventory {
     }
 
 
-    public synchronized Response<Product> getProduct(Integer productID) {
-        if (productID == null || productID <= 0) {
-            return new Response<>(false, "Invalid product ID: " + productID);
-        }
-        Product product = productsList.get(productID);
-        if (product != null) {
-            return new Response<>(true, "Product retrieved successfully", product);
-        } else {
-            return new Response<>(false, "Product not found with ID: " + productID);
-        }
-    }
-
-
-
     public synchronized Response<Integer> setProductName(Integer productID, String newName) {
         if (productID == null || productID <= 0) {
             return new Response<>(false, "Invalid product ID: " + productID);
@@ -314,7 +300,7 @@ public class Inventory {
             return new Response<>(false, "Product does not exist with ID: " + productID);
         }
 
-        Product product = getProduct(productID).getData();
+        Product product = getProduct(productID);
         if (product != null) {
             product.setName(newName);
             return new Response<>(true, "Product name updated successfully");
@@ -337,7 +323,7 @@ public class Inventory {
             return new Response<>(false, "Product does not exist with ID: " + productID);
         }
 
-        Product product = getProduct(productID).getData();
+        Product product = getProduct(productID);
         if (product != null) {
             product.setDesc(newDesc);
             return new Response<>(true, "Product description updated successfully");
@@ -360,7 +346,7 @@ public class Inventory {
             return new Response<>(false, "Product does not exist with ID: " + productID);
         }
 
-        Product product = getProduct(productID).getData();
+        Product product = getProduct(productID);
         if (product != null) {
             product.setPrice(newPrice);
             return new Response<>(true, "Product price updated successfully");
@@ -370,26 +356,18 @@ public class Inventory {
     }
 
 
-    public synchronized Response<Integer> setQuantity(Integer productID, int newQuantity) {
+    public synchronized Response<String> setQuantity(Integer productID, int newQuantity) {
         if (productID == null || productID <= 0) {
-            return new Response<>(false, "Invalid product ID: " + productID);
+            return Response.error("Invalid product ID: " + productID, null);
         }
-
-        if (newQuantity < 0) {
-            return new Response<>(false, "Invalid new quantity: " + newQuantity);
-        }
-
         if (!isProductExist(productID)) {
-            return new Response<>(false, "Product does not exist with ID: " + productID);
+            return Response.error("Product with ID: "+ productID +", does not exist : " , null);
         }
+        return getProduct(productID).setQuantity(newQuantity);
+    }
 
-        Product product = getProduct(productID).getData();
-        if (product != null) {
-            product.setQuantity(newQuantity);
-            return new Response<>(true, "Product quantity updated successfully");
-        } else {
-            return new Response<>(false, "Failed to update product quantity");
-        }
+    private synchronized Product getProduct(Integer productID) {
+        return productsList.get(productID);
     }
 
 
@@ -406,7 +384,7 @@ public class Inventory {
             return new Response<>(false, "Product does not exist with ID: " + productID);
         }
 
-        Product product = getProduct(productID).getData();
+        Product product = getProduct(productID);
         if (product != null) {
             product.addQuantity(valueToAdd);
             return new Response<>(true, "Quantity added to product successfully");
@@ -419,7 +397,7 @@ public class Inventory {
     public synchronized Response<Integer> getQuantity(int productID) {
         try {
             if (isProductExist(productID)) {
-                int quantity = getProduct(productID).getData().getQuantity();
+                int quantity = getProduct(productID).getQuantity();
                 return new Response<>(true, "Quantity retrieved successfully", quantity);
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -433,7 +411,7 @@ public class Inventory {
     public synchronized Response<String> getStoreID(int productID) {
         try {
             if (isProductExist(productID)) {
-                String storeID = getProduct(productID).getData().getStoreID();
+                String storeID = getProduct(productID).getStoreID();
                 return new Response<>(true, "Store ID retrieved successfully", storeID);
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -447,7 +425,7 @@ public class Inventory {
     public synchronized Response<String> getStoreName(int productID) {
         try {
             if (isProductExist(productID)) {
-                String storeName = getProduct(productID).getData().getStoreName();
+                String storeName = getProduct(productID).getStoreName();
                 return new Response<>(true, "Store name retrieved successfully", storeName);
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -461,7 +439,7 @@ public class Inventory {
     public synchronized Response<String> getProductDescription(int productID) {
         try {
             if (isProductExist(productID)) {
-                String description = getProduct(productID).getData().getDesc();
+                String description = getProduct(productID).getDesc();
                 return new Response<>(true, "Product description retrieved successfully", description);
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -475,7 +453,7 @@ public class Inventory {
     public synchronized Response<Integer> getProductPrice(int productID) {
         try {
             if (isProductExist(productID)) {
-                int price = getProduct(productID).getData().getPrice();
+                int price = getProduct(productID).getPrice();
                 return new Response<>(true, "Product price retrieved successfully", price);
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -489,7 +467,7 @@ public class Inventory {
     public synchronized Response<Integer> setStoreIDToProduct(int productID, String storeID) {
         try {
             if (isProductExist(productID)) {
-                getProduct(productID).getData().setStoreID(storeID);
+                getProduct(productID).setStoreID(storeID);
                 return new Response<>(true, "Store ID set to product successfully");
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -502,7 +480,7 @@ public class Inventory {
     public synchronized Response<String> getProductName(int productID) {
         try {
             if (isProductExist(productID)) {
-                String productName = getProduct(productID).getData().getName();
+                String productName = getProduct(productID).getName();
                 return new Response<>(true, "Product name retrieved successfully", productName);
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -515,7 +493,7 @@ public class Inventory {
     public synchronized Response<Integer> setProductName(int productID, String productName) {
         try {
             if (isProductExist(productID)) {
-                getProduct(productID).getData().setName(productName);
+                getProduct(productID).setName(productName);
                 return new Response<>(true, "Product name set successfully");
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);
@@ -528,7 +506,7 @@ public class Inventory {
     public synchronized Response<Integer> setStoreNameToProduct(int productID, String storeName) {
         try {
             if (isProductExist(productID)) {
-                getProduct(productID).getData().setStoreName(storeName);
+                getProduct(productID).setStoreName(storeName);
                 return new Response<>(true, "Store name set to product successfully");
             } else {
                 return new Response<>(false, "Product does not exist with ID: " + productID);

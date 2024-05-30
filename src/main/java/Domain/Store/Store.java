@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Store  {
+public class Store {
 
     //private Integer id = 0;
     private String storeID;
@@ -22,22 +22,21 @@ public class Store  {
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     //yair added
-    private HashMap<String,PayByBid> payByBids;
+    private HashMap<String, PayByBid> payByBids;
 
     // Constructor
-    public Store(String storeID ,String name, Inventory inventory, String creator) {
-
+    public Store(String storeID, String name, String creator) {
         this.storeID = storeID;
         this.name = name;
-        this.inventory = inventory;
-        SubscriberState create=new StoreCreator(this,creator);
+        SubscriberState create = new StoreCreator(this, creator);
         subscribers = new HashMap<>();
-        subscribers.put(creator,create);
+        subscribers.put(creator, create);
         managerPermissions = new HashMap<>();
-        payByBids=new HashMap<>();
+        payByBids = new HashMap<>();
     }
 
-    public  Store(){}
+    public Store() {
+    }
 
     // Getter and setter for id
     public String getId() {
@@ -66,7 +65,6 @@ public class Store  {
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
-
 
 
     public boolean isStoreOwner(String currentUsername) {
@@ -150,23 +148,24 @@ public class Store  {
         return subscribers.get(currentUsername) instanceof StoreCreator;
     }
 
-//yair added
+    //yair added
     public Map<String, SubscriberState> getSubscribers() {
         return subscribers;
     }
 
-    public void addPayByBid(PayByBid p,String user){
-        payByBids.put(user,p);
+    public void addPayByBid(PayByBid p, String user) {
+        payByBids.put(user, p);
     }
-    public void removePayByBid(String user){
+
+    public void removePayByBid(String user) {
         payByBids.remove(user);
     }
 
-    public Response<Map<String,SubscriberState>> getSubscribersResponse(){
+    public Response<Map<String, SubscriberState>> getSubscribersResponse() {
         return Response.success("successfuly fetched the subscribers states of the store", subscribers);
     }
 
-    public Response<Map<String,List<Permissions>>> getManagersPermissionsResponse(){
+    public Response<Map<String, List<Permissions>>> getManagersPermissionsResponse() {
         return Response.success("successfuly fetched the managers permissions of the store", managerPermissions);
     }
 
@@ -183,4 +182,25 @@ public class Store  {
             subscribers.remove(subscriberUsername);
         }
     }
+
+    public Response<String> setQuantity(int productID, int newQuantity, String UserName) {
+        if (subscribers.containsKey(UserName)) {
+            if (isStoreOwner(UserName) || isStoreCreator(UserName)) {
+                return inventory.setQuantity(productID, newQuantity);
+            }
+            if (isStoreManager(UserName)) {
+                if (managerPermissions.get(UserName).contains(Permissions.EDIT_PRODUCT)) {
+                    return inventory.setQuantity(productID, newQuantity);
+                } else {
+                    return Response.error("The user: " + UserName + " doesn't have the permission to edit products", null);
+                }
+            } else {
+                return Response.error("The user: " + UserName + " doesn't have the permission to edit products", null);
+            }
+        } else {
+            return Response.error("The user: " + UserName + " can't perform this action ", null);
+        }
+    }
+
+
 }

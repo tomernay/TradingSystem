@@ -90,4 +90,13 @@ public class StoreService  {
     public Market getMarket() {
         return market;
     }
+
+    public Response<String> setQuantity(int productID, int quantity, String storeID, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to set quantity of product: " + productID + " to: " + quantity);
+        if(Security.isValidJWT(token,UserName)){
+            return market.setQuantity(productID, quantity, storeID, UserName);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to set quantity of product: " + productID + " to: " + quantity + " but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
 }

@@ -6,8 +6,8 @@ import java.util.List;
 public enum Permissions {
     // Permissions examples for now. Will be updated later.
     ADD_PRODUCT,
-    REMOVE_PRODUCT,
     EDIT_PRODUCT,
+    REMOVE_PRODUCT,
     ADD_DISCOUNT,
     REMOVE_DISCOUNT,
     EDIT_DISCOUNT,
@@ -66,7 +66,7 @@ public enum Permissions {
     VIEW_STORE_HISTORY_BY_PRODUCT_HISTORY_BY_PRODUCT_RATING,
     VIEW_STORE_HISTORY_BY_PRODUCT_HISTORY_BY_PRODUCT_PRICE,
     VIEW_STORE_HISTORY_BY_PRODUCT_HISTORY_BY_PRODUCT_AMOUNT,
-    VIEW_STORE_HISTORY_BY_PRODUCT_HISTORY_BY_PRODUCT_PURCHASES;
+    VIEW_STORE_HISTORY_BY_PRODUCT_HISTORY_BY_PRODUCT_PURCHASES,;
 
     public static List<Permissions> convertStringList(List<String> permissions) {
         List<Permissions> permissionList = new ArrayList<>();
