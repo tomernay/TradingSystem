@@ -20,8 +20,8 @@ public class proxySupplierUnitTests {
     @BeforeClass
     public static void init(){
          supplierAdapter=new DefaultSupplier("yair");
-        Product.Builder builder=new Product.Builder("1",1);
-        p=builder.build();
+         Product.Builder builder=new Product.Builder("1","product",1);
+         p=builder.build();
          checkSupplyLegal= new checkSupplyLegal() {
             @Override
             public boolean isSupplyLegal(Product product, String storeID) {
