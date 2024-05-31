@@ -16,7 +16,7 @@ public class Store {
 
     //private Integer id = 0;
     private String storeID;
-    private String name;
+    private String storeName;
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
@@ -28,7 +28,7 @@ public class Store {
     public Store(String storeID, String name, String creator) {
 
         this.storeID = storeID;
-        this.name = name;
+        this.storeName = name;
         SubscriberState create = new StoreCreator(this, creator);
         subscribers = new HashMap<>();
         subscribers.put(creator, create);
@@ -53,11 +53,11 @@ public class Store {
 
     // Getter and setter for name
     public String getName() {
-        return name;
+        return storeName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.storeName = name;
     }
 
     // Getter and setter for inventory
@@ -132,7 +132,7 @@ public class Store {
         if (!response.isSuccess()) {
             return response;
         }
-        SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store owner in store: " + name);
+        SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store owner in store: " + storeName);
         return Response.success("The user: " + subscriberUsername + " has been nominated as the store owner", null);
     }
 
@@ -145,40 +145,40 @@ public class Store {
             return response;
         }
         managerPermissions.put(subscriberUsername, Permissions.convertStringList(permissions));
-        SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store manager in store: " + name);
+        SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store manager in store: " + storeName);
         return Response.success("The user: " + subscriberUsername + " has been nominated as the store manager", null);
     }
 
     public synchronized Response<String> addManagerPermissions(String subscriberName, String permission) {
         List<Permissions> permissions = managerPermissions.get(subscriberName);
         if (permissions == null || !Permissions.exists(permission)) {
-            SystemLogger.error("[ERROR] Tried to add the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name + " but the permission doesn't exist");
+            SystemLogger.error("[ERROR] Tried to add the permission: " + permission + " to the manager: " + subscriberName + " of store: " + storeName + " but the permission doesn't exist");
             return Response.error("The permission: " + permission + " doesn't exist", null);
         }
         if (permissions.contains(Permissions.valueOf(permission))) {
-            SystemLogger.error("[ERROR] Tried to add the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name + " but the manager already has the permission");
-            return Response.error("The manager: " + subscriberName + " already has the permission: " + permission + " on the store: " + name, null);
+            SystemLogger.error("[ERROR] Tried to add the permission: " + permission + " to the manager: " + subscriberName + " of store: " + storeName + " but the manager already has the permission");
+            return Response.error("The manager: " + subscriberName + " already has the permission: " + permission + " on the store: " + storeName, null);
         }
         permissions.add(Permissions.valueOf(permission));
         managerPermissions.put(subscriberName, permissions);
-        SystemLogger.info("[SUCCESS] Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name);
-        return Response.success("Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + name, null);
+        SystemLogger.info("[SUCCESS] Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + storeName);
+        return Response.success("Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + storeName, null);
 
     }
 
     public synchronized Response<String> removeManagerPermissions(String subscriberName, String permission) {
         List<Permissions> permissions = managerPermissions.get(subscriberName);
         if (permissions == null || !Permissions.exists(permission)) {
-            SystemLogger.error("[ERROR] Tried to remove the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name + " but the permission doesn't exist");
+            SystemLogger.error("[ERROR] Tried to remove the permission: " + permission + " from the manager: " + subscriberName + " of store: " + storeName + " but the permission doesn't exist");
             return Response.error("The permission: " + permission + " doesn't exist", null);
         }
         if (!permissions.remove(Permissions.valueOf(permission))) {
-            SystemLogger.error("[ERROR] Tried to remove the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name + " but the manager doesn't have the permission");
-            return Response.error("The manager: " + subscriberName + " doesn't have the permission: " + permission + " on the store: " + name, null);
+            SystemLogger.error("[ERROR] Tried to remove the permission: " + permission + " from the manager: " + subscriberName + " of store: " + storeName + " but the manager doesn't have the permission");
+            return Response.error("The manager: " + subscriberName + " doesn't have the permission: " + permission + " on the store: " + storeName, null);
         }
         managerPermissions.put(subscriberName, permissions);
-        SystemLogger.info("[SUCCESS] Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name);
-        return Response.success("Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + name, null);
+        SystemLogger.info("[SUCCESS] Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + storeName);
+        return Response.success("Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + storeName, null);
 
     }
 
@@ -269,11 +269,11 @@ public class Store {
 
     public Response<String> removeStoreSubscription(String currentUsername) {
         if (subscribers.get(currentUsername) == null) {
-            SystemLogger.error("[ERROR] tried to remove the store subscription for " + currentUsername + " from the store: " + name + " but he's not a subscriber of the store");
+            SystemLogger.error("[ERROR] tried to remove the store subscription for " + currentUsername + " from the store: " + storeName + " but he's not a subscriber of the store");
             return Response.error("The user you're trying to remove the store subscription for is not a subscriber of the store.", null);
         }
         subscribers.remove(currentUsername);
-        SystemLogger.info("[SUCCESS] Successfully removed the store subscription for the user: " + currentUsername + " from the store: " + name);
+        SystemLogger.info("[SUCCESS] Successfully removed the store subscription for the user: " + currentUsername + " from the store: " + storeName);
         return Response.success("Successfully removed the store subscription for the user: " + currentUsername, null);
     }
 
@@ -374,10 +374,10 @@ public class Store {
         return inventory.getProductQuantity(productID);
     }
 
-    public Response<String> retrieveProductsByCategory(String category, String userName) {
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String category, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
-            return permissionCheck;
+            return Response.error(permissionCheck.getMessage(), null);
         }
         return inventory.retrieveProductsByCategory(category);
     }
@@ -430,4 +430,61 @@ public class Store {
         }
         return Response.success("The store ID is: " + storeID, storeID);
     }
+
+    public Response<String> addProductToStore(String name, String desc, int price, int quantity, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.ADD_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.addProductToStore(storeID, storeName,name, desc, price, quantity);
+    }
+
+    public Response<String> addProductToStore(String name, String desc, int price, int quantity, ArrayList<String> categories, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.ADD_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.addProductToStore(storeID, storeName, name, desc, price, quantity, categories);
+    }
+
+    public Response<String> removeProductFromStore(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.REMOVE_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.removeProductFromStore(productID);
+    }
+
+    public Response<ProductDTO> getProductByName(String productName, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return Response.error(permissionCheck.getMessage(), null);
+        }
+        return inventory.getProductByName(productName);
+    }
+
+    public Response<String> getStoreIDByName(String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return Response.success("The store ID is: " + storeID, storeID);
+    }
+
+    public Response<StoreDTO> getStoreByID(String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
+        if (!permissionCheck.isSuccess()) {
+            return Response.error(permissionCheck.getMessage(), null);
+        }
+        return Response.success("The store ID is: " + storeID, new StoreDTO(storeID, storeName));
+    }
+
+    public Response<String> getStoreNameByID(String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return Response.success("The store name is: " + storeName, storeName);
+    }
+
 }

@@ -46,15 +46,10 @@ public class Product {
         private String desc;
         private int price;
         private int quantity;
-        public ArrayList<String> categories;
+    //    public ArrayList<String> categories;
 
-        public Builder(String storeID, int productID) {
-            if (storeID == null || storeID.isEmpty()) {
-                throw new IllegalArgumentException("Store ID cannot be null or empty");
-            }
-            if (productID <= 0) {
-                throw new IllegalArgumentException("Product ID must be greater than 0");
-            }
+        public Builder(String storeID,String name, int productID) {
+            this.name = name;
             this.storeID = storeID;
             this.productID = productID;
         }
@@ -106,13 +101,13 @@ public class Product {
             return this;
         }
 
-        public Builder categories(ArrayList<String> _categories){
-            if(_categories.size() <= 0){
-                throw new IllegalArgumentException("A product must be associated with at least one category");
-            }
-            this.categories = _categories;
-            return this;
-        }
+//        public Builder categories(ArrayList<String> _categories){
+//            if(_categories.size() <= 0){
+//                throw new IllegalArgumentException("A product must be associated with at least one category");
+//            }
+//            this.categories = _categories;
+//            return this;
+//        }
 
         // call the product constructor //
         public Product build() {
@@ -176,8 +171,14 @@ public class Product {
         this.desc = desc;
     }
 
-    public void setPrice(int _price) {
-        this.price = _price;
+    public boolean setPrice(int _price) {
+        if(_price > 0){
+            this.price = _price;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 //    /**
@@ -214,7 +215,4 @@ public class Product {
                 ", quantity=" + quantity +
                 '}';
     }
-
-
-
 }

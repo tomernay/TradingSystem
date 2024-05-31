@@ -3,6 +3,7 @@ package Facades;
 import Domain.Repo.StoreRepository;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
+import Domain.Store.StoreDTO;
 import Utilities.Messages.Message;
 import Utilities.Response;
 
@@ -129,7 +130,7 @@ public class StoreFacade {
         return storeRepository.getProductQuantity(productID, storeID, userName);
     }
 
-    public Response<String> retrieveProductsByCategory(String storeID, String category, String userName) {
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String storeID, String category, String userName) {
         return storeRepository.retrieveProductsByCategory(storeID, category, userName);
     }
 
@@ -158,4 +159,33 @@ public class StoreFacade {
     public Response<String> getStoreIDbyName(String storeName, String userName) {
         return storeRepository.getStoreIDbyName(storeName, userName);
     }
+
+    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String userName) {
+        return storeRepository.addProductToStore(storeID, name, desc, price, quantity, userName);
+    }
+
+    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, ArrayList<String> categories, String userName) {
+        return storeRepository.addProductToStore(storeID, name, desc, price, quantity, categories, userName);
+    }
+
+    public Response<String> removeProductFromStore(int productID, String storeID, String userName) {
+        return storeRepository.removeProductFromStore(productID, storeID, userName);
+    }
+
+    public Response<ProductDTO> getProductByName(String storeID, String productName, String userName) {
+        return storeRepository.getProductByName(storeID, productName, userName);
+    }
+
+    public Response<String> getStoreIDByName(String storeName, String userName) {
+        return storeRepository.getStoreIDByName(storeName, userName);
+    }
+
+    public Response<StoreDTO> getStoreByID(String storeID, String userName) {
+        return storeRepository.getStoreByID(storeID, userName);
+    }
+
+    public Response<String> getStoreNameByID(String storeID, String userName) {
+        return storeRepository.getStoreNameByID(storeID, userName);
+    }
+
 }
