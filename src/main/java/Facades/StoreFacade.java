@@ -1,10 +1,12 @@
 package Facades;
 
 import Domain.Repo.StoreRepository;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Utilities.Messages.Message;
 import Utilities.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -88,5 +90,72 @@ public class StoreFacade {
 
     public boolean storeExists(String storeID) {
         return storeRepository.storeExists(storeID);
+    }
+
+
+    public Response<String> setProductQuantity(int productID, int quantity, String storeID, String userName) {
+        return storeRepository.setProductQuantity(productID, quantity, storeID, userName);
+    }
+
+    public Response<String> addProductQuantity(int productID, int amountToAdd, String storeID, String userName) {
+        return storeRepository.addProductQuantity(productID, amountToAdd, storeID, userName);
+    }
+
+    public Response<String> getProductName(int productID, String storeID, String userName) {
+        return storeRepository.getProductName(productID, storeID, userName);
+    }
+
+    public Response<String> setProductName(int productID, String newName, String storeID, String userName) {
+        return storeRepository.setProductName(productID, newName, storeID, userName);
+    }
+
+    public Response<String> getProductPrice(int productID, String storeID, String userName) {
+        return storeRepository.getProductPrice(productID, storeID, userName);
+    }
+
+    public Response<String> setProductPrice(int productID, int newPrice, String storeID, String userName) {
+        return storeRepository.setProductPrice(productID, newPrice, storeID, userName);
+    }
+
+    public Response<String> getProductDescription(int productID, String storeID, String userName) {
+        return storeRepository.getProductDescription(productID, storeID, userName);
+    }
+
+    public Response<String> setProductDescription(int productID, String newDescription, String storeID, String userName) {
+        return storeRepository.setProductDescription(productID, newDescription, storeID, userName);
+    }
+
+    public Response<String> getProductQuantity(int productID, String storeID, String userName) {
+        return storeRepository.getProductQuantity(productID, storeID, userName);
+    }
+
+    public Response<String> retrieveProductsByCategory(String storeID, String category, String userName) {
+        return storeRepository.retrieveProductsByCategory(storeID, category, userName);
+    }
+
+    public Response<String> retrieveProductCategories(int productID, String storeID, String userName) {
+        return storeRepository.retrieveProductCategories(productID, storeID, userName);
+    }
+
+    public Response<String> assignProductToCategory(int productID, String category, String storeID, String userName) {
+        return storeRepository.assignProductToCategory(productID, category, storeID, userName);
+    }
+
+    public Response<String> removeCategoryFromStore(String storeID, String category, String userName) {
+        return storeRepository.removeCategoryFromStore(storeID, category, userName);
+    }
+
+
+    public Response<ProductDTO> getProductFromStore(int productID, String storeID, String userName) {
+        return storeRepository.getProductFromStore(productID, storeID, userName);
+    }
+
+    public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String storeID, String userName) {
+        return storeRepository.getAllProductsFromStore(storeID, userName);
+    }
+
+
+    public Response<String> getStoreIDbyName(String storeName, String userName) {
+        return storeRepository.getStoreIDbyName(storeName, userName);
     }
 }

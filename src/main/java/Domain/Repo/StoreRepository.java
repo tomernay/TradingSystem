@@ -1,9 +1,9 @@
 package Domain.Repo;
 
 import Domain.Store.Inventory.Inventory;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.Store;
-import Domain.Users.StateOfSubscriber.SubscriberState;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -110,7 +110,9 @@ public class StoreRepository {
     public Response<String> addStore(String storeName,String creator) {
 
         try {
-            Store store = new Store(storeID.toString() ,storeName ,new Inventory(storeID.toString()),creator);
+            Store store = new Store(storeID.toString() ,storeName ,creator);
+            Inventory inventory = new Inventory(storeID.toString());
+            store.setInventory(inventory);
             stores.put(this.storeID.toString(), store);
             this.storeID++;
             return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID-1));
@@ -190,5 +192,147 @@ public class StoreRepository {
 
     public boolean storeExists(String storeID) {
         return stores.containsKey(storeID);
+    }
+
+    private Response<String> isStoreExist(String storeID) {
+        if (!stores.containsKey(storeID)) {
+            if (!deactivatedStores.containsKey(storeID)) {
+                return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+            } else {
+                return Response.error("Store with ID: " + storeID + " is already closed", null);
+            }
+        }
+        return Response.success("Store with ID: " + storeID + " is active", storeID);
+    }
+
+
+    public Response<String> setProductQuantity(int productID, int newQuantity, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).setProductQuantity(productID, newQuantity, userName);
+    }
+
+    public Response<String> addProductQuantity(int productID, int amountToAdd, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).addProductQuantity(productID, amountToAdd, userName);
+    }
+
+    public Response<String> getProductName(int productID, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).getProductName(productID, userName);
+    }
+
+    public Response<String> setProductName(int productID, String newName, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).setProductName(productID, newName, userName);
+    }
+
+    public Response<String> getProductPrice(int productID, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).getProductPrice(productID, userName);
+    }
+
+    public Response<String> setProductPrice(int productID, int newPrice, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).setProductPrice(productID, newPrice, userName);
+
+    }
+
+    public Response<String> getProductDescription(int productID, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).getProductDescription(productID, userName);
+    }
+
+    public Response<String> setProductDescription(int productID, String newDescription, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).setProductDescription(productID, newDescription, userName);
+    }
+
+    public Response<String> getProductQuantity(int productID, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).getProductQuantity(productID, userName);
+    }
+
+    public Response<String> retrieveProductsByCategory(String storeID, String category, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).retrieveProductsByCategory(category, userName);
+    }
+
+    public Response<String> retrieveProductCategories(int productID, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).retrieveProductCategories(productID, userName);
+    }
+
+    public Response<String> assignProductToCategory(int productID, String category, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).assignProductToCategory(productID, category, userName);
+    }
+
+    public Response<String> removeCategoryFromStore(String storeID, String category, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return response;
+        }
+        return stores.get(storeID).removeCategoryFromStore(category, userName);
+    }
+
+
+    public Response<ProductDTO> getProductFromStore(int productID, String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).getProductFromStore(productID, userName);
+    }
+
+    public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String storeID, String userName) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).getAllProductsFromStore(userName);
+    }
+
+    public Response<String> getStoreIDbyName(String storeName, String userName) {
+     Response<String> response = isStoreExist(storeName);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeName).getStoreIDbyName(userName);
     }
 }

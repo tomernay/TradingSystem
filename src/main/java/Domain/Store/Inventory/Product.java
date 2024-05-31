@@ -1,8 +1,7 @@
 package Domain.Store.Inventory;
 import Utilities.Response;
-import cn.hutool.json.ObjectMapper;
+
 import java.util.ArrayList;
-import Domain.Store.Inventory.Review;
 
 /**
  * Represents a product in the store inventory.
@@ -11,15 +10,12 @@ import Domain.Store.Inventory.Review;
 public class Product {
     private String storeID;     // The ID of the store to which the product belongs,
     private String storeName;   // The name of the store
-    private Integer productID;  // The unique ID of the product
+    private int productID;  // The unique ID of the product
     private String name;        // The name of the product
     private String desc;        // The description of the product
     private int price;          // The price of the product
     private int quantity;       // The quantity of the product available in the inventory
-
-    private ArrayList<String> categories;  // The category that a product is related to
-    private ArrayList<Review> reviews;
-
+    //private ArrayList<String> categories; // The category that a product is related to
 
     /**
      * Constructs a Product object using a Builder.
@@ -35,7 +31,7 @@ public class Product {
         this.desc = builder.desc;
         this.price = builder.price;
         this.quantity = builder.quantity;
-        this.categories = builder.categories;
+      //  this.categories = builder.categories;
     }
 
     /**
@@ -133,15 +129,16 @@ public class Product {
         return storeName;
     }
 
-    public Integer getProductID() {
+    public int getProductID() {
         return productID;
     }
 
+    //
     public String getName() {
         return name;
     }
 
-    public String getDesc() {
+    public String getDescription() {
         return desc;
     }
 
@@ -153,9 +150,9 @@ public class Product {
         return quantity;
     }
 
-    public ArrayList<String> getCategories() {
-        return categories;
-    }
+//    public ArrayList<String> getCategories() {
+//        return categories;
+//    }
 
     // Setters
     public void setStoreID(String _storeID) {
@@ -170,12 +167,12 @@ public class Product {
         this.productID = productID;
     }
 
-
+    //
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setDesc(String desc) {
+    public void setDescription(String desc) {
         this.desc = desc;
     }
 
@@ -183,45 +180,26 @@ public class Product {
         this.price = _price;
     }
 
-    /**
-     * Sets the categories for the product.
-     * @param _categories The list of categories to be set for the product.
-     */
-    public void setCategories(ArrayList<String> _categories) {
-        this.categories = _categories;
-    }
+//    /**
+//     * Sets the categories for the product.
+//     * @param _categories The list of categories to be set for the product.
+//     */
+//    public void setCategories(ArrayList<String> _categories) {
+//        this.categories = _categories;
+//    }
 
-    /**
-     * Removes a category from the product's category list.
-     * @param category The category to be removed.
-     * @return Response true if the category was successfully removed,Response false otherwise.
-     */
-    public Response<String> removeCategory(String category) {
-        if(categories.contains(category)){
-            categories.remove(category);
-            return new Response<>(true, "Category has been successfully removed", category);
-        }
-        else {
-            return new Response<>(false, "Category doesn't exist", category);
-        }
-    }
 
-    /**
-     * Sets the quantity to the specified value.
-     *
-     * @param newQuantity the new quantity to set
-     */
-    public synchronized void setQuantity(int newQuantity) {
+    public synchronized Response<String> setQuantity(int newQuantity) {
+        if (newQuantity < 0) {
+            return Response.error("Invalid Quantity: Quantity cannot be negative", null);
+        }
         this.quantity = newQuantity;
+        return Response.success("Quantity set successfully for product: " + this.name, null);
     }
 
 
-    /**
-     * Adds the specified amount to the current quantity.
-     *
-     * @param amountToAdd the amount to add to the current quantity*/
-    public synchronized void addQuantity(int amountToAdd) {
-        setQuantity(this.quantity + amountToAdd);
+    public synchronized Response<String> addQuantity(int amountToAdd) {
+       return setQuantity(this.quantity + amountToAdd);
     }
 
     @Override
