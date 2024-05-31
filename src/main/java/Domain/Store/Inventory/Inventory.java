@@ -229,11 +229,14 @@ public class Inventory {
         if (product == null) {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
-        product.setPrice(newPrice);
+        boolean bool = product.setPrice(newPrice);
+        if(!bool){
+            return Response.error("Invalid price: Price cannot be negative", null);
+        }
         return Response.success("Product with ID: " + productID + " price updated successfully", String.valueOf(newPrice));
     }
 
-    public Response<String> retrieveProductsByCategory(String category) {
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String category) {
         if (category == null || category.isEmpty()) {
             return Response.error("Invalid category: " + category, null);
         }
@@ -251,14 +254,9 @@ public class Inventory {
                 products.add(new ProductDTO(product));
             }
         }
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String jsonString = objectMapper.writeValueAsString(products);
-            return Response.success("Products retrieved successfully for category: " + category, jsonString);
-        } catch (JsonProcessingException e) {
-            return Response.error("Error processing JSON: " + e.getMessage(), null);
-        }
+        return Response.success("Products retrieved successfully for category: " + category, products);
     }
+
 
     public synchronized Response<String> retrieveProductCategories(int productID) {
         if (productID < 0) {
@@ -335,12 +333,117 @@ public class Inventory {
     }
 
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore() {
-        ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<ProductDTO> products = new ArrayList<>();
         for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
             products.add(new ProductDTO(entry.getValue()));
         }
         return Response.success("Products retrieved successfully", products);
+    }
+
+    //product with no category will be added to General category
+    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, int price, int quantity) {
+        if (storeID == null || storeID.isEmpty()) {
+            return Response.error("Store ID cannot be null or empty", null);
+        }
+        if (storeName == null || storeName.isEmpty()) {
+            return Response.error("Store name cannot be null or empty", null);
+        }
+        if (name == null || name.isEmpty()) {
+            return Response.error("Product name cannot be null or empty", null);
+        }
+        if (desc == null || desc.isEmpty()) {
+            return Response.error("Product description cannot be null or empty", null);
+        }
+        if (price <= 0) {
+            return Response.error("Price must be greater than 0", null);
+        }
+        if (quantity <= 0) {
+            return Response.error("Quantity must be greater than 0", null);
+        }
+        Product product = new Product.Builder(storeID, name,  productIDGenerator.getAndIncrement())
+                .storeName(storeName)
+                .desc(desc)
+                .price(price)
+                .quantity(quantity)
+                .build();
+        productsList.put(product.getProductID(), product);
+        if(!this.categories.containsKey("General")){
+            this.categories.put("General", new ArrayList<>());
+        }
+        this.categories.get("General").add(product.getProductID());
+
+        return Response.success("Product with ID: " + product.getProductID() + " added successfully", name);
+
+    }
+
+    //product with categories will be added to the categories he is associated with
+    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, int price, int quantity, ArrayList<String> categories) {
+        if (storeID == null || storeID.isEmpty()) {
+            return Response.error("Store ID cannot be null or empty", null);
+        }
+        if (storeName == null || storeName.isEmpty()) {
+            return Response.error("Store name cannot be null or empty", null);
+        }
+        if (name == null || name.isEmpty()) {
+            return Response.error("Product name cannot be null or empty", null);
+        }
+        if (desc == null || desc.isEmpty()) {
+            return Response.error("Product description cannot be null or empty", null);
+        }
+        if (price <= 0) {
+            return Response.error("Price must be greater than 0", null);
+        }
+        if (quantity <= 0) {
+            return Response.error("Quantity must be greater than 0", null);
+        }
+        if (categories == null || categories.isEmpty()) {
+            return Response.error("Product must be associated with at least one category", null);
+        }
+        Product product = new Product.Builder(storeID, name, productIDGenerator.getAndIncrement())
+                .storeName(storeName)
+                .desc(desc)
+                .price(price)
+                .quantity(quantity)
+                .build();
+        productsList.put(product.getProductID(), product);
+        for (String category : categories) {
+            if(!this.categories.containsKey(category)){
+                this.categories.put(category, new ArrayList<>());
+            }
+            this.categories.get(category).add(product.getProductID());
+        }
+        return Response.success("Product with ID: " + product.getProductID() + " added successfully", name);
+    }
+
+    public Response<String> removeProductFromStore(int productID) {
+        if (productID < 0) {
+            return Response.error("Invalid product ID: " + productID, null);
+        }
+        if (!isProductExist(productID)) {
+            return Response.error("Product with ID: " + productID + " does not exist.", null);
+        }
+        Product product = getProduct(productID);
+        if (product == null) {
+            return Response.error("Product with ID: " + productID + " not found.", null);
+        }
+        productsList.remove(productID);
+        for (Map.Entry<String, ArrayList<Integer>> entry : categories.entrySet()) {
+            entry.getValue().remove(productID);
+        }
+        return Response.success("Product with ID: " + productID + " removed successfully", product.getName());
+
+    }
+
+    public Response<ProductDTO> getProductByName(String productName) {
+        if (productName == null || productName.isEmpty()) {
+            return Response.error("Product name cannot be null or empty", null);
+        }
+        for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
+            if (entry.getValue().getName().equals(productName)) {
+                return Response.success("Product with name: " + productName + " retrieved successfully", new ProductDTO(entry.getValue()));
+            }
+        }
+        return Response.error("Product with name: " + productName + " not found", null);
     }
 }
 
