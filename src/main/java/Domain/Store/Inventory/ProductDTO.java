@@ -15,14 +15,21 @@ public class ProductDTO {
     public ArrayList<String> categories; // The category that a product is related to
 
 
-    public ProductDTO(String storeID, Integer productID, String name, int price, ArrayList<String> categories) {
+    public ProductDTO(String storeID, Integer productID, String name, int price) {
         this.storeID = storeID;
         this.productID = productID;
         this.name = name;
         this.price = price;
-        this.categories = categories;
+   //     this.categories = categories;
     }
 
+    public ProductDTO(Product product) {
+        this.storeID = product.getStoreID();
+        this.productID = product.getProductID();
+        this.name = product.getName();
+        this.price = product.getPrice();
+        //this.categories = product.getCategories();
+    }
 }
 
 

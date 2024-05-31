@@ -1,6 +1,7 @@
 package Domain.Store;
 
 import Domain.Store.Inventory.Inventory;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
@@ -11,7 +12,7 @@ import Utilities.SystemLogger;
 
 import java.util.*;
 
-public class Store  {
+public class Store {
 
     //private Integer id = 0;
     private String storeID;
@@ -21,25 +22,24 @@ public class Store  {
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
-    //yair added
-    private HashMap<String,PayByBid> payByBids;
+    private HashMap<String, PayByBid> payByBids;
 
     // Constructor
-    public Store(String storeID ,String name, Inventory inventory, String creator) {
+    public Store(String storeID, String name, String creator) {
 
         this.storeID = storeID;
         this.name = name;
-        this.inventory = inventory;
-        SubscriberState create=new StoreCreator(this,creator);
+        SubscriberState create = new StoreCreator(this, creator);
         subscribers = new HashMap<>();
-        subscribers.put(creator,create);
+        subscribers.put(creator, create);
         managerPermissions = new HashMap<>();
-        payByBids=new HashMap<>();
+        payByBids = new HashMap<>();
         nominationGraph = new HashMap<>();
         reverseNominationMap = new HashMap<>();
     }
 
-    public  Store(){}
+    public Store() {
+    }
 
     // Getter and setter for id
     public String getId() {
@@ -70,7 +70,6 @@ public class Store  {
     }
 
 
-
     public boolean isStoreOwner(String currentUsername) {
         if (subscribers.get(currentUsername) == null) {
             return false;
@@ -92,11 +91,11 @@ public class Store  {
     public Response<Message> makeNominateOwnerMessage(String subscriberUsername, String nominatorUsername) {
         if (!isStoreOwner(nominatorUsername) && !isStoreCreator(nominatorUsername)) { //The currentUsername is not the store owner / creator
             SystemLogger.error("[ERROR] " + nominatorUsername + " tried to nominate: " + subscriberUsername + " to the store owner but " + nominatorUsername + " is not the store owner / creator");
-            return Response.error("You're not the store owner / creator",null);
+            return Response.error("You're not the store owner / creator", null);
         }
         if (isStoreOwner(subscriberUsername)) { //The subscriber is already the store owner
             SystemLogger.error("[ERROR] " + nominatorUsername + " tried to nominate: " + subscriberUsername + " to the store owner but " + subscriberUsername + " is already the store owner");
-            return Response.error(subscriberUsername + " is already the store owner",null);
+            return Response.error(subscriberUsername + " is already the store owner", null);
         }
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
@@ -108,15 +107,15 @@ public class Store  {
     public Response<Message> makeNominateManagerMessage(String subscriberUsername, List<String> permissions, String nominatorUsername) {
         if (!isStoreOwner(nominatorUsername) && !isStoreCreator(nominatorUsername)) { //The currentUsername is not the store owner / creator
             SystemLogger.error("[ERROR] " + nominatorUsername + " tried to nominate: " + subscriberUsername + " to the store manager but " + nominatorUsername + " is not the store owner / creator");
-            return Response.error("You're not the store owner / creator",null);
+            return Response.error("You're not the store owner / creator", null);
         }
         if (isStoreOwner(subscriberUsername)) { //The subscriber is already the store owner
             SystemLogger.error("[ERROR] " + nominatorUsername + " tried to nominate: " + subscriberUsername + " to the store manager but " + subscriberUsername + " is already the store owner");
-            return Response.error(subscriberUsername + " is already the store owner",null);
+            return Response.error(subscriberUsername + " is already the store owner", null);
         }
         if (isStoreManager(subscriberUsername)) { //The subscriber is already the store manager
             SystemLogger.error("[ERROR] " + nominatorUsername + " tried to nominate: " + subscriberUsername + " to the store manager but " + subscriberUsername + " is already the store manager");
-            return Response.error(subscriberUsername + " is already the store manager",null);
+            return Response.error(subscriberUsername + " is already the store manager", null);
         }
         if (subscribers.get(subscriberUsername) == null) {
             subscribers.put(subscriberUsername, new NormalSubscriber(this, subscriberUsername));
@@ -190,19 +189,20 @@ public class Store  {
         return subscribers.get(currentUsername) instanceof StoreCreator;
     }
 
-//yair added
+    //yair added
     public Map<String, SubscriberState> getSubscribers() {
         return subscribers;
     }
 
-    public void addPayByBid(PayByBid p,String user){
-        payByBids.put(user,p);
+    public void addPayByBid(PayByBid p, String user) {
+        payByBids.put(user, p);
     }
-    public void removePayByBid(String user){
+
+    public void removePayByBid(String user) {
         payByBids.remove(user);
     }
 
-    public Response<Map<String,String>> getSubscribersResponse(){
+    public Response<Map<String, String>> getSubscribersResponse() {
         Map<String, String> subscribers = new HashMap<>();
         for (Map.Entry<String, SubscriberState> entry : this.subscribers.entrySet()) {
             subscribers.put(entry.getKey(), entry.getValue().toString());
@@ -210,7 +210,7 @@ public class Store  {
         return Response.success("successfuly fetched the subscribers states of the store", subscribers);
     }
 
-    public Response<Map<String,List<String>>> getManagersPermissionsResponse(){
+    public Response<Map<String, List<String>>> getManagersPermissionsResponse() {
         Map<String, List<String>> managerPermissions = new HashMap<>();
         for (Map.Entry<String, List<Permissions>> entry : this.managerPermissions.entrySet()) {
             managerPermissions.put(entry.getKey(), Permissions.convertPermissionList(entry.getValue()));
@@ -275,5 +275,159 @@ public class Store  {
         subscribers.remove(currentUsername);
         SystemLogger.info("[SUCCESS] Successfully removed the store subscription for the user: " + currentUsername + " from the store: " + name);
         return Response.success("Successfully removed the store subscription for the user: " + currentUsername, null);
+    }
+
+    private Response<String> checkUserPermission(String userName, Permissions requiredPermission) {
+        if (!subscribers.containsKey(userName)) {
+            return Response.error("The user: " + userName + " can't perform this action", null);
+        }
+
+        if (isStoreOwner(userName) || isStoreCreator(userName)) {
+            return Response.success("Permission granted", null);
+        }
+
+        String s = "The user: " + userName + " doesn't have the permission to " + requiredPermission.toString().toLowerCase().replace('_', ' ');
+        if (isStoreManager(userName)) {
+            if (managerPermissions.get(userName).contains(requiredPermission)) {
+                return Response.success("Permission granted", null);
+            } else {
+                return Response.error(s, null);
+            }
+        }
+
+        return Response.error(s, null);
+    }
+
+
+    public Response<String> setProductQuantity(int productID, int newQuantity, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.setProductQuantity(productID, newQuantity);
+    }
+
+
+
+    public Response<String> addProductQuantity(int productID, int amountToAdd, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.addProductQuantity(productID, amountToAdd);
+    }
+
+
+    public Response<String> getProductName(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.getProductName(productID);
+    }
+
+    public Response<String> setProductName(int productID, String newName, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.setProductName(productID, newName);
+    }
+
+    public Response<String> getProductPrice(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.getProductPrice(productID);
+    }
+
+    public Response<String> setProductPrice(int productID, int newPrice, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.setProductPrice(productID, newPrice);
+    }
+
+    public Response<String> getProductDescription(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.getProductDescription(productID);
+    }
+
+    public Response<String> setProductDescription(int productID, String newDescription, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.setProductDescription(productID, newDescription);
+    }
+
+    public Response<String> getProductQuantity(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.getProductQuantity(productID);
+    }
+
+    public Response<String> retrieveProductsByCategory(String category, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.retrieveProductsByCategory(category);
+    }
+
+    public Response<String> retrieveProductCategories(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.retrieveProductCategories(productID);
+    }
+
+    public Response<String> assignProductToCategory(int productID, String category, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.assignProductToCategory(productID, category);
+    }
+
+    public Response<String> removeCategoryFromStore(String category, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.REMOVE_PRODUCT_CATEGORY);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return inventory.removeCategoryFromStore(category);
+    }
+
+
+    public Response<ProductDTO> getProductFromStore(int productID, String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return Response.error(permissionCheck.getMessage(), null);
+        }
+        return inventory.getProductFromStore(productID);
+    }
+
+    public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
+        if (!permissionCheck.isSuccess()) {
+            return Response.error(permissionCheck.getMessage(), null);
+        }
+        return inventory.getAllProductsFromStore();
+    }
+
+    public Response<String> getStoreIDbyName(String userName) {
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
+        if (!permissionCheck.isSuccess()) {
+            return permissionCheck;
+        }
+        return Response.success("The store ID is: " + storeID, storeID);
     }
 }
