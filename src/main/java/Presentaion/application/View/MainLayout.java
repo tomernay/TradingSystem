@@ -1,5 +1,6 @@
 package Presentaion.application.View;
 
+import Presentaion.application.SubscriberDetails;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
 import Presentaion.application.View.Store.RolesManagementViewImpl;
@@ -19,6 +20,8 @@ import com.vaadin.flow.router.PageTitle;
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
+
+    private static SubscriberDetails subscriberDetails;
 
     private H1 viewTitle;
 
@@ -57,6 +60,14 @@ public class MainLayout extends AppLayout {
 
 
         return nav;
+    }
+
+    public static SubscriberDetails getSubscriberDetails() {
+        return subscriberDetails;
+    }
+
+    public static void setSubscriberDetails(String username, String token) {
+        subscriberDetails = new SubscriberDetails(username, token);
     }
 
     private Footer createFooter() {

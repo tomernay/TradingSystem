@@ -63,8 +63,8 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         usernameFilter.setValueChangeMode(ValueChangeMode.LAZY);
         usernameFilter.addValueChangeListener(event -> presenter.searchByUsername(event.getValue()));
 
-        Button addButton = new Button("+ Nominate", e -> showNominationDialog(""));
-        Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(""));
+        Button addButton = new Button("+ Nominate", e -> showNominationDialog(MainLayout.getSubscriberDetails().getUsername()));
+        Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(MainLayout.getSubscriberDetails().getUsername()));
 
         // Add the "+ Nominate" button to a HorizontalLayout for positioning
         HorizontalLayout buttonLayout = new HorizontalLayout();
