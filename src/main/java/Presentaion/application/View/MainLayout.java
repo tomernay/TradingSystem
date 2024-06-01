@@ -13,13 +13,17 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 
 
 /**
  * The main view is a top-level placeholder for other views.
  */
-public class MainLayout extends AppLayout {
+
+
+public class MainLayout extends AppLayout implements BeforeEnterObserver {
 
     private static SubscriberDetails subscriberDetails;
 
@@ -60,6 +64,21 @@ public class MainLayout extends AppLayout {
 
 
         return nav;
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        // Check if the user is already logged in
+        if (!isLoggedIn()) {
+            // If not logged in, reroute to the login page
+            event.rerouteTo(LoginView.class);
+        }
+    }
+
+    private boolean isLoggedIn() {
+        // Implement your logic to check if the user is logged in
+        // For example, you can check if the subscriberDetails is set
+        return subscriberDetails != null;
     }
 
     public static SubscriberDetails getSubscriberDetails() {

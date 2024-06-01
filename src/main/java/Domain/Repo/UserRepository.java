@@ -44,10 +44,10 @@ public class UserRepository {
         if (isUserExist(username)) {
             Subscriber subscriber = getUser(username);
             if (subscriber.getPassword().equals(password)) {
-                getUser(username).generateToken();
+                String token = getUser(username).generateToken();
                 subscribersLoggedIn.put(username, subscriber);
                 SystemLogger.info("[SUCCESS] User " + username + " logged in successfully");
-                return Response.success("Logged in successfully", null);
+                return Response.success("Logged in successfully", token);
             } else {
                 SystemLogger.error("[ERROR] Incorrect password for user " + username);
                 return Response.error("Incorrect password", null);

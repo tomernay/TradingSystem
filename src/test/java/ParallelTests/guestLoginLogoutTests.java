@@ -1,6 +1,7 @@
 package ParallelTests;
 
 import Domain.Users.User;
+import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
@@ -12,11 +13,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class guestLoginLogoutTests {
+    ServiceInitializer serviceInitializer;
     UserService userService;
 
     @Before
     public void init(){
-        userService = new UserService();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
+        userService = serviceInitializer.getUserService();
     }
 
     @Test

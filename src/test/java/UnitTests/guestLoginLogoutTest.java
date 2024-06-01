@@ -1,5 +1,6 @@
 package UnitTests;
 
+import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
@@ -7,11 +8,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class guestLoginLogoutTest {
+    ServiceInitializer serviceInitializer;
     UserService userService;
 
     @Before
     public void init(){
-        userService = new UserService();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
+        userService = serviceInitializer.getUserService();
     }
 
     @Test

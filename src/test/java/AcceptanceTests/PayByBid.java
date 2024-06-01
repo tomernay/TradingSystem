@@ -16,7 +16,8 @@ public class PayByBid {
     StoreService storeService;
     @Before
     public void init(){
-        serviceInitializer=new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer=ServiceInitializer.getInstance();
         userService=serviceInitializer.getUserService();
         storeService=serviceInitializer.getStoreService();
         userService.register("yair","Password123!");

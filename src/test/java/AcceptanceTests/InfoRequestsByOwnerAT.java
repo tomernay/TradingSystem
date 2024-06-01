@@ -26,7 +26,8 @@ public class InfoRequestsByOwnerAT {
 
     @Before
     public void init(){
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
         orderService = serviceInitializer.getOrderService();

@@ -21,7 +21,8 @@ public class StoreRole {
 
     @Before
     public void init(){
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         storeService=serviceInitializer.getStoreService();
         userService=serviceInitializer.getUserService();
         userService.register("yair12312","Password123!");

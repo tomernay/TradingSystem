@@ -21,7 +21,8 @@ class StoreCreationUnitTests {
 
     @BeforeEach
     public void init() {
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
         storeRepository = storeService.getStoreFacade().getStoreRepository();
