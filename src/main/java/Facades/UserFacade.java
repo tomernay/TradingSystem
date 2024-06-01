@@ -6,6 +6,7 @@ import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,7 @@ public class UserFacade {
             userRepository.sendMessageToUser(((nominateManagerMessage) message.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + subscriberUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
         }
         if (message.isSuccess()) {
+            SystemLogger.info("[SUCCESS] message responded successfully");
             return Response.success(message.getMessage(), null);
         }
         return Response.error(message.getMessage(), null);
@@ -89,6 +91,7 @@ public class UserFacade {
     public Response<String> getShoppingCartContents(String userName) {
         Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
         if (shoppingCartContents == null) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get the shopping cart but its empty");
             return Response.error("Error - can't get shopping cart contents", null);
         } else {
             StringBuilder cartContents = new StringBuilder();
@@ -108,6 +111,7 @@ public class UserFacade {
                 }
                 cartContents.append("\n");
             }
+            SystemLogger.info("[SUCCESS] " + userName + " got the shopping cart contents successfully");
             return Response.success("get ShoppingCart Contents successfully",cartContents.toString());
         }
     }

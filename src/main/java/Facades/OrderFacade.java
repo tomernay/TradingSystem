@@ -21,4 +21,12 @@ public class OrderFacade {
     public OrderRepository getOrderRepository() {
         return orderRepository;
     }
+
+    public Response<String> getPurchaseHistoryByStore(String storeID) {
+        return orderRepository.getPurchaseHistoryByStore(storeID);
+    }
+
+    public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
+        return orderRepository.getPurchaseHistoryBySubscriber(subscriberID);
+    }
 }
