@@ -18,7 +18,8 @@ public class StoreManagerPermissionsTests {
 
     @BeforeClass
     public static void init(){
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         userService=serviceInitializer.getUserService();
         storeService=serviceInitializer.getStoreService();
         userService.register("yair","Password123!");

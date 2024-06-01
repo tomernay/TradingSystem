@@ -24,7 +24,7 @@ public class RolesManagementPresenter {
     @Autowired
     public RolesManagementPresenter(@Qualifier("rolesManagementViewImpl") RolesManagementView view) {
         this.view = view;
-        ServiceInitializer serviceInitializer = new ServiceInitializer();
+        ServiceInitializer serviceInitializer = ServiceInitializer.getInstance();
         this.storeService = serviceInitializer.getStoreService();
         this.userService = serviceInitializer.getUserService();
         this.roleFilter = new HashSet<>(Arrays.asList("Owner", "Manager", "Creator", "Subscriber"));

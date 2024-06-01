@@ -33,8 +33,9 @@ public class Subscriber extends User {
         stores.add(storeID);
     }
 
-    public void generateToken() {
+    public String generateToken() {
         Token = Security.generateJWT(this.username);
+        return Token;
     }
 
 
