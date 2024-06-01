@@ -183,4 +183,15 @@ public class StoreFacade {
         return storeRepository.getStoreNameByID(storeID, userName);
     }
 
+    public boolean isStoreSubscriber(String storeID, String UserName) {
+        return storeRepository.isStoreSubscriber(storeID, UserName);
+    }
+
+    public boolean hasPermission(String storeID, String username, String permission) {
+        return storeRepository.hasPermission(storeID, username, permission);
+    }
+
+    public Set<String> getPermissionsList() {
+        return storeRepository.getPermissionsList();
+    }
 }

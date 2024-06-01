@@ -51,7 +51,12 @@ public class RolesManagementPresenter {
     }
 
     public void waiveOwnership(String username) {
-        userService.waiveOwnership(storeID, username, token);
+        Response<String> response = userService.waiveOwnership(storeID, username, token);
+        if (response.isSuccess()) {
+            view.showSuccess("Ownership waived successfully");
+        } else {
+            view.showError(response.getMessage());
+        }
         // Logic to waive ownership for the specified username
         // Only owners should have access to this functionality
     }
@@ -60,10 +65,6 @@ public class RolesManagementPresenter {
 
     public void managePermissions(String username) {
         // Logic to manage permissions for the specified username
-    }
-
-    public void unsubscribe(String username) {
-        // Logic to unsubscribe the specified username
     }
 
     // Modify the filterRoles method to accept a Set<String> of roles
@@ -96,5 +97,61 @@ public class RolesManagementPresenter {
 
     public void setView(RolesManagementView view) {
         this.view = view;
+    }
+
+    public boolean hasRole(String role) {
+        if (role.equals("Owner")) {
+            return storeService.isStoreOwner(storeID, "");
+        }
+        else if (role.equals("Subscriber")) {
+            return storeService.isStoreSubscriber(storeID, "");
+        }
+        else if (role.equals("Creator")) {
+            return storeService.isStoreCreator(storeID, "");
+        }
+        else if (role.equals("Manager")) {
+            return storeService.isStoreManager(storeID, "");
+        }
+        return false;
+    }
+
+    public boolean hasPermission(String permission) {
+        return storeService.hasPermission(storeID, "", permission);
+    }
+
+    public Set<String> getManagerPermissions(String managerUsername) {
+        Response<Map<String, List<String>>> response = storeService.requestManagersPermissions(storeID);
+        if (response.isSuccess()) {
+            Map<String, List<String>> managersPermissions = response.getData();
+            return new HashSet<>(managersPermissions.get(managerUsername));
+        } else {
+            view.showError("Failed to load manager's permissions");
+            return new HashSet<>();
+        }
+    }
+
+    public void updateManagerPermissions(String managerUsername, Set<String> selectedPermissions) {
+        Set<String> currentPermissions = getManagerPermissions(managerUsername);
+        Set<String> permissionsToAdd = new HashSet<>(selectedPermissions);
+        permissionsToAdd.removeAll(currentPermissions);
+        Set<String> permissionsToRemove = new HashSet<>(currentPermissions);
+        permissionsToRemove.removeAll(selectedPermissions);
+
+        permissionsToAdd.forEach(permission -> storeService.addManagerPermissions(storeID, "", managerUsername, permission, token));
+        permissionsToRemove.forEach(permission -> storeService.removeManagerPermissions(storeID, "", managerUsername, permission, token));
+        view.showSuccess("Permissions updated for " + managerUsername);
+    }
+
+    public Set<String> getPermissions() {
+        return storeService.getPermissionsList();
+    }
+
+    public void removeSubscription(String username) {
+        Response<String> response = storeService.removeStoreSubscription(storeID, username);
+        if (response.isSuccess()) {
+            view.showSuccess("Removed subscription successfully from " + username);
+        } else {
+            view.showError(response.getMessage());
+        }
     }
 }

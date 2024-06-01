@@ -7,6 +7,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -63,21 +64,62 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         usernameFilter.setValueChangeMode(ValueChangeMode.LAZY);
         usernameFilter.addValueChangeListener(event -> presenter.searchByUsername(event.getValue()));
 
-        Button addButton = new Button("+ Nominate", e -> showNominationDialog(MainLayout.getSubscriberDetails().getUsername()));
-        Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(MainLayout.getSubscriberDetails().getUsername()));
-
-        // Add the "+ Nominate" button to a HorizontalLayout for positioning
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.add(addButton);
-        buttonLayout.add(waiveOwnershipButton);
+        if (hasRole("Owner") || hasRole("Creator")) {
+            Button addButton = new Button("+ Nominate", e -> showNominationDialog(MainLayout.getSubscriberDetails().getUsername()));
+            buttonLayout.add(addButton);
+        }
+        if (hasRole("Owner")) {
+            Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(MainLayout.getSubscriberDetails().getUsername()));
+            buttonLayout.add(waiveOwnershipButton);
+        }
+
+        grid.addItemClickListener(event -> {
+            Map.Entry<String, String> item = event.getItem();
+            String role = item.getValue();
+            String username = item.getKey();
+
+            if ("Manager".equals(role) && (hasRole("Owner") || hasRole("Creator") || (hasRole("Manager")) && hasPermission("EDIT_PERMISSIONS"))) {
+                showPermissionManagementDialog(username);
+            }
+
+            if ("Subscriber".equals(role) && (hasRole("Owner") || hasRole("Creator") || (hasRole("Manager")) && hasPermission("REMOVE_STORE_SUBSCRIPTION"))) {
+                showSubscriberDialog(username);
+            }
+        });
+
         buttonLayout.setJustifyContentMode(JustifyContentMode.END);
 
         // Add components to the layout
         add(buttonLayout, roleFilter, usernameFilter, grid);
 
-// Add UI components to the layout
-        add(roleFilter, usernameFilter, addButton);
+        // Add UI components to the layout
+        add(roleFilter, usernameFilter);
         add(loadRolesButton, grid);
+    }
+
+    private void showSubscriberDialog(String username) {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnOutsideClick(false);
+
+        Button removeSubscriptionButton = new Button("Remove Subscription", e -> {
+            presenter.removeSubscription(username);
+            dialog.close();
+        });
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(removeSubscriptionButton);
+
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
+    private boolean hasPermission(String permission) {
+        return presenter.hasPermission(permission);
+    }
+
+    private boolean hasRole(String role) {
+        return presenter.hasRole(role);
     }
 
     private void showNominationDialog(String username) {
@@ -118,7 +160,7 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
 
         TextField usernameField = new TextField("Enter Username");
         MultiSelectListBox<String> permissionSelect = new MultiSelectListBox<>();
-        permissionSelect.setItems("Permission 1", "Permission 2", "Permission 3"); // Add your list of permissions here
+        permissionSelect.setItems(presenter.getPermissions()); // Add your list of permissions here
 
         Button nominateButton = new Button("Send Manager Nomination Request", e -> {
             // Get the nominated username and selected permissions
@@ -138,9 +180,31 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
 
 
 
-    public void showPermissions(String username) {
-        // Implement logic to show permissions for the selected user
+    private void showPermissionManagementDialog(String managerUsername) {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnOutsideClick(false);
+
+        // Create components for the dialog
+        MultiSelectListBox<String> permissionSelect = new MultiSelectListBox<>();
+        permissionSelect.setItems("Permission 1", "Permission 2", "Permission 3"); // Add your list of permissions here
+
+        // Fetch current permissions and set them as selected
+        Set<String> currentPermissions = presenter.getManagerPermissions(managerUsername);
+        permissionSelect.setValue(currentPermissions);
+
+        Button saveButton = new Button("Save", e -> {
+            Set<String> selectedPermissions = permissionSelect.getValue();
+            presenter.updateManagerPermissions(managerUsername, selectedPermissions);
+            dialog.close();
+        });
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span("Manage Permissions for: " + managerUsername), permissionSelect, saveButton);
+
+        dialog.add(dialogLayout);
+        dialog.open();
     }
+
 
     public void showWaiveOwnershipConfirmation() {
         // Implement logic to show a confirmation dialog for waiving ownership
@@ -157,6 +221,11 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
 
     @Override
     public void showError(String message) {
+        // Show error message
+    }
+    @Override
+    public void showSuccess(String message) {
+        Notification.show(message, 3000, Notification.Position.MIDDLE);
         // Show error message
     }
 }

@@ -1,7 +1,10 @@
 package Domain.Store.StoreData;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public enum Permissions {
     // Permissions examples for now. Will be updated later.
@@ -14,17 +17,14 @@ public enum Permissions {
     ADD_DISCOUNT,
     REMOVE_DISCOUNT,
     EDIT_DISCOUNT,
-    ADD_PERMISSIONS,
-    REMOVE_PERMISSIONS,
+    EDIT_PERMISSIONS,
     VIEW_STORE_PURCHASE_HISTORY,
     VIEW_STORE_MANAGERS,
     VIEW_STORE_OWNERS,
     VIEW_STORE_DISCOUNTS,
     VIEW_STORE_PURCHASES,
     VIEW_STORE_MESSAGES,
-    REMOVE_STORE_SUBSCRIPTION,
-    ADD_MANAGER,
-    REMOVE_MANAGER;
+    REMOVE_STORE_SUBSCRIPTION;
 
     public static List<Permissions> convertStringList(List<String> permissions) {
         List<Permissions> permissionList = new ArrayList<>();
@@ -49,5 +49,9 @@ public enum Permissions {
             return false;
         }
         return true;
+    }
+
+    public static Set<String> getPermissions() {
+        return EnumSet.allOf(Permissions.class).stream().map(Enum::name).collect(Collectors.toSet());
     }
 }
