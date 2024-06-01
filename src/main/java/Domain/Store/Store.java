@@ -407,11 +407,7 @@ public class Store {
     }
 
 
-    public Response<ProductDTO> getProductFromStore(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
-        if (!permissionCheck.isSuccess()) {
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+    public Response<ProductDTO> getProductFromStore(int productID) {
         return inventory.getProductFromStore(productID);
     }
 
@@ -455,19 +451,11 @@ public class Store {
         return inventory.removeProductFromStore(productID);
     }
 
-    public Response<ProductDTO> getProductByName(String productName, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
-        if (!permissionCheck.isSuccess()) {
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+    public Response<ProductDTO> viewProductFromStoreByName(String productName) {
         return inventory.getProductByName(productName);
     }
 
-    public Response<String> getStoreIDByName(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            return permissionCheck;
-        }
+    public Response<String> getStoreIDByName() {
         return Response.success("The store ID is: " + storeID, storeID);
     }
 
@@ -479,12 +467,16 @@ public class Store {
         return Response.success("The store ID is: " + storeID, new StoreDTO(storeID, storeName));
     }
 
-    public Response<String> getStoreNameByID(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            return permissionCheck;
-        }
+    public Response<String> getStoreNameByID() {
         return Response.success("The store name is: " + storeName, storeName);
     }
 
+    public Response<ProductDTO> viewProductByName(String productName) {
+        return inventory.viewProductByName(productName);
+
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductByCategory(String category) {
+        return inventory.viewProductByCategory(category);
+    }
 }

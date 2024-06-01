@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import Utilities.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -444,6 +445,39 @@ public class Inventory {
             }
         }
         return Response.error("Product with name: " + productName + " not found", null);
+    }
+
+    public Response<ProductDTO> viewProductByName(String productName) {
+        if (productName == null || productName.isEmpty()) {
+            return Response.error("Product name cannot be null or empty", null);
+        }
+        for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
+            if (entry.getValue().getName().toLowerCase(Locale.ROOT).equals(productName.toLowerCase(Locale.ROOT))) {
+                return Response.success("Product with name: " + productName + " retrieved successfully", new ProductDTO(entry.getValue()));
+            }
+        }
+        return Response.error("Product with name: " + productName + " not found", null);
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductByCategory(String category) {
+        if (category == null || category.isEmpty()) {
+            return Response.error("Invalid category: " + category, null);
+        }
+        if (!categories.containsKey(category)) {
+            return Response.error("Category does not exist: " + category, null);
+        }
+        ArrayList<Integer> productIDs = categories.get(category);
+        if (productIDs == null || productIDs.isEmpty()) {
+            return Response.error("No products found in category: " + category, null);
+        }
+        ArrayList<ProductDTO> products = new ArrayList<>();
+        for (Integer productID : productIDs) {
+            Product product = productsList.get(productID);
+            if (product != null) {
+                products.add(new ProductDTO(product));
+            }
+        }
+        return Response.success("Products retrieved successfully for category: " + category, products);
     }
 }
 

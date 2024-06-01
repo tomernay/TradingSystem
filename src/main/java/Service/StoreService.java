@@ -210,21 +210,52 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String storeID, String category, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to retrieve products by category: " + category);
+    // without categories, default = "General"
+    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, UserName)) {
-            return storeFacade.retrieveProductsByCategory(storeID, category, UserName);
+            return storeFacade.addProductToStore(storeID, name, desc, price, quantity, UserName);
         }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to retrieve products by category: " + category + " but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to add product: " + name + " to store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> retrieveProductCategories(int productID, String storeID, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to retrieve categories of product: " + productID);
+    // with categories
+    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, ArrayList<String> categories, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, UserName)) {
-            return storeFacade.retrieveProductCategories(productID, storeID, UserName);
+            return storeFacade.addProductToStore(storeID, name, desc, price, quantity, categories, UserName);
         }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to retrieve categories of product: " + productID + " but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to add product: " + name + " to store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> removeProductFromStore(int productID, String storeID, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to remove product: " + productID + " from store: " + storeID);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.removeProductFromStore(productID, storeID, UserName);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to remove product: " + productID + " from store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    //for normal subscribers also
+    public Response<String> getStoreIDByName(String storeName, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to get storeID by storeName: " + storeName);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.getStoreIDByName(storeName);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to get storeID by storeName: " + storeName + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    //for normal subscribers also
+    public Response<String> getStoreNameByID(String storeID, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to get storeName by storeID: " + storeID);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.getStoreNameByID(storeID);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to get storeName by storeID: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
@@ -246,10 +277,30 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<ProductDTO> getProductFromStoreByID(int productID, String storeID, String UserName, String token) {
+    public Response<String> retrieveProductCategories(int productID, String storeID, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to retrieve categories of product: " + productID);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.retrieveProductCategories(productID, storeID, UserName);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to retrieve categories of product: " + productID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String storeID, String category, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to retrieve products by category: " + category);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.retrieveProductsByCategory(storeID, category, UserName);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to retrieve products by category: " + category + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    //for normal subscribers also
+    public Response<ProductDTO> viewProductFromStoreByID(int productID, String storeID, String UserName, String token) {
         SystemLogger.info("[START] User: " + UserName + " is trying to get product: " + productID);
         if (userService.isValidToken(token, UserName)) {
-            return storeFacade.getProductFromStore(productID, storeID, UserName);
+            return storeFacade.viewProductFromStoreByID(productID, storeID);
         }
         SystemLogger.error("[ERROR] User: " + UserName + " tried to get product: " + productID + " but the token was invalid");
         return Response.error("Invalid token", null);
@@ -264,66 +315,13 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> getStoreIDbyName(String storeName, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to get storeID by storeName: " + storeName);
-        if (userService.isValidToken(token, UserName)) {
-            return storeFacade.getStoreIDbyName(storeName, UserName);
-        }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to get storeID by storeName: " + storeName + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to add product: " + name + " to store: " + storeID);
-        if (userService.isValidToken(token, UserName)) {
-            return storeFacade.addProductToStore(storeID, name, desc, price, quantity, UserName);
-        }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to add product: " + name + " to store: " + storeID + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, ArrayList<String> categories, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to add product: " + name + " to store: " + storeID);
-        if (userService.isValidToken(token, UserName)) {
-            return storeFacade.addProductToStore(storeID, name, desc, price, quantity, categories, UserName);
-        }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to add product: " + name + " to store: " + storeID + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    public Response<String> removeProductFromStore(int productID, String storeID, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to remove product: " + productID + " from store: " + storeID);
-        if (userService.isValidToken(token, UserName)) {
-            return storeFacade.removeProductFromStore(productID, storeID, UserName);
-        }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to remove product: " + productID + " from store: " + storeID + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    public Response<ProductDTO> getProductFromStoreByName(String storeID, String productName, String UserName, String token) {
+    //for normal subscribers also
+    public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName, String UserName, String token) {
         SystemLogger.info("[START] User: " + UserName + " is trying to get product: " + productName + " from store: " + storeID);
         if (userService.isValidToken(token, UserName)) {
-            return storeFacade.getProductByName(storeID, productName, UserName);
+            return storeFacade.viewProductFromStoreByName(storeID, productName);
         }
         SystemLogger.error("[ERROR] User: " + UserName + " tried to get product: " + productName + " from store: " + storeID + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    public Response<String> getStoreIDByName(String storeName, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to get storeID by storeName: " + storeName);
-        if (userService.isValidToken(token, UserName)) {
-            return storeFacade.getStoreIDByName(storeName, UserName);
-        }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to get storeID by storeName: " + storeName + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    public Response<String> getStoreNameByID(String storeID, String UserName, String token) {
-        SystemLogger.info("[START] User: " + UserName + " is trying to get storeName by storeID: " + storeID);
-        if (userService.isValidToken(token, UserName)) {
-            return storeFacade.getStoreNameByID(storeID, UserName);
-        }
-        SystemLogger.error("[ERROR] User: " + UserName + " tried to get storeName by storeID: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
@@ -333,6 +331,26 @@ public class StoreService {
             return storeFacade.getStoreByID(storeID, UserName);
         }
         SystemLogger.error("[ERROR] User: " + UserName + " tried to search store by storeID: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    //only for normal subscriber
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByName(String productName, String UserName ,String token) {
+        SystemLogger.info("[START] User: " + " is trying to get product: " + productName + " from all stores");
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.viewProductFromAllStoresByName(productName);
+        }
+        SystemLogger.error("[ERROR] User: " + " tried to get product: " + productName + " from all stores but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    //only for normal subscribers
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category, String UserName ,String token) {
+        SystemLogger.info("[START] User: " + " is trying to get product: " + category + " from all stores");
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.viewProductFromAllStoresByCategory(category);
+        }
+        SystemLogger.error("[ERROR] User: " + " tried to get product: " + category + " from all stores but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
