@@ -4,6 +4,7 @@ import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Store.StoreDTO;
+import Domain.Store.StoreData.Permissions;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -22,10 +23,16 @@ public class StoreRepository {
     }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
         return stores.get(storeID).isStoreOwner(currentUsername);
     }
 
     public boolean isStoreManager(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
         return stores.get(storeID).isStoreManager(currentUsername);
     }
 
@@ -96,6 +103,9 @@ public class StoreRepository {
     }
 
     public boolean isStoreCreator(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
         return stores.get(storeID).isStoreCreator(currentUsername);
     }
 
@@ -412,4 +422,21 @@ public class StoreRepository {
         return stores.get(storeID).getStoreNameByID(userName);
     }
 
+    public boolean isStoreSubscriber(String storeID, String userName) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
+        return stores.get(storeID).isStoreSubscriber(userName);
+    }
+
+    public boolean hasPermission(String storeID, String username, String permission) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
+        return stores.get(storeID).hasPermission(username, permission);
+    }
+
+    public Set<String> getPermissionsList() {
+        return Permissions.getPermissions();
+    }
 }

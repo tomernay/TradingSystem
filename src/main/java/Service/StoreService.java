@@ -336,5 +336,16 @@ public class StoreService {
     }
 
 
+    public boolean isStoreSubscriber(String storeID, String UserName) {
+        return storeFacade.isStoreSubscriber(storeID, UserName);
+    }
+
+    public boolean hasPermission(String storeID, String username, String permission) {
+        return storeFacade.hasPermission(storeID, username, permission);
+    }
+
+    public Set<String> getPermissionsList() {
+        return storeFacade.getPermissionsList();
+    }
 }
 

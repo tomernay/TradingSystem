@@ -506,4 +506,23 @@ public class Store {
         return Response.success("The store name is: " + storeName, storeName);
     }
 
+    public boolean isStoreSubscriber(String userName) {
+        if (subscribers.get(userName) == null) {
+            return false;
+        }
+        return subscribers.get(userName) instanceof NormalSubscriber;
+    }
+
+    public boolean hasPermission(String username, String permission) {
+        if (subscribers.get(username) == null) {
+            return false;
+        }
+        if (isStoreOwner(username) || isStoreCreator(username)) {
+            return true;
+        }
+        if (isStoreManager(username)) {
+            return managerPermissions.get(username).contains(Permissions.valueOf(permission));
+        }
+        return false;
+    }
 }
