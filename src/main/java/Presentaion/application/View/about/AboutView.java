@@ -1,7 +1,7 @@
-package Presentaion.application.views.about;
+package Presentaion.application.View.about;
 
 
-import Presentaion.application.views.MainLayout;
+import Presentaion.application.View.MainLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
