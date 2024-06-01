@@ -1,4 +1,4 @@
-package Presentaion.application.views.Messages;
+package Presentaion.application.View.Messages;
 
 
 import Utilities.Messages.Message;
@@ -7,7 +7,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

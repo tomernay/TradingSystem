@@ -1,7 +1,8 @@
-package Presentaion.application.views;
+package Presentaion.application.View;
 
-import Presentaion.application.views.Messages.MessagesList;
-import Presentaion.application.views.Payment.PaymentPage;
+import Presentaion.application.View.Messages.MessagesList;
+import Presentaion.application.View.Payment.PaymentPage;
+import Presentaion.application.View.Store.RolesManagementViewImpl;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
@@ -12,7 +13,6 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.theme.lumo.Lumo;
 
 
 /**
@@ -52,7 +52,9 @@ public class MainLayout extends AppLayout {
         SideNav nav = new SideNav();
 
         nav.addItem(new SideNavItem("Payment", PaymentPage.class));
-        nav.addItem(new SideNavItem("messages", MessagesList.class));
+        nav.addItem(new SideNavItem("Messages", MessagesList.class));
+        nav.addItem(new SideNavItem("Roles Management", RolesManagementViewImpl.class)); // New navigation item
+
 
         return nav;
     }

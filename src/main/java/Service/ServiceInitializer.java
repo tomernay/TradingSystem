@@ -1,5 +1,8 @@
 package Service;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ServiceInitializer {
     private UserService userService;
     private StoreService storeService;
