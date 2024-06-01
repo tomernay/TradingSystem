@@ -1,12 +1,8 @@
 package Service;
 
 import Facades.OrderFacade;
-import Domain.Order;
 import Utilities.Response;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import Utilities.SystemLogger;
 
 public class AdminService {
     private UserService userService;
@@ -38,42 +34,29 @@ public class AdminService {
     }
 
     public Response<String> getPurchaseHistoryByStore(String storeID) {
+        SystemLogger.info("[START] Admin is trying to get purchase history by store");
         try{
             if (storeService.storeExists(storeID) == false){
-                return new Response<>(false,"The Store Does Not Exist" );
+                SystemLogger.error("[ERROR] The Store Does Not Exist");
+                return Response.error("The Store Does Not Exist", null);
             }
-
-            Map<Integer, Order> myOrders = orderFacade.getOrders();
-            List<Order> orderList = new ArrayList<>();
-            for (Order order: myOrders.values()){
-                if (order.getStoreID().equals(storeID)){
-                    orderList.add(order);
-                }
-            }
-            return new Response<>(true,orderList.toString());
+            return orderFacade.getPurchaseHistoryByStore(storeID);
         }
         catch (Exception exception){
-            return new Response<>(false,"Other Exception" );
+            return Response.error("Other Exception", null);
         }
     }
 
     public Response<String> getPurchaseHistoryBySubscriber(String subscriberID){
         try{
             if (userService.userExists(subscriberID) == false){
-                return new Response<>(false, "The User Does Not Exist");
+                SystemLogger.error("[ERROR] The User Does Not Exist");
+                return Response.error("The User Does Not Exist", null);
             }
-
-            Map<Integer, Order> myOrders = orderFacade.getOrders();
-            List<Order> orderList = new ArrayList<>();
-            for (Order order: myOrders.values()){
-                if (order.getUsername().equals(subscriberID)){
-                    orderList.add(order);
-                }
-            }
-            return new Response<>(true,orderList.toString());
+            return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
         }
         catch (Exception exception){
-            return new Response<>(false, "Other Exception");
+            return Response.error("Other Exception", null);
         }
 
 

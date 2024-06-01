@@ -37,10 +37,12 @@ public class UserService {
     }
 
     public synchronized Response<String> loginAsSubscriber(String username, String password) {
+        SystemLogger.info("[START] User: " + username + " is trying to login");
         return userFacade.loginAsSubscriber(username, password);
     }
 
     public synchronized Response<String> logoutAsSubscriber(String username) {
+        SystemLogger.info("[START] User: " + username + " is trying to logout");
         return userFacade.logoutAsSubscriber(username);
     }
 
@@ -49,7 +51,7 @@ public class UserService {
         if(isValidToken(token,currentUsername)) {
             if (currentUsername.equals(subscriberUsername)) {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " is trying to make himself a store manager");
-                return Response.error("User: " + subscriberUsername + " is trying to make himself a store manager", null);
+                return Response.error("You can't nominate yourself.", null);
             }
             if (!userExists(subscriberUsername)) {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
@@ -149,6 +151,7 @@ public class UserService {
 
     //register a new user
     public synchronized Response<String> register(String username, String password) {
+        SystemLogger.info("[START] User: " + username + " is trying to register");
         return userFacade.register(username, password);
     }
 
@@ -162,58 +165,73 @@ public class UserService {
     }
 
     public Response<Map<String, String>> requestEmployeesStatus(String storeID, String userName, String token) {
+        SystemLogger.info("[START] User: " + userName + " is trying to request the employees status of the store");
         if (isValidToken(token, userName)) {
             if (storeService.isStoreOwner(storeID, userName) || storeService.isStoreCreator(storeID, userName)) {
                 return storeService.requestEmployeesStatus(storeID);
             }
+            SystemLogger.error("[ERROR] User: " + userName + " tried to request the employees status of the store but is not the store owner");
             return Response.error("The user trying to do this action is not the store owner.", null);
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to request the employees status of the store but the token was invalid");
         return Response.error("invalid token", null);
     }
 
     public Response<Map<String, List<String>>> requestManagersPermissions(String storeID, String userName, String token) {
+        SystemLogger.info("[START] User: " + userName + " is trying to request the managers permissions of the store");
         if (isValidToken(token, userName)) {
             if (storeService.isStoreOwner(storeID, userName) || storeService.isStoreCreator(storeID, userName)) {
                 return storeService.requestManagersPermissions(storeID);
             }
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to request the managers permissions of the store but the token was invalid");
         return Response.error("invalid token", null);
     }
 
     public Response<String> addProductToShoppingCart(String storeID, String productID, String userName, String token, int quantity) {
+        SystemLogger.info("[START] User: " + userName + " is trying to add a product to the shopping cart");
         if (isValidToken(token, userName)) {
             if (storeService.isStoreOwner(storeID, userName) || storeService.isStoreCreator(storeID, userName)) {
                 return userFacade.addProductToShoppingCart(storeID, productID, userName, quantity);
             }
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to add a product to the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
 
     public Response<String> removeProductFromShoppingCart(String storeID, String productID, String userName, String token) {
+        SystemLogger.info("[START] User: " + userName + " is trying to remove a product from the shopping cart");
         if (isValidToken(token, userName)) {
             return userFacade.removeProductFromShoppingCart(userName,storeID, productID);
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to remove a product from the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
 
     public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, String token, int quantity) {
+        SystemLogger.info("[START] User: " + userName + " is trying to update a product in the shopping cart");
         if (isValidToken(token, userName)) {
             return userFacade.updateProductInShoppingCart(storeID, productID, userName, quantity);
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to update a product in the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
 
     public Response<String> getShoppingCartContents(String userName, String token) {
+        SystemLogger.info("[START] User: " + userName + " is trying to get the shopping cart contents");
         if (isValidToken(token, userName)) {
             return userFacade.getShoppingCartContents(userName);
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to get the shopping cart contents but the token was invalid");
         return Response.error("invalid token", null);
     }
 
     public Response<String> purchaseShoppingCart(String userName, String token) {
+        SystemLogger.info("[START] User: " + userName + " is trying to purchase the shopping cart");
         if (isValidToken(token, userName)) {
             return userFacade.purchaseShoppingCart(userName);
         }
+        SystemLogger.error("[ERROR] User: " + userName + " tried to purchase the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
 

@@ -1,5 +1,6 @@
 package Domain.Users.Subscriber.Cart;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ public class ShoppingCart {
                 return basket.removeProductFromBasket(productID);
             }
         }
+        SystemLogger.error("[ERROR] Can't remove product from cart");
         return Response.error("Error - can't remove product from cart", null);
     }
 
@@ -43,6 +45,7 @@ public class ShoppingCart {
                 return basket.updateProductInBasket(productID, quantity);
             }
         }
+        SystemLogger.error("[ERROR] Can't update product in cart");
         return Response.error("Error - can't update product in cart", null);
     }
 
@@ -51,6 +54,7 @@ public class ShoppingCart {
         for (Basket basket : baskets) {
             userProducts.put(basket.getStoreID(), basket.getProductsQuantityMap());
         }
+        SystemLogger.info("[SUCCESS] get ShoppingCart Contents successfull");
         return Response.success("get ShoppingCart Contents successfull", userProducts);
     }
 }

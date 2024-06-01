@@ -2,7 +2,6 @@ package Facades;
 
 import Domain.Repo.StoreRepository;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -54,10 +53,6 @@ public class StoreFacade {
 
     public Response<Map<String, List<String>>> requestManagersPermissions(String storeID){
         return storeRepository.requestManagersPermissions(storeID);
-    }
-
-    public Store getStore(String storeID) {
-        return storeRepository.getStore(storeID);
     }
 
     public Response<String> openStore(String storeID, String creator) {
