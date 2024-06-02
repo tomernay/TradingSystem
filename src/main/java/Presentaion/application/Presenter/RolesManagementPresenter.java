@@ -1,5 +1,6 @@
 package Presentaion.application.Presenter;
 
+import Presentaion.application.CookiesHandler;
 import Presentaion.application.View.RolesManagementView;
 import Service.ServiceInitializer;
 import Service.StoreService;
@@ -30,34 +31,10 @@ public class RolesManagementPresenter {
         this.roleFilter = new HashSet<>(Arrays.asList("Owner", "Manager", "Creator", "Subscriber"));
     }
 
-    private String getTokenFromCookies() {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getUsernameFromCookies() {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
     public void loadRoles(String storeID, Set<String> roleFilter, String username) {
         this.storeID = storeID;
-        String token = getTokenFromCookies();
-        String currentUsername = getUsernameFromCookies();
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String currentUsername = CookiesHandler.getUsernameFromCookies(request);
         SystemLogger.info("storeID: " + storeID + ", username: " + currentUsername + ", token: " + token);
         Response<Map<String, String>> response = userService.requestEmployeesStatus(storeID, currentUsername, token);
         if (response.isSuccess()) {
@@ -77,8 +54,8 @@ public class RolesManagementPresenter {
     }
 
     public void waiveOwnership() {
-        String token = getTokenFromCookies();
-        Response<String> response = userService.waiveOwnership(storeID, getUsernameFromCookies(), token);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<String> response = userService.waiveOwnership(storeID, CookiesHandler.getUsernameFromCookies(request), token);
         if (response.isSuccess()) {
             view.showSuccess("Ownership waived successfully");
         } else {
@@ -87,13 +64,13 @@ public class RolesManagementPresenter {
     }
 
     public void nominateOwner(String subscriberUsername) {
-        String token = getTokenFromCookies();
-        userService.SendStoreOwnerNomination(storeID, getUsernameFromCookies(), subscriberUsername, token);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        userService.SendStoreOwnerNomination(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, token);
     }
 
     public void nominateManager(String subscriberUsername, Set<String> selectedPermissions) {
-        String token = getTokenFromCookies();
-        userService.SendStoreManagerNomination(storeID, getUsernameFromCookies(), subscriberUsername, selectedPermissions.stream().toList(), token);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        userService.SendStoreManagerNomination(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, selectedPermissions.stream().toList(), token);
     }
 
     public void setView(RolesManagementView view) {
@@ -101,7 +78,7 @@ public class RolesManagementPresenter {
     }
 
     public boolean hasRole(String role) {
-        String token = getTokenFromCookies();
+        String token = CookiesHandler.getTokenFromCookies(request);
         if (role.equals("Owner")) {
             return storeService.isStoreOwner(storeID, token);
         } else if (role.equals("Subscriber")) {
@@ -115,12 +92,12 @@ public class RolesManagementPresenter {
     }
 
     public boolean hasPermission(String permission) {
-        String token = getTokenFromCookies();
+        String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.hasPermission(storeID, token, permission);
     }
 
     public Set<String> getManagerPermissions(String managerUsername) {
-        String token = getTokenFromCookies();
+        String token = CookiesHandler.getTokenFromCookies(request);
         Response<Map<String, List<String>>> response = storeService.requestManagersPermissions(storeID);
         if (response.isSuccess()) {
             Map<String, List<String>> managersPermissions = response.getData();
@@ -132,8 +109,8 @@ public class RolesManagementPresenter {
     }
 
     public void updateManagerPermissions(String managerUsername, Set<String> selectedPermissions) {
-        String token = getTokenFromCookies();
-        String username = getUsernameFromCookies();
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
         Set<String> currentPermissions = getManagerPermissions(managerUsername);
         Set<String> permissionsToAdd = new HashSet<>(selectedPermissions);
         permissionsToAdd.removeAll(currentPermissions);
@@ -150,8 +127,8 @@ public class RolesManagementPresenter {
     }
 
     public void removeSubscription(String subscriber) {
-        String token = getTokenFromCookies();
-        String username = getUsernameFromCookies();
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> response = storeService.removeStoreSubscription(storeID, username, subscriber, token);
         if (response.isSuccess()) {
             view.showSuccess("Removed subscription successfully from " + username);
