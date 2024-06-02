@@ -1,5 +1,6 @@
 package Presentaion.application.Presenter;
 
+import Presentaion.application.CookiesHandler;
 import Presentaion.application.View.MainLayoutView;
 import Service.ServiceInitializer;
 import Service.UserService;
@@ -23,33 +24,9 @@ public class MainLayoutPresenter {
         this.view = view;
     }
 
-    private String getTokenFromCookies() {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getUsernameFromCookies() {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("username".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
     public void logout() {
-        String token = getTokenFromCookies();
-        String username = getUsernameFromCookies();
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        assert username != null;
         if (username.contains("Guest")) {
             userService.logoutAsGuest(username);
             view.navigateToLogin();

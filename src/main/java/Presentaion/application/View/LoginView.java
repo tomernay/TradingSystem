@@ -1,5 +1,6 @@
 package Presentaion.application.View;
 
+import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.LoginPresenter;
 import Utilities.SystemLogger;
 import com.vaadin.flow.component.button.Button;
@@ -74,17 +75,9 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void loginSuccessful(String username, String token) {
-        setCookie("username", username, 5 * 60); // 5 minutes
-        setCookie("token", token, 5 * 60); // 5 minutes
+        CookiesHandler.setCookie("username", username, 5 * 60); // 5 minutes
+        CookiesHandler.setCookie("token", token, 5 * 60); // 5 minutes
         navigateToMain();
     }
 
-    private void setCookie(String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-        cookie.setSecure(true); // Only send over HTTPS
-        cookie.setHttpOnly(true); // Prevent JavaScript access
-        VaadinService.getCurrentResponse().addCookie(cookie);
-    }
 }

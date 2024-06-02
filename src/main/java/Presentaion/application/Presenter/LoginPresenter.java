@@ -24,12 +24,18 @@ public class LoginPresenter {
 
     public void loginAsSubscriber(String username, String password) {
         try {
-            String token = userService.loginAsSubscriber(username, password).getData();
-            if (token != null) {
-                view.loginSuccessful(username, token);
+            Response<String> response = userService.loginAsSubscriber(username, password);
+            if (response.isSuccess()) {
+                String token = response.getData();
+                if (token != null) {
+                    view.loginSuccessful(username, token);
+                } else {
+                    view.showError("Invalid username or password");
+                }
             } else {
                 view.showError("Invalid username or password");
             }
+
         } catch (Exception e) {
             view.showError("An error occurred during login");
         }

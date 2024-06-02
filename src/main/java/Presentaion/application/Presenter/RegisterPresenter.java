@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RegisterPresenter {
 
-    private UserService userService;
+    private final UserService userService;
     private RegisterView view;
 
     public RegisterPresenter() {
