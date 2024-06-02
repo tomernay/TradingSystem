@@ -34,6 +34,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
+        login.setForgotPasswordButtonVisible(false); // Hide the "Forgot Password" button
+
         login.addLoginListener(e -> presenter.loginAsSubscriber(e.getUsername(), e.getPassword()));
 
         Button registerButton = new Button("Register", e -> navigateToRegister());
