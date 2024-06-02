@@ -63,7 +63,19 @@ public class ShoppingCart {
         Assert.assertFalse(shoppingCart2.getData().contains("newProduct"));
     }
 
-
+    @Test
+    public void EditProductAmountInShoppingcart(){
+        storeService.addProductToStore("newStore","newProduct","",10, 1,"newOwner",owner.getToken());
+        Response<String> res=userService.addProductToShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),1);
+        userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Assert.assertTrue(res.isSuccess());
+        Response<String> shoppingCart=userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Assert.assertTrue(shoppingCart.getData().contains("newProduct"));
+        Response<String> res2=userService.updateProductInShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),2);
+        Assert.assertTrue(res2.isSuccess());
+        Response<String> shoppingCart2=userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Assert.assertTrue(shoppingCart2.getData().contains("newProduct 2"));
+    }
 
 
 
