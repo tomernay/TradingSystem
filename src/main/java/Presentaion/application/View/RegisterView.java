@@ -1,7 +1,6 @@
 package Presentaion.application.View;
 
 import Presentaion.application.Presenter.RegisterPresenter;
-import Presentaion.application.RegisterViewContract;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
@@ -17,18 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route("register")
 @PageTitle("Register | Vaadin CRM")
 @AnonymousAllowed
-public class RegisterView extends VerticalLayout implements RegisterViewContract.View {
+public class RegisterView extends VerticalLayout{
 
     private final RegisterPresenter presenter;
     private final TextField username = new TextField("Username");
     private final PasswordField password = new PasswordField("Password");
     private final PasswordField confirmPassword = new PasswordField("Confirm Password");
 
-    @Autowired
+
     public RegisterView(RegisterPresenter presenter) {
         this.presenter = presenter;
-        presenter.attachView(this);
-
+        this.presenter.attachView(this);
         addClassName("register-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
@@ -45,13 +43,11 @@ public class RegisterView extends VerticalLayout implements RegisterViewContract
         add(new H1("Register"), formLayout, buttons);
     }
 
-    @Override
     public void showError(String message) {
         confirmPassword.setErrorMessage(message);
         confirmPassword.setInvalid(true);
     }
 
-    @Override
     public void navigateToLogin() {
         getUI().ifPresent(ui -> ui.navigate("login"));
     }

@@ -17,7 +17,7 @@ public class Security {
 
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Replace with your secret key
 
-    private static final long EXPIRATION_TIME_MS = 86400000; // 24 hours
+    private static final long EXPIRATION_TIME_MS = 5 * 60 * 1000; // 24 hours
 
     // Method to generate a JWT for a user
     public static String generateJWT(String userId) {

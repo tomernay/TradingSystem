@@ -18,7 +18,6 @@ public class Subscriber extends User {
     private List<String> stores;
     private Queue<Message> messages;
     private String password;
-    private String Token;
     private String credit;
 
 
@@ -31,11 +30,6 @@ public class Subscriber extends User {
 
     public void addStore(String storeID) {
         stores.add(storeID);
-    }
-
-    public String generateToken() {
-        Token = Security.generateJWT(this.username);
-        return Token;
     }
 
 

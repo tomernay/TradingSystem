@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 public class guestLoginLogoutTest {
     ServiceInitializer serviceInitializer;
     UserService userService;
@@ -21,39 +23,39 @@ public class guestLoginLogoutTest {
     @Test
     public void loginAsGuestTest(){
         // Act guest0
-        Response<String> response = userService.loginAsGuest();
+        Response<List<String>> response = userService.loginAsGuest();
 
         // Assert guest0
         Assert.assertTrue(response.isSuccess());
-        Assert.assertEquals("Guest0", response.getData());
+        Assert.assertEquals("Guest0", response.getData().get(0));
 
         // Act guest1
-        Response<String> response1 = userService.loginAsGuest();
+        Response<List<String>> response1 = userService.loginAsGuest();
 
         // Assert guest1
         Assert.assertTrue(response1.isSuccess());
-        Assert.assertEquals("Guest1", response1.getData());
+        Assert.assertEquals("Guest1", response1.getData().get(0));
     }
 
     @Test
     public void failedLoginAsGuestTest(){
         // Act guest0
-        Response<String> response = userService.loginAsGuest();
+        Response<List<String>> response = userService.loginAsGuest();
 
         // Assert guest0
         Assert.assertTrue(response.isSuccess());
-        Assert.assertNotEquals("Guest1", response.getData());
+        Assert.assertNotEquals("Guest1", response.getData().get(0));
 
     }
 
     @Test
     public void logoutAsGuestSuccessTest(){
         // Act: Login as a guest
-        Response<String> loginResponse = userService.loginAsGuest();
+        Response<List<String>> loginResponse = userService.loginAsGuest();
         Assert.assertTrue(loginResponse.isSuccess());
 
         // Act: Logout as the same guest
-        Response<String> logoutResponse = userService.logoutAsGuest(loginResponse.getData());
+        Response<String> logoutResponse = userService.logoutAsGuest(loginResponse.getData().get(0));
 
         // Assert: Logout should be successful
         Assert.assertTrue(logoutResponse.isSuccess());

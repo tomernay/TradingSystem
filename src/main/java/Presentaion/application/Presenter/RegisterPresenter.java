@@ -1,28 +1,26 @@
 package Presentaion.application.Presenter;
 
-import Presentaion.application.RegisterViewContract;
+
+import Presentaion.application.View.RegisterView;
 import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RegisterPresenter implements RegisterViewContract.Presenter {
+public class RegisterPresenter {
 
-    private final UserService userService;
-    private RegisterViewContract.View view;
+    private UserService userService;
+    private RegisterView view;
 
     public RegisterPresenter() {
-        ServiceInitializer serviceInitializer = ServiceInitializer.getInstance();
-        this.userService = serviceInitializer.getUserService();
+        this.userService = ServiceInitializer.getInstance().getUserService();
     }
 
-    public void attachView(RegisterViewContract.View view) {
+    public void attachView(RegisterView view) {
         this.view = view;
     }
 
-    @Override
     public void register(String username, String password, String confirmPassword) {
         if (password.equals(confirmPassword)) {
             Response<String> register = userService.register(username, password);

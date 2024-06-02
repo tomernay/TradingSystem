@@ -2,7 +2,7 @@ package Presentaion.application.View.helloworld;
 
 
 
-import Presentaion.application.View.MainLayout;
+import Presentaion.application.View.MainLayoutView;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
@@ -13,8 +13,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 @PageTitle("Hello World")
-@Route(value = "", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
+@Route(value = "", layout = MainLayoutView.class)
+@RouteAlias(value = "", layout = MainLayoutView.class)
 public class HelloWorldView extends HorizontalLayout {
 
     private TextField name;

@@ -49,7 +49,7 @@ public class InfoRequestsByOwnerAT {
         //make ziv manager
         List<String> perms = new ArrayList<>();
         perms.add("EDIT_PRODUCT");
-        perms.add("ADD_MANAGER");
+//        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
         userService.SendStoreManagerNomination(store.getData(), "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
