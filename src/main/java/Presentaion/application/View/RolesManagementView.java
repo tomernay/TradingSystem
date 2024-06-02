@@ -1,46 +1,52 @@
-package Presentaion.application.View.Store;
+package Presentaion.application.View;
 
 import Presentaion.application.Presenter.RolesManagementPresenter;
-import Presentaion.application.View.MainLayout;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.listbox.MultiSelectListBox;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 @PageTitle("Roles Management")
-@Route(value = "roles-management", layout = MainLayout.class)
-@Component
-@Qualifier("rolesManagementViewImpl")
-public class RolesManagementViewImpl extends VerticalLayout implements RolesManagementView {
-    private final Grid<Map.Entry<String, String>> grid;
-    private final RolesManagementPresenter presenter;
+@Route(value = "roles-management", layout = MainLayoutView.class)
+public class RolesManagementView extends VerticalLayout {
+    private RolesManagementPresenter presenter;
+    private Grid<Map.Entry<String, String>> grid;
     private MultiSelectListBox<String> roleFilter;
     private TextField usernameFilter;
-    private Button addButton;
 
-    public RolesManagementViewImpl() {
-        this.presenter = new RolesManagementPresenter(this);
+    public RolesManagementView(RolesManagementPresenter presenter) {
+        this.presenter = presenter;
+        this.presenter.setView(this);
+        initUI();
+    }
+
+    private void initUI() {
         grid = new Grid<>();
         grid.addColumn(Map.Entry::getKey).setHeader("Username");
         grid.addColumn(Map.Entry::getValue).setHeader("Role");
+
+
+        // Initialize UI components in the constructor
+        MultiSelectComboBox<String> roleFilter = new MultiSelectComboBox<>();
+        roleFilter.setLabel("Filter by Role");
+        roleFilter.setItems("Owner", "Manager", "Creator", "Subscriber");
+        roleFilter.setPlaceholder("Select roles...");
+        roleFilter.setClearButtonVisible(true);
+        roleFilter.getElement().setAttribute("multiple", true); // Set multiple attribute to enable multi-select
 
         Button loadRolesButton = new Button("Load Roles", event -> {
             // Replace "store-id" with the actual store ID
@@ -52,25 +58,17 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
             // Pass the selected roles and an empty string for the username
             presenter.loadRoles(storeID, selectedRoles, "");
         });
-        // Initialize UI components in the constructor
-        MultiSelectComboBox<String> roleFilter = new MultiSelectComboBox<>();
-        roleFilter.setLabel("Filter by Role");
-        roleFilter.setItems("Owner", "Manager", "Creator", "Subscriber");
-        roleFilter.setPlaceholder("Select roles...");
-        roleFilter.setClearButtonVisible(true);
-        roleFilter.getElement().setAttribute("multiple", true); // Set multiple attribute to enable multi-select
-
         usernameFilter = new TextField("Search by Username");
         usernameFilter.setValueChangeMode(ValueChangeMode.LAZY);
         usernameFilter.addValueChangeListener(event -> presenter.searchByUsername(event.getValue()));
 
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        if (hasRole("Owner") || hasRole("Creator")) {
-            Button addButton = new Button("+ Nominate", e -> showNominationDialog(MainLayout.getSubscriberDetails().getUsername()));
+        if (presenter.hasRole("Owner") || presenter.hasRole("Creator")) {
+            Button addButton = new Button("+ Nominate", e -> showNominationDialog());
             buttonLayout.add(addButton);
         }
-        if (hasRole("Owner")) {
-            Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(MainLayout.getSubscriberDetails().getUsername()));
+        if (presenter.hasRole("Owner")) {
+            Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership());
             buttonLayout.add(waiveOwnershipButton);
         }
 
@@ -79,16 +77,16 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
             String role = item.getValue();
             String username = item.getKey();
 
-            if ("Manager".equals(role) && (hasRole("Owner") || hasRole("Creator") || (hasRole("Manager")) && hasPermission("EDIT_PERMISSIONS"))) {
+            if ("Manager".equals(role) && (presenter.hasRole("Owner") || presenter.hasRole("Creator") || (presenter.hasRole("Manager")) && presenter.hasPermission("EDIT_PERMISSIONS"))) {
                 showPermissionManagementDialog(username);
             }
 
-            if ("Subscriber".equals(role) && (hasRole("Owner") || hasRole("Creator") || (hasRole("Manager")) && hasPermission("REMOVE_STORE_SUBSCRIPTION"))) {
+            if ("Subscriber".equals(role) && (presenter.hasRole("Owner") || presenter.hasRole("Creator") || (presenter.hasRole("Manager")) && presenter.hasPermission("REMOVE_STORE_SUBSCRIPTION"))) {
                 showSubscriberDialog(username);
             }
         });
 
-        buttonLayout.setJustifyContentMode(JustifyContentMode.END);
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
 
         // Add components to the layout
         add(buttonLayout, roleFilter, usernameFilter, grid);
@@ -96,6 +94,10 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         // Add UI components to the layout
         add(roleFilter, usernameFilter);
         add(loadRolesButton, grid);
+    }
+
+    public void setPresenter(RolesManagementPresenter presenter) {
+        this.presenter = presenter;
     }
 
     private void showSubscriberDialog(String username) {
@@ -114,20 +116,12 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         dialog.open();
     }
 
-    private boolean hasPermission(String permission) {
-        return presenter.hasPermission(permission);
-    }
-
-    private boolean hasRole(String role) {
-        return presenter.hasRole(role);
-    }
-
-    private void showNominationDialog(String username) {
+    private void showNominationDialog() {
         Dialog dialog = new Dialog();
         dialog.setCloseOnOutsideClick(false);
 
-        Button nominateOwnerButton = new Button("Nominate Owner", e -> showOwnerNominationDialog(username));
-        Button nominateManagerButton = new Button("Nominate Manager", e -> showManagerNominationDialog(username));
+        Button nominateOwnerButton = new Button("Nominate Owner", e -> showOwnerNominationDialog());
+        Button nominateManagerButton = new Button("Nominate Manager", e -> showManagerNominationDialog());
 
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(nominateOwnerButton, nominateManagerButton);
@@ -136,13 +130,13 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         dialog.open();
     }
 
-    private void showOwnerNominationDialog(String username) {
+    private void showOwnerNominationDialog() {
         Dialog dialog = new Dialog();
         dialog.setCloseOnOutsideClick(false);
 
         TextField usernameField = new TextField("Enter Username");
         Button nominateButton = new Button("Send Owner Nomination Request", e -> {
-            presenter.nominateOwner(username, usernameField.getValue());
+            presenter.nominateOwner(usernameField.getValue());
             // Logic to send owner nomination request
             dialog.close();
         });
@@ -154,7 +148,7 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         dialog.open();
     }
 
-    private void showManagerNominationDialog(String username) {
+    private void showManagerNominationDialog() {
         Dialog dialog = new Dialog();
         dialog.setCloseOnOutsideClick(false);
 
@@ -166,7 +160,7 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
             // Get the nominated username and selected permissions
             String nominatedUsername = usernameField.getValue();
             Set<String> selectedPermissions = permissionSelect.getValue();
-            presenter.nominateManager(username, nominatedUsername, selectedPermissions);
+            presenter.nominateManager(nominatedUsername, selectedPermissions);
             // Logic to send manager nomination request
             dialog.close();
         });
@@ -205,27 +199,18 @@ public class RolesManagementViewImpl extends VerticalLayout implements RolesMana
         dialog.open();
     }
 
-
-    public void showWaiveOwnershipConfirmation() {
-        // Implement logic to show a confirmation dialog for waiving ownership
-    }
-
     public void notify(String message) {
         Notification.show(message);
     }
 
-    @Override
     public void showRoles(Collection<Map.Entry<String, String>> roles) {
         grid.setItems(roles);
     }
 
-    @Override
     public void showError(String message) {
         // Show error message
     }
-    @Override
     public void showSuccess(String message) {
         Notification.show(message, 3000, Notification.Position.MIDDLE);
-        // Show error message
     }
 }

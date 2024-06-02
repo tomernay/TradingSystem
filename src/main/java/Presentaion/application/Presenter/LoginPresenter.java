@@ -1,40 +1,52 @@
 package Presentaion.application.Presenter;
 
-import Presentaion.application.LoginViewContract;
-import Presentaion.application.View.MainLayout;
+import Presentaion.application.View.LoginView;
 import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
-import org.springframework.beans.factory.annotation.Autowired;
+import Utilities.SystemLogger;
 import org.springframework.stereotype.Component;
 
-@Component
-public class LoginPresenter implements LoginViewContract.Presenter {
+import java.util.List;
 
-    private final UserService userService;
-    private LoginViewContract.View view;
+@Component
+public class LoginPresenter {
+    private LoginView view;
+    private final UserService userService; // Assuming you have a UserService
 
     public LoginPresenter() {
-        ServiceInitializer serviceInitializer = ServiceInitializer.getInstance();
-        this.userService = serviceInitializer.getUserService();
+        this.userService = ServiceInitializer.getInstance().getUserService();
     }
 
-    public void attachView(LoginViewContract.View view) {
+    public void attachView(LoginView view) {
         this.view = view;
     }
 
-    @Override
-    public void login(String username, String password) {
+    public void loginAsSubscriber(String username, String password) {
         try {
-            Response<String> login = userService.loginAsSubscriber(username, password);
-            if (!login.isSuccess()) {
-                view.showError(login.getMessage());
-                return;
+            String token = userService.loginAsSubscriber(username, password).getData();
+            if (token != null) {
+                view.loginSuccessful(username, token);
+            } else {
+                view.showError("Invalid username or password");
             }
-            MainLayout.setSubscriberDetails(username, login.getData());
-            view.navigateToMain();
-        } catch (Exception ex) {
-            view.showError("Invalid credentials");
+        } catch (Exception e) {
+            view.showError("An error occurred during login");
+        }
+    }
+
+    public void loginAsGuest() {
+        try {
+            Response<List<String>> response = userService.loginAsGuest();
+            String username = response.getData().get(0);
+            String token = response.getData().get(1);
+            if (token != null) {
+                view.loginSuccessful(username, token);
+            } else {
+                view.showError("An error occurred during login");
+            }
+        } catch (Exception e) {
+            view.showError("An error occurred during login");
         }
     }
 }

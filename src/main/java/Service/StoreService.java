@@ -92,8 +92,21 @@ public class StoreService {
         return storeFacade.nominateOwner(storeID, currentUsername, nominatorUsername);
     }
 
-    public Response<String> removeStoreSubscription(String storeID, String currentUsername) {
+    public Response<String> systemRemoveStoreSubscription(String storeID, String currentUsername) {
         return storeFacade.removeStoreSubscription(storeID, currentUsername);
+    }
+
+    public Response<String> removeStoreSubscription(String storeID, String currentUsername, String subscriberUsername, String token) {
+        SystemLogger.info("[START] User: " + currentUsername + " is trying to remove " + subscriberUsername + " subscription from store: " + storeID);
+        if (userService.isValidToken(token, currentUsername)) {
+            if (!userService.userExists(subscriberUsername)) {
+                SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
+                return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            return storeFacade.removeStoreSubscription(storeID, currentUsername);
+        }
+        SystemLogger.error("[ERROR] User: " + currentUsername + " tried to remove " + subscriberUsername + " subscription from store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
     }
 
     public Response<String> nominateManager(String storeID, String currentUsername, List<String> permissions, String nominatorUsername) {

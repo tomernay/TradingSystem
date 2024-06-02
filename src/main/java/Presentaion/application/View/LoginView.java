@@ -1,7 +1,7 @@
 package Presentaion.application.View;
 
-import Presentaion.application.LoginViewContract;
 import Presentaion.application.Presenter.LoginPresenter;
+import Utilities.SystemLogger;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
@@ -11,40 +11,39 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinService;
+
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("login")
 @PageTitle("Login | Vaadin CRM")
 @AnonymousAllowed
-public class LoginView extends VerticalLayout implements BeforeEnterObserver, LoginViewContract.View {
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
-    private final LoginForm login = new LoginForm();
     private final LoginPresenter presenter;
+    private final LoginForm login = new LoginForm();
 
-    @Autowired
+
     public LoginView(LoginPresenter presenter) {
         this.presenter = presenter;
-        presenter.attachView(this);
-
+        this.presenter.attachView(this);
         addClassName("login-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        login.addLoginListener(e -> presenter.login(e.getUsername(), e.getPassword()));
+        login.setForgotPasswordButtonVisible(false); // Hide the "Forgot Password" button
+
+        login.addLoginListener(e -> presenter.loginAsSubscriber(e.getUsername(), e.getPassword()));
 
         Button registerButton = new Button("Register", e -> navigateToRegister());
-        Button guestButton = new Button("Continue as Guest", e -> continueAsGuest());
+        Button guestButton = new Button("Continue as Guest", e -> presenter.loginAsGuest());
 
         HorizontalLayout buttons = new HorizontalLayout(registerButton, guestButton);
 
         add(new H1("Vaadin CRM"), login, buttons);
-    }
-
-    private void continueAsGuest() {
-        MainLayout.setSubscriberDetails("guest", null);
-        navigateToMain();
     }
 
     @Override
@@ -54,18 +53,38 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver, Lo
         }
     }
 
-    @Override
+    private void continueAsGuest() {
+        navigateToMain();
+    }
+
     public void showError(String message) {
         login.setError(true);
     }
 
-    @Override
     public void navigateToMain() {
-        getUI().ifPresent(ui -> ui.navigate(""));
+        getUI().ifPresent(ui -> {
+            ui.access(() -> {
+                ui.navigate("");
+            });
+        });
     }
 
-    @Override
     public void navigateToRegister() {
         getUI().ifPresent(ui -> ui.navigate("register"));
+    }
+
+    public void loginSuccessful(String username, String token) {
+        setCookie("username", username, 5 * 60); // 5 minutes
+        setCookie("token", token, 5 * 60); // 5 minutes
+        navigateToMain();
+    }
+
+    private void setCookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        cookie.setSecure(true); // Only send over HTTPS
+        cookie.setHttpOnly(true); // Prevent JavaScript access
+        VaadinService.getCurrentResponse().addCookie(cookie);
     }
 }

@@ -19,7 +19,7 @@ public class UserFacade {
     }
 
 
-    public Response<String> loginAsGuest(){
+    public Response<List<String>> loginAsGuest(){
         return userRepository.loginAsGuest();
     }
 

@@ -1,5 +1,6 @@
 package Domain.Users;
 
+import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -9,10 +10,16 @@ import java.util.Map;
 public class User {
     protected String username;
     private ShoppingCart shoppingCart;
+    protected String Token;
 
     public User(String username) {
         this.username = username;
         shoppingCart = null;
+    }
+
+    public String generateToken() {
+        Token = Security.generateJWT(this.username);
+        return Token;
     }
 
     public boolean logoutAsGuest(){

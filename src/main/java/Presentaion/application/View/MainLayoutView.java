@@ -1,11 +1,12 @@
 package Presentaion.application.View;
 
-import Presentaion.application.SubscriberDetails;
+import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
-import Presentaion.application.View.Store.RolesManagementViewImpl;
+import Service.UserService;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -16,6 +17,10 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.server.VaadinService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -23,16 +28,20 @@ import com.vaadin.flow.router.PageTitle;
  */
 
 
-public class MainLayout extends AppLayout implements BeforeEnterObserver {
+public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
-    private static SubscriberDetails subscriberDetails;
+    private final MainLayoutPresenter presenter;
 
     private H1 viewTitle;
 
-    public MainLayout() {
+
+    public MainLayoutView(MainLayoutPresenter presenter) {
+        this.presenter = presenter;
+        this.presenter.attachView(this);
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
+        addLogoutButton();
     }
 
     private void addHeaderContent() {
@@ -60,7 +69,7 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
 
         nav.addItem(new SideNavItem("Payment", PaymentPage.class));
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
-        nav.addItem(new SideNavItem("Roles Management", RolesManagementViewImpl.class)); // New navigation item
+        nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
 
 
         return nav;
@@ -76,17 +85,44 @@ public class MainLayout extends AppLayout implements BeforeEnterObserver {
     }
 
     private boolean isLoggedIn() {
-        // Implement your logic to check if the user is logged in
-        // For example, you can check if the subscriberDetails is set
-        return subscriberDetails != null;
+        // Retrieve the current HTTP request
+        HttpServletRequest request = (HttpServletRequest) VaadinService.getCurrentRequest();
+
+        if (request != null) {
+            // Retrieve cookies from the request
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        // Assuming a valid token indicates a logged-in user
+                        return isValidToken(cookie.getValue());
+                    }
+                }
+            }
+        }
+
+        // If no valid token is found, the user is not logged in
+        return false;
     }
 
-    public static SubscriberDetails getSubscriberDetails() {
-        return subscriberDetails;
+    private boolean isValidToken(String token) {
+        // Implement your token validation logic here
+        // This could involve checking the token against a database or decoding a JWT token
+        return token != null && !token.isEmpty();
     }
 
-    public static void setSubscriberDetails(String username, String token) {
-        subscriberDetails = new SubscriberDetails(username, token);
+    private void addLogoutButton() {
+        Button logoutButton = new Button("Logout", e -> logout());
+        logoutButton.getElement().getStyle().set("margin-top", "auto"); // This will push the button to the bottom
+        addToDrawer(logoutButton);
+    }
+
+    public void navigateToLogin() {
+        getUI().ifPresent(ui -> ui.navigate("login"));
+    }
+
+    private void logout() {
+        presenter.logout();
     }
 
     private Footer createFooter() {

@@ -84,7 +84,6 @@ public class InfoRequestsByOwner {
         //make ziv manager
         List<String> perms = new ArrayList<>();
         perms.add("EDIT_PRODUCT");
-        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
 
         //send nomination msg

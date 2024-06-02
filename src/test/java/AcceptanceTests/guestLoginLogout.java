@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 public class guestLoginLogout {
     ServiceInitializer serviceInitializer;
     UserService userService;
@@ -21,9 +23,9 @@ public class guestLoginLogout {
     @Test
     public void loginAsGuestTest(){
         // 2 users login as guests.
-        Response<String> response = userService.loginAsGuest();
+        Response<List<String>> response = userService.loginAsGuest();
         Assert.assertTrue(response.isSuccess());
-        Response<String> response2 = userService.loginAsGuest();
+        Response<List<String>> response2 = userService.loginAsGuest();
         Assert.assertTrue(response2.isSuccess());
     }
 
