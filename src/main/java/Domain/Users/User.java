@@ -14,7 +14,7 @@ public class User {
 
     public User(String username) {
         this.username = username;
-        shoppingCart = null;
+        shoppingCart = new ShoppingCart();
     }
 
     public String generateToken() {
