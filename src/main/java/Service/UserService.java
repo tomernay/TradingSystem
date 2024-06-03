@@ -28,7 +28,6 @@ public class UserService {
 
     /**
      * This method connects a guest to the system.
-     *
      * @return If successful, returns a success message & the token. <br> If not, returns an error message.
      */
     public synchronized Response<List<String>> loginAsGuest() {
@@ -37,7 +36,6 @@ public class UserService {
 
     /**
      * This method disconnects a guest from the system.
-     *
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
     public synchronized Response<String> logoutAsGuest(String username) {
