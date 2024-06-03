@@ -63,12 +63,6 @@ public class UserFacade {
 
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
         Response<Message> message = userRepository.messageResponse(subscriberUsername, answer);
-        if (message.getData() instanceof nominateOwnerMessage) {
-            userRepository.sendMessageToUser(((nominateOwnerMessage) message.getData()).getNominator(), new NormalMessage("Your request to nominate " + subscriberUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
-        }
-        if (message.getData() instanceof nominateManagerMessage) {
-            userRepository.sendMessageToUser(((nominateManagerMessage) message.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + subscriberUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
-        }
         if (message.isSuccess()) {
             SystemLogger.info("[SUCCESS] message responded successfully");
             return Response.success(message.getMessage(), null);
@@ -77,11 +71,23 @@ public class UserFacade {
     }
 
     public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
-        return userRepository.ownerNominationResponse(currentUsername, answer);
+        Response<Message> message =  userRepository.ownerNominationResponse(currentUsername, answer);
+        userRepository.sendMessageToUser(((nominateOwnerMessage) message.getData()).getNominator(), new NormalMessage("Your request to nominate " + currentUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
+        if (message.isSuccess()) {
+            SystemLogger.info("[SUCCESS] message responded successfully");
+            return Response.success(message.getMessage(), null);
+        }
+        return Response.error(message.getMessage(), null);
     }
 
     public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
-        return userRepository.managerNominationResponse(currentUsername, answer);
+        Response<Message> message = userRepository.managerNominationResponse(currentUsername, answer);
+        userRepository.sendMessageToUser(((nominateManagerMessage) message.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + currentUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
+        if (message.isSuccess()) {
+            SystemLogger.info("[SUCCESS] message responded successfully");
+            return Response.success(message.getMessage(), null);
+        }
+        return Response.error(message.getMessage(), null);
     }
 
     public boolean userExist(String subscriberUsername) {
