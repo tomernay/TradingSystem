@@ -28,8 +28,10 @@ public class OrderRepository {
             }
         }
         if(orderHistory.isEmpty()) {
+            SystemLogger.error("[ERROR] No orders found for store with ID: " + storeID);
             return Response.error("No orders found for store with ID: " + storeID, null);
         }
+        SystemLogger.info("[SUCCESS] Successfully fetched order history");
         return Response.success("Successfully fetched order history", orderHistory);
     }
 
@@ -48,6 +50,7 @@ public class OrderRepository {
             SystemLogger.error("[ERROR] No orders found for store with ID: " + storeID);
             return Response.error("No orders found for store with ID: " + storeID, null);
         }
+        SystemLogger.info("[SUCCESS] Successfully fetched order history");
         return Response.success(orderList.toString(), null);
     }
 
@@ -62,6 +65,7 @@ public class OrderRepository {
             SystemLogger.error("[ERROR] No orders found for subscriber with ID: " + subscriberID);
             return Response.error("No orders found for subscriber with ID: " + subscriberID, null);
         }
+        SystemLogger.info("[SUCCESS] Successfully fetched order history");
         return Response.success(orderList.toString(), null);
     }
 }

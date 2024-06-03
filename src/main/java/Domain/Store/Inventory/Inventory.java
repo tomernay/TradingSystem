@@ -90,6 +90,7 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         int quantity = product.getQuantity();
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " quantity retrieved successfully");
         return Response.success("Product with ID: " + productID + " quantity retrieved successfully", String.valueOf(quantity));
 
     }
@@ -99,6 +100,7 @@ public class Inventory {
         try {
             if (isProductExist(productID)) {
                 String storeID = getProduct(productID).getStoreID();
+                SystemLogger.info("[SUCCESS] Store ID retrieved successfully");
                 return Response.success("Store ID retrieved successfully", storeID);
             } else {
                 SystemLogger.error("[ERROR] Product does not exist with ID: " + productID);
@@ -142,6 +144,7 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         String description = product.getDescription();
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " description retrieved successfully");
         return Response.success("Product with ID: " + productID + " description retrieved successfully", description);
     }
 
@@ -197,6 +200,7 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         String name = product.getName();
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " name retrieved successfully");
         return Response.success("Product with ID: " + productID + " name retrieved successfully", name);
     }
 
@@ -252,6 +256,7 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         int price = product.getPrice();
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " price retrieved successfully");
         return Response.success("Product with ID: " + productID + " price retrieved successfully", String.valueOf(price));
     }
 
@@ -299,6 +304,7 @@ public class Inventory {
                 products.add(new ProductDTO(product));
             }
         }
+        SystemLogger.info("[SUCCESS] Products retrieved successfully for category: " + category);
         return Response.success("Products retrieved successfully for category: " + category, products);
     }
 
@@ -321,6 +327,7 @@ public class Inventory {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String jsonString = objectMapper.writeValueAsString(relatedCategories);
+            SystemLogger.info("[SUCCESS] Categories retrieved successfully for product ID: " + productID);
             return Response.success("Categories retrieved successfully for product ID: " + productID, jsonString);
         } catch (JsonProcessingException e) {
             SystemLogger.error("[ERROR] Error processing JSON: " + e.getMessage());
@@ -388,6 +395,7 @@ public class Inventory {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
+        SystemLogger.info("[SUCCESS] Product retrieved successfully");
         return Response.success("Product retrieved successfully", new ProductDTO(product));
     }
 
@@ -396,6 +404,7 @@ public class Inventory {
         for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
             products.add(new ProductDTO(entry.getValue()));
         }
+        SystemLogger.info("[SUCCESS] Products retrieved successfully");
         return Response.success("Products retrieved successfully", products);
     }
 
@@ -518,6 +527,7 @@ public class Inventory {
         }
         for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
             if (entry.getValue().getName().equals(productName)) {
+                SystemLogger.info("[SUCCESS] Product with name: " + productName + " retrieved successfully");
                 return Response.success("Product with name: " + productName + " retrieved successfully", new ProductDTO(entry.getValue()));
             }
         }

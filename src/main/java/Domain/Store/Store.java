@@ -525,4 +525,14 @@ public class Store {
         }
         return false;
     }
+
+    public List<String> getManagerPermissions(String username) {
+        List<String> permissions = new ArrayList<>();
+        if (isStoreManager(username)) {
+            for (Permissions p : managerPermissions.get(username)) {
+                permissions.add(p.toString());
+            }
+        }
+        return permissions;
+    }
 }
