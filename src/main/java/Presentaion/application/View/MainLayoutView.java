@@ -18,6 +18,7 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * The main view is a top-level placeholder for other views.
  */
-
+@Route("")
+@PageTitle("Main")
 @StyleSheet("context://login-view-styles.css")
 public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
