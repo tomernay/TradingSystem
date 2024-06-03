@@ -3,6 +3,7 @@ package Presentaion.application.View;
 import Presentaion.application.Presenter.RolesManagementPresenter;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 @PageTitle("Roles Management")
 @Route(value = "roles-management", layout = MainLayoutView.class)
+@StyleSheet("context://login-view-styles.css")
 public class RolesManagementView extends VerticalLayout {
     private RolesManagementPresenter presenter;
     private Grid<Map.Entry<String, String>> grid;
@@ -29,6 +31,7 @@ public class RolesManagementView extends VerticalLayout {
     private TextField usernameFilter;
 
     public RolesManagementView(RolesManagementPresenter presenter) {
+        addClassName("roles-management-view");
         this.presenter = presenter;
         this.presenter.setView(this);
         initUI();

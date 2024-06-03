@@ -7,6 +7,7 @@ import Service.UserService;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * The main view is a top-level placeholder for other views.
  */
 
-
+@StyleSheet("context://login-view-styles.css")
 public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private final MainLayoutPresenter presenter;
@@ -36,6 +37,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
     public MainLayoutView(MainLayoutPresenter presenter) {
+        addClassName("main-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
         setPrimarySection(Section.DRAWER);
