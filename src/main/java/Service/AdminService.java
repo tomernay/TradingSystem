@@ -43,6 +43,7 @@ public class AdminService {
             return orderFacade.getPurchaseHistoryByStore(storeID);
         }
         catch (Exception exception){
+            SystemLogger.error("[ERROR] Other Exception");
             return Response.error("Other Exception", null);
         }
     }
@@ -56,6 +57,7 @@ public class AdminService {
             return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
         }
         catch (Exception exception){
+            SystemLogger.error("[ERROR] Other Exception");
             return Response.error("Other Exception", null);
         }
 

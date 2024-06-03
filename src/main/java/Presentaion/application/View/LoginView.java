@@ -24,7 +24,7 @@ import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("login")
-@PageTitle("Login | Vaadin CRM")
+@PageTitle("Login")
 @AnonymousAllowed
 @StyleSheet("context://login-view-styles.css")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
