@@ -44,7 +44,7 @@ public class RegisterView extends VerticalLayout{
         backButton.getElement().getStyle().set("color", "white");
 
         // Set a specific width for the buttons
-        registerButton.setWidth("280px");
+        registerButton.setWidth("350px");
         backButton.setWidth("150px");
 
         HorizontalLayout buttons = new HorizontalLayout(registerButton);
@@ -64,14 +64,17 @@ public class RegisterView extends VerticalLayout{
         // Set a specific width for the FormLayout
         FormLayout formLayout = new FormLayout(username, password, confirmPassword);
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
-        formLayout.setWidth("50%"); // Set the width of the FormLayout to 50%
+        formLayout.setWidth("60%"); // Set the width of the FormLayout to 50%
         formLayout.getStyle().set("margin", "auto"); // Center align the FormLayout
 
         // Wrap the FormLayout in a FlexLayout
         FlexLayout flexLayout = new FlexLayout(formLayout);
         flexLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Center the components in the FlexLayout
 
-        add(new H1("Register"), flexLayout, buttons, backButtonLayout);
+        H1 registerTitle = new H1("Register");
+        registerTitle.getStyle().set("font-size", "4em"); // Set the font size to 2.5em
+
+        add(registerTitle, flexLayout, buttons, backButtonLayout);
     }
 
     public void showError(String message) {

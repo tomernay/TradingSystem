@@ -35,7 +35,6 @@ public class RolesManagementPresenter {
         this.storeID = storeID;
         String token = CookiesHandler.getTokenFromCookies(request);
         String currentUsername = CookiesHandler.getUsernameFromCookies(request);
-        SystemLogger.info("storeID: " + storeID + ", username: " + currentUsername + ", token: " + token);
         Response<Map<String, String>> response = userService.requestEmployeesStatus(storeID, currentUsername, token);
         if (response.isSuccess()) {
             Map<String, String> rolesMap = response.getData();
