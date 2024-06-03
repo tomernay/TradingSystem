@@ -5,10 +5,14 @@ import Presentaion.application.Presenter.LoginPresenter;
 import Utilities.SystemLogger;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
@@ -26,40 +30,68 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginPresenter presenter;
-    private final LoginForm login = new LoginForm();
-
+    private final TextField username = new TextField("Username");
+    private final PasswordField password = new PasswordField("Password");
 
     public LoginView(LoginPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
-        addClassName("login-view");
+        addClassName("register-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        login.setForgotPasswordButtonVisible(false); // Hide the "Forgot Password" button
-
-        login.addLoginListener(e -> presenter.loginAsSubscriber(e.getUsername(), e.getPassword()));
+        Button loginButton = new Button("Login", e -> presenter.loginAsSubscriber(username.getValue(), password.getValue()));
         Button registerButton = new Button("Register", e -> navigateToRegister());
         Button guestButton = new Button("Continue as Guest", e -> presenter.loginAsGuest());
 
         // Change the color of the buttons
+        loginButton.getElement().getStyle().set("background-color", "black");
+        loginButton.getElement().getStyle().set("color", "white");
         registerButton.getElement().getStyle().set("background-color", "black");
         registerButton.getElement().getStyle().set("color", "white");
         guestButton.getElement().getStyle().set("background-color", "black");
         guestButton.getElement().getStyle().set("color", "white");
 
-        HorizontalLayout buttons = new HorizontalLayout(registerButton, guestButton);
+        // Set a specific width for the buttons
+        loginButton.setWidth("350px");
+        registerButton.setWidth("167px");
+        guestButton.setWidth("167px");
 
-        add(new H1("MARKETPLACE"), login, buttons);
+        HorizontalLayout buttons = new HorizontalLayout(loginButton);
+        buttons.setAlignItems(Alignment.CENTER);
+        buttons.setWidthFull();
+        buttons.setJustifyContentMode(JustifyContentMode.CENTER);
 
+        HorizontalLayout registerGuestButtons = new HorizontalLayout(registerButton, guestButton);
+        registerGuestButtons.setAlignItems(Alignment.CENTER);
+        registerGuestButtons.setWidthFull();
+        registerGuestButtons.setJustifyContentMode(JustifyContentMode.CENTER);
 
+        // Set margins between buttons
+        buttons.setSpacing(true);
+        registerGuestButtons.setSpacing(true);
+
+        // Set a specific width for the FormLayout
+        FormLayout formLayout = new FormLayout(username, password);
+        formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
+        formLayout.setWidth("90%"); // Set the width of the FormLayout to 50%
+        formLayout.getStyle().set("margin", "auto"); // Center align the FormLayout
+
+        // Wrap the FormLayout in a FlexLayout
+        FlexLayout flexLayout = new FlexLayout(formLayout);
+        flexLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Center the components in the FlexLayout
+
+        H1 loginTitle = new H1("Login");
+        loginTitle.getStyle().set("font-size", "4em"); // Set the font size to 2.5em
+
+        add(loginTitle, flexLayout, buttons, registerGuestButtons);
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         if (beforeEnterEvent.getLocation().getQueryParameters().getParameters().containsKey("error")) {
-            login.setError(true);
+            showError("Invalid username or password");
         }
     }
 
@@ -68,7 +100,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void showError(String message) {
-        login.setError(true);
+        password.setErrorMessage(message);
+        password.setInvalid(true);
     }
 
     public void navigateToMain() {
