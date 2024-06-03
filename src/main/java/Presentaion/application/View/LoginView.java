@@ -4,6 +4,7 @@ import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.LoginPresenter;
 import Utilities.SystemLogger;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Route("login")
 @PageTitle("Login | Vaadin CRM")
 @AnonymousAllowed
+@StyleSheet("context://login-view-styles.css")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginPresenter presenter;
@@ -38,13 +40,20 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         login.setForgotPasswordButtonVisible(false); // Hide the "Forgot Password" button
 
         login.addLoginListener(e -> presenter.loginAsSubscriber(e.getUsername(), e.getPassword()));
-
         Button registerButton = new Button("Register", e -> navigateToRegister());
         Button guestButton = new Button("Continue as Guest", e -> presenter.loginAsGuest());
 
+        // Change the color of the buttons
+        registerButton.getElement().getStyle().set("background-color", "black");
+        registerButton.getElement().getStyle().set("color", "white");
+        guestButton.getElement().getStyle().set("background-color", "black");
+        guestButton.getElement().getStyle().set("color", "white");
+
         HorizontalLayout buttons = new HorizontalLayout(registerButton, guestButton);
 
-        add(new H1("Vaadin CRM"), login, buttons);
+        add(new H1("MARKETPLACE"), login, buttons);
+
+
     }
 
     @Override
@@ -63,11 +72,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void navigateToMain() {
-        getUI().ifPresent(ui -> {
-            ui.access(() -> {
-                ui.navigate("");
-            });
-        });
+        getUI().ifPresent(ui -> ui.navigate(""));
     }
 
     public void navigateToRegister() {
