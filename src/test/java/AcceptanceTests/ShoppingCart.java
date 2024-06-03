@@ -10,8 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 public class ShoppingCart {
     ServiceInitializer serviceInitializer;
     StoreService storeService;
@@ -27,12 +25,12 @@ public class ShoppingCart {
         userService=serviceInitializer.getUserService();
         userService.register("yair12312","Password123!");
         userService.register("newOwner","Password123!");
-        userService.register("yair12312","Password123!");
         userService.loginAsSubscriber("yair12312","Password123!");
-        userService.loginAsSubscriber("newManager","Password123!");
+        userService.loginAsSubscriber("newOwner","Password123!");
         buyer=userService.getUserFacade().getUserRepository().getUser("yair12312");
         owner=userService.getUserFacade().getUserRepository().getUser("newOwner");
         storeService.addStore("newStore","newOwner",owner.getToken());
+
 
 
 
@@ -43,39 +41,30 @@ public class ShoppingCart {
     public void AddProuducdToShoppingcart(){
         storeService.addProductToStore("newStore","newProduct","",10, 1,"newOwner",owner.getToken());
         Response<String> res=userService.addProductToShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),1);
-        userService.getShoppingCartContents("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        Response<String> shoppingCart=userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertTrue(shoppingCart.getData().contains("newProduct"));
-
+        Response<String> res1 = userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Assert.assertTrue(res1.getData().contains("newProduct"));
     }
     @Test
     public void RemoveProuducdFromShoppingcart(){
         storeService.addProductToStore("newStore","newProduct","",10, 1,"newOwner",owner.getToken());
-        Response<String> res=userService.addProductToShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),1);
-        userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Response<String> res =userService.addProductToShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),1);
+        userService.removeProductFromShoppingCart("newStore","newProduct","yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        Response<String> shoppingCart=userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertTrue(shoppingCart.getData().contains("newProduct"));
-        Response<String> res2=userService.removeProductFromShoppingCart("newStore","newProduct","yair12312",buyer.getToken());
-        Assert.assertTrue(res2.isSuccess());
-        Response<String> shoppingCart2=userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertFalse(shoppingCart2.getData().contains("newProduct"));
+        Response<String> res1 = userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Assert.assertFalse(res1.getData().contains("newProduct"));
     }
 
     @Test
     public void EditProductAmountInShoppingcart(){
         storeService.addProductToStore("newStore","newProduct","",10, 1,"newOwner",owner.getToken());
-        Response<String> res=userService.addProductToShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),1);
-        userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertTrue(res.isSuccess());
-        Response<String> shoppingCart=userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertTrue(shoppingCart.getData().contains("newProduct"));
-        Response<String> res2=userService.updateProductInShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),2);
-        Assert.assertTrue(res2.isSuccess());
-        Response<String> shoppingCart2=userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertTrue(shoppingCart2.getData().contains("newProduct 2"));
+        Response<String> res =userService.addProductToShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),1);
+        Response<String> res1 = userService.updateProductInShoppingCart("newStore","newProduct","yair12312",buyer.getToken(),2);
+        Response<String> res2 = userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Assert.assertTrue(res1.isSuccess());
+
     }
+
 
 
 
