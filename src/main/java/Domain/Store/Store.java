@@ -200,6 +200,8 @@ public class Store {
     }
 
     public Response<Map<String, String>> getSubscribersResponse() {
+        //lock
+
         Map<String, String> subscribers = new HashMap<>();
         for (Map.Entry<String, SubscriberState> entry : this.subscribers.entrySet()) {
             subscribers.put(entry.getKey(), entry.getValue().toString());
