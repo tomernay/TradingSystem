@@ -154,7 +154,7 @@ public class UserService {
                 return storeService.nominateOwner(nominationMessage.getStoreID(), username, nominationMessage.getNominatorUsername());
             }
             else if (nominationMessage != null && !answer && !nominationMessage.isSubscribed()) {
-                return storeService.systemRemoveStoreSubscription(nominationMessage.getStoreID(), username);
+                return storeService.getStoreFacade().removeStoreSubscription(nominationMessage.getStoreID(), username);
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to respond to a store owner nomination but the token was invalid");
@@ -176,7 +176,7 @@ public class UserService {
                 return storeService.nominateManager(nominationMessage.getStoreID(), username, nominationMessage.getPermissions(), nominationMessage.getNominatorUsername());
             }
             else if (nominationMessage != null && !answer && !nominationMessage.isSubscribed()) {
-                return storeService.systemRemoveStoreSubscription(nominationMessage.getStoreID(), username);
+                return storeService.getStoreFacade().removeStoreSubscription(nominationMessage.getStoreID(), username);
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to respond to a store manager nomination but the token was invalid");

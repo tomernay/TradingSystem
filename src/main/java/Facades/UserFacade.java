@@ -75,7 +75,7 @@ public class UserFacade {
         userRepository.sendMessageToUser(((nominateOwnerMessage) message.getData()).getNominator(), new NormalMessage("Your request to nominate " + currentUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
         if (message.isSuccess()) {
             SystemLogger.info("[SUCCESS] message responded successfully");
-            return Response.success(message.getMessage(), null);
+            return message;
         }
         return Response.error(message.getMessage(), null);
     }
@@ -85,7 +85,7 @@ public class UserFacade {
         userRepository.sendMessageToUser(((nominateManagerMessage) message.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + currentUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
         if (message.isSuccess()) {
             SystemLogger.info("[SUCCESS] message responded successfully");
-            return Response.success(message.getMessage(), null);
+            return message;
         }
         return Response.error(message.getMessage(), null);
     }
