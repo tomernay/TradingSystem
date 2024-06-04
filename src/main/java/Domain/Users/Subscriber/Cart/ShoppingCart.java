@@ -21,6 +21,7 @@ public class ShoppingCart {
     public Response<String> addProductToCart(String storeID, String productID, int quantity) {
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
+
                 return basket.addProductToBasket(productID, quantity);
             }
         }

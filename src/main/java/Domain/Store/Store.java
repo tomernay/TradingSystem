@@ -535,4 +535,11 @@ public class Store {
         }
         return permissions;
     }
+
+    public Response<String> isProductExist(String productID) {
+        if (inventory.isProductExist(Integer.valueOf(productID))){
+            return Response.success("The product exists in the store", null);
+        }
+        return Response.error("The product doesn't exist in the store", null);
+    }
 }

@@ -285,7 +285,13 @@ public class UserService {
     public Response<String> addProductToShoppingCart(String storeID, String productID, String username, String token, int quantity) {
         SystemLogger.info("[START] User: " + username + " is trying to add a product to the shopping cart");
         if (isValidToken(token, username)) {
-            return userFacade.addProductToShoppingCart(storeID, productID, username, quantity);
+            Response<String> response = storeService.isProductExist(storeID, productID);
+            if(response.isSuccess()) {
+                return userFacade.addProductToShoppingCart(storeID, productID, username, quantity);
+            }
+            SystemLogger.error("[ERROR] User: " + username + " tried to add a product to the shopping cart but the product does not exist");
+            return response;
+
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add a product to the shopping cart but the token was invalid");
         return Response.error("invalid token", null);

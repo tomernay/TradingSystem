@@ -439,4 +439,11 @@ public class StoreRepository {
     public Set<String> getPermissionsList() {
         return Permissions.getPermissions();
     }
+
+    public Response<String> isProductExist(String storeID, String productID) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        return stores.get(storeID).isProductExist(productID);
+    }
 }

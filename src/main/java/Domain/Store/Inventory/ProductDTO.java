@@ -30,6 +30,16 @@ public class ProductDTO {
         this.price = product.getPrice();
         //this.categories = product.getCategories();
     }
+
+    public String getStoreID() {
+        return storeID;
+    }
+    public String getName() {
+        return name;
+    }
+    public Integer getProductID() {
+        return productID;
+    }
 }
 
 

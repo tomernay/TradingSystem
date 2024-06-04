@@ -24,6 +24,14 @@ public class Basket {
 
 
     public Response<String> addProductToBasket(String productID, int quantity) {
+        if (quantity <= 0) {
+            SystemLogger.error("[ERROR] Can't add product to basket - quantity is invalid");
+            return Response.error("Error - can't add product to basket - quantity is invalid",null);
+        }
+        if (productsQuantityMap.containsKey(productID)) {
+            SystemLogger.error("[ERROR] Can't add product to basket - product already exists in basket");
+            return Response.error("Error - can't add product to basket - product already exists in basket",null);
+        }
         productsQuantityMap.put(productID, productsQuantityMap.getOrDefault(productID,0) + quantity);
         SystemLogger.info("[SUCCESS] Product added to basket successfully");
         return Response.success("Product added to basket successfully",null);

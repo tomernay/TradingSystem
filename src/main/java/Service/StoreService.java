@@ -360,5 +360,9 @@ public class StoreService {
     public Set<String> getPermissionsList() {
         return storeFacade.getPermissionsList();
     }
+
+    public Response<String> isProductExist(String storeID, String productID) {
+        return storeFacade.isProductExist(storeID, productID);
+    }
 }
 
