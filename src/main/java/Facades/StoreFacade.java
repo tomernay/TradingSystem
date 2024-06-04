@@ -194,4 +194,8 @@ public class StoreFacade {
     public Set<String> getPermissionsList() {
         return storeRepository.getPermissionsList();
     }
+
+    public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
+        return storeRepository.getStoresRoleWithName(storesRole);
+    }
 }

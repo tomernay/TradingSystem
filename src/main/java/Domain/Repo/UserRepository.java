@@ -236,4 +236,24 @@ public class UserRepository {
     public boolean isValidToken(String token, String currentUsername) {
         return Security.isValidJWT(token,currentUsername);
     }
+
+    public void addCreatorRole(String creatorUsername, String storeID) {
+        subscribers.get(creatorUsername).addCreatorRole(storeID);
+    }
+
+    public Response<Map<String, String>> getStoresRole(String username) {
+        if (!subscribers.containsKey(username)) {
+            SystemLogger.error("[ERROR] User " + username + " does not exist");
+            return Response.error("User does not exist", null);
+        }
+        return subscribers.get(username).getStoresRole();
+    }
+
+    public void removeStoreRole(String subscriberUsername, String storeID) {
+        if (!subscribers.containsKey(subscriberUsername)) {
+            SystemLogger.error("[ERROR] User " + subscriberUsername + " does not exist");
+            return;
+        }
+        subscribers.get(subscriberUsername).removeStoreRole(storeID);
+    }
 }
