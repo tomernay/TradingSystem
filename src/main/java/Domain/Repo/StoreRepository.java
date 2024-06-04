@@ -439,4 +439,14 @@ public class StoreRepository {
     public Set<String> getPermissionsList() {
         return Permissions.getPermissions();
     }
+
+    public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
+        Map<String, String> storesRoleWithName = new HashMap<>();
+        for (Map.Entry<String, String> entry : storesRole.entrySet()) {
+            String storeID = entry.getKey();
+            String storeName = stores.get(storeID).getName();
+            storesRoleWithName.put(storeID + " - " + storeName, entry.getValue());
+        }
+        return Response.success("[SUCCESS] Successfully retrieved the user's stores roles.", storesRoleWithName);
+    }
 }

@@ -33,7 +33,11 @@ public class StoreService {
     public Response<String> addStore(String storeName, String creatorUsername, String token) {
         SystemLogger.info("[START] User: " + creatorUsername + " is trying to create a store with name: " + storeName);
         if (userService.isValidToken(token, creatorUsername)) {
-            return storeFacade.openStore(storeName, creatorUsername);
+            Response<String> response =  storeFacade.openStore(storeName, creatorUsername);
+            if (response.isSuccess()) {
+                userService.addCreatorRole(creatorUsername, response.getData());
+                return response;
+            }
         }
         SystemLogger.error("[ERROR] User: " + creatorUsername + " tried to add a store but the token was invalid");
         return Response.error("Invalid token", null);
@@ -654,6 +658,10 @@ public class StoreService {
      */
     public Set<String> getPermissionsList() {
         return storeFacade.getPermissionsList();
+    }
+
+    public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
+        return storeFacade.getStoresRoleWithName(storesRole);
     }
 }
 

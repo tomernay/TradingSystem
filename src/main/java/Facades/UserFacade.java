@@ -150,4 +150,16 @@ public class UserFacade {
     public boolean isValidToken(String token, String currentUsername) {
         return userRepository.isValidToken(token, currentUsername);
     }
+
+    public void addCreatorRole(String creatorUsername, String storeID) {
+        userRepository.addCreatorRole(creatorUsername, storeID);
+    }
+
+    public Response<Map<String, String>> getStoresRole(String username) {
+        return userRepository.getStoresRole(username);
+    }
+
+    public void removeStoreRole(String subscriberUsername, String storeID) {
+        userRepository.removeStoreRole(subscriberUsername, storeID);
+    }
 }
