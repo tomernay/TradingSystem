@@ -60,8 +60,6 @@ public class AdminService {
             SystemLogger.error("[ERROR] Other Exception");
             return Response.error("Other Exception", null);
         }
-
-
     }
 
     public Response<String> recieveSystemInfo() {

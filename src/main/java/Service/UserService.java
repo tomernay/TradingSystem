@@ -28,7 +28,6 @@ public class UserService {
 
     /**
      * This method connects a guest to the system.
-     *
      * @return If successful, returns a success message & the token. <br> If not, returns an error message.
      */
     public synchronized Response<List<String>> loginAsGuest() {
@@ -37,7 +36,6 @@ public class UserService {
 
     /**
      * This method disconnects a guest from the system.
-     *
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
     public synchronized Response<String> logoutAsGuest(String username) {
@@ -132,8 +130,10 @@ public class UserService {
         SystemLogger.info("[START] User: " + username + " is trying to waive his ownership of the store");
         if(isValidToken(token,username)) {
             Set<String> usernames = storeService.waiveOwnership(storeID, username).getData();
+            userFacade.removeStoreRole(username, storeID);
             for (String subscriberUsername : usernames) {
-                userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and have been removed from the store"));
+                userFacade.removeStoreRole(subscriberUsername, storeID);
+                userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
             }
             return Response.success("The owner of the store has self-waived and all of its' nominess have been removed as well.", null);
         }
@@ -156,7 +156,7 @@ public class UserService {
                 return storeService.nominateOwner(nominationMessage.getStoreID(), username, nominationMessage.getNominatorUsername());
             }
             else if (nominationMessage != null && !answer && !nominationMessage.isSubscribed()) {
-                return storeService.systemRemoveStoreSubscription(nominationMessage.getStoreID(), username);
+                return storeService.getStoreFacade().removeStoreSubscription(nominationMessage.getStoreID(), username);
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to respond to a store owner nomination but the token was invalid");
@@ -178,7 +178,7 @@ public class UserService {
                 return storeService.nominateManager(nominationMessage.getStoreID(), username, nominationMessage.getPermissions(), nominationMessage.getNominatorUsername());
             }
             else if (nominationMessage != null && !answer && !nominationMessage.isSubscribed()) {
-                return storeService.systemRemoveStoreSubscription(nominationMessage.getStoreID(), username);
+                return storeService.getStoreFacade().removeStoreSubscription(nominationMessage.getStoreID(), username);
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to respond to a store manager nomination but the token was invalid");
@@ -371,4 +371,22 @@ public class UserService {
     }
 
 
+    /**
+     * This method adds a creator role to a subscriber.
+     * @param creatorUsername The username of the subscriber.
+     * @param storeID The store ID of the store.
+     */
+    public void addCreatorRole(String creatorUsername, String storeID) {
+        userFacade.addCreatorRole(creatorUsername, storeID);
+    }
+
+    /**
+     * This method gets the stores role of a subscriber in this pattern: {storeID - StoreName, Role}
+     * @param username The username of the subscriber.
+     * @return If successful, returns a success message & map of {storeID - StoreName, Role}. <br> If not, returns an error message.
+     */
+    public Response<Map<String, String>> getStoresRole(String username) {
+        Map<String, String> storesRole = userFacade.getStoresRole(username).getData();
+        return storeService.getStoresRoleWithName(storesRole);
+    }
 }
