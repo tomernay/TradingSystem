@@ -440,6 +440,12 @@ public class StoreRepository {
         return Permissions.getPermissions();
     }
 
+    public Response<String> isProductExist(String storeID, String productID) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        return stores.get(storeID).isProductExist(productID);
+    }
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         Map<String, String> storesRoleWithName = new HashMap<>();
         for (Map.Entry<String, String> entry : storesRole.entrySet()) {

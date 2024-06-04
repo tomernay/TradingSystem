@@ -660,6 +660,9 @@ public class StoreService {
         return storeFacade.getPermissionsList();
     }
 
+    public Response<String> isProductExist(String storeID, String productID) {
+        return storeFacade.isProductExist(storeID, productID);
+    }
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeFacade.getStoresRoleWithName(storesRole);
     }

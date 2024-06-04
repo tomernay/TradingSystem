@@ -194,7 +194,10 @@ public class StoreFacade {
     public Set<String> getPermissionsList() {
         return storeRepository.getPermissionsList();
     }
-
+    public Response<String> isProductExist(String storeID, String productID) {
+        return storeRepository.isProductExist(storeID, productID);
+    }
+    
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeRepository.getStoresRoleWithName(storesRole);
     }

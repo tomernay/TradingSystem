@@ -31,9 +31,9 @@ public class User {
     }
 
 
-    public Response<String> addProductToShoppingCart(String storeID,String productID,int quantity) {
+    public Response<String> addProductToShoppingCart(String storeID,String productName,int quantity) {
         if(shoppingCart != null){
-            return shoppingCart.addProductToCart(storeID, productID, quantity);
+            return shoppingCart.addProductToCart(storeID, productName, quantity);
         }
         SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't add product to cart", null);

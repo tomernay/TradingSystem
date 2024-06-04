@@ -178,12 +178,12 @@ public class UserRepository {
 
 
 
-    public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
+    public Response<String> addProductToShoppingCart(String storeID,String productName,String userName,int quantity) {
         if (subscribers.containsKey(userName)) {
-            return subscribers.get(userName).addProductToShoppingCart(storeID, productID, quantity);
+            return subscribers.get(userName).addProductToShoppingCart(storeID, productName, quantity);
         }
         else if (guests.containsKey(userName)) {
-            return guests.get(userName).addProductToShoppingCart(storeID, productID, quantity);
+            return guests.get(userName).addProductToShoppingCart(storeID, productName, quantity);
         }
         SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
