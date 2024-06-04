@@ -34,20 +34,26 @@ public class StoreCreation {
     @Test
     public void testStoreCreation() throws Exception{
         init();
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         Future<Response<String>> future1 = executorService.submit(() -> storeService.addStore("store1", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
         Future<Response<String>> future2 = executorService.submit(() -> storeService.addStore("store2", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<String>> future3 = executorService.submit(() -> storeService.addStore("store3", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
 
+        Response<String> res1 = future1.get();
+        Response<String> res2 = future2.get();
+        Response<String> res3 = future3.get();
 
-        store = future1.get();
-        String store1 = store.getData();
-        store = future2.get();
-        String store2 = store.getData();
-        assertNotEquals(store1, store2);
+        System.out.println(res1.getData());
+        System.out.println(res2.getData());
+        System.out.println(res3.getData());
+        assertNotEquals(res1.getData(), res2.getData());
+        assertNotEquals(res2.getData(), res3.getData());
+        assertNotEquals(res1.getData(), res3.getData());
 
-
-
+        executorService.shutdown();
 
     }
+
+
 }

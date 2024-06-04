@@ -11,11 +11,13 @@ import Utilities.SystemLogger;
 
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreRepository {
     private Map<String, Store> stores;
     private Map<String, Store> deactivatedStores; // <StoreID, Store>
-    private Integer storeID = 0;
+    AtomicInteger storeID = new AtomicInteger(0);
+
 
     public StoreRepository() {
         this.stores = new HashMap<>();
@@ -116,8 +118,8 @@ public class StoreRepository {
             Inventory inventory = new Inventory(storeID.toString());
             store.setInventory(inventory);
             stores.put(this.storeID.toString(), store);
-            this.storeID++;
-            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID-1));
+            this.storeID.getAndIncrement();
+            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID.getAndDecrement()));
         }
         catch (Exception e) {
             return Response.error("couldn't open store "+ storeName, null);
