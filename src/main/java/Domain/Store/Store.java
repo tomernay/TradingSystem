@@ -7,6 +7,8 @@ import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 
 import java.util.*;
@@ -14,7 +16,13 @@ import java.util.*;
 public class Store {
 
     //private Integer id = 0;
-    private String storeID;
+    //make store ID volatile
+
+    //atomic integer
+//    private String storeID;
+    AtomicInteger storeID = new AtomicInteger(0);
+
+
     private String storeName;
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
@@ -25,7 +33,7 @@ public class Store {
     // Constructor
     public Store(String storeID, String name, String creator) {
 
-        this.storeID = storeID;
+        this.storeID.set(Integer.parseInt(storeID));
         this.storeName = name;
         SubscriberState create = new StoreCreator(this, creator);
         subscribers = new HashMap<>();
@@ -40,12 +48,12 @@ public class Store {
 
     // Getter and setter for id
     public String getId() {
-        return storeID;
+        return storeID.toString();
     }
 
     public void setId(String storeID) {
 
-        this.storeID = storeID;
+        this.storeID.set(Integer.parseInt(storeID));
     }
 
     // Getter and setter for name
@@ -440,7 +448,7 @@ public class Store {
             SystemLogger.error("[ERROR] " + userName + " tried to get the store ID but he doesn't have the permission");
             return permissionCheck;
         }
-        return Response.success("The store ID is: " + storeID, storeID);
+        return Response.success("The store ID is: " + storeID.toString(), storeID.toString());
     }
 
     public Response<String> addProductToStore(String name, String desc, int price, int quantity, String userName) {
@@ -449,7 +457,7 @@ public class Store {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
             return permissionCheck;
         }
-        return inventory.addProductToStore(storeID, storeName,name, desc, price, quantity);
+        return inventory.addProductToStore(storeID.toString(), storeName,name, desc, price, quantity);
     }
 
     public Response<String> addProductToStore(String name, String desc, int price, int quantity, ArrayList<String> categories, String userName) {
@@ -458,7 +466,7 @@ public class Store {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
             return permissionCheck;
         }
-        return inventory.addProductToStore(storeID, storeName, name, desc, price, quantity, categories);
+        return inventory.addProductToStore(storeID.toString(), storeName, name, desc, price, quantity, categories);
     }
 
     public Response<String> removeProductFromStore(int productID, String userName) {
@@ -485,7 +493,7 @@ public class Store {
             SystemLogger.error("[ERROR] " + userName + " tried to get the store ID but he doesn't have the permission");
             return permissionCheck;
         }
-        return Response.success("The store ID is: " + storeID, storeID);
+        return Response.success("The store ID is: " + storeID.toString(), storeID.toString());
     }
 
     public Response<StoreDTO> getStoreByID(String userName) {
@@ -494,7 +502,7 @@ public class Store {
             SystemLogger.error("[ERROR] " + userName + " tried to get the store by ID but he doesn't have the permission");
             return Response.error(permissionCheck.getMessage(), null);
         }
-        return Response.success("The store ID is: " + storeID, new StoreDTO(storeID, storeName));
+        return Response.success("The store ID is: " + storeID, new StoreDTO(storeID.toString(), storeName));
     }
 
     public Response<String> getStoreNameByID(String userName) {
