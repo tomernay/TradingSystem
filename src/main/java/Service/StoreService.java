@@ -592,6 +592,8 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
+
+
 //    public Response<String> getStoreIDByName(String storeName, String username, String token) {
 //        SystemLogger.info("[START] User: " + username + " is trying to get storeID by storeName: " + storeName);
 //        if (userService.isValidToken(token, username)) {
@@ -666,5 +668,11 @@ public class StoreService {
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeFacade.getStoresRoleWithName(storesRole);
     }
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    }
+
+
 }
 

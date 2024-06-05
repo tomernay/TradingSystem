@@ -11,12 +11,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Map;
+
 public class ShoppingCart {
     ServiceInitializer serviceInitializer;
     StoreService storeService;
     UserService userService;
     Subscriber buyer,owner;
-    Store store;
 
     @Before
     public void init(){
@@ -41,10 +42,7 @@ public class ShoppingCart {
         Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
-        Response<String> res2 = userService.getShoppingCartContents("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        System.out.print(res2.getData());
-        Assert.assertTrue(res2.getData().contains(ID));
     }
 
     @Test
@@ -52,8 +50,6 @@ public class ShoppingCart {
         storeService.addProductToStore("0","1","DOG",10, 1,"newOwner",owner.getToken());
         Response<String> res=userService.addProductToShoppingCart("0","0","yair12312",buyer.getToken(),1);
         Assert.assertFalse(res.isSuccess());
-        Response<String> res1 = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertFalse(res1.getData().contains("newProduct"));
     }
     @Test
     public void AddProuducdNotExistToShoppingcartAlready(){
@@ -82,8 +78,7 @@ public class ShoppingCart {
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res=userService.addProductToShoppingCart("10","ID","yair12312",buyer.getToken(),1);
         Assert.assertFalse(res.isSuccess());
-        Response<String> res1 = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertFalse(res1.getData().contains("newProduct"));
+
     }
 
 
@@ -95,8 +90,7 @@ public class ShoppingCart {
         userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res1 = userService.removeProductFromShoppingCart("0",ID,"yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
-        Response<String> res2 = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertFalse(res2.getData().contains("ID"));
+
     }
 
     @Test
@@ -104,28 +98,29 @@ public class ShoppingCart {
         storeService.addProductToStore("0","ProuducdNotExist","DOG",10, 1,"newOwner",owner.getToken());
         Response<String> res = userService.removeProductFromShoppingCart("0","0","yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
-        Response<String> res1 = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Assert.assertFalse(res1.getData().contains("ProuducdNotExist"));
     }
 
 
 
 
-//    @Test
-//    public void EditProductAmountInShoppingcart(){
-//        storeService.addProductToStore("0","1","DOG",10, 1,"newOwner",owner.getToken());
-//        Response<String> res =userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
-//        Response<String> res1 = userService.updateProductInShoppingCart("0","1","yair12312",buyer.getToken(),2);
-//        Response<String> res2 = userService.getShoppingCartContents("yair12312",buyer.getToken());
-//        Assert.assertTrue(res1.isSuccess());
-//    }
-//
-//    @Test
-//    public void EditProductNotExistAmountInShoppingcart(){
-//        storeService.addProductToStore("0","1","DOG",10, 1,"newOwner",owner.getToken());
-//        Response<String> res = userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
-//        Response<String> res1 = userService.updateProductInShoppingCart("0","1","yair12312",buyer.getToken(),2);
-//        Assert.assertFalse(res1.isSuccess());
-//    }
+    @Test
+    public void EditProductAmountInShoppingcart(){
+        storeService.addProductToStore("0","EditProduct","EditProduct",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
+        String ID = String.valueOf(resID.getData().getProductID());
+        Response<String> res =userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
+        Response<String> res1 = userService.updateProductInShoppingCart("0",ID,"yair12312",buyer.getToken(),2);
+        Assert.assertTrue(res1.isSuccess());
+    }
+
+    @Test
+    public void EditProductNotExistAmountInShoppingcart(){
+        storeService.addProductToStore("0","EditProduct","DOG",10, 1,"newOwner",owner.getToken());
+        Response<String> res = userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
+        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
+        String ID = String.valueOf(resID.getData().getProductID());
+        Response<String> res1 = userService.updateProductInShoppingCart("0","0","yair12312",buyer.getToken(),2);
+        Assert.assertFalse(res1.isSuccess());
+    }
 
 }

@@ -201,4 +201,8 @@ public class StoreFacade {
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeRepository.getStoresRoleWithName(storesRole);
     }
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    }
 }

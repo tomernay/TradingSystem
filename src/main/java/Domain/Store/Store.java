@@ -542,4 +542,13 @@ public class Store {
         }
         return Response.error("The product doesn't exist in the store", null);
     }
+
+    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> productsInStore) {
+        return inventory.lockShoppingCart(productsInStore);
+    }
+
+
+    public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+        inventory.unlockShoppingCart(stringIntegerMap);
+    }
 }
