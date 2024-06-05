@@ -119,7 +119,7 @@ public class StoreRepository {
             store.setInventory(inventory);
             stores.put(this.storeID.toString(), store);
             this.storeID.getAndIncrement();
-            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID.getAndDecrement()));
+            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID.get()-1));
         }
         catch (Exception e) {
             return Response.error("couldn't open store "+ storeName, null);

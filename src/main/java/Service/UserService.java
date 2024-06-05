@@ -248,8 +248,8 @@ public class UserService {
             if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
                 return storeService.requestEmployeesStatus(storeID);
             }
-            SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but is not the store owner");
-            return Response.error("The user trying to do this action is not the store owner.", null);
+            SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but is not the store owner / creator");
+            return Response.error("The user trying to do this action is not the store owner / creator.", null);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but the token was invalid");
         return Response.error("invalid token", null);

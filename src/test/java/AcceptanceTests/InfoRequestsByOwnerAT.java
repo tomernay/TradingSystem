@@ -51,7 +51,7 @@ public class InfoRequestsByOwnerAT {
         perms.add("EDIT_PRODUCT");
 //        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
-        userService.SendStoreManagerNomination(store.getData(), "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendStoreManagerNomination("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
     }
@@ -60,13 +60,13 @@ public class InfoRequestsByOwnerAT {
         //subscribe ziv
         userService.register("ziv","Password123!");
         userService.loginAsSubscriber("ziv","Password123!");
-        userService.SendStoreOwnerNomination(store.getData(), "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendStoreOwnerNomination("0", "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.ownerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
         //subscribe dor
         userService.register("dor","Password123!");
         userService.loginAsSubscriber("dor","Password123!");
-        userService.SendStoreOwnerNomination(store.getData(), "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendStoreOwnerNomination("0", "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.ownerNominationResponse("dor",true, userService.getUserFacade().getUserRepository().getUser("dor").getToken());
 
         //subscribe niv
@@ -82,7 +82,7 @@ public class InfoRequestsByOwnerAT {
     @Test
     public void testSubscribersListNoSubscribersToTheStore(){
 //        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getId(),"miaa" ,subscriber.getToken());
-        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response <Map<String, String>> response = userService.requestEmployeesStatus("0" ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess()); //creator is a subscriber
         Assert.assertEquals(response.getData().size(),1);
     }
@@ -90,7 +90,7 @@ public class InfoRequestsByOwnerAT {
     @Test
     public void testSubscribersList(){
         initSubscribers();
-        Response <Map<String, String>> response = userService.requestEmployeesStatus(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response <Map<String, String>> response = userService.requestEmployeesStatus("0" ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess());
         Assert.assertEquals(response.getData().size(),3);
     }
@@ -98,7 +98,7 @@ public class InfoRequestsByOwnerAT {
     @Test
     public void testManagersListNoAddedManagersToTheStore(){
        // Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getId(),"miaa" ,subscriber.getToken());
-        Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response <Map<String, List<String>>> response = userService.requestManagersPermissions("0" ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess());
         Assert.assertEquals(response.getData().size(),0);
     }
@@ -106,7 +106,7 @@ public class InfoRequestsByOwnerAT {
     @Test
     public void testManagersList(){
         initManagers();
-        Response <Map<String, List<String>>> response = userService.requestManagersPermissions(store.getData() ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response <Map<String, List<String>>> response = userService.requestManagersPermissions("0" ,"mia" ,userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         Assert.assertTrue(response.isSuccess());
         Assert.assertEquals(response.getData().size(),1);
         //subscribe ziv

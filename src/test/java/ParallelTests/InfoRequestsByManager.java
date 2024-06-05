@@ -50,7 +50,7 @@ public class InfoRequestsByManager {
         perms.add("EDIT_PRODUCT");
 //        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
-        userService.SendStoreManagerNomination(store.getData(), "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendStoreManagerNomination("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
     }
@@ -65,7 +65,7 @@ public class InfoRequestsByManager {
         //subscribe dor
         userService.register("dor","Password123!");
         userService.loginAsSubscriber("dor","Password123!");
-        userService.SendStoreOwnerNomination(store.getData(), "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendStoreOwnerNomination("0", "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.ownerNominationResponse("dor",true, userService.getUserFacade().getUserRepository().getUser("dor").getToken());
 
         //subscribe niv
@@ -83,11 +83,11 @@ public class InfoRequestsByManager {
 
         // Submit two tasks to get the employees status
 
-        Future<Response<Map<String, String>>> future1 = executorService.submit(() -> userService.requestEmployeesStatus(store.getData(), "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<Map<String, String>>> future1 = executorService.submit(() -> userService.requestEmployeesStatus("0", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
         //add niv as an owner in a future task
-        Future<Response<String>> future3 = executorService.submit(() -> userService.SendStoreOwnerNomination(store.getData(), "mia", "niv", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<String>> future3 = executorService.submit(() -> userService.SendStoreOwnerNomination("0", "mia", "niv", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
         Future<Response<String>> future4 = executorService.submit(() -> userService.ownerNominationResponse("niv",true, userService.getUserFacade().getUserRepository().getUser("niv").getToken()));
-        Future<Response<Map<String, String>>> future2 = executorService.submit(() -> userService.requestEmployeesStatus(store.getData(), "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<Map<String, String>>> future2 = executorService.submit(() -> userService.requestEmployeesStatus("0", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
 
 
 //        userService.SendStoreOwnerNomination(store.getData(), "mia", "niv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
@@ -122,11 +122,11 @@ public class InfoRequestsByManager {
 
         // Submit two tasks to get the employees status
 
-        Future<Response<Map<String, String>>> future1 = executorService.submit(() -> userService.requestEmployeesStatus(store.getData(), "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<Map<String, String>>> future1 = executorService.submit(() -> userService.requestEmployeesStatus("0", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
         //add niv as an owner in a future task
-        Future<Response<String>> future3 = executorService.submit(() -> userService.SendStoreOwnerNomination(store.getData(), "mia", "niv", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<String>> future3 = executorService.submit(() -> userService.SendStoreOwnerNomination("0", "mia", "niv", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
         Future<Response<String>> future4 = executorService.submit(() -> userService.ownerNominationResponse("niv",true, userService.getUserFacade().getUserRepository().getUser("niv").getToken()));
-        Future<Response<Map<String, String>>> future2 = executorService.submit(() -> userService.requestEmployeesStatus(store.getData(), "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<Map<String, String>>> future2 = executorService.submit(() -> userService.requestEmployeesStatus("0", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
 
         //make nir owner
 //        userService.SendStoreOwnerNomination(store.getData(), "mia", "niv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());

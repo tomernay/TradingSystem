@@ -34,7 +34,7 @@ public class UserRepository {
         if(guests.get(username) == null) {
             return Response.error("User is already logged out", null);
         }
-        if(!guests.get(username).logoutAsGuest()){
+        if(guests.get(username).logoutAsGuest()){
             guests.remove(username);
             return Response.success("You signed out as a GUEST", null);
         }
