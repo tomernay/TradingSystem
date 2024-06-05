@@ -225,4 +225,8 @@ public class StoreFacade {
 
 
 
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    }
 }

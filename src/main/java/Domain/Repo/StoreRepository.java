@@ -494,4 +494,26 @@ public class StoreRepository {
 
 
 
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        List <ProductDTO> products = new ArrayList<>();
+        ArrayList<String> storelock = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<List<ProductDTO>> resProtctDTO = stores.get(storeID).lockShoppingCart(productsInStore);
+            if (resProtctDTO.isSuccess()) {
+                products.addAll(resProtctDTO.getData());
+                storelock.add(storeID);
+            }
+            else {
+                for (String store : storelock) {
+                    stores.get(store).unlockShoppingCart(shoppingCart.get(store));
+                }
+                return Response.error(resProtctDTO.getMessage(), null);
+            }
+
+        }
+        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
+    }
 }

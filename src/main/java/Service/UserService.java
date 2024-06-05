@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Store.Inventory.ProductDTO;
 import Facades.UserFacade;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
@@ -14,8 +15,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class UserService {
-    private UserFacade userFacade;
+    private  UserFacade userFacade;
     private StoreService storeService;
+    private OrderService orderService;
 
 
     public UserService() {
@@ -24,6 +26,9 @@ public class UserService {
 
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
+    }
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     /**
@@ -338,7 +343,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message & map of {storeID, {productID, quantity}}. <br> If not, returns an error message.
      */
-    public Response<String> getShoppingCartContents(String username, String token) {
+    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get the shopping cart contents");
         if (isValidToken(token, username)) {
             return userFacade.getShoppingCartContents(username);
@@ -347,20 +352,56 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
-    /**
-     * This method purchases the shopping cart.
-     * @param userName The username of the subscriber.
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public Response<String> purchaseShoppingCart(String userName, String token) {
-        SystemLogger.info("[START] User: " + userName + " is trying to purchase the shopping cart");
-        if (isValidToken(token, userName)) {
-            return userFacade.purchaseShoppingCart(userName);
+    public Response <String> LockShoppSingCartAndCalculatedPrice(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            Response<List<ProductDTO>> list_prouct = storeService.LockShoppingCartAndCalculatedPrice(resShoppSingCartContents.getData());
+            if (list_prouct.isSuccess()) {
+                Integer price = 0;
+                for (ProductDTO productDTO : list_prouct.getData()) {
+                    price += productDTO.getPrice();
+                }
+                return new Response<String>(true, price.toString());
+            }
+
+
         }
-        SystemLogger.error("[ERROR] User: " + userName + " tried to purchase the shopping cart but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to lock the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
+
+
+
+
+    public Response<String> CalculateDiscounts(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
+//        if (isValidToken(token, username)) {
+//            return userFacade.CalculateDiscounts(username);
+//        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");
+        return Response.error("invalid token", null);
+
+    }
+
+
+
+
+
+//    /**
+//     * This method purchases the shopping cart.
+//     * @param userName The username of the subscriber.
+//     * @param token The token of the subscriber.
+//     * @return If successful, returns a success message. <br> If not, returns an error message.
+//     */
+//    public Response<String> purchaseShoppingCart(String userName, String token) {
+//        SystemLogger.info("[START] User: " + userName + " is trying to purchase the shopping cart");
+//        if (isValidToken(token, userName)) {
+//            return userFacade.purchaseShoppingCart(userName);
+//        }
+//        SystemLogger.error("[ERROR] User: " + userName + " tried to purchase the shopping cart but the token was invalid");
+//        return Response.error("invalid token", null);
+//    }
 
     public boolean isValidToken(String token, String currentUsername) {
         return userFacade.isValidToken(token, currentUsername);
