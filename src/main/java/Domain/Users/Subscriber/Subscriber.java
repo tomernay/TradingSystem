@@ -1,6 +1,5 @@
 package Domain.Users.Subscriber;
 
-import Domain.Externals.Security.Security;
 import Utilities.Messages.Message;
 
 import Domain.Users.User;
@@ -9,40 +8,32 @@ import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Subscriber extends User {
-    private List<String> stores;
+    private List<String> subscribedStores;
     private Queue<Message> messages;
     private String password;
-    private String Token;
     private String credit;
+    private Map<String, String> storesRole;
+
+
+
 
 
     public Subscriber(String username,String password) {
         super(username);
-        this.stores = new ArrayList<>();
+        this.subscribedStores = new ArrayList<>();
         this.messages = new LinkedBlockingQueue<>();
         this.password = password;
+        this.storesRole = new HashMap<>();
     }
 
     public void addStore(String storeID) {
-        stores.add(storeID);
+        subscribedStores.add(storeID);
     }
 
-    public void generateToken() {
-        Token = Security.generateJWT(this.username);
-    }
-
-
-    public Response<String> makeStoreOwner(Message message) {
-        messages.add(message);
-        SystemLogger.info("Owner nomination message successfully sent to: " + username);
-        return Response.success("Owner nomination request sent to user " + username, null);
-    }
 
     public Response<Message> messageResponse(boolean answer) {
         Message message = messages.poll();
@@ -51,12 +42,6 @@ public class Subscriber extends User {
             return Response.error("No messages to respond to.", null);
         }
         return message.response(answer);
-    }
-
-    public Response<String> makeStoreManager(Message message) {
-        messages.add(message);
-        SystemLogger.info("Manager nomination message successfully sent to: " + username);
-        return Response.success("Manager nomination request sent to user " + username, null);
     }
 
     public String getToken() {
@@ -120,6 +105,7 @@ public class Subscriber extends User {
             SystemLogger.error("[ERROR] No messages to respond to.");
             return Response.error("No messages to respond to.", null);
         }
+        storesRole.put(((nominateOwnerMessage) message).getStoreID(), "Owner");
         return message.response(answer);
     }
 
@@ -129,10 +115,23 @@ public class Subscriber extends User {
             SystemLogger.error("[ERROR] No messages to respond to.");
             return Response.error("No messages to respond to.", null);
         }
+        storesRole.put(((nominateManagerMessage) message).getStoreID(), "Manager");
         return message.response(answer);
     }
 
     public void resetToken() {
         Token = null;
+    }
+
+    public void addCreatorRole(String storeID) {
+        storesRole.put(storeID, "Creator");
+    }
+
+    public Response<Map<String, String>> getStoresRole() {
+        return Response.success("[SUCCESS] Successfully retrieved the user's stores roles.", storesRole);
+    }
+
+    public void removeStoreRole(String storeID) {
+        storesRole.remove(storeID);
     }
 }

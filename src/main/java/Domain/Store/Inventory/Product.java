@@ -1,5 +1,6 @@
 package Domain.Store.Inventory;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.ArrayList;
 
@@ -192,9 +193,11 @@ public class Product {
 
     public synchronized Response<String> setQuantity(int newQuantity) {
         if (newQuantity < 0) {
+            SystemLogger.error("[ERROR] Invalid Quantity: Quantity cannot be negative");
             return Response.error("Invalid Quantity: Quantity cannot be negative", null);
         }
         this.quantity = newQuantity;
+        SystemLogger.info("[SUCCESS] Quantity set successfully for product: " + this.name);
         return Response.success("Quantity set successfully for product: " + this.name, null);
     }
 

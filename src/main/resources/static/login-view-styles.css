@@ -1,0 +1,35 @@
+.login-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+/* Targeting the submit button within the vaadin-login-form */
+.login-view vaadin-login-form vaadin-button[theme~="primary"] {
+    background-color: black !important;
+    color: white !important;
+}
+/* Targeting the header of the text field within the vaadin-login-form-wrapper */
+.login-view vaadin-login-form-wrapper vaadin-text-field .label {
+    color: black !important;
+}
+
+/* Targeting the header of the password field within the vaadin-login-form-wrapper */
+.login-view vaadin-login-form-wrapper vaadin-password-field .label {
+    color: black !important;
+}
+
+.register-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+.roles-management-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+.main-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}

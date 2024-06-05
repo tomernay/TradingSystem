@@ -1,22 +1,27 @@
 package ParallelTests;
 
 import Domain.Users.User;
+import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class guestLoginLogoutTests {
+    ServiceInitializer serviceInitializer;
     UserService userService;
 
     @Before
     public void init(){
-        userService = new UserService();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
+        userService = serviceInitializer.getUserService();
     }
 
     @Test
@@ -25,12 +30,12 @@ public class guestLoginLogoutTests {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         // Submit two tasks to log in as guest
-        Future<Response<String>> future1 = executorService.submit(() -> userService.loginAsGuest());
-        Future<Response<String>> future2 = executorService.submit(() -> userService.loginAsGuest());
+        Future<Response<List<String>>> future1 = executorService.submit(() -> userService.loginAsGuest());
+        Future<Response<List<String>>> future2 = executorService.submit(() -> userService.loginAsGuest());
 
         // Get the responses. This will block until the tasks are complete.
-        Response<String> response1 = future1.get();
-        Response<String> response2 = future2.get();
+        Response<List<String>> response1 = future1.get();
+        Response<List<String>> response2 = future2.get();
 
         // Assert that both logins were successful
         Assert.assertTrue(response1.isSuccess());
@@ -46,16 +51,16 @@ public class guestLoginLogoutTests {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         // Submit two tasks to log in as guest
-        Future<Response<String>> loginFuture1 = executorService.submit(() -> userService.loginAsGuest());
-        Future<Response<String>> loginFuture2 = executorService.submit(() -> userService.loginAsGuest());
+        Future<Response<List<String>>> loginFuture1 = executorService.submit(() -> userService.loginAsGuest());
+        Future<Response<List<String>>> loginFuture2 = executorService.submit(() -> userService.loginAsGuest());
 
         // Get the responses. This will block until the tasks are complete.
-        Response<String> loginResponse1 = loginFuture1.get();
-        Response<String> loginResponse2 = loginFuture2.get();
+        Response<List<String>> loginResponse1 = loginFuture1.get();
+        Response<List<String>> loginResponse2 = loginFuture2.get();
 
         // Submit two tasks to log out as guest
-        Future<Response<String>> logoutFuture1 = executorService.submit(() -> userService.logoutAsGuest(loginResponse1.getData()));
-        Future<Response<String>> logoutFuture2 = executorService.submit(() -> userService.logoutAsGuest(loginResponse2.getData()));
+        Future<Response<String>> logoutFuture1 = executorService.submit(() -> userService.logoutAsGuest(loginResponse1.getData().get(0)));
+        Future<Response<String>> logoutFuture2 = executorService.submit(() -> userService.logoutAsGuest(loginResponse2.getData().get(0)));
 
         // Get the responses. This will block until the tasks are complete.
         Response<String> logoutResponse1 = logoutFuture1.get();
