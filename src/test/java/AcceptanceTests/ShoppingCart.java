@@ -38,7 +38,7 @@ public class ShoppingCart {
     @Test
     public void AddProuducdToShoppingcart(){
         storeService.addProductToStore("0","newProduct","tambal",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res2 = userService.getShoppingCartContents("yair12312",buyer.getToken());
@@ -58,7 +58,7 @@ public class ShoppingCart {
     @Test
     public void AddProuducdNotExistToShoppingcartAlready(){
         storeService.addProductToStore("0","newProduct","DOG",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res1=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
@@ -67,7 +67,7 @@ public class ShoppingCart {
     @Test
     public void AddProuducdToShoppingcartQuantityZero(){
         storeService.addProductToStore("0","newProduct","tambal",10, 10,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),0);
         Assert.assertFalse(res.isSuccess());
@@ -78,7 +78,7 @@ public class ShoppingCart {
     @Test
     public void AddProuducdToShoppingcartShopNotExist(){
         storeService.addProductToStore("0","newProduct","DOG",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res=userService.addProductToShoppingCart("10","ID","yair12312",buyer.getToken(),1);
         Assert.assertFalse(res.isSuccess());
@@ -90,7 +90,7 @@ public class ShoppingCart {
     @Test
     public void RemoveProuducdFromShoppingcart(){
         storeService.addProductToStore("0","ProuducdRemove","DOG",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.getProductFromStoreByName("0","ProuducdRemove","newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","ProuducdRemove","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res1 = userService.removeProductFromShoppingCart("0",ID,"yair12312",buyer.getToken());
