@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * and some desktop browsers.
  *
  */
-@SpringBootApplication(scanBasePackages = {"Service", "Presentaion"})
+@SpringBootApplication
 @Theme(value = "my-app")
 public class Application implements AppShellConfigurator {
 

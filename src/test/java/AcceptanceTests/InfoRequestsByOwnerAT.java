@@ -26,8 +26,7 @@ public class InfoRequestsByOwnerAT {
 
     @Before
     public void init(){
-        ServiceInitializer.reset();
-        serviceInitializer = ServiceInitializer.getInstance();
+        serviceInitializer = new ServiceInitializer();
         storeService = serviceInitializer.getStoreService();
         userService = serviceInitializer.getUserService();
         orderService = serviceInitializer.getOrderService();
@@ -49,7 +48,7 @@ public class InfoRequestsByOwnerAT {
         //make ziv manager
         List<String> perms = new ArrayList<>();
         perms.add("EDIT_PRODUCT");
-//        perms.add("ADD_MANAGER");
+        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
         userService.SendStoreManagerNomination(store.getData(), "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
@@ -133,16 +132,20 @@ public class InfoRequestsByOwnerAT {
         Response<Map<String,String>> response = orderService.getOrderHistorty(store.getData());
         Assert.assertFalse(response.isSuccess());
     }
-//    test order history with orders
+    //test order history with orders
 //    @Test
 //    public void testOrderHistoryWithOrders(){
-//        storeService.addProductToStore("newStore","newProduct","",10, 1,"newOwner",userService.getUserFacade().getUserRepository().getUser("mia").getToken());
-//        Response<String> res=userService.addProductToShoppingCart("newStore","newProduct","ziv",userService.getUserFacade().getUserRepository().getUser("ziv").getToken(),1);
-//        Response<String> res1 = orderService.purchaseCart(store.getData(), "ziv", "credit", "123456789", "12/22", "123", "123456789", "123456789", "123456789", "123456789", "123456789", userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
+//
 //    }
-    //test order history with orders
-
-
+//        //add product
+//        storeService.addProduct(store.getData(), "mia", "product", 10, 10, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+//        //add product to cart
+//        orderService.addProductToCart(store.getData(), "mia", "product", 1, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+//        //purchase cart
+//        orderService.purchaseCart(store.getData(), "mia", "credit", "123456789", "12/22", "123", "123456789", "123456789", "123456789", "123456789", "123456789", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+//        Response<List<String>> response = orderService.requestOrderHistory(store.getData(), "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+//        Assert.assertTrue(response.isSuccess());
+//    }
     //test order history with orders and products
 //    @Test
 //    public void testOrderHistoryWithOrdersAndProducts(){

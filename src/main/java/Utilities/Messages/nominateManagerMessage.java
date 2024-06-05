@@ -28,11 +28,11 @@ public class nominateManagerMessage extends Message {
     @Override
     public Response<Message> response(boolean answer) {
         if (answer) {
-            SystemLogger.info("[SUCCESS] User " + subscriberUsername + " has accepted the Manager nomination for the store: " + storeID + ".");
+            SystemLogger.info("[INFO] User " + subscriberUsername + " has accepted the Manager nomination for the store: " + storeID + ".");
             return Response.success("",this);
         }
         else {
-            SystemLogger.info("[SUCCESS] User " + subscriberUsername + " has declined the Manager nomination for the store: " + storeID + ".");
+            SystemLogger.info("[INFO] User " + subscriberUsername + " has declined the Manager nomination for the store: " + storeID + ".");
             return Response.success("",this);
         }
     }

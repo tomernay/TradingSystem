@@ -12,8 +12,7 @@ public class UserRegisterLoginLogout {
     UserService userService;
     @Before
     public void init(){
-        ServiceInitializer.reset();
-        serviceInitializer = ServiceInitializer.getInstance();
+        serviceInitializer = new ServiceInitializer();
         userService = serviceInitializer.getUserService();
     }
 

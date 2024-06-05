@@ -15,8 +15,7 @@ public class InventoryTests {
 
     @Before
     public void init(){
-        ServiceInitializer.reset();
-        serviceInitializer = ServiceInitializer.getInstance();
+        serviceInitializer = new ServiceInitializer();
         StoreService storeService = serviceInitializer.getStoreService();
         userService.register("mor","Password123!");
         storeService.addStore("morStore","mor",subscriber.getToken());

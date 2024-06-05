@@ -19,8 +19,7 @@ public class StoreCreation {
 
     @Before
     public void init(){
-        ServiceInitializer.reset();
-        serviceInitializer = ServiceInitializer.getInstance();
+        serviceInitializer = new ServiceInitializer();
         userService = serviceInitializer.getUserService();
         userService.register("miaa","Password123!");
         userService.loginAsSubscriber("miaa","Password123!");

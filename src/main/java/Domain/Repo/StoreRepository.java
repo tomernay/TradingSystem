@@ -334,13 +334,13 @@ public class StoreRepository {
     }
 
 
-    public Response<ProductDTO> getProductFromStore(int productID, String storeID, String userName) {
+    public Response<ProductDTO> viewProductFromStoreByID(int productID, String storeID) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get product from store: " + storeID + " but the store doesn't exist / is inactive");
+            SystemLogger.error("[ERROR] Tried to get product from store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).getProductFromStore(productID, userName);
+        return stores.get(storeID).getProductFromStore(productID);
     }
 
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String storeID, String userName) {
@@ -388,22 +388,22 @@ public class StoreRepository {
         return stores.get(storeID).removeProductFromStore(productID, userName);
     }
 
-    public Response<ProductDTO> getProductByName(String storeID, String productName, String userName) {
+    public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get product by name from store: " + storeID + " but the store doesn't exist / is inactive");
+            SystemLogger.error("[ERROR] Tried to get product by name from store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).getProductByName(productName, userName);
+        return stores.get(storeID).viewProductFromStoreByName(productName);
     }
 
-    public Response<String> getStoreIDByName(String storeName, String userName) {
+    public Response<String> getStoreIDByName(String storeName) {
         Response<String> response = isStoreExist(storeName);
         if (!response.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get store ID by name: " + storeName + " but the store doesn't exist / is inactive");
+            SystemLogger.error("[ERROR] Tried to get store ID by name: " + storeName + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeName).getStoreIDByName(userName);
+        return stores.get(storeName).getStoreIDByName();
     }
 
     public Response<StoreDTO> getStoreByID(String storeID, String userName) {
@@ -415,15 +415,36 @@ public class StoreRepository {
         return stores.get(storeID).getStoreByID(userName);
     }
 
-    public Response<String> getStoreNameByID(String storeID, String userName) {
+    public Response<String> getStoreNameByID(String storeID) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get store name by ID: " + storeID + " but the store doesn't exist / is inactive");
+            SystemLogger.error("[ERROR] Tried to get store name by ID: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).getStoreNameByID(userName);
+        return stores.get(storeID).getStoreNameByID();
     }
 
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByName(String productName) {
+        ArrayList<ProductDTO> products = new ArrayList<>();
+        for (Store store : stores.values()) {
+            Response<ProductDTO> response = store.viewProductByName(productName);
+            if (response.isSuccess()) {
+                products.add(response.getData());
+            }
+        }
+        return Response.success("Successfully retrieved products with name: " + productName, products);
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category) {
+        ArrayList<ProductDTO> products = new ArrayList<>();
+        for (Store store : stores.values()) {
+            Response<ArrayList<ProductDTO>> response = store.viewProductByCategory(category);
+            if (response.isSuccess()) {
+                products.addAll(response.getData());
+            }
+        }
+        return Response.success("Successfully retrieved products with category: " + category, products);
+    }
     public boolean isStoreSubscriber(String storeID, String userName) {
         if (!stores.containsKey(storeID)) {
             return false;

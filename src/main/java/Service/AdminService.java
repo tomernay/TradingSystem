@@ -1,8 +1,12 @@
 package Service;
 
 import Facades.OrderFacade;
+import Domain.Order;
 import Utilities.Response;
-import Utilities.SystemLogger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class AdminService {
     private UserService userService;
@@ -34,32 +38,45 @@ public class AdminService {
     }
 
     public Response<String> getPurchaseHistoryByStore(String storeID) {
-        SystemLogger.info("[START] Admin is trying to get purchase history by store");
         try{
             if (storeService.storeExists(storeID) == false){
-                SystemLogger.error("[ERROR] The Store Does Not Exist");
-                return Response.error("The Store Does Not Exist", null);
+                return new Response<>(false,"The Store Does Not Exist" );
             }
-            return orderFacade.getPurchaseHistoryByStore(storeID);
+
+            Map<Integer, Order> myOrders = orderFacade.getOrders();
+            List<Order> orderList = new ArrayList<>();
+            for (Order order: myOrders.values()){
+                if (order.getStoreID().equals(storeID)){
+                    orderList.add(order);
+                }
+            }
+            return new Response<>(true,orderList.toString());
         }
         catch (Exception exception){
-            SystemLogger.error("[ERROR] Other Exception");
-            return Response.error("Other Exception", null);
+            return new Response<>(false,"Other Exception" );
         }
     }
 
     public Response<String> getPurchaseHistoryBySubscriber(String subscriberID){
         try{
             if (userService.userExists(subscriberID) == false){
-                SystemLogger.error("[ERROR] The User Does Not Exist");
-                return Response.error("The User Does Not Exist", null);
+                return new Response<>(false, "The User Does Not Exist");
             }
-            return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
+
+            Map<Integer, Order> myOrders = orderFacade.getOrders();
+            List<Order> orderList = new ArrayList<>();
+            for (Order order: myOrders.values()){
+                if (order.getUsername().equals(subscriberID)){
+                    orderList.add(order);
+                }
+            }
+            return new Response<>(true,orderList.toString());
         }
         catch (Exception exception){
-            SystemLogger.error("[ERROR] Other Exception");
-            return Response.error("Other Exception", null);
+            return new Response<>(false, "Other Exception");
         }
+
+
     }
 
     public Response<String> recieveSystemInfo() {

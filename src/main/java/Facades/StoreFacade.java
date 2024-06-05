@@ -142,8 +142,8 @@ public class StoreFacade {
     }
 
 
-    public Response<ProductDTO> getProductFromStore(int productID, String storeID, String userName) {
-        return storeRepository.getProductFromStore(productID, storeID, userName);
+    public Response<ProductDTO> viewProductFromStoreByID(int productID, String storeID) {
+        return storeRepository.viewProductFromStoreByID(productID, storeID);
     }
 
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String storeID, String userName) {
@@ -167,22 +167,30 @@ public class StoreFacade {
         return storeRepository.removeProductFromStore(productID, storeID, userName);
     }
 
-    public Response<ProductDTO> getProductByName(String storeID, String productName, String userName) {
-        return storeRepository.getProductByName(storeID, productName, userName);
+    public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName) {
+        return storeRepository.viewProductFromStoreByName(storeID, productName);
     }
 
-    public Response<String> getStoreIDByName(String storeName, String userName) {
-        return storeRepository.getStoreIDByName(storeName, userName);
+    public Response<String> getStoreIDByName(String storeName) {
+        return storeRepository.getStoreIDByName(storeName);
     }
 
     public Response<StoreDTO> getStoreByID(String storeID, String userName) {
         return storeRepository.getStoreByID(storeID, userName);
     }
 
-    public Response<String> getStoreNameByID(String storeID, String userName) {
-        return storeRepository.getStoreNameByID(storeID, userName);
+    public Response<String> getStoreNameByID(String storeID) {
+        return storeRepository.getStoreNameByID(storeID);
     }
 
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByName(String productName) {
+        return storeRepository.viewProductFromAllStoresByName(productName);
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category) {
+        return storeRepository.viewProductFromAllStoresByCategory(category);
+
+    }
     public boolean isStoreSubscriber(String storeID, String UserName) {
         return storeRepository.isStoreSubscriber(storeID, UserName);
     }
@@ -197,7 +205,7 @@ public class StoreFacade {
     public Response<String> isProductExist(String storeID, String productID) {
         return storeRepository.isProductExist(storeID, productID);
     }
-    
+
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeRepository.getStoresRoleWithName(storesRole);
     }

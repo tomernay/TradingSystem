@@ -1,7 +1,6 @@
 package Domain.Externals.Payment;
 
 import Utilities.Response;
-import Utilities.SystemLogger;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -17,23 +16,18 @@ public class DefaultPay extends PaymentAdapter {
     @Override
     public Response<String> pay(CreditCard buyer, CreditCard receiver, double fee) {
         if(buyer==null||receiver==null){
-            SystemLogger.error("[ERROR] Credit card cannot be null");
-            return Response.error("Credit card cannot be null", null);
+            return new Response<String>(false, "invalid credit card number");
         }
         if(fee<=0){
-            SystemLogger.error("[ERROR] Fee must be positive");
-            return Response.error("fee must be positive", null);
+            return new Response<String>(false, "fee must be positive");
         }
         else if(!isValidVisa(buyer.getCreditCardNumber())){
-            SystemLogger.error("[ERROR] Invalid credit card number");
-            return Response.error("invalid credit card number", null);
+            return new Response<String>(false, "invalid credit card number");
         }
         else if(Objects.equals(buyer.getCreditCardNumber(), receiver.getCreditCardNumber())){
-            SystemLogger.error("[ERROR] Can't pay to yourself");
-            return Response.error("can't pay to yourself", null);
+            return new Response<String>(false, "can't pay to yourself");
         }
-        SystemLogger.info("[SUCCESS] Payment successful");
-        return Response.success("paid", null);
+        return new Response<>(true, "paid");
       //  return isValidVisa(buyer.getCreditCardNumber())&& !Objects.equals(buyer.getCreditCardNumber(), receiver.getCreditCardNumber())&&fee>0;
     }
 

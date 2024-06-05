@@ -415,13 +415,7 @@ public class Store {
         return inventory.removeCategoryFromStore(category);
     }
 
-
-    public Response<ProductDTO> getProductFromStore(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productID + " but he doesn't have the permission");
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+    public Response<ProductDTO> getProductFromStore(int productID) {
         return inventory.getProductFromStore(productID);
     }
 
@@ -470,21 +464,11 @@ public class Store {
         return inventory.removeProductFromStore(productID);
     }
 
-    public Response<ProductDTO> getProductByName(String productName, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_PRODUCTS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productName + " but he doesn't have the permission");
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+    public Response<ProductDTO> viewProductFromStoreByName(String productName) {
         return inventory.getProductByName(productName);
     }
 
-    public Response<String> getStoreIDByName(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the store ID but he doesn't have the permission");
-            return permissionCheck;
-        }
+    public Response<String> getStoreIDByName() {
         return Response.success("The store ID is: " + storeID, storeID);
     }
 
@@ -497,12 +481,7 @@ public class Store {
         return Response.success("The store ID is: " + storeID, new StoreDTO(storeID, storeName));
     }
 
-    public Response<String> getStoreNameByID(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the store name by ID but he doesn't have the permission");
-            return permissionCheck;
-        }
+    public Response<String> getStoreNameByID() {
         return Response.success("The store name is: " + storeName, storeName);
     }
 
@@ -541,5 +520,13 @@ public class Store {
             return Response.success("The product exists in the store", null);
         }
         return Response.error("The product doesn't exist in the store", null);
+    }
+    public Response<ProductDTO> viewProductByName(String productName) {
+        return inventory.viewProductByName(productName);
+
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductByCategory(String category) {
+        return inventory.viewProductByCategory(category);
     }
 }

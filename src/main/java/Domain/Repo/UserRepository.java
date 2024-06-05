@@ -21,13 +21,12 @@ public class UserRepository {
     private Map<String, User> guests = new HashMap<>();
     private int userIDS = 0;
 
-    public Response<List<String>> loginAsGuest() {
+    public Response<String> loginAsGuest() {
         String username = "Guest" + userIDS;
         User user = new User(username);
         userIDS++;
         addGuest(user);
-        String token = guests.get(username).generateToken();
-        return Response.success("You signed in as a GUEST", List.of(username, token));
+        return Response.success("You signed in as a GUEST", username);
     }
 
     public Response<String> logoutAsGuest(String username) {
@@ -45,33 +44,40 @@ public class UserRepository {
         if (isUserExist(username)) {
             Subscriber subscriber = getUser(username);
             if (subscriber.getPassword().equals(password)) {
-                String token = getUser(username).generateToken();
+                getUser(username).generateToken();
                 subscribersLoggedIn.put(username, subscriber);
-                SystemLogger.info("[SUCCESS] User " + username + " logged in successfully");
-                return Response.success("Logged in successfully", token);
+                return Response.success("Logged in successfully", null);
             } else {
-                SystemLogger.error("[ERROR] Incorrect password for user " + username);
                 return Response.error("Incorrect password", null);
             }
         } else {
-            SystemLogger.error("[ERROR] User " + username + " does not exist");
             return Response.error("User does not exist", null);
         }
     }
 
     public Response<String> logoutAsSubscriber(String username) {
         if(!subscribersLoggedIn.containsKey(username)) {
-            SystemLogger.error("[ERROR] User " + username + " is already logged out");
             return Response.error("User is already logged out", null);
         }
         getUser(username).resetToken();
         subscribersLoggedIn.remove(username);
-        SystemLogger.info("[SUCCESS] User " + username + " logged out successfully");
         return Response.success("You signed out as a SUBSCRIBER", null);
     }
 
     public void addGuest(User user) {
         guests.put(user.getUsername(), user);
+    }
+
+    public User getGuest(ShoppingCart shoppingCart) {
+        return guests.get(shoppingCart);
+    }
+
+    public Response<String> makeStoreOwner(String subscriberUsername, Message message) {
+        return subscribers.get(subscriberUsername).makeStoreOwner(message);
+    }
+
+    public Response<String> makeStoreManager(String subscriberUsername, Message message) {
+        return subscribers.get(subscriberUsername).makeStoreManager(message);
     }
 
     public Response<Message> messageResponse(String subscriberUsername, boolean answer) {
@@ -98,27 +104,23 @@ public class UserRepository {
         for (String subscriberName : subscriberNames) {
             subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
         }
-        SystemLogger.info("[SUCCESS] Store " + storeID + " has been closed. Notifications sent to all related subscribers.");
+        SystemLogger.info("Store " + storeID + " has been closed. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
     }
 
     public Response<String> register(String username, String password) {
         if(!isUsernameValid(username) ) {
-            SystemLogger.error("[ERROR] Username does not meet the requirements");
             return Response.error("Username does not meet the requirements", null);
         }
         else if(!isValidPassword(password)) {
-            SystemLogger.error("[ERROR] Password does not meet the requirements");
             return Response.error("Password does not meet the requirements", null);
         }
         else if(isUserExist(username)) {
-            SystemLogger.error("[ERROR] User " + username + " already exists");
             return  Response.error("User already exists", null);
         }
         else {
             Subscriber subscriber = new Subscriber(username,password);
             addUser(subscriber);
-            SystemLogger.info("[SUCCESS] User " + username + " registered successfully");
             return Response.success("User registered successfully", username);
         }
     }
@@ -178,14 +180,13 @@ public class UserRepository {
 
 
 
-    public Response<String> addProductToShoppingCart(String storeID,String productName,String userName,int quantity) {
+    public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity) {
         if (subscribers.containsKey(userName)) {
-            return subscribers.get(userName).addProductToShoppingCart(storeID, productName, quantity);
+            return subscribers.get(userName).addProductToShoppingCart(storeID, productID, quantity);
         }
         else if (guests.containsKey(userName)) {
-            return guests.get(userName).addProductToShoppingCart(storeID, productName, quantity);
+            return guests.get(userName).addProductToShoppingCart(storeID, productID, quantity);
         }
-        SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
     }
 
@@ -197,7 +198,6 @@ public class UserRepository {
         else if (guests.containsKey(userName)) {
             return guests.get(userName).removeProductFromShoppingCart(storeID, productID);
         }
-        SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
     }
 
@@ -208,7 +208,6 @@ public class UserRepository {
         else if (guests.containsKey(userName)) {
             return guests.get(userName).updateProductInShoppingCart(storeID, productID, quantity);
         }
-        SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
     }
 
@@ -221,7 +220,6 @@ public class UserRepository {
         else if (guests.containsKey(userName)) {
             return guests.get(userName).getShoppingCartContents();
         }
-        SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
     }
 
@@ -235,25 +233,5 @@ public class UserRepository {
 
     public boolean isValidToken(String token, String currentUsername) {
         return Security.isValidJWT(token,currentUsername);
-    }
-
-    public void addCreatorRole(String creatorUsername, String storeID) {
-        subscribers.get(creatorUsername).addCreatorRole(storeID);
-    }
-
-    public Response<Map<String, String>> getStoresRole(String username) {
-        if (!subscribers.containsKey(username)) {
-            SystemLogger.error("[ERROR] User " + username + " does not exist");
-            return Response.error("User does not exist", null);
-        }
-        return subscribers.get(username).getStoresRole();
-    }
-
-    public void removeStoreRole(String subscriberUsername, String storeID) {
-        if (!subscribers.containsKey(subscriberUsername)) {
-            SystemLogger.error("[ERROR] User " + subscriberUsername + " does not exist");
-            return;
-        }
-        subscribers.get(subscriberUsername).removeStoreRole(storeID);
     }
 }
