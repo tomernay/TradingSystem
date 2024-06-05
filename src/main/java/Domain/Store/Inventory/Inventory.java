@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import Domain.Store.Inventory.ProductDTO;
 
 public class Inventory {
-    private static final AtomicInteger productIDGenerator = new AtomicInteger(1);
+    private final AtomicInteger productIDGenerator = new AtomicInteger(1);
     private final String storeID; //Inventory for specific store
     public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
     private ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
