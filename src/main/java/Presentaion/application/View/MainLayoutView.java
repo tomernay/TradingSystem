@@ -22,6 +22,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.MergedAnnotations;
 
@@ -132,18 +133,18 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     public void addSearchBar() {
         // Add search bar to the header
-        TextField searchBar = new TextField("Search");
-        Button searchButton = new Button("Search");
-        searchButton.setSizeFull();
-        // Add a listener to the search button
-//        searchButton.addClickListener(event -> {
-//            String searchTerm = searchBar.getText();
-//            // Perform search logic here
-//            System.out.println("Searching for: " + searchTerm);
-//        });
-//        addToNavbar(searchButton);
-//        addToNavbar(searchBar, searchButton);
-//        addToNavbar(searchBar, searchButton);
+        TextField searchBar = new TextField();
+        searchBar.setPlaceholder("Search for anything");
+        searchBar.setSizeFull();
+//        searchField.setTooltipText("");
+        Button search = new Button("Search", e -> {
+            String searchTerm = searchBar.getValue();
+            // Perform search logic here
+            System.out.println("Searching for: " + searchTerm);
+        });
+
+        addToNavbar(searchBar, search);
+
     }
 
     private void logout() {

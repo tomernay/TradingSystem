@@ -24,6 +24,11 @@ public class MainLayoutPresenter {
         this.view = view;
     }
 
+    public void search(String search) {
+
+//        view.navigateToSearch(search);
+    }
+
     public void logout() {
         String username = CookiesHandler.getUsernameFromCookies(request);
         assert username != null;
