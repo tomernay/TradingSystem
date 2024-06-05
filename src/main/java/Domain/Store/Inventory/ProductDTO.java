@@ -41,7 +41,7 @@ public class ProductDTO {
         return productID;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 }

@@ -358,7 +358,7 @@ public class UserService {
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
             Response<List<ProductDTO>> list_prouct = storeService.LockShoppingCartAndCalculatedPrice(resShoppSingCartContents.getData());
             if (list_prouct.isSuccess()) {
-                Integer price = 0;
+                Double price = 0.0;
                 for (ProductDTO productDTO : list_prouct.getData()) {
                     price += productDTO.getPrice();
                 }
