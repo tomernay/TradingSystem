@@ -2,32 +2,39 @@ package Domain.Repo;
 
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.PurchasePolicy.PaymentTypes.PayByBid;
 import Domain.Store.Store;
 import Domain.Store.StoreDTO;
+import Domain.Store.StoreData.Permissions;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreRepository {
     private Map<String, Store> stores;
     private Map<String, Store> deactivatedStores; // <StoreID, Store>
-    private Integer storeID = 0;
+    AtomicInteger storeID = new AtomicInteger(0);
+
 
     public StoreRepository() {
         this.stores = new HashMap<>();
-        //this.storeID = 0;
         this.deactivatedStores = new HashMap<>();
     }
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
         return stores.get(storeID).isStoreOwner(currentUsername);
     }
 
     public boolean isStoreManager(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
         return stores.get(storeID).isStoreManager(currentUsername);
     }
 
@@ -98,14 +105,10 @@ public class StoreRepository {
     }
 
     public boolean isStoreCreator(String storeID, String currentUsername) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
         return stores.get(storeID).isStoreCreator(currentUsername);
-    }
-
-    //yair added
-    public void addPayByBid(HashMap<Integer,Integer> products, double fee, String store,String user){
-        Store s=stores.get(store);
-        PayByBid pay=new PayByBid(products,fee,s);
-        s.addPayByBid(pay,user);
     }
 
     public Response<String> addStore(String storeName,String creator) {
@@ -115,8 +118,8 @@ public class StoreRepository {
             Inventory inventory = new Inventory(storeID.toString());
             store.setInventory(inventory);
             stores.put(this.storeID.toString(), store);
-            this.storeID++;
-            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID-1));
+            this.storeID.getAndIncrement();
+            return Response.success("successfully opened the store "+ storeName, Integer.toString(this.storeID.getAndDecrement()));
         }
         catch (Exception e) {
             return Response.error("couldn't open store "+ storeName, null);
@@ -161,9 +164,11 @@ public class StoreRepository {
 
     public Response<Set<String>> waiveOwnership(String storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to waive ownership in store: " + storeID + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
-        if (!isStoreOwner(storeID, currentUsername)) { //The subscriber is not the store owner
+        if (!isStoreOwner(storeID, currentUsername)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to waive ownership in store: " + storeID + " but the user is not the store owner");
             return Response.error("The user trying to do this action is not the store owner.",null);
         }
         return stores.get(storeID).waiveOwnership(currentUsername);
@@ -171,6 +176,7 @@ public class StoreRepository {
 
     public Response<String> nominateOwner(String storeID, String currentUsername, String nominatorUsername) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to nominate " + nominatorUsername + " as owner in store: " + storeID + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
         return stores.get(storeID).nominateOwner(currentUsername, nominatorUsername);
@@ -178,6 +184,7 @@ public class StoreRepository {
 
     public Response<String> removeStoreSubscription(String storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to remove store subscription in store: " + storeID + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
         return stores.get(storeID).removeStoreSubscription(currentUsername);
@@ -185,6 +192,7 @@ public class StoreRepository {
 
     public Response<String> nominateManager(String storeID, String currentUsername, List<String> permissions, String nominatorUsername) {
         if (!stores.containsKey(storeID)) {
+            SystemLogger.error("[ERROR] " + currentUsername + " tried to nominate " + nominatorUsername + " as manager in store: " + storeID + " but the store doesn't exist");
             return Response.error("Store with ID: " + storeID + " doesn't exist", null);
         }
         return stores.get(storeID).nominateManager(currentUsername, permissions, nominatorUsername);
@@ -210,6 +218,7 @@ public class StoreRepository {
     public Response<String> setProductQuantity(int productID, int newQuantity, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to set product quantity in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).setProductQuantity(productID, newQuantity, userName);
@@ -218,6 +227,7 @@ public class StoreRepository {
     public Response<String> addProductQuantity(int productID, int amountToAdd, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to add product quantity in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).addProductQuantity(productID, amountToAdd, userName);
@@ -226,6 +236,7 @@ public class StoreRepository {
     public Response<String> getProductName(int productID, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get product name in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).getProductName(productID, userName);
@@ -234,6 +245,7 @@ public class StoreRepository {
     public Response<String> setProductName(int productID, String newName, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to set product name in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).setProductName(productID, newName, userName);
@@ -242,6 +254,7 @@ public class StoreRepository {
     public Response<String> getProductPrice(int productID, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get product price in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).getProductPrice(productID, userName);
@@ -250,6 +263,7 @@ public class StoreRepository {
     public Response<String> setProductPrice(int productID, int newPrice, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to set product price in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).setProductPrice(productID, newPrice, userName);
@@ -259,6 +273,7 @@ public class StoreRepository {
     public Response<String> getProductDescription(int productID, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get product description in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).getProductDescription(productID, userName);
@@ -267,6 +282,7 @@ public class StoreRepository {
     public Response<String> setProductDescription(int productID, String newDescription, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to set product description in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).setProductDescription(productID, newDescription, userName);
@@ -275,6 +291,7 @@ public class StoreRepository {
     public Response<String> getProductQuantity(int productID, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get product quantity in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).getProductQuantity(productID, userName);
@@ -283,6 +300,7 @@ public class StoreRepository {
     public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String storeID, String category, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to retrieve products by category in store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).retrieveProductsByCategory(category, userName);
@@ -291,6 +309,7 @@ public class StoreRepository {
     public Response<String> retrieveProductCategories(int productID, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to retrieve product categories in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).retrieveProductCategories(productID, userName);
@@ -299,6 +318,7 @@ public class StoreRepository {
     public Response<String> assignProductToCategory(int productID, String category, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to assign product to category in store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).assignProductToCategory(productID, category, userName);
@@ -307,6 +327,7 @@ public class StoreRepository {
     public Response<String> removeCategoryFromStore(String storeID, String category, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to remove category from store: " + storeID + " but the store doesn't exist / is inactive");
             return response;
         }
         return stores.get(storeID).removeCategoryFromStore(category, userName);
@@ -316,6 +337,7 @@ public class StoreRepository {
     public Response<ProductDTO> viewProductFromStoreByID(int productID, String storeID) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] Tried to get product from store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).getProductFromStore(productID);
@@ -324,15 +346,25 @@ public class StoreRepository {
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get all products from store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).getAllProductsFromStore(userName);
     }
 
+    public Response<String> getStoreIDbyName(String storeName, String userName) {
+     Response<String> response = isStoreExist(storeName);
+        if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get store ID by name: " + storeName + " but the store doesn't exist / is inactive");
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeName).getStoreIDbyName(userName);
+    }
 
     public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to add product to store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).addProductToStore(name, desc, price, quantity, userName);
@@ -341,6 +373,7 @@ public class StoreRepository {
     public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, ArrayList<String> categories, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to add product to store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).addProductToStore(name, desc, price, quantity, categories, userName);
@@ -349,6 +382,7 @@ public class StoreRepository {
     public Response<String> removeProductFromStore(int productID, String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to remove product from store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).removeProductFromStore(productID, userName);
@@ -357,6 +391,7 @@ public class StoreRepository {
     public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] Tried to get product by name from store: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).viewProductFromStoreByName(productName);
@@ -365,6 +400,7 @@ public class StoreRepository {
     public Response<String> getStoreIDByName(String storeName) {
         Response<String> response = isStoreExist(storeName);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] Tried to get store ID by name: " + storeName + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeName).getStoreIDByName();
@@ -373,6 +409,7 @@ public class StoreRepository {
     public Response<StoreDTO> getStoreByID(String storeID, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] " + userName + " tried to get store by ID: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).getStoreByID(userName);
@@ -381,6 +418,7 @@ public class StoreRepository {
     public Response<String> getStoreNameByID(String storeID) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
+            SystemLogger.error("[ERROR] Tried to get store name by ID: " + storeID + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).getStoreNameByID();
@@ -406,5 +444,38 @@ public class StoreRepository {
             }
         }
         return Response.success("Successfully retrieved products with category: " + category, products);
+    }
+    public boolean isStoreSubscriber(String storeID, String userName) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
+        return stores.get(storeID).isStoreSubscriber(userName);
+    }
+
+    public boolean hasPermission(String storeID, String username, String permission) {
+        if (!stores.containsKey(storeID)) {
+            return false;
+        }
+        return stores.get(storeID).hasPermission(username, permission);
+    }
+
+    public Set<String> getPermissionsList() {
+        return Permissions.getPermissions();
+    }
+
+    public Response<String> isProductExist(String storeID, String productID) {
+        if (!stores.containsKey(storeID)) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        return stores.get(storeID).isProductExist(productID);
+    }
+    public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
+        Map<String, String> storesRoleWithName = new HashMap<>();
+        for (Map.Entry<String, String> entry : storesRole.entrySet()) {
+            String storeID = entry.getKey();
+            String storeName = stores.get(storeID).getName();
+            storesRoleWithName.put(storeID + " - " + storeName, entry.getValue());
+        }
+        return Response.success("[SUCCESS] Successfully retrieved the user's stores roles.", storesRoleWithName);
     }
 }

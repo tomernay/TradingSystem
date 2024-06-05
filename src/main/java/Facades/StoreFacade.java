@@ -2,7 +2,6 @@ package Facades;
 
 import Domain.Repo.StoreRepository;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -54,10 +53,6 @@ public class StoreFacade {
 
     public Response<Map<String, List<String>>> requestManagersPermissions(String storeID){
         return storeRepository.requestManagersPermissions(storeID);
-    }
-
-    public Store getStore(String storeID) {
-        return storeRepository.getStore(storeID);
     }
 
     public Response<String> openStore(String storeID, String creator) {
@@ -155,6 +150,11 @@ public class StoreFacade {
         return storeRepository.getAllProductsFromStore(storeID, userName);
     }
 
+
+    public Response<String> getStoreIDbyName(String storeName, String userName) {
+        return storeRepository.getStoreIDbyName(storeName, userName);
+    }
+
     public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String userName) {
         return storeRepository.addProductToStore(storeID, name, desc, price, quantity, userName);
     }
@@ -190,5 +190,23 @@ public class StoreFacade {
     public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category) {
         return storeRepository.viewProductFromAllStoresByCategory(category);
 
+    }
+    public boolean isStoreSubscriber(String storeID, String UserName) {
+        return storeRepository.isStoreSubscriber(storeID, UserName);
+    }
+
+    public boolean hasPermission(String storeID, String username, String permission) {
+        return storeRepository.hasPermission(storeID, username, permission);
+    }
+
+    public Set<String> getPermissionsList() {
+        return storeRepository.getPermissionsList();
+    }
+    public Response<String> isProductExist(String storeID, String productID) {
+        return storeRepository.isProductExist(storeID, productID);
+    }
+
+    public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
+        return storeRepository.getStoresRoleWithName(storesRole);
     }
 }
