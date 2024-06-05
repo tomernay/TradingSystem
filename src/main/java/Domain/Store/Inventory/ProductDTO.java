@@ -32,16 +32,6 @@ public class ProductDTO {
         this.quantity = product.getQuantity();
         //this.categories = product.getCategories();
     }
-
-    public String getStoreID() {
-        return storeID;
-    }
-    public String getName() {
-        return name;
-    }
-    public Integer getProductID() {
-        return productID;
-    }
 }
 
 
