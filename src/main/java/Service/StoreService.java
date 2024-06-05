@@ -187,7 +187,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If successful, returns a map of the employees and their status. <br> If not, returns an error message.
      */
-    public Response<Map<String, String>> requestEmployeesStatus(String storeID) {
+    public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID) {
         return storeFacade.requestEmployeesStatus(storeID);
     }
 
@@ -196,7 +196,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If successful, returns a map of the managers and their permissions. <br> If not, returns an error message.
      */
-    public Response<Map<String, List<String>>> requestManagersPermissions(String storeID) {
+    public synchronized Response<Map<String, List<String>>> requestManagersPermissions(String storeID) {
         return storeFacade.requestManagersPermissions(storeID);
     }
 

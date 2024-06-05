@@ -242,7 +242,7 @@ public class UserService {
      * @param token The token of the requesting subscriber.
      * @return If successful, returns a success message & map of {username, role}. <br> If not, returns an error message.
      */
-    public Response<Map<String, String>> requestEmployeesStatus(String storeID, String username, String token) {
+    public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to request the employees status of the store");
         if (isValidToken(token, username)) {
             if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
