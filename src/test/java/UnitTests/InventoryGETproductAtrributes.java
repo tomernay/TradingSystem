@@ -8,35 +8,21 @@ import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class InventoryGETproductAtrributes {
-    private static InventoryGETproductAtrributes instance;
     private Subscriber subscriber, subscriber2;
     private ServiceInitializer serviceInitializer;
     private Store store;
     private StoreService storeService;
 
-    @BeforeClass
-    public static void setUpClass() {
-        instance = new InventoryGETproductAtrributes();
-        instance.init();
-    }
-
     @Before
     public void setUp() {
-        // Ensuring all tests use the same initialized instance
-        this.subscriber = instance.subscriber;
-        this.subscriber2 = instance.subscriber2;
-        this.serviceInitializer = instance.serviceInitializer;
-        this.store = instance.store;
-        this.storeService = instance.storeService;
+        init();
     }
 
     public void init() {
@@ -61,8 +47,7 @@ public class InventoryGETproductAtrributes {
         storeService.addProductToStore(store.getId(), "product2", "product2Dec", 15, 20, "mor", subscriber2.getToken());
         storeService.addProductToStore(store.getId(), "product3", "product3Dec", 20, 15, "mor", subscriber2.getToken());
         storeService.addProductToStore(store.getId(), "product4", "product4Dec", 30, 10, "mor", subscriber2.getToken());
-        storeService.addProductToStore(store.getId(), "product5", "product5Dec", 40, 10,  new ArrayList<String>(Collections.singleton("Food")),"mor", subscriber2.getToken());
-
+        storeService.addProductToStore(store.getId(), "product5", "product5Dec", 40, 10, new ArrayList<String>(Collections.singleton("Food")), "mor", subscriber2.getToken());
     }
 
     @Test
@@ -110,10 +95,8 @@ public class InventoryGETproductAtrributes {
         Response<String> response1 = storeService.retrieveProductCategories(1, store.getId(), "mor", subscriber2.getToken());
         Assert.assertEquals("[\"General\"]", response1.getData());
         Response<String> response2 = storeService.retrieveProductCategories(4, store.getId(), "mor", subscriber2.getToken());
-        Assert.assertEquals("[\"General\"]", response1.getData());
+        Assert.assertEquals("[\"General\"]", response2.getData());
         Response<String> response3 = storeService.retrieveProductCategories(5, store.getId(), "mor", subscriber2.getToken());
         Assert.assertEquals("[\"Food\"]", response3.getData());
     }
-
-
 }

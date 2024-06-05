@@ -14,7 +14,6 @@ import java.util.ArrayList;
 // To whom it may concern:
 // I set the order of the execution of the tests because the "addProductToStore" method generates a productID automatically,
 // and I need to know the productID in order to test it.
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     private Subscriber subscriber;
@@ -39,7 +38,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(1)
     public void editProductQuantity() {
         System.out.println("--------------------------------------------------------");
         Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(store.getId(), "mormor", subscriber.getToken());
@@ -53,7 +51,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(2)
     public void editAddProductQuantity() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.addProductQuantity(1, -10, store.getId(), "mormor", subscriber.getToken());
@@ -65,7 +62,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(3)
     public void editProductPrice() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.setProductPrice(1, 20, store.getId(), "mormor", subscriber.getToken());
@@ -77,7 +73,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(4)
     public void editProductName() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.setProductName(1, "NAME CHANGED", store.getId(), "mormor", subscriber.getToken());
@@ -89,7 +84,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(5)
     public void editProductDec() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.setProductDescription(1, "DESC CHANGED", store.getId(), "mormor", subscriber.getToken());
@@ -101,7 +95,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(6)
     public void editProductCategory() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.assignProductToCategory(1, "category1", store.getId(), "mormor", subscriber.getToken());
@@ -115,7 +108,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(7)
     public void editAssignProductToCategory() {
         System.out.println("--------------------------------------------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mormor", subscriber.getToken());
@@ -124,7 +116,6 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
     }
 
     @Test
-    @Order(8)
     public void editRemoveCategoryFromStore() {
         System.out.println("--------------------------------------------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mormor", subscriber.getToken());
