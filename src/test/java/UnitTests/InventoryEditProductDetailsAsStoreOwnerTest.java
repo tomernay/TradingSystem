@@ -11,7 +11,6 @@ import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InventoryEditProductDetailsAsStoreOwnerTest {
     private Subscriber subscriber, subscriber2;
     private ServiceInitializer serviceInitializer;
@@ -43,7 +42,7 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(1)
+
     public void editProductQuantity() {
         System.out.println("--------------------------------------------------------");
         Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(store.getId(), "mor", subscriber2.getToken());
@@ -57,7 +56,7 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(2)
+
     public void editAddProductQuantity() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.addProductQuantity(1, -10, store.getId(), "mor", subscriber2.getToken());
@@ -69,7 +68,6 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(3)
     public void editProductPrice() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.setProductPrice(1, 20, store.getId(), "mor", subscriber2.getToken());
@@ -81,7 +79,6 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(4)
     public void editProductName() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.setProductName(1, "NAME CHANGED", store.getId(), "mor", subscriber2.getToken());
@@ -93,7 +90,6 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(5)
     public void editProductDec() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.setProductDescription(1, "DESC CHANGED", store.getId(), "mor", subscriber2.getToken());
@@ -105,7 +101,6 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(6)
     public void editProductCategory() {
         System.out.println("--------------------------------------------------------");
         Response<String> response = storeService.assignProductToCategory(1, "category1", store.getId(), "mor", subscriber2.getToken());
@@ -119,7 +114,6 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(7)
     public void editAssignProductToCategory() {
         System.out.println("--------------------------------------------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mor", subscriber2.getToken());
@@ -128,7 +122,6 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
     }
 
     @Test
-    @Order(8)
     public void editRemoveCategoryFromStore() {
         System.out.println("--------------------------------------------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mor", subscriber2.getToken());
