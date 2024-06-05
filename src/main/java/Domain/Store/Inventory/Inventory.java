@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import Utilities.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -157,6 +158,10 @@ public class Inventory {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
             return Response.error("Product with ID: " + productID + " does not exist.", null);
         }
+        if(newDescription == null || newDescription.isEmpty()){
+            SystemLogger.error("[ERROR] Product description cannot be null or empty");
+            return Response.error("Product description cannot be null or empty", null);
+        }
         Product product = getProduct(productID);
         if (product == null) {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
@@ -214,6 +219,10 @@ public class Inventory {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
             return Response.error("Product with ID: " + productID + " does not exist.", null);
         }
+        if(productName == null || productName.isEmpty()){
+            SystemLogger.error("[ERROR] Product name cannot be null or empty");
+            return Response.error("Product name cannot be null or empty", null);
+        }
         Product product = getProduct(productID);
         if (product == null) {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
@@ -255,12 +264,12 @@ public class Inventory {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
-        int price = product.getPrice();
+        double price = product.getPrice();
         SystemLogger.info("[SUCCESS] Product with ID: " + productID + " price retrieved successfully");
         return Response.success("Product with ID: " + productID + " price retrieved successfully", String.valueOf(price));
     }
 
-    public Response<String> setProductPrice(int productID, int newPrice) {
+    public Response<String> setProductPrice(int productID, double newPrice) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -283,7 +292,7 @@ public class Inventory {
         return Response.success("Product with ID: " + productID + " price updated successfully", String.valueOf(newPrice));
     }
 
-    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String category) {
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategoryFrom_OneStore(String category) {
         if (category == null || category.isEmpty()) {
             SystemLogger.error("[ERROR] Invalid category: " + category);
             return Response.error("Invalid category: " + category, null);
@@ -409,7 +418,7 @@ public class Inventory {
     }
 
     //product with no category will be added to General category
-    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, int price, int quantity) {
+    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity) {
         if (storeID == null || storeID.isEmpty()) {
             SystemLogger.error("[ERROR] Store ID cannot be null or empty");
             return Response.error("Store ID cannot be null or empty", null);
@@ -451,7 +460,7 @@ public class Inventory {
     }
 
     //product with categories will be added to the categories he is associated with
-    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, int price, int quantity, ArrayList<String> categories) {
+    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity, ArrayList<String> categories) {
         if (storeID == null || storeID.isEmpty()) {
             SystemLogger.error("[ERROR] Store ID cannot be null or empty");
             return Response.error("Store ID cannot be null or empty", null);
@@ -534,6 +543,55 @@ public class Inventory {
         SystemLogger.error("[ERROR] Product with name: " + productName + " not found");
         return Response.error("Product with name: " + productName + " not found", null);
     }
+
+    public Response<ArrayList<ProductDTO>> viewProductByCategory(String category) {
+        if (category == null || category.isEmpty()) {
+            return Response.error("Invalid category: " + category, null);
+        }
+        if (!categories.containsKey(category)) {
+            return Response.error("Category does not exist: " + category, null);
+        }
+        ArrayList<Integer> productIDs = categories.get(category);
+        if (productIDs == null || productIDs.isEmpty()) {
+            return Response.error("No products found in category: " + category, null);
+        }
+        ArrayList<ProductDTO> products = new ArrayList<>();
+        for (Integer productID : productIDs) {
+            Product product = productsList.get(productID);
+            if (product != null) {
+                products.add(new ProductDTO(product));
+            }
+        }
+        return Response.success("Products retrieved successfully for category: " + category, products);
+    }
+
+    public Response<ProductDTO> viewProductByName(String productName) {
+        if (productName == null || productName.isEmpty()) {
+            return Response.error("Product name cannot be null or empty", null);
+        }
+        for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
+            if (entry.getValue().getName().toLowerCase(Locale.ROOT).equals(productName.toLowerCase(Locale.ROOT))) {
+                return Response.success("Product with name: " + productName + " retrieved successfully", new ProductDTO(entry.getValue()));
+            }
+        }
+        return Response.error("Product with name: " + productName + " not found", null);
+    }
+
+    public Response<String> isCategoryExist(String category) {
+        if (category == null || category.isEmpty()) {
+            return Response.error("Category cannot be null or empty", null);
+        }
+        if (categories.containsKey(category)) {
+            return Response.success("Category: " + category + " exists", category);
+        }
+        return Response.error("Category: " + category + " does not exist", null);
+    }
+
+
+
+
+
+
 }
 
 
