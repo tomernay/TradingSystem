@@ -12,6 +12,8 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
@@ -52,6 +54,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addHeaderContent();
         addLogoutButton();
         addSearchBar();
+        shoppingCart();
     }
 
     private void addHeaderContent() {
@@ -137,14 +140,23 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         searchBar.setPlaceholder("Search for anything");
         searchBar.setSizeFull();
 //        searchField.setTooltipText("");
-        Button search = new Button("Search", e -> {
+        Button search = new Button("", e -> {
             String searchTerm = searchBar.getValue();
-            // Perform search logic here
-            System.out.println("Searching for: " + searchTerm);
+            // Perform search logic here from store service - Gal
         });
+        search.setIcon(new Icon(VaadinIcon.SEARCH));
 
         addToNavbar(searchBar, search);
 
+    }
+
+    private void shoppingCart() {
+        // Navigate to the shopping cart page
+        Button cart = new Button("", e -> {
+            // Navigate to the shopping cart page
+        });
+        cart.setIcon(new Icon(VaadinIcon.CART));
+        addToNavbar(cart);
     }
 
     private void logout() {
