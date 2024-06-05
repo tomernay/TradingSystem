@@ -4,6 +4,7 @@ import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
 import Service.UserService;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
@@ -25,6 +27,8 @@ import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import com.vaadin.flow.component.textfield.TextField;
+//import com.vaadin.flow.component.applayout.*;
+//import com.vaadin.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.MergedAnnotations;
 
@@ -53,8 +57,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addDrawerContent();
         addHeaderContent();
         addLogoutButton();
+        welcomeText();
         addSearchBar();
         shoppingCart();
+
     }
 
     private void addHeaderContent() {
@@ -138,13 +144,25 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         // Add search bar to the header
         TextField searchBar = new TextField();
         searchBar.setPlaceholder("Search for anything");
-        searchBar.setSizeFull();
-//        searchField.setTooltipText("");
+        searchBar.getElement().getStyle().setColor("black");
+        searchBar.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search bar
+        searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
+        searchBar.setWidthFull(); // Set the width of the search bar to 100%
+
         Button search = new Button("", e -> {
             String searchTerm = searchBar.getValue();
             // Perform search logic here from store service - Gal
         });
         search.setIcon(new Icon(VaadinIcon.SEARCH));
+        search.getElement().getStyle().setColor("black");
+        search.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+
+
+//        HorizontalLayout searchBarLayout = new HorizontalLayout(searchBar, search);
+//        searchBarLayout.addClassName("center-layout"); // Add the CSS class
+//        addToNavbar(searchBarLayout);
+
+
 
         addToNavbar(searchBar, search);
 
@@ -156,7 +174,16 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             // Navigate to the shopping cart page
         });
         cart.setIcon(new Icon(VaadinIcon.CART));
+        cart.getElement().getStyle().setColor("black");
+        cart.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+
+//        HorizontalLayout cartLayout = new HorizontalLayout(cart);
+//        cartLayout.addClassName("right-layout"); // Add the CSS class
+        //on the right side of the page
+//        cart.getElement().getStyle().setAlignSelf(Style.JustifyContentMode.FLEX_END);
         addToNavbar(cart);
+//        addToNavbar(cartLayout);
+
     }
 
     private void logout() {
@@ -166,6 +193,31 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     private Footer createFooter() {
         Footer footer = new Footer();
         return footer;
+    }
+
+    private void welcomeText() {
+//        TextComponent text = new TextComponent();
+        Text welcome = new Text("Welcome Guest!");
+        Span welcomeSpan = new Span(welcome);
+//        welcomeSpan.addClassName("single-line"); // Add the CSS class
+        //dont spread on more than one line
+        welcomeSpan.getStyle().set("white-space", "nowrap");
+        //margin between the text and the search bar
+        welcomeSpan.getStyle().set("margin-right", "10px");
+//        HorizontalLayout welcomeLayout = new HorizontalLayout(welcomeSpan);
+//        welcomeLayout.addClassName("left-layout"); // Add the CSS class
+
+//        addToNavbar(welcomeLayout);
+        addToNavbar(welcomeSpan);
+        //set space between the text and the search bar
+//        welcomeSpan.getElement().getStyle().set("margin-right", "auto");
+//        TextField welcome = new TextField();
+//        welcome ("Welcome Guest!");
+//        welcome.setReadOnly(true);
+        //place the text on the left to the search bar
+//        welcome.getElement().getStyle().set("margin-right", "auto");
+
+//        addToNavbar(welcome);
     }
 
     @Override
