@@ -551,4 +551,13 @@ public class Store {
     }
 
 
+
+    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> productsInStore) {
+        return inventory.lockShoppingCart(productsInStore);
+    }
+
+
+    public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+        inventory.unlockShoppingCart(stringIntegerMap);
+    }
 }

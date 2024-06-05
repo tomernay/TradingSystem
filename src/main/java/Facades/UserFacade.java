@@ -94,31 +94,14 @@ public class UserFacade {
         return userRepository.isUserExist(subscriberUsername);
     }
 
-    public Response<String> getShoppingCartContents(String userName) {
-        Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
-        if (shoppingCartContents == null) {
+    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
+        Response<Map<String, Map<String, Integer>>> res = userRepository.getShoppingCartContents(userName);
+        if (res.getData() == null) {
             SystemLogger.error("[ERROR] " + userName + " tried to get the shopping cart but its empty");
             return Response.error("Error - can't get shopping cart contents", null);
         } else {
-            StringBuilder cartContents = new StringBuilder();
-            for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
-                String storeName = storeEntry.getKey();
-                Map<String, Integer> products = storeEntry.getValue();
-
-                cartContents.append("Store: ").append(storeName).append("\n");
-
-                for (Map.Entry<String, Integer> productEntry : products.entrySet()) {
-                    String productName = productEntry.getKey();
-                    int quantity = productEntry.getValue();
-
-                    cartContents.append("Product: ").append(productName)
-                            .append(", Quantity: ").append(quantity)
-                            .append("\n");
-                }
-                cartContents.append("\n");
-            }
             SystemLogger.info("[SUCCESS] " + userName + " got the shopping cart contents successfully");
-            return Response.success("get ShoppingCart Contents successfully",cartContents.toString());
+            return res;
         }
     }
 

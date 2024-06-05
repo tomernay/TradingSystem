@@ -18,12 +18,14 @@ public class Inventory {
     private final String storeID; //Inventory for specific store
     public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
     private ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
+    private ConcurrentHashMap<Product, Integer> lockedProducts; // <Product, Quantity>
 
     // Constructor
     public Inventory(String _storeID) {
         this.storeID = _storeID;
         this.productsList = new ConcurrentHashMap<>();
         this.categories = new ConcurrentHashMap<>();
+        this.lockedProducts = new ConcurrentHashMap<>();
     }
 
     public String getStoreID() {
@@ -592,6 +594,60 @@ public class Inventory {
 
 
 
+
+    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> MapshoppingCard) {
+        ArrayList<Product> listLockedProducts = new ArrayList<>();
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : MapshoppingCard.entrySet()) {
+            Integer productQuantity = entry.getValue();
+            int productID = Integer.parseInt(entry.getKey());
+            if (!isProductExist(productID)) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
+                return Response.error("Product with ID: " + productID + " does not exist.", null);
+            }
+            Product product = getProduct(productID);
+            if (product == null) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
+                return Response.error("Product with ID: " + productID + " not found.", null);
+            }
+            if (product.getQuantity() - productQuantity < 0) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " is out of stock.");
+                for (Product lockedProduct : listLockedProducts) {
+                    lockedProduct.addQuantity(- productQuantity);
+                    product.addQuantity( productQuantity);
+
+                }
+                return Response.error("Product with ID: " + productID + " is out of stock.", null);
+            }
+            product.addQuantity(-productQuantity);
+            if(lockedProducts.containsKey(product)) {
+                lockedProducts.put(product, lockedProducts.get(product) + productQuantity);
+            } else {
+                lockedProducts.put(product, productQuantity);
+            }
+            listLockedProducts.add(product);
+            productDTOList.add(new ProductDTO(product));
+        }
+        SystemLogger.info("[SUCCESS] Shopping cart locked successfully");
+        return Response.success("Shopping cart locked successfully",productDTOList);
+    }
+
+    public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+        for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
+            Integer productID = entry.getValue();
+            if (!isProductExist(productID)) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
+                return;
+            }
+            Product product = getProduct(productID);
+            if (product == null) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
+                return;
+            }
+            product.addQuantity(stringIntegerMap.get(productID));
+            lockedProducts.put(product,lockedProducts.get(product) - stringIntegerMap.get(productID));
+        }
+    }
 }
 
 

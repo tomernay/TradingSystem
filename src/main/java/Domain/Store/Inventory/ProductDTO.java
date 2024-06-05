@@ -40,6 +40,10 @@ public class ProductDTO {
     public Integer getProductID() {
         return productID;
     }
+
+    public int getPrice() {
+        return price;
+    }
 }
 
 
