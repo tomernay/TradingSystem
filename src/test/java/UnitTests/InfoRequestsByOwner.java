@@ -33,7 +33,8 @@ public class InfoRequestsByOwner {
     //mock the parts that the function is dependant on them and check if the function works as expected
 
     public InfoRequestsByOwner() {
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         storeService = serviceInitializer.getStoreService();
         userRepository = serviceInitializer.getUserService().getUserFacade().getUserRepository();
         storeRepository = serviceInitializer.getStoreService().getStoreFacade().getStoreRepository();
@@ -83,7 +84,6 @@ public class InfoRequestsByOwner {
         //make ziv manager
         List<String> perms = new ArrayList<>();
         perms.add("EDIT_PRODUCT");
-        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
 
         //send nomination msg

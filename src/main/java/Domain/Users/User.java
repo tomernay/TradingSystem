@@ -1,25 +1,25 @@
 package Domain.Users;
 
+import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.Map;
 
 public class User {
     protected String username;
     private ShoppingCart shoppingCart;
+    protected String Token;
 
     public User(String username) {
         this.username = username;
-        shoppingCart = null;
+        shoppingCart = new ShoppingCart();
     }
 
-    public boolean loginAsGuest() {
-        if(shoppingCart == null){
-            shoppingCart = new ShoppingCart();
-            return true;
-        }
-        return false;
+    public String generateToken() {
+        Token = Security.generateJWT(this.username);
+        return Token;
     }
 
     public boolean logoutAsGuest(){
@@ -30,15 +30,12 @@ public class User {
         return false;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
 
-
-    public Response<String> addProductToShoppingCart(String storeID,String productID,int quantity) {
+    public Response<String> addProductToShoppingCart(String storeID,String productName,int quantity) {
         if(shoppingCart != null){
-            return shoppingCart.addProductToCart(storeID, productID, quantity);
+            return shoppingCart.addProductToCart(storeID, productName, quantity);
         }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't add product to cart", null);
     }
 
@@ -46,6 +43,7 @@ public class User {
         if(shoppingCart != null){
             return shoppingCart.removeProductFromCart(storeID, productID);
         }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't remove product from cart", null);
     }
 
@@ -53,6 +51,7 @@ public class User {
         if(shoppingCart != null){
             return shoppingCart.updateProductInCart(storeID, productID, quantity);
         }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't update product in cart", null);
     }
 
@@ -60,6 +59,7 @@ public class User {
         if(shoppingCart != null){
             return shoppingCart.getShoppingCartContents();
         }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't get shopping cart contents", null);
     }
     public String getUsername() {

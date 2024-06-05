@@ -6,6 +6,7 @@ import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.checkSupplyLegal;
 import Domain.Store.Store;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 public class DefaultSupplier extends SupplierAdapter {
     public DefaultSupplier(String name) {
@@ -15,13 +16,16 @@ public class DefaultSupplier extends SupplierAdapter {
     @Override
     public Response<String> supply(Product product, String s, CreditCard buyer,CreditCard supplier,double fee, PaymentAdapter paymentAdapter, int amount, checkSupplyLegal checkSupplyLegal) {
         if(amount<=0){
-            return new Response<String>(false,"Amount must be greater than 0");
+            SystemLogger.error("[ERROR] Can't supply amount of 0 or less");
+            return Response.error("Amount must be greater than 0", null);
         }
         else if(product==null){
-            return new Response<String>(false,"Product cannot be null");
+            SystemLogger.error("[ERROR] Product cannot be null");
+            return Response.error("Product cannot be null", null);
         }
         else if(!checkSupplyLegal.isSupplyLegal(product,s)){
-            return new Response<String>(false,"product cannot be added");
+            SystemLogger.error("[ERROR] Supply is not legal");
+            return Response.error("Supply is not legal", null);
         }
         Response<String> res=paymentAdapter.pay(buyer,supplier,fee);
         if(!res.isSuccess()){

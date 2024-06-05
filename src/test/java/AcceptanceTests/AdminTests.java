@@ -24,7 +24,8 @@ public class AdminTests {
 
     @BeforeClass
     public static void init(){
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         userService = serviceInitializer.getUserService();
         storeService = serviceInitializer.getStoreService();
         adminService = serviceInitializer.getAdminService();

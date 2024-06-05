@@ -20,29 +20,22 @@ public class StoreRoleTests {
     ServiceInitializer serviceInitializer;
     StoreService storeService;
     UserService userService;
-    Subscriber subscriber, newOwner, newManager, notOwner;
+    Subscriber subscriber, subscriber2;
     Store store;
 
     @Before
     public void init(){
-        serviceInitializer = new ServiceInitializer();
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
         storeService=serviceInitializer.getStoreService();
         userService=serviceInitializer.getUserService();
         userService.register("yair12312","Password123!");
         userService.loginAsSubscriber("yair12312","Password123!");
         subscriber=userService.getUserFacade().getUserRepository().getUser("yair12312");
 
-        userService.register("newOwner","Password123!");
-        userService.loginAsSubscriber("newOwner","Password123!");
-        newOwner=userService.getUserFacade().getUserRepository().getUser("newOwner");
-
-        userService.register("newManager","Password123!");
-        userService.loginAsSubscriber("newManager","Password123!");
-        newManager=userService.getUserFacade().getUserRepository().getUser("newManager");
-
-        userService.register("notOwner","Password123!");
-        userService.loginAsSubscriber("notOwner","Password123!");
-        notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
+        userService.register("tomer1212","Password123!");
+        userService.loginAsSubscriber("tomer1212","Password123!");
+        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
         storeService.addStore("yairStore","yair12312",subscriber.getToken());
         store=storeService.getStoreFacade().getStoreRepository().getStore("0");
@@ -78,7 +71,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendStoreOwnerNomination(store.getId(), owner.getUsername(), newOwner.getUsername(), owner.getToken());
+                    Response<String> response = userService.SendStoreOwnerNomination(store.getId(), owner.getUsername(), subscriber2.getUsername(), owner.getToken());
                     if (nominationSucceeded.get()) {
                         // If another thread has already succeeded, this thread should fail
                         Assert.assertFalse(response.isSuccess());
@@ -137,7 +130,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendStoreManagerNomination(store.getId(), owner.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), owner.getToken());
+                    Response<String> response = userService.SendStoreManagerNomination(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), owner.getToken());
                     if (nominationSucceeded.compareAndSet(false, true)) {
                         Assert.assertTrue(response.isSuccess());
                     } else {
@@ -175,8 +168,8 @@ public class StoreRoleTests {
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        userService.managerNominationResponse(newManager.getUsername(), true, newManager.getToken());
+        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
         List<Thread> threads = new ArrayList<>();
@@ -192,7 +185,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = storeService.addManagerPermissions(store.getId(), owner.getUsername(), newManager.getUsername(), "ADD_PRODUCT", owner.getToken());
+                    Response<String> response = storeService.addManagerPermissions(store.getId(), owner.getUsername(), subscriber2.getUsername(), "ADD_PRODUCT", owner.getToken());
                     if (permissionAdded.compareAndSet(false, true)) {
                         Assert.assertTrue(response.isSuccess());
                     } else {
@@ -230,8 +223,8 @@ public class StoreRoleTests {
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), newManager.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
-        userService.managerNominationResponse(newManager.getUsername(), true, newManager.getToken());
+        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
         List<Thread> threads = new ArrayList<>();
@@ -247,7 +240,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = storeService.removeManagerPermissions(store.getId(), owner.getUsername(), newManager.getUsername(), "REMOVE_PRODUCT", owner.getToken());
+                    Response<String> response = storeService.removeManagerPermissions(store.getId(), owner.getUsername(), subscriber2.getUsername(), "REMOVE_PRODUCT", owner.getToken());
                     if (permissionRemoved.compareAndSet(false, true)) {
                         Assert.assertTrue(response.isSuccess());
                     } else {

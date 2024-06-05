@@ -21,11 +21,11 @@ public class nominateOwnerMessage extends Message {
     @Override
     public Response<Message> response(boolean answer) {
         if (answer) {
-            SystemLogger.info("[INFO] User " + subscriberUsername + " has accepted the Owner nomination for the store: " + storeID + ".");
+            SystemLogger.info("[SUCCESS] User " + subscriberUsername + " has accepted the Owner nomination for the store: " + storeID + ".");
             return Response.success("",this);
         }
         else {
-            SystemLogger.info("[INFO] User " + subscriberUsername + " has declined the Owner nomination for the store: " + storeID + ".");
+            SystemLogger.info("[SUCCESS] User " + subscriberUsername + " has declined the Owner nomination for the store: " + storeID + ".");
             return Response.success("",this);
         }
     }
