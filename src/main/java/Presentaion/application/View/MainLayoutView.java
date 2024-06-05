@@ -23,6 +23,10 @@ import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.MergedAnnotations;
+
+import javax.naming.directory.SearchControls;
+import java.awt.*;
 
 
 /**
@@ -46,6 +50,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addDrawerContent();
         addHeaderContent();
         addLogoutButton();
+        addSearchBar();
     }
 
     private void addHeaderContent() {
@@ -123,6 +128,22 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     public void navigateToLogin() {
         getUI().ifPresent(ui -> ui.navigate("login"));
+    }
+
+    public void addSearchBar() {
+        // Add search bar to the header
+        TextField searchBar = new TextField("Search");
+        Button searchButton = new Button("Search");
+        searchButton.setSizeFull();
+        // Add a listener to the search button
+//        searchButton.addClickListener(event -> {
+//            String searchTerm = searchBar.getText();
+//            // Perform search logic here
+//            System.out.println("Searching for: " + searchTerm);
+//        });
+//        addToNavbar(searchButton);
+//        addToNavbar(searchBar, searchButton);
+//        addToNavbar(searchBar, searchButton);
     }
 
     private void logout() {
