@@ -10,6 +10,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -27,6 +28,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 
 /**
@@ -55,7 +58,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         addDrawerContent();
         addHeaderContent();
-        myStoresButton();
+//        myStoresButton();
 //        addLogoutButton();
         addUserButton();
         welcomeText();
@@ -64,8 +67,31 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addNotificationButton();
         shoppingCart();
         addCategoriesButton();
+        addDialogButtonToSideNav();
 
     }
+
+    private void addDialogButtonToSideNav() {
+        Button dialogButton = new Button("Open Dialog", e -> openDialog());
+//        dialogButton.getElement().getStyle().set("margin", "10px");
+        addToDrawer(dialogButton);
+    }
+
+    private void openDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("500px");
+        dialog.setHeight("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Div(new com.vaadin.flow.component.html.Span("My Stores")));
+        Button closeDialogButton = new Button("Close", e -> dialog.close());
+        closeDialogButton.getElement().getStyle().set("color", "black");
+        dialogLayout.add(closeDialogButton);
+
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
 
     private void addUserButton() {
         // Navigate to the shopping cart page
@@ -77,9 +103,13 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
         MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> {});
+        //icon
+//        logout().setIcon(new Icon(VaadinIcon.COG));
         MenuItem logout = dropdownMenu.addItem("Logout", e -> {
             presenter.logout();
         });
+        //icon
+//        logout.setIcon(new Icon(VaadinIcon.OUT));
 
         userButton.getElement().getStyle().set("color", "black");
         userButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
@@ -88,13 +118,60 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void myStoresButton() {
         // Navigate to the shopping cart page
-        Button myStores = new Button("My Stores", e -> {
-            // Navigate to the shopping cart page
-        });
+        Button myStores = new Button("My Stores", e -> openStoresDialog());
         myStores.getElement().getStyle().setColor("black");
 //        myStores.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
         addToDrawer(myStores);
+
+
     }
+
+//    private void openStoresDialog() {
+//        // Navigate to the shopping cart page
+//        //when clicked open a dialog with the stores
+//        Dialog dialog = new Dialog();
+//        dialog.setWidth("500px");
+//        dialog.setHeight("400px");
+//        VerticalLayout dialogLayout = new VerticalLayout();
+//        dialogLayout.add(new Span("choose a store:"));
+//        //dropdown menu presenting the stores
+//        ContextMenu dropdownMenu = new ContextMenu();
+//        //present items based on given data - i dont know how many stores there are
+//
+//
+//
+//
+//
+//        Button closeDialogButton = new Button("Close", g -> dialog.close());
+//        dialogLayout.add(closeDialogButton);
+//
+//        dialog.add(dialogLayout);
+//        dialog.open();
+//    }
+
+    private void openStoresDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("500px");
+        dialog.setHeight("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span("Choose a store:"));
+
+        // Fetch store data
+        List<String> stores = presenter.getStores(); // Assuming this method exists and fetches the store names
+
+        // Dropdown menu presenting the stores
+        for (String store : stores) {
+            dialogLayout.add(new Button(store, e -> {
+                // Handle store selection
+                dialog.close();
+            }));
+        }
+
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
 
     private void addCategoriesButton() {
         //add a button for each category
@@ -187,41 +264,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         nav.addItem(new SideNavItem("Payment", PaymentPage.class));
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
         nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
-
+//        nav.addItem(new SideNavItem("Manage stores", MainLayoutView.class)); // New navigation item
 
         return nav;
     }
-
-
-
-//    private void addCategory1() {
-//        // Navigate to the shopping cart page
-//        Button category1 = new Button("Food", e -> {
-//            // Navigate to the shopping cart page
-//        });
-//
-//
-//    }
-        //add a little down arrow to the right of the button
-
-//    private void shopByCategory() {
-//        // Navigate to the shopping cart page
-//        categories = new MultiSelectListBox<>();
-//        categories.setAriaLabel ("Shop by Category");
-//        //add a little down arrow to the right of the button
-////        categories.getElement().getStyle().set("background-image", "url('down-arrow.png')");
-//        //remove background
-//        categories.getElement().getStyle().set("background", "none");
-//        categories.getElement().getStyle().set("border", "none");
-//        Button category = new Button("shop by category", e -> {
-//            // Navigate to the shopping cart page
-//        });
-////        cart.setIcon(new Icon(VaadinIcon.CART));
-//        category.getElement().getStyle().setColor("black");
-//        category.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
-//        addToNavbar(category);
-//    }
-
 
 
     public void addSearchBar() {

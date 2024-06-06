@@ -4,20 +4,24 @@ import Presentaion.application.CookiesHandler;
 import Presentaion.application.View.MainLayoutView;
 import Service.ServiceInitializer;
 import Service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MainLayoutPresenter {
     private MainLayoutView view;
     private final UserService userService; // Assuming you have a UserService
     private final HttpServletRequest request;
+//    private final Subscriber subscriber;
 
 
     public MainLayoutPresenter(HttpServletRequest request) {
         this.userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
+//        this.subscriber = (Subscriber) CookiesHandler.getUserFromCookies(request);
     }
 
     public void attachView(MainLayoutView view) {
@@ -40,5 +44,9 @@ public class MainLayoutPresenter {
             userService.logoutAsSubscriber(username);
             view.navigateToLogin();
         }
+    }
+
+    public List<String> getStores(){
+        return new ArrayList<>();
     }
 }
