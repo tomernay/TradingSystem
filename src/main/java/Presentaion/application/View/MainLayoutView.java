@@ -108,6 +108,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         MenuItem logout = dropdownMenu.addItem("Logout", e -> {
             presenter.logout();
         });
+        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
         //icon
 //        logout.setIcon(new Icon(VaadinIcon.OUT));
 
@@ -158,13 +159,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialogLayout.add(new Span("Choose a store:"));
 
         // Fetch store data
-        List<String> stores = presenter.getStores(); // Assuming this method exists and fetches the store names
-
+        List<String> stores = presenter.getStores();
+        ContextMenu dropdownMenu = new ContextMenu();
         // Dropdown menu presenting the stores
         for (String store : stores) {
-            dialogLayout.add(new Button(store, e -> {
-                // Handle store selection
-                dialog.close();
+            dialogLayout.add(dropdownMenu.addItem(store, e -> {
+                // Navigate to the selected store
             }));
         }
 
@@ -285,14 +285,19 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         });
         search.setIcon(new Icon(VaadinIcon.SEARCH));
         search.getElement().getStyle().setColor("black");
-        search.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+        search.getElement().getStyle().set("margin-right", "auto"); // Add a margin to the right side of the search button
+        //put the button in the search bar
+        searchBar.setSuffixComponent(search);
+        //clear background
+        search.getStyle().set("background-color", "transparent");
+
 
 
 //        HorizontalLayout searchBarLayout = new HorizontalLayout(searchBar, search);
 //        searchBarLayout.addClassName("center-layout"); // Add the CSS class
 //        addToNavbar(searchBarLayout);
 
-        addToNavbar(searchBar, search);
+        addToNavbar(searchBar);
 
     }
 
