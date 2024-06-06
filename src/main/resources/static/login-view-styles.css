@@ -34,6 +34,12 @@
     background-position: center; /* Adjust as needed */
 }
 
+.open-store-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+
 .center-layout {
     justify-content: center;
     flex-grow: 8;
