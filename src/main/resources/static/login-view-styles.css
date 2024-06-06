@@ -48,3 +48,15 @@
     justify-content: flex-start;
     flex-grow: 1;
 }
+
+.round-button {
+    border-radius: 50%;  /* Makes the button round */
+    width: 180px;        /* Sets the width of the button */
+    height: 180px;       /* Sets the height of the button */
+}
+
+.books-button {
+     /* Green */
+
+    mask-image: url('books.png');
+}
