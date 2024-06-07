@@ -46,7 +46,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private H1 viewTitle;
     private HttpServletRequest request;
-
+//    String username;
 //    private MultiSelectListBox<String> categories;
 
 
@@ -112,8 +112,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //                // Navigate to the shopping cart page
 //            });
 //        }
-
-        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
+        String username = presenter.getUserName();
+        if(hasRole(username)) {
+            MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
+        }
 
         MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         //if user is guest add register button
@@ -491,12 +493,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     private void welcomeText() {
 //        TextComponent text = new TextComponent();
         String username = presenter.getUserName();
-        if (username == null){
-            username = "Guest";
-        }
-        else if(username.contains("Guest")){
-            username = username.substring(0,5);
-        }
+
+
 
         Text welcome = new Text("Welcome "+username+"!");
         Span welcomeSpan = new Span(welcome);

@@ -297,14 +297,27 @@ public class UserRepository {
     }
 
     public Response<String> isOwner(String username) {
-        return subscribers.get(username).isOwner();
+        Subscriber s = subscribers.get(username);
+        if(s == null){
+            return Response.error("User does not exist","");
+        }
+        return s.isOwner();
     }
 
     public Response<String> isManager(String username) {
-        return subscribers.get(username).isManager();
+        Subscriber s = subscribers.get(username);
+        if(s == null){
+            return Response.error("User does not exist","");
+        }
+        return s.isManager();
+
     }
 
     public Response<String> isCreator(String username) {
-        return subscribers.get(username).isCreator();
+        Subscriber s = subscribers.get(username);
+        if(s == null){
+            return Response.error("User does not exist","");
+        }
+        return s.isCreator();
     }
 }

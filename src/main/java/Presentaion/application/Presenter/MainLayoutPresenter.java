@@ -94,7 +94,14 @@ public class MainLayoutPresenter {
 
 
     public String getUserName(){
-        return CookiesHandler.getUsernameFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);;
+        if (username == null){
+            username = "Guest";
+        }
+        else if(username.contains("Guest")){
+            username = username.substring(0,5);
+        }
+        return username;
     }
 
     public List<String> getStoresIds(){
