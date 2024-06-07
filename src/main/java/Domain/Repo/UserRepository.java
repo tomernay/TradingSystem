@@ -295,4 +295,16 @@ public class UserRepository {
         }
         subscribers.get(subscriberUsername).removeStoreRole(storeID);
     }
+
+    public Response<String> isOwner(String username) {
+        return subscribers.get(username).isOwner();
+    }
+
+    public Response<String> isManager(String username) {
+        return subscribers.get(username).isManager();
+    }
+
+    public Response<String> isCreator(String username) {
+        return subscribers.get(username).isCreator();
+    }
 }

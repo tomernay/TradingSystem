@@ -170,4 +170,16 @@ public class UserFacade {
     public void removeStoreRole(String subscriberUsername, String storeID) {
         userRepository.removeStoreRole(subscriberUsername, storeID);
     }
+
+    public Response<String> isOwner(String username) {
+        return userRepository.isOwner(username);
+    }
+
+    public Response<String> isManager(String username) {
+        return userRepository.isManager(username);
+    }
+
+    public Response<String> isCreator(String username) {
+        return userRepository.isCreator(username);
+    }
 }

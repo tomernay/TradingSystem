@@ -392,6 +392,19 @@ public class UserService {
         return storeService.getStoresRoleWithName(storesRole);
     }
 
+    public Response<String> isOwner(String username){
+        return userFacade.isOwner(username);
+    }
+
+    public Response<String> isManager(String username){
+        return userFacade.isManager(username);
+    }
+
+    public Response<String> isCreator(String username){
+        return userFacade.isCreator(username);
+    }
+
+
     public Response<String> changePassword(String username, String password,String confirmPassword, String token) {
         if(isValidToken(token,username)){
             userFacade.changePassword(username, password, confirmPassword);

@@ -105,6 +105,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
+        //check if the user is a store manager / owner/ creator
+//if so add a button to manage stores
+
         MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
 
         MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
