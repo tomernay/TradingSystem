@@ -115,13 +115,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         String username = presenter.getUserName();
         if(hasRole(username)) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
+            MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         }
 
-        MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         //if user is guest add register button
         if(presenter.getUserName().contains("Guest")) {
             MenuItem register = dropdownMenu.addItem("Register", e -> navigateToRegister());
         }
+
         MenuItem logout = dropdownMenu.addItem("Logout", e -> {
             presenter.logout();
         });
@@ -311,6 +312,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             String searchTerm = searchBar.getValue();
             // Perform search logic here from store service - Gal
         });
+
+
         search.setIcon(new Icon(VaadinIcon.SEARCH));
         search.getElement().getStyle().setColor("black");
         search.getElement().getStyle().set("margin-right", "auto"); // Add a margin to the right side of the search button
