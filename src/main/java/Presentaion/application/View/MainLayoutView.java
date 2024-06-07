@@ -112,6 +112,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //                // Navigate to the shopping cart page
 //            });
 //        }
+
         MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
 
         MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
@@ -126,6 +127,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         userButton.getElement().getStyle().set("color", "black");
         userButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
         addToNavbar(userButton);
+    }
+
+    private boolean hasRole(String username){
+        //check if the user is a store manager / owner/ creator
+        return presenter.isManager(username) || presenter.isOwner(username) || presenter.isCreator(username);
+    }
+
+    private List<String> getUsersStores(String username){
+        return presenter.getUsersStores();
     }
 
     private void navigateToRegister() {
@@ -174,7 +184,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialogLayout.add(new Span("Choose a store:"));
 
         // Fetch store data
-        List<String> stores = presenter.getStores();
+        List<String> storeIDs = presenter.getStoresIds();
+        List<String> stores = presenter.getStores(storeIDs);
         ContextMenu dropdownMenu = new ContextMenu();
         // Dropdown menu presenting the stores
         for (String store : stores) {

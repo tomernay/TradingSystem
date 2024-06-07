@@ -97,7 +97,7 @@ public class MainLayoutPresenter {
         return CookiesHandler.getUsernameFromCookies(request);
     }
 
-    public List<String> getStores(){
+    public List<String> getStoresIds(){
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<Map<String, String>> storesRole = userService.getStoresRole(username);
         if (storesRole.isSuccess()) {
@@ -107,11 +107,24 @@ public class MainLayoutPresenter {
     }
 
     //get store name by id
-    public String getStoreName(String storeID){
+    public List<String> getStores(List<String> storesIds){
+        List<String> stores = new ArrayList<>();
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        Response<String> storeName = storeService.getStoreNameByID(storeID, username, token);
-        return storeName.getData();
+        for(String storeID : storesIds){
+            Response<String> storeName = storeService.getStoreNameByID(storeID, username, token);
+            if(storeName.isSuccess()){
+                stores.add(storeName.getData());
+            }
+
+        }
+        return stores;
+
+    }
+
+    public List<String> getUsersStores(){
+        List<String> ids = getStoresIds();
+        return getStores(ids);
     }
 
     public boolean isManager(String username){
