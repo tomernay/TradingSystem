@@ -13,4 +13,8 @@ public class PaymentFacade {
     public void addPaymentAdapter(PaymentAdapter paymentAdapter, String name){
         paymentRepository.addPaymentAdapter(paymentAdapter, name);
     }
+
+    public PaymentRepository getPaymentRepository() {
+        return paymentRepository;
+    }
 }
