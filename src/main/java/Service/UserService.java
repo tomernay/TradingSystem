@@ -422,4 +422,6 @@ public class UserService {
         SystemLogger.error("[ERROR] User: " + username + " tried to change his username but the token was invalid");
         return Response.error("Invalid token",null);
     }
+
+
 }

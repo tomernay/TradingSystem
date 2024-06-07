@@ -107,7 +107,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         //check if the user is a store manager / owner/ creator
 //if so add a button to manage stores
-
+//        if(presenter.isManager() || presenter.isOwner() || presenter.isCreator(){
+//            MenuItem manageStores = dropdownMenu.addItem("Manage Stores", e -> {
+//                // Navigate to the shopping cart page
+//            });
+//        }
         MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
 
         MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());

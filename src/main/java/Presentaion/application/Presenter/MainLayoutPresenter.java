@@ -3,6 +3,7 @@ package Presentaion.application.Presenter;
 import Presentaion.application.CookiesHandler;
 import Presentaion.application.View.MainLayoutView;
 import Service.ServiceInitializer;
+import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -12,17 +13,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class MainLayoutPresenter {
     private MainLayoutView view;
     private final UserService userService; // Assuming you have a UserService
+    private final StoreService storeService;
     private final HttpServletRequest request;
 //    private final Subscriber subscriber;
 
 
     public MainLayoutPresenter(HttpServletRequest request) {
         this.userService = ServiceInitializer.getInstance().getUserService();
+        this.storeService = ServiceInitializer.getInstance().getStoreService();
         this.request = request;
 //        this.subscriber = (Subscriber) CookiesHandler.getUserFromCookies(request);
     }
@@ -94,6 +98,32 @@ public class MainLayoutPresenter {
     }
 
     public List<String> getStores(){
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        Response<Map<String, String>> storesRole = userService.getStoresRole(username);
+        if (storesRole.isSuccess()) {
+            return new ArrayList<>(storesRole.getData().keySet());
+        }
         return new ArrayList<>();
+    }
+
+    //get store name by id
+    public String getStoreName(String storeID){
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<String> storeName = storeService.getStoreNameByID(storeID, username, token);
+        return storeName.getData();
+    }
+
+    public boolean isManager(String username){
+
+        return userService.isManager(username).getData().equals("true");
+    }
+
+    public boolean isOwner(String username){
+        return userService.isOwner(username).getData().equals("true");
+    }
+
+    public boolean isCreator(String username){
+        return userService.isCreator(username).getData().equals("true");
     }
 }

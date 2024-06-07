@@ -152,14 +152,14 @@ public class Subscriber extends User {
 
     public Response<String> isManager() {
         if(storesRole.containsValue("Manager")){
-            return Response.success("User is a manager",null);
+            return Response.success("User is a manager","true");
         }
         return Response.error("User is not a manager",null);
     }
 
     public Response<String> isCreator() {
         if(storesRole.containsValue("Creator")){
-            return Response.success("User is a creator",null);
+            return Response.success("User is a creator","true");
         }
         return Response.error("User is not a creator",null);
     }
