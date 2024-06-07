@@ -1,5 +1,6 @@
 package Presentaion.application.View;
 
+import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
@@ -20,6 +21,7 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -43,6 +45,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     private final MainLayoutPresenter presenter;
 
     private H1 viewTitle;
+    private HttpServletRequest request;
 
 //    private MultiSelectListBox<String> categories;
 
@@ -67,15 +70,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addNotificationButton();
         shoppingCart();
         addCategoriesButton();
-        addDialogButtonToSideNav();
+//        addDialogButtonToSideNav();
 
     }
-
-    private void addDialogButtonToSideNav() {
-        Button dialogButton = new Button("Open Dialog", e -> openDialog());
-//        dialogButton.getElement().getStyle().set("margin", "10px");
-        addToDrawer(dialogButton);
-    }
+//    private void addDialogButtonToSideNav() {
+//        Button dialogButton = new Button("Open Dialog", e -> openDialog());
+////        dialogButton.getElement().getStyle().set("margin", "10px");
+//        addToDrawer(dialogButton);
+//    }
 
     private void openDialog() {
         Dialog dialog = new Dialog();
@@ -102,19 +104,25 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dropdownMenu.setOpenOnClick(true);
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
-        MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> {});
-        //icon
-//        logout().setIcon(new Icon(VaadinIcon.COG));
+
+        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
+
+        MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
+        //if user is guest add register button
+        if(presenter.getUserName().contains("Guest")) {
+            MenuItem register = dropdownMenu.addItem("Register", e -> navigateToRegister());
+        }
         MenuItem logout = dropdownMenu.addItem("Logout", e -> {
             presenter.logout();
         });
-        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
-        //icon
-//        logout.setIcon(new Icon(VaadinIcon.OUT));
 
         userButton.getElement().getStyle().set("color", "black");
         userButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
         addToNavbar(userButton);
+    }
+
+    private void navigateToRegister() {
+        getUI().ifPresent(ui -> ui.navigate("register"));
     }
 
     private void myStoresButton() {
@@ -301,6 +309,138 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     }
 
+    private void openSettings(){
+        //open a dialog with two buttons - change username and change password
+        Dialog dialog = new Dialog();
+        dialog.setWidth("400px");
+        dialog.setHeight("250px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span("Personal Settings"));
+        //enlarge the text
+        dialogLayout.getElement().getStyle().set("font-size", "20px");
+        Button changeUsername = new Button("Change Username", e -> openChangeUsernameDialog());
+        //round button edges
+        changeUsername.getElement().getStyle().set("border-radius", "auto");
+        //make it wide as the dialog box
+        changeUsername.setWidth("90%");
+        //center
+        changeUsername.getElement().getStyle().set("margin", "0 auto");
+
+        changeUsername.getElement().getStyle().set("color", "black");
+        Button changePassword = new Button("Change Password", e -> openChangePasswordDialog());
+        //black
+        changePassword.getElement().getStyle().set("color", "black");
+        changePassword.getElement().getStyle().set("border-radius", "5px");
+        //make it wide as the dialog box
+        changePassword.setWidth("90%");
+        //center
+        changePassword.getElement().getStyle().set("margin", "0 auto");
+
+        Button closeButton = addCloseButton(dialog);
+//        dialogLayout.add(changeUsername, changePassword, closeDialogButton);
+        //align the layout to the center
+        dialogLayout.add(changeUsername, changePassword, closeButton);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        dialog.add(dialogLayout);
+        dialog.open();
+
+    }
+
+    private void openChangePasswordDialog() {
+        Dialog dialog = new Dialog();
+        //make the title font smaller
+
+        dialog.setWidth("500px");
+        dialog.setHeight("300px");
+
+        H3 title = new H3("Personal Settings");
+        title.getElement().getStyle().set("font-size", "15px"); // Set smaller font size
+        dialog.add(title);
+        //put title in the center
+        title.getElement().getStyle().set("margin", "0 auto");
+
+
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span(""));
+//        dialogLayout.add(title);
+        PasswordField password = new PasswordField("New Password");
+        PasswordField confirmPassword = new PasswordField("Confirm Password");
+        Button save = new Button("Save changes", e -> {
+            presenter.changePassword(password.getValue(), confirmPassword.getValue(), password);
+//            dialog.close();
+        });
+        save.getElement().getStyle().set("color", "black");
+        //position save button at the bottom right corner
+        save.getElement().getStyle().set("position", "absolute");
+        save.getElement().getStyle().set("bottom", "0");
+        save.getElement().getStyle().set("right", "0");
+        save.getElement().getStyle().set("background-color", "transparent");
+        Button cancelButton = cancelButton(dialog);
+
+
+        Button closeDialogButton = addCloseButton(dialog);
+        dialogLayout.add(password, confirmPassword, save, closeDialogButton, cancelButton);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
+    private void openChangeUsernameDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("500px");
+        dialog.setHeight("200px");
+
+        H3 title = new H3("Change Username");
+        title.getElement().getStyle().set("font-size", "15px"); // Set smaller font size
+        dialog.add(title);
+        //put title in the center
+        title.getElement().getStyle().set("margin", "0 auto");
+
+
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span(""));
+        TextField username = new TextField("New Username");
+        Button save = new Button("Save changes", e -> {
+            presenter.changeUsername(presenter.getUserName(), username.getValue(), username);
+            //If the username is changed, update the welcome text
+//            welcomeText();
+            //if there is an error, keep the dialog open
+
+//            dialog.close();
+        });
+        save.getElement().getStyle().set("color", "black");
+        //position save button at the bottom right corner
+        save.getElement().getStyle().set("position", "absolute");
+        save.getElement().getStyle().set("bottom", "0");
+        save.getElement().getStyle().set("right", "0");
+        save.getElement().getStyle().set("background-color", "transparent");
+        Button cancelButton = cancelButton(dialog);
+
+        //transparent background
+        cancelButton.getStyle().set("background-color", "transparent");
+        Button closeDialogButton = addCloseButton(dialog);
+        dialogLayout.add(username, save, closeDialogButton, cancelButton);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
+    public Button cancelButton (Dialog dialog){
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+        cancelButton.getElement().getStyle().set("color", "black");
+        //position save button at the bottom left corner
+        cancelButton.getElement().getStyle().set("position", "absolute");
+        cancelButton.getElement().getStyle().set("bottom", "0");
+        cancelButton.getElement().getStyle().set("left", "0");
+        //transparent background
+        cancelButton.getStyle().set("background-color", "transparent");
+        return cancelButton;
+    }
+
+
     private void addNotificationButton() {
         // Add notification button to the header
         Button notification = new Button("", e -> {
@@ -332,7 +472,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void welcomeText() {
 //        TextComponent text = new TextComponent();
-        Text welcome = new Text("Welcome Guest!");
+        String username = presenter.getUserName();
+        if (username == null){
+            username = "Guest";
+        }
+        else if(username.contains("Guest")){
+            username = username.substring(0,5);
+        }
+
+        Text welcome = new Text("Welcome "+username+"!");
         Span welcomeSpan = new Span(welcome);
 //        welcomeSpan.addClassName("single-line"); // Add the CSS class
         //dont spread on more than one line
@@ -342,6 +490,20 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         addToNavbar(welcomeSpan);
 
+    }
+
+    private Button addCloseButton(Dialog dialog){
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "black");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.addClassName("close-button");
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+
+        return closeButton;
     }
 
     private void logout() {
@@ -409,5 +571,24 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             // If not logged in, reroute to the login page
             event.rerouteTo(LoginView.class);
         }
+    }
+
+    public void showPwdError(String message, PasswordField field) {
+        field.setErrorMessage(message);
+        field.setInvalid(true);
+    }
+
+    public void showUNError(String message, TextField field) {
+        field.setErrorMessage(message);
+        field.setInvalid(true);
+    }
+
+
+    public void pwdSuccess() {
+        CookiesHandler.setCookie("password", "password", 5 * 60); // 5 minutes
+    }
+
+    public void UnSuccess() {
+        CookiesHandler.setCookie("username", "username", 5 * 60); // 5 minutes
     }
 }

@@ -1,12 +1,10 @@
 package Domain.Repo;
 
 import Domain.Externals.Security.Security;
-import Domain.Users.Subscriber.Cart.ShoppingCart;
-import Utilities.Messages.Message;
-
-import Utilities.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
+import Utilities.Messages.Message;
+import Utilities.Messages.NormalMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -52,6 +50,47 @@ public class UserRepository {
             } else {
                 SystemLogger.error("[ERROR] Incorrect password for user " + username);
                 return Response.error("Incorrect password", null);
+            }
+        } else {
+            SystemLogger.error("[ERROR] User " + username + " does not exist");
+            return Response.error("User does not exist", null);
+        }
+    }
+
+    public Response<String> changePassword(String username, String password, String newPassword) {
+        if (isUserExist(username)) {
+            Subscriber subscriber = getUser(username);
+            if (subscriber.getPassword().equals(password)) {
+                if (isValidPassword(newPassword)) {
+                    subscriber.setPassword(newPassword);
+                    SystemLogger.info("[SUCCESS] Password for user " + username + " changed successfully");
+                    return Response.success("Password changed successfully", null);
+                } else {
+                    SystemLogger.error("[ERROR] New password does not meet the requirements");
+                    return Response.error("New password does not meet the requirements", null);
+                }
+            } else {
+                SystemLogger.error("[ERROR] Incorrect password for user " + username);
+                return Response.error("Incorrect password", null);
+            }
+        } else {
+            SystemLogger.error("[ERROR] User " + username + " does not exist");
+            return Response.error("User does not exist", null);
+        }
+    }
+
+    public Response<String> changeUsername(String username, String newUsername) {
+        if (isUserExist(username)) {
+            if (isUsernameValid(newUsername)) {
+                Subscriber subscriber = getUser(username);
+                subscriber.setUsername(newUsername);
+                subscribers.put(newUsername, subscriber);
+                subscribers.remove(username);
+                SystemLogger.info("[SUCCESS] Username for user " + username + " changed successfully");
+                return Response.success("Username changed successfully", null);
+            } else {
+                SystemLogger.error("[ERROR] New username does not meet the requirements");
+                return Response.error("New username does not meet the requirements", null);
             }
         } else {
             SystemLogger.error("[ERROR] User " + username + " does not exist");

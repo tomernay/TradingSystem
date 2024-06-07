@@ -44,6 +44,14 @@ public class Subscriber extends User {
         return message.response(answer);
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUsername(String username) {
+        super.setUsername(username);
+    }
+
     public String getToken() {
         return Token;
     }

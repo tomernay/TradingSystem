@@ -61,6 +61,11 @@
     height: 180px;       /* Sets the height of the button */
 }
 
+.close-button {
+    background-color: transparent;
+    color: black;
+}
+
 .books-button {
      /* Green */
 

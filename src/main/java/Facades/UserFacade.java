@@ -47,6 +47,14 @@ public class UserFacade {
         return userRepository.register(username, password);
     }
 
+    public Response<String> changePassword( String username ,String password, String confirmPassword){
+        return userRepository.changePassword(username ,password, confirmPassword);
+    }
+
+    public Response<String> changeUsername(String username, String newUsername){
+        return userRepository.changeUsername(username, newUsername);
+    }
+
     public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity){
         return userRepository.addProductToShoppingCart(storeID, productID, userName, quantity);
     }
