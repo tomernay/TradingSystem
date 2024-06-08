@@ -109,7 +109,7 @@ public class StoreFacade {
         return storeRepository.getProductPrice(productID, storeID, userName);
     }
 
-    public Response<String> setProductPrice(int productID, int newPrice, String storeID, String userName) {
+    public Response<String> setProductPrice(int productID, double newPrice, String storeID, String userName) {
         return storeRepository.setProductPrice(productID, newPrice, storeID, userName);
     }
 
@@ -125,8 +125,8 @@ public class StoreFacade {
         return storeRepository.getProductQuantity(productID, storeID, userName);
     }
 
-    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String storeID, String category, String userName) {
-        return storeRepository.retrieveProductsByCategory(storeID, category, userName);
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategoryFrom_OneStore(String storeID, String category, String userName) {
+        return storeRepository.retrieveProductsByCategoryFrom_OneStore(storeID, category, userName);
     }
 
     public Response<String> retrieveProductCategories(int productID, String storeID, String userName) {
@@ -155,11 +155,11 @@ public class StoreFacade {
         return storeRepository.getStoreIDbyName(storeName, userName);
     }
 
-    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String userName) {
+    public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, String userName) {
         return storeRepository.addProductToStore(storeID, name, desc, price, quantity, userName);
     }
 
-    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, ArrayList<String> categories, String userName) {
+    public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, ArrayList<String> categories, String userName) {
         return storeRepository.addProductToStore(storeID, name, desc, price, quantity, categories, userName);
     }
 
@@ -167,8 +167,8 @@ public class StoreFacade {
         return storeRepository.removeProductFromStore(productID, storeID, userName);
     }
 
-    public Response<ProductDTO> getProductByName(String storeID, String productName, String userName) {
-        return storeRepository.getProductByName(storeID, productName, userName);
+    public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName, String userName) {
+        return storeRepository.viewProductFromStoreByName(storeID, productName, userName);
     }
 
     public Response<String> getStoreIDByName(String storeName, String userName) {
@@ -197,8 +197,36 @@ public class StoreFacade {
     public Response<String> isProductExist(String storeID, String productID) {
         return storeRepository.isProductExist(storeID, productID);
     }
-    
+
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeRepository.getStoresRoleWithName(storesRole);
+    }
+
+    public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByName(String productName) {
+        return storeRepository.viewProductFromAllStoresByName(productName);
+    }
+
+    public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByCategory(String category) {
+        return storeRepository.viewProductFromAllStoresByCategory(category);
+    }
+
+    public Response<String> isCategoryExist(String storeID, String category){
+        return storeRepository.isCategoryExist(storeID, category);
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByName(String productName) {
+        return storeRepository.viewProductFromAllStoresByName(productName);
+    }
+
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category) {
+        return storeRepository.viewProductFromAllStoresByCategory(category);
+    }
+
+
+
+
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
     }
 }

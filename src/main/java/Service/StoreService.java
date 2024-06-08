@@ -187,7 +187,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If successful, returns a map of the employees and their status. <br> If not, returns an error message.
      */
-    public Response<Map<String, String>> requestEmployeesStatus(String storeID) {
+    public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID) {
         return storeFacade.requestEmployeesStatus(storeID);
     }
 
@@ -196,7 +196,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If successful, returns a map of the managers and their permissions. <br> If not, returns an error message.
      */
-    public Response<Map<String, List<String>>> requestManagersPermissions(String storeID) {
+    public synchronized Response<Map<String, List<String>>> requestManagersPermissions(String storeID) {
         return storeFacade.requestManagersPermissions(storeID);
     }
 
@@ -355,7 +355,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> setProductPrice(int productID, int newPrice, String storeID, String username, String token) {
+    public Response<String> setProductPrice(int productID, double newPrice, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product price of product: " + productID + " to: " + newPrice);
         if (userService.isValidToken(token, username)) {
             return storeFacade.setProductPrice(productID, newPrice, storeID, username);
@@ -407,10 +407,10 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of products. <br> If not, returns an error message.
      */
-    public Response<ArrayList<ProductDTO>> retrieveProductsByCategory(String storeID, String category, String username, String token) {
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategoryFrom_OneStore(String storeID, String category, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to retrieve products by category: " + category);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.retrieveProductsByCategory(storeID, category, username);
+            return storeFacade.retrieveProductsByCategoryFrom_OneStore(storeID, category, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to retrieve products by category: " + category + " but the token was invalid");
         return Response.error("Invalid token", null);
@@ -476,7 +476,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the product. <br> If not, returns an error message.
      */
-    public Response<ProductDTO> getProductFromStoreByID(int productID, String storeID, String username, String token) {
+    public Response<ProductDTO> viewProductFromStoreByID(int productID, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getProductFromStore(productID, storeID, username);
@@ -527,8 +527,9 @@ public class StoreService {
      * @param username the username of the user
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
+     * category = "General", by default
      */
-    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, String username, String token) {
+    public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.addProductToStore(storeID, name, desc, price, quantity, username);
@@ -549,7 +550,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addProductToStore(String storeID, String name, String desc, int price, int quantity, ArrayList<String> categories, String username, String token) {
+    public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, ArrayList<String> categories, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.addProductToStore(storeID, name, desc, price, quantity, categories, username);
@@ -583,23 +584,15 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the product. <br> If not, returns an error message.
      */
-    public Response<ProductDTO> getProductFromStoreByName(String storeID, String productName, String username, String token) {
+    public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product: " + productName + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.getProductByName(storeID, productName, username);
+            return storeFacade.viewProductFromStoreByName(storeID, productName, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to get product: " + productName + " from store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
-//    public Response<String> getStoreIDByName(String storeName, String username, String token) {
-//        SystemLogger.info("[START] User: " + username + " is trying to get storeID by storeName: " + storeName);
-//        if (userService.isValidToken(token, username)) {
-//            return storeFacade.getStoreIDByName(storeName, username);
-//        }
-//        SystemLogger.error("[ERROR] User: " + username + " tried to get storeID by storeName: " + storeName + " but the token was invalid");
-//        return Response.error("Invalid token", null);
-//    }
 
     /**
      * This method retrieves the name of a store by its ID
@@ -666,5 +659,67 @@ public class StoreService {
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeFacade.getStoresRoleWithName(storesRole);
     }
-}
 
+
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category, String UserName ,String token) {
+        SystemLogger.info("[START] User: " + " is trying to get product: " + category + " from all stores");
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.viewProductFromAllStoresByCategory(category);
+        }
+        SystemLogger.error("[ERROR] User: " + " tried to get product: " + category + " from all stores but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    //only for normal subscriber
+    public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByName(String productName, String UserName ,String token) {
+        SystemLogger.info("[START] User: " + " is trying to get product: " + productName + " from all stores");
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.viewProductFromAllStoresByName(productName);
+        }
+        SystemLogger.error("[ERROR] User: " + " tried to get product: " + productName + " from all stores but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> isCategoryExist(String storeID, String category, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to check if category: " + category + " exists in store: " + storeID);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.isCategoryExist(storeID, category);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to check if category: " + category + " exists in store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByCategory(String category, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to search products by category: " + category);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.getProductsFromAllStoresByCategory(category);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to search products by category: " + category + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByName(String productName, String UserName, String token) {
+        SystemLogger.info("[START] User: " + UserName + " is trying to search products by name: " + productName);
+        if (userService.isValidToken(token, UserName)) {
+            return storeFacade.getProductsFromAllStoresByName(productName);
+        }
+        SystemLogger.error("[ERROR] User: " + UserName + " tried to search products by name: " + productName + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    }
+
+
+}

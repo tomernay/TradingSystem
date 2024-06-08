@@ -1,8 +1,8 @@
+
 package Domain.Store.Inventory;
+
 import Utilities.Response;
 import Utilities.SystemLogger;
-
-import java.util.ArrayList;
 
 /**
  * Represents a product in the store inventory.
@@ -14,7 +14,7 @@ public class Product {
     private int productID;  // The unique ID of the product
     private String name;        // The name of the product
     private String desc;        // The description of the product
-    private int price;          // The price of the product
+    private double price;          // The price of the product
     private int quantity;       // The quantity of the product available in the inventory
     //private ArrayList<String> categories; // The category that a product is related to
 
@@ -32,7 +32,7 @@ public class Product {
         this.desc = builder.desc;
         this.price = builder.price;
         this.quantity = builder.quantity;
-      //  this.categories = builder.categories;
+        //  this.categories = builder.categories;
     }
 
     /**
@@ -45,9 +45,9 @@ public class Product {
         private Integer productID;
         private String name;
         private String desc;
-        private int price;
+        private double price;
         private int quantity;
-    //    public ArrayList<String> categories;
+        //    public ArrayList<String> categories;
 
         public Builder(String storeID,String name, int productID) {
             this.name = name;
@@ -86,7 +86,7 @@ public class Product {
             return this;
         }
 
-        public Builder price(int _price) {
+        public Builder price(double _price) {
             if (_price <= 0) {
                 throw new IllegalArgumentException("Price must be greater than 0");
             }
@@ -138,7 +138,7 @@ public class Product {
         return desc;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
@@ -172,7 +172,7 @@ public class Product {
         this.desc = desc;
     }
 
-    public boolean setPrice(int _price) {
+    public boolean setPrice(double _price) {
         if(_price > 0){
             this.price = _price;
             return true;
@@ -203,7 +203,7 @@ public class Product {
 
 
     public synchronized Response<String> addQuantity(int amountToAdd) {
-       return setQuantity(this.quantity + amountToAdd);
+        return setQuantity(this.quantity + amountToAdd);
     }
 
     @Override
