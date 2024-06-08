@@ -8,6 +8,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -32,6 +33,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -43,7 +46,8 @@ import java.util.List;
 public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private final MainLayoutPresenter presenter;
-
+    private List<String> items = Stream.of("Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Honeydew")
+            .collect(Collectors.toList());
     private H1 viewTitle;
     private HttpServletRequest request;
 //    String username;
@@ -301,26 +305,30 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     public void addSearchBar() {
         // Add search bar to the header
-        TextField searchBar = new TextField();
+
+        ComboBox<String> searchBar = new ComboBox<>();
         searchBar.setPlaceholder("Search for anything");
         searchBar.getElement().getStyle().setColor("black");
         searchBar.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search bar
         searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
         searchBar.setWidthFull(); // Set the width of the search bar to 100%
 
-        Button search = new Button("", e -> {
-            String searchTerm = searchBar.getValue();
-            // Perform search logic here from store service - Gal
-        });
+//        Button search = new Button("", e -> {
+//            String searchTerm = searchBar.getValue();
+//            // Perform search logic here from store service - Gal
+//        });
+//        searchBar.setItems(query -> findRelevantSearchResults(query.getFilter().orElse("")).stream().collect(Collectors.toList()));
+        searchBar.setItemLabelGenerator(item -> item);
+        searchBar.setClearButtonVisible(true);
+        searchBar.setAllowCustomValue(true);
 
-
-        search.setIcon(new Icon(VaadinIcon.SEARCH));
-        search.getElement().getStyle().setColor("black");
-        search.getElement().getStyle().set("margin-right", "auto"); // Add a margin to the right side of the search button
-        //put the button in the search bar
-        searchBar.setSuffixComponent(search);
-        //clear background
-        search.getStyle().set("background-color", "transparent");
+//        search.setIcon(new Icon(VaadinIcon.SEARCH));
+//        search.getElement().getStyle().setColor("black");
+//        search.getElement().getStyle().set("margin-right", "auto"); // Add a margin to the right side of the search button
+//        //put the button in the search bar
+////        searchBar.setSuffixComponent(search);
+//        //clear background
+//        search.getStyle().set("background-color", "transparent");
 
 
 
