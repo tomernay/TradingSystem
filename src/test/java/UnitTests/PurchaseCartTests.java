@@ -1,4 +1,4 @@
-package AcceptanceTests;
+package UnitTests;
 
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
@@ -32,21 +32,51 @@ public class PurchaseCartTests {
         storeService.addProductToStore("0","newOProduct1","DOG",5, 10,"newOwner",owner.getToken());
         storeService.addProductToStore("0","newOProduct2","DOG",10, 10,"newOwner",owner.getToken());
         storeService.addProductToStore("1","newOProduct3","DOG",3, 10,"newOwner",owner.getToken());
-        userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
-        userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
-        userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
-
-
-
-
-
 
     }
     @Test
     public void lockCard(){
-        storeService.addProductToStore("0","1","DOG",10, 1,"newOwner",owner.getToken());
+        userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
         Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
+    }
+
+    @Test
+    public void lockCardNotExist(){
+        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Assert.assertFalse(res.isSuccess());
+    }
+
+    @Test
+    public void lockCardNotQuantity(){
+        userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),100);
+        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Assert.assertFalse(res.isSuccess());
+    }
+
+    @Test
+    public void PricecCalculation(){
+        userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
+        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Assert.assertTrue(res.isSuccess());
+        Assert.assertEquals("18.0",res.getData());
+    }
+
+    @Test
+    public void CartLockAndRelease(){
+        userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
+        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Assert.assertTrue(res.isSuccess());
+        Response<String> res1 = userService.ReleaseShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Assert.assertTrue(res1.isSuccess());
+
     }
 
 }

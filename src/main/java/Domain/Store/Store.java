@@ -603,5 +603,9 @@ public class Store {
             }
         return new Response<>(true, String.valueOf(discount));
     }
+
+    public Response<String> ReleaseShoppSingCart(Map<String, Integer> productsInStore) {
+        return inventory.unlockShoppingCart(productsInStore);
+    }
 }
 

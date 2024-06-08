@@ -249,4 +249,8 @@ public class StoreFacade {
     public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
+
+    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.ReleaseShoppSingCartAndCalculatedPrice(shoppingCart);
+    }
 }
