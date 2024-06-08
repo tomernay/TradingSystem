@@ -392,7 +392,6 @@ public class UserService {
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");
         return Response.error("invalid token", null);
-
     }
 
     public boolean isValidToken(String token, String currentUsername) {

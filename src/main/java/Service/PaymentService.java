@@ -31,8 +31,6 @@ public class PaymentService {
             return new Response<>(pay,"payment Status"+String.valueOf(pay),null);
         }
         return new Response<>(false,"token is invalid",null);
-
-
     }
 
    /* public void alternativePay(String user,String token,HashMap<Integer,Integer> products, Store store, Subscriber subscriber,double fee){

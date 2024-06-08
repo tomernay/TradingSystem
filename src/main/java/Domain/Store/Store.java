@@ -601,7 +601,7 @@ public class Store {
                 }
                 discount += Double.parseDouble(responseDiscount.getData());
             }
-        return new Response<>(true, String.valueOf(discount));
+        return new Response<>(true,"calculate discounts successfull", String.valueOf(discount));
     }
 
     public Response<String> ReleaseShoppSingCart(Map<String, Integer> productsInStore) {

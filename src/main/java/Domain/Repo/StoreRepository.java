@@ -544,6 +544,7 @@ public class StoreRepository {
             Map<String, Integer> productsInStore = storeEntry.getValue();
             Response<String> discountShop = stores.get(storeID).CalculateDiscounts(productsInStore);
             if (discountShop.isSuccess()) {
+
                 discount += Double.parseDouble(discountShop.getData());
             }
             else {
