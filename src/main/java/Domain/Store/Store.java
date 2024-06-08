@@ -1,5 +1,7 @@
 package Domain.Store;
 
+import Domain.Store.Discounts.Discount;
+import Domain.Store.Discounts.SimpleDiscount;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
@@ -10,6 +12,7 @@ import Utilities.SystemLogger;
 
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
 
@@ -21,6 +24,10 @@ public class Store {
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
+    private Map<Integer, Discount> discounts = new HashMap<>();///
+    private final AtomicInteger productIDGenerator = new AtomicInteger(1);
+
+
 
     // Constructor
     public Store(String storeID, String name, String creator) {
@@ -33,6 +40,9 @@ public class Store {
         managerPermissions = new HashMap<>();
         nominationGraph = new HashMap<>();
         reverseNominationMap = new HashMap<>();
+        discounts = new HashMap<>();
+
+
     }
 
     public Store() {
@@ -560,4 +570,38 @@ public class Store {
     public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
         inventory.unlockShoppingCart(stringIntegerMap);
     }
+
+    public Response<String> CreatDiscount(String productID, String category, String percent, String type) {
+        Discount discount;
+        int IdDiscount;
+        if (type.equals("simple")) {
+            IdDiscount = productIDGenerator.getAndIncrement();
+            discount = new SimpleDiscount(percent, storeID, productID, category, IdDiscount);
+            discounts.put(IdDiscount, discount);
+        } else {
+            return new Response<>(false, "Failed to create discount");
+        }
+        return new Response<>(true, "Discount created successfully");
+    }
+
+    public Response<String> CalculateDiscounts(Map<String, Integer> productsInStore) {
+        double discount = 0;
+        List<ProductDTO> products = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
+            Response<ProductDTO> response = inventory.getProductFromStore(Integer.parseInt(entry.getKey()));
+            if (!response.isSuccess()) {
+                return new Response<>(false, "Failed to calculate discount");
+            }
+            products.add(response.getData());
+        }
+            for (Discount d : discounts.values()) {
+                Response<String> responseDiscount = d.CalculatorDiscount(products);
+                if (!responseDiscount.isSuccess()) {
+                    return new Response<>(false, "Failed to calculate discount");
+                }
+                discount += Double.parseDouble(responseDiscount.getData());
+            }
+        return new Response<>(true, String.valueOf(discount));
+    }
 }
+

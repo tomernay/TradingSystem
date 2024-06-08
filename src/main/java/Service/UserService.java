@@ -352,6 +352,7 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
+    ///return price without discount
     public Response <String> LockShoppSingCartAndCalculatedPrice(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
@@ -373,12 +374,13 @@ public class UserService {
 
 
 
-
+    ///return discount
     public Response<String> CalculateDiscounts(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
-//        if (isValidToken(token, username)) {
-//            return userFacade.CalculateDiscounts(username);
-//        }
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            return storeService.CalculateDiscounts(resShoppSingCartContents.getData());
+        }
         SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");
         return Response.error("invalid token", null);
 

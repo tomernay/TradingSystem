@@ -707,14 +707,14 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-
-
-
-
-
-
-
-
+    public Response<String> CreatDiscountSimple(String username,String token, String productID, String storeID, String category, String percent) {
+        SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.CreatDiscount(productID, storeID, username,category,percent);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create discount");
+        return Response.error("Invalid token", null);
+    }
 
 
     public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
@@ -722,5 +722,8 @@ public class StoreService {
     }
 
 
+    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.CalculateDiscounts(shoppingCart);
+    }
 }
 

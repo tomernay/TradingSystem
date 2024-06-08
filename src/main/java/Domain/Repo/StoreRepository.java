@@ -516,4 +516,28 @@ public class StoreRepository {
         }
         return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
     }
+
+    public Response<String> CreatDiscount(String productID, String storeID, String category, String percent) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).CreatDiscount(productID, category, percent,"simple");
+    }
+
+    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+        double discount = 0;
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<String> discountShop = stores.get(storeID).CalculateDiscounts(productsInStore);
+            if (discountShop.isSuccess()) {
+                discount += Double.parseDouble(discountShop.getData());
+            }
+            else {
+                return Response.error(discountShop.getMessage(), null);
+            }
+        }
+        return Response.success("[SUCCESS] Successfully calculated the discount.", String.valueOf(discount));
+    }
 }
