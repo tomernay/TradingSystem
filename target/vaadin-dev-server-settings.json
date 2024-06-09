@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "C:/Users/yairb/Downloads/FinalAIproject/TradingSystem_םל/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "C:/Users/yairb/Downloads/FinalAIproject/TradingSystem_םל/./frontend/generated/jar-resources",
+  "staticOutput": "C:/Users/yairb/Downloads/FinalAIproject/TradingSystem_םל/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "C:\\Users\\yairb\\Downloads\\FinalAIproject\\TradingSystem_םל\\target\\classes\\META-INF\\VAADIN\\config",
+  "frontendBundleOutput": "C:\\Users\\yairb\\Downloads\\FinalAIproject\\TradingSystem_םל\\target\\classes\\META-INF\\VAADIN\\webapp",
+  "devBundleOutput": "C:/Users/yairb/Downloads/FinalAIproject/TradingSystem_םל/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "C:/Users/yairb/Downloads/FinalAIproject/TradingSystem_םל/target/dev-bundle/config",
+  "jarResourcesFolder": "C:/Users/yairb/Downloads/FinalAIproject/TradingSystem_םל/./frontend/generated/jar-resources",
+  "themeName": "my-app",
+  "clientServiceWorkerSource": "C:\\Users\\yairb\\Downloads\\FinalAIproject\\TradingSystem_םל\\target\\sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
