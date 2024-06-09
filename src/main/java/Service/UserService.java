@@ -352,6 +352,13 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
+
+    /**
+     * This method locks the shopping cart and calculates the price.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message & the price . <br> If not, returns an error message.
+     */
     public Response <String> LockShoppSingCartAndCalculatedPrice(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
@@ -362,7 +369,7 @@ public class UserService {
                 for (ProductDTO productDTO : list_prouct.getData()) {
                     price += productDTO.getPrice();
                 }
-                return new Response<String>(true, price.toString());
+                return new Response<String>(true,"Cart Lock And Calculated Price", price.toString());
             }
 
 
@@ -371,37 +378,21 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
-
-
-
+    /**
+     * This method calculates the discounts.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message & the discounts. <br> If not, returns an error message.
+     */
     public Response<String> CalculateDiscounts(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
-//        if (isValidToken(token, username)) {
-//            return userFacade.CalculateDiscounts(username);
-//        }
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            return storeService.CalculateDiscounts(resShoppSingCartContents.getData());
+        }
         SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");
         return Response.error("invalid token", null);
-
     }
-
-
-
-
-
-//    /**
-//     * This method purchases the shopping cart.
-//     * @param userName The username of the subscriber.
-//     * @param token The token of the subscriber.
-//     * @return If successful, returns a success message. <br> If not, returns an error message.
-//     */
-//    public Response<String> purchaseShoppingCart(String userName, String token) {
-//        SystemLogger.info("[START] User: " + userName + " is trying to purchase the shopping cart");
-//        if (isValidToken(token, userName)) {
-//            return userFacade.purchaseShoppingCart(userName);
-//        }
-//        SystemLogger.error("[ERROR] User: " + userName + " tried to purchase the shopping cart but the token was invalid");
-//        return Response.error("invalid token", null);
-//    }
 
     public boolean isValidToken(String token, String currentUsername) {
         return userFacade.isValidToken(token, currentUsername);
@@ -429,5 +420,22 @@ public class UserService {
     public Response<Map<String, String>> getStoresRole(String username) {
         Map<String, String> storesRole = userFacade.getStoresRole(username).getData();
         return storeService.getStoresRoleWithName(storesRole);
+    }
+
+
+    /**
+     * This method releases the shopping cart.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            return storeService.ReleaseShoppSingCartAndCalculatedPrice(resShoppSingCartContents.getData());
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
     }
 }

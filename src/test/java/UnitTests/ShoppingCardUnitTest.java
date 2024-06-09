@@ -1,19 +1,16 @@
-package AcceptanceTests;
+package UnitTests;
 
 import Domain.Store.Inventory.ProductDTO;
+import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
 import Service.StoreService;
-import Domain.Store.Store;
-import Domain.Users.Subscriber.Subscriber;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Map;
-
-public class ShoppingCart {
+public class ShoppingCardUnitTest {
     ServiceInitializer serviceInitializer;
     StoreService storeService;
     UserService userService;
@@ -122,5 +119,4 @@ public class ShoppingCart {
         Response<String> res1 = userService.updateProductInShoppingCart("0","0","yair12312",buyer.getToken(),2);
         Assert.assertFalse(res1.isSuccess());
     }
-
 }
