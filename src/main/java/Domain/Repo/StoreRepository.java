@@ -488,16 +488,28 @@ public class StoreRepository {
         }
         return stores.get(storeID).isCategoryExist(category);
     }
-
-
-
-
-
+    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        if(shoppingCart.isEmpty()){
+            return Response.error("Shopping cart is empty", null);
+        }
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<String> resProtctDTO = stores.get(storeID).ReleaseShoppSingCart(productsInStore);
+            if (!resProtctDTO.isSuccess()) {
+                return Response.error(resProtctDTO.getMessage(), null);
+            }
+        }
+        return Response.success("[SUCCESS] Successfully released the shopping cart and calculated the price.", null);
+    }
 
 
     public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         List <ProductDTO> products = new ArrayList<>();
         ArrayList<String> storelock = new ArrayList<>();
+        if(shoppingCart.isEmpty()){
+            return Response.error("Shopping cart is empty", null);
+        }
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
@@ -516,4 +528,31 @@ public class StoreRepository {
         }
         return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
     }
+
+    public Response<String> CreatDiscount(String productID, String storeID, String category, String percent) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).CreatDiscount(productID, category, percent,"simple");
+    }
+
+    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+        double discount = 0;
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<String> discountShop = stores.get(storeID).CalculateDiscounts(productsInStore);
+            if (discountShop.isSuccess()) {
+
+                discount += Double.parseDouble(discountShop.getData());
+            }
+            else {
+                return Response.error(discountShop.getMessage(), null);
+            }
+        }
+        return Response.success("[SUCCESS] Successfully calculated the discount.", String.valueOf(discount));
+    }
+
+
 }
