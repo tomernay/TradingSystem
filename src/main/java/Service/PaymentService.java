@@ -30,12 +30,12 @@ public class PaymentService {
      * @param token
      */
     public Response<String> immediatePay(String user,double fee,String credit,String token){
-        if(userService.isValidToken(token,user) ) {
+
             SystemLogger.info("[START] User: " + user + " is trying to pay");
             return facade.getPaymentRepository().immediatePay(fee,credit);
-        }
-        SystemLogger.error("[ERROR] User: " + user + " tried to pay but the token was invalid");
-        return new Response<>(false,"token is invalid",null);
+
+       // SystemLogger.error("[ERROR] User: " + user + " tried to pay but the token was invalid");
+        //return new Response<>(false,"token is invalid",null);
 
 
     }

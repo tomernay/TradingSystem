@@ -4,6 +4,8 @@ import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
 import Service.UserService;
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -12,6 +14,7 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
@@ -70,8 +73,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-
-        nav.addItem(new SideNavItem("Payment", PaymentPage.class));
+        SideNavItem paymentItem = new SideNavItem("Payment");
+        paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
+            @Override
+            public void onComponentEvent(AttachEvent event) {
+                
+            }
+        });
+       nav.addItem(new SideNavItem("Payment", PaymentPage.class));
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
         nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
 
