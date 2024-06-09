@@ -28,8 +28,8 @@ public class PaymentRepository {
     public Response<String> immediatePay(double fee, String credit){
 
         ImmediatePay payment=new ImmediatePay(fee, FireBaseConstants.secoundVisa,credit);
-        boolean pay=payment.pay(new DefaultPay("str"));
-        return new Response<>(pay,"payment Status"+String.valueOf(pay),null);
+        Response<String> pay=payment.pay(new DefaultPay("str"));
+        return pay;
 
 
     }
