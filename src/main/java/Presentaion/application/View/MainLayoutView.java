@@ -1,5 +1,6 @@
 package Presentaion.application.View;
 
+import Domain.Store.Inventory.ProductDTO;
 import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
@@ -32,6 +33,7 @@ import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -116,11 +118,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //                // Navigate to the shopping cart page
 //            });
 //        }
-        String username = presenter.getUserName();
-        if(hasRole(username)) {
-            MenuItem myStores = dropdownMenu.addItem("My Stores", e -> openStoresDialog());
-            MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
+
+        //check if a user is a guest or subscribed user
+//TODO: check if the user is a guest or a subscribed user
+//        String username = presenter.getUserName();
+        if(!presenter.getUserName().contains("Guest")) {
         }
+        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
+        MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
 
         //if user is guest add register button
         if(presenter.getUserName().contains("Guest")) {
@@ -151,7 +156,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void myStoresButton() {
         // Navigate to the shopping cart page
-        Button myStores = new Button("My Stores", e -> openStoresDialog());
+        Button myStores = new Button("My Stores", e -> myStoresDialog());
         myStores.getElement().getStyle().setColor("black");
 //        myStores.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
         addToDrawer(myStores);
@@ -182,7 +187,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //        dialog.open();
 //    }
 
-    private void openStoresDialog() {
+    private void myStoresDialog() {
         Dialog dialog = new Dialog();
         dialog.setWidth("500px");
         dialog.setHeight("400px");
@@ -191,15 +196,70 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialogLayout.add(new Span("Choose a store:"));
 
         // Fetch store data
-        List<String> storeIDs = presenter.getStoresIds();
-        List<String> stores = presenter.getStores(storeIDs);
+
+        List<String> stores = getUsersStores(presenter.getUserName());
         ContextMenu dropdownMenu = new ContextMenu();
         // Dropdown menu presenting the stores
-        for (String store : stores) {
-            dialogLayout.add(dropdownMenu.addItem(store, e -> {
-                // Navigate to the selected store
-            }));
+        //show stores only if the user is a manager/owner/creator
+        if(hasRole(presenter.getUserName())) {
+            for (String store : stores) {
+                dialogLayout.add(dropdownMenu.addItem(store, e -> {
+                    // Navigate to the selected store
+                }));
+            }
         }
+
+
+        //add a button for adding a store called "open a new store"
+        Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
+        dialogLayout.add(openNewStore);
+        openNewStore.getElement().getStyle().set("color", "black");
+        //put the button at the bottom whole width
+        openNewStore.getElement().getStyle().set("position", "absolute");
+        openNewStore.getElement().getStyle().set("bottom", "0");
+        openNewStore.getElement().getStyle().set("left", "0");
+        openNewStore.getElement().getStyle().set("right", "0");
+//        openNewStore.getElement().getStyle().set("background-color", "transparent");
+
+
+        //add a close button
+        Button closeDialogButton = addCloseButton(dialog);
+        dialogLayout.add(closeDialogButton);
+
+
+
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
+    private void openNewStoreDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("300px");
+        dialog.setHeight("250px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span("Open a new store:"));
+
+        TextField storeName = new TextField("Store Name");
+        //place in the center
+        storeName.getElement().getStyle().set("margin", "0 auto");
+
+//        TextField storeDescription = new TextField("Store Description");
+        Button openStore = new Button("Open Store", e -> {
+            presenter.addStore(storeName.getValue(), storeName);
+        });
+        openStore.getElement().getStyle().set("color", "black");
+        //position save button at the center
+        openStore.getElement().getStyle().set("position", "absolute");
+        openStore.getElement().getStyle().set("bottom", "0");
+        openStore.getElement().getStyle().set("left", "0");
+        openStore.getElement().getStyle().set("right", "0");
+
+        //add a close button
+        Button closeDialogButton = addCloseButton(dialog);
+        dialogLayout.add(closeDialogButton);
+
+        dialogLayout.add(storeName, openStore);
 
         dialog.add(dialogLayout);
         dialog.open();
@@ -303,9 +363,49 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
 
+//    public void addSearchBar() {
+//        // Add search bar to the header
+//
+//        ComboBox<String> searchBar = new ComboBox<>();
+//        searchBar.setPlaceholder("Search for anything");
+//        searchBar.getElement().getStyle().setColor("black");
+//        searchBar.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search bar
+//        searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
+//        searchBar.setWidthFull(); // Set the width of the search bar to 100%
+//
+////        Button search = new Button("", e -> {
+////            String searchTerm = searchBar.getValue();
+////            // Perform search logic here from store service - Gal
+////        });
+////        searchBar.setItems(query -> findRelevantSearchResults(query.getFilter().orElse("")).stream().collect(Collectors.toList()));
+//        searchBar.setItemLabelGenerator(item -> item);
+//        searchBar.setClearButtonVisible(true);
+//        searchBar.setAllowCustomValue(true);
+//
+////        search.setIcon(new Icon(VaadinIcon.SEARCH));
+////        search.getElement().getStyle().setColor("black");
+////        search.getElement().getStyle().set("margin-right", "auto"); // Add a margin to the right side of the search button
+////        //put the button in the search bar
+//////        searchBar.setSuffixComponent(search);
+////        //clear background
+////        search.getStyle().set("background-color", "transparent");
+//
+//
+//
+////        HorizontalLayout searchBarLayout = new HorizontalLayout(searchBar, search);
+////        searchBarLayout.addClassName("center-layout"); // Add the CSS class
+////        addToNavbar(searchBarLayout);
+//
+//        addToNavbar(searchBar);
+//
+//    }
+
+//    public ArrayList<ProductDTO> search(String search) {
+//        return presenter.searchProducts(search);
+//    }
+
     public void addSearchBar() {
         // Add search bar to the header
-
         ComboBox<String> searchBar = new ComboBox<>();
         searchBar.setPlaceholder("Search for anything");
         searchBar.getElement().getStyle().setColor("black");
@@ -313,32 +413,29 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
         searchBar.setWidthFull(); // Set the width of the search bar to 100%
 
-//        Button search = new Button("", e -> {
-//            String searchTerm = searchBar.getValue();
-//            // Perform search logic here from store service - Gal
-//        });
-//        searchBar.setItems(query -> findRelevantSearchResults(query.getFilter().orElse("")).stream().collect(Collectors.toList()));
         searchBar.setItemLabelGenerator(item -> item);
         searchBar.setClearButtonVisible(true);
         searchBar.setAllowCustomValue(true);
 
-//        search.setIcon(new Icon(VaadinIcon.SEARCH));
-//        search.getElement().getStyle().setColor("black");
-//        search.getElement().getStyle().set("margin-right", "auto"); // Add a margin to the right side of the search button
-//        //put the button in the search bar
-////        searchBar.setSuffixComponent(search);
-//        //clear background
-//        search.getStyle().set("background-color", "transparent");
-
-
-
-//        HorizontalLayout searchBarLayout = new HorizontalLayout(searchBar, search);
-//        searchBarLayout.addClassName("center-layout"); // Add the CSS class
-//        addToNavbar(searchBarLayout);
+        // Fetch and display search results as user types
+        searchBar.addCustomValueSetListener(event -> {
+            String searchTerm = event.getDetail();
+            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                List<String> results = search(searchTerm).stream()
+                        .map(ProductDTO::getName)
+                        .collect(Collectors.toList());
+                searchBar.setItems(results);
+            }
+        });
 
         addToNavbar(searchBar);
-
     }
+
+
+    public ArrayList<ProductDTO> search(String search) {
+        return presenter.searchProducts(search);
+    }
+
 
     private void openSettings(){
         //open a dialog with two buttons - change username and change password
@@ -617,5 +714,16 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     public void UnSuccess() {
         CookiesHandler.setCookie("username", "username", 5 * 60); // 5 minutes
+    }
+
+    public void addStoreSuccess() {
+        CookiesHandler.setCookie("store", "store", 5 * 60); // 5 minutes
+
+    }
+
+    public void addStoreError(String message, TextField field) {
+        field.setErrorMessage(message);
+        field.setInvalid(true);
+
     }
 }

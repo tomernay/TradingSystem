@@ -1,5 +1,6 @@
 package Presentaion.application.Presenter;
 
+import Domain.Store.Inventory.ProductDTO;
 import Presentaion.application.CookiesHandler;
 import Presentaion.application.View.MainLayoutView;
 import Service.ServiceInitializer;
@@ -104,6 +105,19 @@ public class MainLayoutPresenter {
         return username;
     }
 
+    //add a store
+    public void addStore(String storeName, TextField field){
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<String> response = storeService.addStore(storeName, username, token);
+        if(response.isSuccess()){
+            view.addStoreSuccess();
+        }
+        else{
+            view.addStoreError(response.getMessage(), field);
+        }
+    }
+
     public List<String> getStoresIds(){
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<Map<String, String>> storesRole = userService.getStoresRole(username);
@@ -135,15 +149,36 @@ public class MainLayoutPresenter {
     }
 
     public boolean isManager(String username){
-
-        return userService.isManager(username).getData().equals("true");
+        Response<String> res = userService.isManager(username);
+        if(!res.isSuccess()){
+            return false;
+        }
+        return res.getData().equals("true");
     }
 
     public boolean isOwner(String username){
-        return userService.isOwner(username).getData().equals("true");
+        Response<String> res = userService.isOwner(username);
+        if(!res.isSuccess()){
+            return false;
+        }
+        return res.getData().equals("true");
     }
 
     public boolean isCreator(String username){
-        return userService.isCreator(username).getData().equals("true");
+        Response<String> res = userService.isCreator(username);
+        if(!res.isSuccess()){
+            return false;
+        }
+        return res.getData().equals("true");
+    }
+
+    public ArrayList<ProductDTO> searchProducts(String search){
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<ArrayList<ProductDTO>> products = storeService.viewProductFromAllStoresByName(search ,username, token);
+        if(products.isSuccess()){
+            return products.getData();
+        }
+        return new ArrayList<>();
     }
 }
