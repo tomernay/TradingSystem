@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Route("payment")
 public class PaymentPage extends VerticalLayout {
-    double fee;
+   static double fee=10;
       PaymentPresenter presenter;
     public PaymentPage() {
         setClassName("payment-view");
@@ -80,7 +80,7 @@ public class PaymentPage extends VerticalLayout {
              //   String user= CookiesHandler.getUsernameFromCookies(getRequest());
 
                 showNotification(cardNumberField.getValue());
-               presenter.pay("user",20,cardNumberField.getValue(),"token");
+               presenter.pay("user",fee,cardNumberField.getValue(),"token");
 
             }
         });
