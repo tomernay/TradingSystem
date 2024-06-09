@@ -1,9 +1,14 @@
 package Presentaion.application.View;
 
+import Domain.Users.Subscriber.Subscriber;
+import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
+import Service.ServiceInitializer;
 import Service.UserService;
+import Utilities.Messages.Message;
+import Utilities.Messages.NormalMessage;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -22,10 +27,16 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.net.CookieHandler;
+import java.util.ArrayList;
+import java.util.Queue;
 
 
 /**
@@ -77,15 +88,24 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
             @Override
             public void onComponentEvent(AttachEvent event) {
-                
+
             }
         });
+
        nav.addItem(new SideNavItem("Payment", PaymentPage.class));
+        String user= CookiesHandler.getUsernameFromCookies(getRequest());
+        Queue<Message> sub= ServiceInitializer.getInstance().getUserService().getUserFacade().getUserRepository().getUser(user).getMessages();
+       sub.add(new NormalMessage("yayaya"));
+        MessagesList.setMessages(sub);
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
         nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
 
 
         return nav;
+    }
+
+    public HttpServletRequest getRequest() {
+        return ((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest();
     }
 
     @Override
