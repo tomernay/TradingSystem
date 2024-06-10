@@ -30,6 +30,10 @@ public class User {
         return false;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 
     public Response<String> addProductToShoppingCart(String storeID,String productName,int quantity) {
         if(shoppingCart != null){
