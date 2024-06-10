@@ -10,6 +10,8 @@ import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.HashMap;
+
 /**
  * The entry point of the Spring Boot application.
  *
@@ -44,6 +46,7 @@ public class Application implements AppShellConfigurator {
         notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
         storeService.addStore("newStore", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
     }
 
 }

@@ -5,6 +5,7 @@ import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
 
+import Presentaion.application.View.PurchaseHistory.StorePurchaseHistory;
 import Presentaion.application.View.Store.StoreManagementView;
 import Presentaion.application.View.UtilitiesView.RealTimeNotifications;
 import Service.ServiceInitializer;
@@ -77,13 +78,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addMessageButton.addClickListener(e -> sub.add(new NormalMessage("New message!")));
         // Add to the main content area
 
+
+
         Button storeButton = new Button("Manage Store");
         storeButton.addClickListener(e -> {
             UI.getCurrent().navigate(StoreManagementView.class);
         });
 
+        Button purchaseHistoryButton = new Button("Purchase History");
+        purchaseHistoryButton.addClickListener(e -> {
+            UI.getCurrent().navigate(StorePurchaseHistory.class);
+        });
+
+
         // Add to the main content area
-        setContent(new VerticalLayout(addMessageButton,storeButton));
+        setContent(new VerticalLayout(addMessageButton,storeButton,purchaseHistoryButton));
 
     }
 
