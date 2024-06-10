@@ -651,6 +651,25 @@ public class Inventory {
         SystemLogger.info("[SUCCESS] Shopping cart unlocked successfully");
         return Response.success("Shopping cart unlocked successfully", null);
     }
+
+    public Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
+            Integer productID = Integer.parseInt(entry.getKey());
+            int quantity = entry.getValue();
+            if (!isProductExist(productID)) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
+                return Response.error("Product with ID: " + productID + " does not exist.", null);
+            }
+            Product product = getProduct(productID);
+            if (product == null) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
+                return Response.error("Product with ID: " + productID + " not found.", null);
+            }
+            lockedProducts.put(product,lockedProducts.get(product) - quantity);
+        }
+        SystemLogger.info("[SUCCESS] Shopping cart unlocked successfully");
+        return Response.success("Shopping cart unlocked successfully", null);
+    }
 }
 
 

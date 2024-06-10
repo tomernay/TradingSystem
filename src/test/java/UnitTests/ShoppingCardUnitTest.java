@@ -78,7 +78,6 @@ public class ShoppingCardUnitTest {
 
     }
 
-
     @Test
     public void RemoveProuducdFromShoppingcart(){
         storeService.addProductToStore("0","ProuducdRemove","DOG",10, 1,"newOwner",owner.getToken());
@@ -87,7 +86,6 @@ public class ShoppingCardUnitTest {
         userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res1 = userService.removeProductFromShoppingCart("0",ID,"yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
-
     }
 
     @Test

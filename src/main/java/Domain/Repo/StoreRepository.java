@@ -1,5 +1,6 @@
 package Domain.Repo;
 
+import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
@@ -488,7 +489,7 @@ public class StoreRepository {
         }
         return stores.get(storeID).isCategoryExist(category);
     }
-    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
@@ -555,4 +556,37 @@ public class StoreRepository {
     }
 
 
+    public Response<List<DiscountDTO>> getDiscountsFromStore(String storeID, String username) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).getDiscounts(username);
+    }
+
+    public Response<String> removeDiscount(String storeID, String username, String discountID) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        if(!stores.get(storeID).isStoreOwner(username) && !stores.get(storeID).isStoreManager(username)){
+            return Response.error("You don't have permission to remove discount", null);
+        }
+        return stores.get(storeID).removeDiscount(discountID);
+    }
+
+    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> shoppingCart) {
+        if(shoppingCart.isEmpty()){
+            return Response.error("Shopping cart is empty", null);
+        }
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<String> resProtctDTO = stores.get(storeID).ReleaseShoppSingCartfromlock(productsInStore);
+            if (!resProtctDTO.isSuccess()) {
+                return Response.error(resProtctDTO.getMessage(), null);
+            }
+        }
+        return Response.success("[SUCCESS] Successfully released the shopping cart.", null);
+    }
 }
