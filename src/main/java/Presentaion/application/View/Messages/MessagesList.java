@@ -30,6 +30,7 @@ MessagesPresenter presenter;
         setClassName("list-view");
      user= CookiesHandler.getUsernameFromCookies(getRequest());
      presenter=new MessagesPresenter();
+     messages=presenter.initMessages(user);
      presenter.attachView(this);
         // Create grid to display messages
         Grid<Message> grid = new Grid<>(Message.class);

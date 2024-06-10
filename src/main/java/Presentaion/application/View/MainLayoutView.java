@@ -1,16 +1,18 @@
 package Presentaion.application.View;
 
-import Domain.Users.Subscriber.Subscriber;
 import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
+
+import Presentaion.application.View.Store.StoreManagementView;
+import Presentaion.application.View.UtilitiesView.RealTimeNotifications;
 import Service.ServiceInitializer;
-import Service.UserService;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -19,8 +21,9 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -32,11 +35,11 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.CookieHandler;
-import java.util.ArrayList;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
@@ -56,10 +59,32 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addClassName("main-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
+      sub=new LinkedBlockingQueue<>();
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
         addLogoutButton();
+
+       addMessageButton();
+        UI currentUI = UI.getCurrent();
+
+        RealTimeNotifications.start(currentUI,sub);
+    }
+
+
+    private void addMessageButton() {
+        Button addMessageButton = new Button("Add Message");
+        addMessageButton.addClickListener(e -> sub.add(new NormalMessage("New message!")));
+        // Add to the main content area
+
+        Button storeButton = new Button("Manage Store");
+        storeButton.addClickListener(e -> {
+            UI.getCurrent().navigate(StoreManagementView.class);
+        });
+
+        // Add to the main content area
+        setContent(new VerticalLayout(addMessageButton,storeButton));
+
     }
 
     private void addHeaderContent() {
@@ -68,7 +93,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         viewTitle = new H1();
         //  viewTitle.addClassNames(Lumo.FontStyle.LARGE, Lumo.Margin.NONE);
-
+        Button b=new Button("check message",e->sub.add(new NormalMessage("Message has benn added")));
         addToNavbar(toggle, viewTitle);
     }
 
@@ -82,6 +107,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addToDrawer(header, scroller, createFooter());
     }
 
+    Queue<Message> sub;
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
         SideNavItem paymentItem = new SideNavItem("Payment");
@@ -93,10 +119,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         });
 
        nav.addItem(new SideNavItem("Payment", PaymentPage.class));
-        String user= CookiesHandler.getUsernameFromCookies(getRequest());
-        Queue<Message> sub= ServiceInitializer.getInstance().getUserService().getUserFacade().getUserRepository().getUser(user).getMessages();
-       sub.add(new NormalMessage("yayaya"));
-        MessagesList.setMessages(sub);
+
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
         nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
 
