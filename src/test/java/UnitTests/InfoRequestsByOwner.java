@@ -65,12 +65,12 @@ public class InfoRequestsByOwner {
         //subscribe ziv
         userRepository.register("ziv","Password123!");
         userRepository.loginAsSubscriber("ziv","Password123!");
-        serviceInitializer.getUserService().SendStoreOwnerNomination(res.getData(), "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().SendStoreOwnerNomination("0", "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         serviceInitializer.getUserService().ownerNominationResponse("ziv",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("ziv").getToken());
         //subscribe dor
         userRepository.register("dor","Password123!");
         userRepository.loginAsSubscriber("dor","Password123!");
-        serviceInitializer.getUserService().SendStoreOwnerNomination(res.getData(), "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().SendStoreOwnerNomination("0", "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         serviceInitializer.getUserService().ownerNominationResponse("dor",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("dor").getToken());
         //subscribe niv
         userRepository.register("niv","Password123!");

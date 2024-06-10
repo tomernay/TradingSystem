@@ -44,14 +44,6 @@ public class Subscriber extends User {
         return message.response(answer);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setUsername(String username) {
-        super.setUsername(username);
-    }
-
     public String getToken() {
         return Token;
     }
@@ -141,26 +133,5 @@ public class Subscriber extends User {
 
     public void removeStoreRole(String storeID) {
         storesRole.remove(storeID);
-    }
-
-    public Response<String> isOwner() {
-        if(storesRole.containsValue("Owner")){
-            return Response.success("User is an owner",null);
-        }
-        return Response.error("User is not an owner",null);
-    }
-
-    public Response<String> isManager() {
-        if(storesRole.containsValue("Manager")){
-            return Response.success("User is a manager","true");
-        }
-        return Response.error("User is not a manager",null);
-    }
-
-    public Response<String> isCreator() {
-        if(storesRole.containsValue("Creator")){
-            return Response.success("User is a creator","true");
-        }
-        return Response.error("User is not a creator",null);
     }
 }

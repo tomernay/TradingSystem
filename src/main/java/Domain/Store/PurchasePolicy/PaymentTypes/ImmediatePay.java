@@ -2,6 +2,7 @@ package Domain.Store.PurchasePolicy.PaymentTypes;
 
 import Domain.Externals.Payment.CreditCard;
 import Domain.Externals.Payment.PaymentAdapter;
+import Utilities.Response;
 
 public class ImmediatePay extends PurchaseType {
     CreditCard credit;
@@ -13,11 +14,11 @@ public class ImmediatePay extends PurchaseType {
         this.store=new CreditCard(receiver);
     }
     @Override
-    public boolean pay( PaymentAdapter paymentAdapter) {
-        if(fee!=0&&store!=null){
-          return   paymentAdapter.pay(credit,store,fee).isSuccess();
+    public Response<String> pay(PaymentAdapter paymentAdapter) {
+        if(fee!=0){
+          return   paymentAdapter.pay(credit,store,fee);
         }
-        return false;
+        return new Response<>(false,"fee cant be zero");
     }
 
 }
