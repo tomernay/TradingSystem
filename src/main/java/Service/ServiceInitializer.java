@@ -23,8 +23,10 @@ public class ServiceInitializer {
         storeService.setUserService(userService);
         adminService.setUserService(userService);
         adminService.setStoreService(storeService);
+        adminService.setOrderService(orderService);
         paymentService.setUserService(userService);
         orderService.setUserService(userService);
+
 
     }
 

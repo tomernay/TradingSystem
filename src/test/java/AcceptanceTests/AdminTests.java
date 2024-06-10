@@ -2,10 +2,7 @@ package AcceptanceTests;
 
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
-import Service.AdminService;
-import Service.ServiceInitializer;
-import Service.StoreService;
-import Service.UserService;
+import Service.*;
 import Utilities.Response;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -20,6 +17,7 @@ public class AdminTests {
     static ServiceInitializer serviceInitializer;
     static UserService userService;
     static StoreService storeService;
+    static OrderService orderService;
     static AdminService adminService;
 
     @BeforeClass
@@ -29,6 +27,7 @@ public class AdminTests {
         userService = serviceInitializer.getUserService();
         storeService = serviceInitializer.getStoreService();
         adminService = serviceInitializer.getAdminService();
+        orderService = serviceInitializer.getOrderService();
         userService.register("yair","Password123!");
         userService.loginAsSubscriber("yair","Password123!");
         subscriber=userService.getUserFacade().getUserRepository().getUser("yair");
@@ -57,7 +56,7 @@ public class AdminTests {
 
     @Test
     public void getPurchasesHistoryByStore(){
-        adminService.getOrderFacade().getOrderRepository().addOrder("0","yair2",new HashMap<>());
+        orderService.getOrderFacade().getOrderRepository().addOrder("0","yair2",new HashMap<>());
         Response<String> response = adminService.getPurchaseHistoryByStore("0");
         Assert.assertTrue(response.isSuccess());
 
@@ -67,7 +66,7 @@ public class AdminTests {
 
     @Test
     public void getPurchasesHistoryBySubscriber(){
-        adminService.getOrderFacade().getOrderRepository().addOrder("yairStore","yair2",new HashMap<>());
+        orderService.getOrderFacade().getOrderRepository().addOrder("yairStore","yair2",new HashMap<>());
         Response<String> response = adminService.getPurchaseHistoryBySubscriber("yair2");
         Assert.assertTrue(response.isSuccess());
 

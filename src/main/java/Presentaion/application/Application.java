@@ -50,8 +50,8 @@ public class Application implements AppShellConfigurator {
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
         storeService.addProductToStore("0","yair","d",20,30,"miaa",token);
         System.out.println(store.getInventory().productsList);
-        ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
-        System.out.println( ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrdersHistory("0").getData());
+        ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
+        System.out.println( ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory("0").getData());
     }
 
 }

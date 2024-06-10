@@ -37,5 +37,13 @@ public class OrderService {
         return Response.error("invalid token", null);
     }
 
+    public Response<String> getPurchaseHistoryByStore(String storeID) {
+        return orderFacade.getPurchaseHistoryByStore(storeID);
+    }
+
+    public Response<String> getPurchaseHistoryBySubscriber(String subscriberID){
+        return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
+    }
+
 
 }

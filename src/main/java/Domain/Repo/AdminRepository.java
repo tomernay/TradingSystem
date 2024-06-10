@@ -1,7 +1,7 @@
 package Domain.Repo;
 
 
-import Domain.Users.Admin;;
+import Domain.Users.Admin;
 import Utilities.Response;
 
 import java.sql.Date;

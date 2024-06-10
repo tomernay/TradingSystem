@@ -23,7 +23,7 @@ public class StorePurchaseHistoryPresenter {
     }
 
     public void getStoreHistory(String storeID, Div ordersContainer){
-        Map<String,String> storeOrders =  ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrdersHistory(storeID).getData();
+        Map<String,String> storeOrders =  ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory(storeID).getData();
 
 
             if (storeID == null) {

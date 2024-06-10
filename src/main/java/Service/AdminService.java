@@ -1,7 +1,6 @@
 package Service;
 
 import Facades.AdminFacade;
-import Facades.OrderFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -10,11 +9,11 @@ import java.sql.Date;
 public class AdminService {
     private UserService userService;
     private StoreService storeService;
-    private OrderFacade orderFacade;
+    private OrderService orderService;
+//    private OrderFacade orderFacade;
     private AdminFacade adminFacade;
 
     public AdminService(){
-        orderFacade = new OrderFacade();
         adminFacade = new AdminFacade();
     }
 
@@ -24,6 +23,10 @@ public class AdminService {
 
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
+    }
+
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     public Response<String> closeStore() {
@@ -45,7 +48,7 @@ public class AdminService {
                 SystemLogger.error("[ERROR] The Store Does Not Exist");
                 return Response.error("The Store Does Not Exist", null);
             }
-            return orderFacade.getPurchaseHistoryByStore(storeID);
+            return orderService.getPurchaseHistoryByStore(storeID);
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");
@@ -59,7 +62,7 @@ public class AdminService {
                 SystemLogger.error("[ERROR] The User Does Not Exist");
                 return Response.error("The User Does Not Exist", null);
             }
-            return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
+            return orderService.getPurchaseHistoryBySubscriber(subscriberID);
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");
@@ -69,10 +72,6 @@ public class AdminService {
 
     public Response<String> recieveSystemInfo() {
         return null;
-    }
-
-    public OrderFacade getOrderFacade(){
-        return orderFacade;
     }
 
     public Response<String> suspendUser(String subscriberID, Date endOfSuspensionDate){
