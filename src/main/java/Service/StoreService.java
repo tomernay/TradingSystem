@@ -717,6 +717,8 @@ public class StoreService {
     }
 
 
+
+
     public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         return storeFacade.LockShoppingCartAndCalculatedPrice(shoppingCart);
     }

@@ -68,4 +68,12 @@ public class OrderRepository {
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
         return Response.success(orderList.toString(), null);
     }
+
+    public void CreatOrder(String username, Map<String, Map<String, Integer>> shoppingcartContents) {
+
+        for (Map.Entry<String, Map<String, Integer>> entry : shoppingcartContents.entrySet()) {
+            Map<String, Integer> PARMER = entry.getValue();
+            addOrder(entry.getKey(), username, entry.getValue());
+        }
+    }
 }
