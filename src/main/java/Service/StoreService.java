@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
 import Facades.StoreFacade;
@@ -706,7 +707,6 @@ public class StoreService {
         SystemLogger.error("[ERROR] User: " + UserName + " tried to search products by name: " + productName + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
-
     public Response<String> CreatDiscountSimple(String username,String token, String productID, String storeID, String category, String percent) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
@@ -728,8 +728,37 @@ public class StoreService {
         return storeFacade.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeFacade.ReleaseShoppSingCartAndCalculatedPrice(shoppingCart);
+    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.ReleaseShoppSingCartAndbacktoInventory(shoppingCart);
+    }
+
+
+    public Response<List<DiscountDTO>> getDiscountsFromStore(String storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to get discounts from store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.getDiscountsFromStore(storeID, username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to get discounts from store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+    /**
+     * This method remove Discount from store
+     * @param storeID the ID of the store
+     * @param username the username of the user
+     * @param token the token of the user
+     * @return If successful, returns the discount of the product. <br> If not, returns an error message.
+     */
+    public Response<String> removeDiscount(String storeID, String username, String token, String discountID) {
+        SystemLogger.info("[START] User: " + username + " is trying to remove discount: " + discountID + " from store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.removeDiscount(storeID, username, discountID);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to remove discount: " + discountID + " from store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> data) {
+        return storeFacade.ReleaseShoppSingCart(data);
     }
 }
 

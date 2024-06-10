@@ -34,4 +34,29 @@ public class SimpleDiscount implements Discount{
             }
         return new Response<String>(true,String.valueOf(discount));
     }
+    @Override
+    public String getDiscountID() {
+        return String.valueOf(discountID);
+    }
+    @Override
+    public String getStoreID() {
+        return String.valueOf(discountID);
+    }
+    @Override
+    public DiscountType getDiscountType() {
+        return DiscountType.SIMPLE;
+    }
+    @Override
+    public String getPercent() {
+        return String.valueOf(percent);
+    }
+    @Override
+    public String getProductID() {
+        return String.valueOf(productID);
+    }
+    @Override
+    public String getCategory() {
+        return String.valueOf(category);
+    }
+
 }

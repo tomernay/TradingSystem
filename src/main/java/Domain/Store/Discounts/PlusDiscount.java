@@ -10,10 +10,12 @@ public class PlusDiscount implements Discount {
 
         private Discount discount1;
         private Discount discount2;
+        private int discountID;
 
-        public PlusDiscount(Discount discount1, Discount discount2) {
+        public PlusDiscount(Discount discount1, Discount discount2, int discountID) {
             this.discount1 = discount1;
             this.discount2 = discount2;
+            this.discountID = discountID;
         }
 
 
@@ -27,5 +29,29 @@ public class PlusDiscount implements Discount {
             double discount1 = Double.parseDouble(response1.getData());
             double discount2 = Double.parseDouble(response2.getData());
             return new Response<>(true, String.valueOf(discount1 + discount2));
+        }
+        @Override
+        public String getDiscountID() {
+          return String.valueOf(discount1.getDiscountID()) + String.valueOf(discount2.getDiscountID());
+         }
+        @Override
+        public String getStoreID() {
+            return String.valueOf(discount1.getStoreID());
+        }
+        @Override
+        public DiscountType getDiscountType() {
+            return DiscountType.SIMPLE;
+        }
+        @Override
+        public String getPercent() {
+            return String.valueOf(discount1.getPercent()) + String.valueOf(discount2.getPercent());
+        }
+        @Override
+        public String getProductID() {
+            return String.valueOf(discount1.getProductID()) + String.valueOf(discount2.getProductID());
+        }
+        @Override
+        public String getCategory() {
+            return String.valueOf(discount1.getCategory()) + String.valueOf(discount2.getCategory());
         }
 }

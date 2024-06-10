@@ -1,6 +1,7 @@
 package Facades;
 
 import Domain.Repo.StoreRepository;
+import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
 import Utilities.Messages.Message;
@@ -250,7 +251,19 @@ public class StoreFacade {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeRepository.ReleaseShoppSingCartAndCalculatedPrice(shoppingCart);
+    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.ReleaseShoppSingCartAndbacktoInventory(shoppingCart);
+    }
+
+    public Response<List<DiscountDTO>> getDiscountsFromStore(String storeID, String username) {
+        return storeRepository.getDiscountsFromStore(storeID, username);
+    }
+
+    public Response<String> removeDiscount(String storeID, String username, String discountID) {
+        return storeRepository.removeDiscount(storeID, username, discountID);
+    }
+
+    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.ReleaseShoppSingCart(shoppingCart);
     }
 }

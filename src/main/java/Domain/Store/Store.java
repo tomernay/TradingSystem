@@ -1,6 +1,7 @@
 package Domain.Store;
 
 import Domain.Store.Discounts.Discount;
+import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Discounts.SimpleDiscount;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
@@ -606,6 +607,26 @@ public class Store {
 
     public Response<String> ReleaseShoppSingCart(Map<String, Integer> productsInStore) {
         return inventory.unlockShoppingCart(productsInStore);
+    }
+
+    public Response<String> removeDiscount(String discountID) {
+        if (discounts.containsKey(Integer.parseInt(discountID))) {
+            discounts.remove(Integer.parseInt(discountID));
+            return new Response<>(true, "Discount removed successfully");
+        }
+        return new Response<>(false, "Failed to remove discount");
+    }
+
+    public Response<List<DiscountDTO>> getDiscounts(String username) {
+        List<DiscountDTO> discounts = new ArrayList<>();
+        for (Discount d : this.discounts.values()) {
+            discounts.add(new DiscountDTO(d.getDiscountID(), d.getStoreID(), d.getDiscountType(), d.getPercent(), d.getProductID(), d.getCategory()));
+        }
+        return Response.success("Successfully fetched the discounts", discounts);
+    }
+
+    public Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+        return inventory.ReleaseShoppSingCartfromlock(productsInStore);
     }
 }
 
