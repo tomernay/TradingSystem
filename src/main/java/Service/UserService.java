@@ -432,6 +432,22 @@ public class UserService {
         return storeService.getStoresRoleWithName(storesRole);
     }
 
+    /**
+     * This method releases the shopping cart.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> ReleaseShoppSingCartAndCalculatedPrice(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            return storeService.ReleaseShoppSingCartAndCalculatedPrice(resShoppSingCartContents.getData());
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
 
     /**
      * get all messages for <user>
