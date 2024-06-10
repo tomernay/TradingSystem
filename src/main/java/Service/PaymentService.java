@@ -1,10 +1,10 @@
 package Service;
 
-import Domain.Externals.Payment.PaymentAdapter;
-import Domain.Externals.Security.Security;
-import Domain.Externals.Suppliers.SupplierAdapter;
+import Domain.Externals.Payment.DefaultPay;
+
+import Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
+import Domain.Store.Store;
 import Facades.PaymentFacade;
-import Facades.SupplyFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -13,11 +13,8 @@ public class PaymentService {
 
     private PaymentFacade facade;
 
-    private SupplyFacade supplyFacade;
-
     public PaymentService(){
         facade=new PaymentFacade();
-        supplyFacade=new SupplyFacade();
     }
 
     public void setUserService(UserService userService) {
@@ -48,20 +45,6 @@ public class PaymentService {
 
     }*/
 
-    public Response<String> addPaymentAdapter(PaymentAdapter paymentAdapter, String name, String token, String user){
-        if(Security.isValidJWT(token,user)) {
-            SystemLogger.info("[START] User: " + user + " is trying to add payment");
-            return facade.addPaymentAdapter(paymentAdapter, name);
-        }
-        return new Response<>(false,"token is invalid",null);
-    }
 
 
-    public Response<String> addSupplierAdapter(SupplierAdapter supplierAdapter, String value, String token, String user) {
-        if(Security.isValidJWT(token,user)) {
-            SystemLogger.info("[START] User: " + user + " is trying to add supplier");
-            return supplyFacade.addSupplierAdapter(supplierAdapter,value);
-        }
-        return new Response<>(false,"token is invalid",null);
-    }
 }

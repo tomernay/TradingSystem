@@ -113,8 +113,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void loginSuccessful(String username, String token) {
-        CookiesHandler.setCookie("username", username, 5 * 6000); // 5 minutes
-        CookiesHandler.setCookie("token", token, 5 * 6000); // 5 minutes
+        CookiesHandler.setCookie("username", username, 5 * 60); // 5 minutes
+        CookiesHandler.setCookie("token", token, 5 * 60); // 5 minutes
         navigateToMain();
     }
 
