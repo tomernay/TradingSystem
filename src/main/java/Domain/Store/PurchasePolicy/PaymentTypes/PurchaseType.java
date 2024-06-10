@@ -1,8 +1,9 @@
 package Domain.Store.PurchasePolicy.PaymentTypes;
 
 import Domain.Externals.Payment.PaymentAdapter;
+import Utilities.Response;
 
 public abstract class PurchaseType {
-    public abstract boolean pay( PaymentAdapter paymentAdapter);
+    public abstract Response<String> pay(PaymentAdapter paymentAdapter);
 
 }
