@@ -5,6 +5,7 @@ import Presentaion.application.Presenter.MainLayoutPresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
 
+import Presentaion.application.View.Store.StoreManagementView;
 import Presentaion.application.View.UtilitiesView.RealTimeNotifications;
 import Service.ServiceInitializer;
 import Utilities.Messages.Message;
@@ -38,6 +39,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 /**
@@ -57,7 +59,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addClassName("main-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
-
+      sub=new LinkedBlockingQueue<>();
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
@@ -65,7 +67,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
        addMessageButton();
         UI currentUI = UI.getCurrent();
-        RealTimeNotifications.start(currentUI);
+
+        RealTimeNotifications.start(currentUI,sub);
     }
 
 
@@ -73,7 +76,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Button addMessageButton = new Button("Add Message");
         addMessageButton.addClickListener(e -> sub.add(new NormalMessage("New message!")));
         // Add to the main content area
-        setContent(new VerticalLayout(addMessageButton));
+
+        Button storeButton = new Button("Manage Store");
+        storeButton.addClickListener(e -> {
+            UI.getCurrent().navigate(StoreManagementView.class);
+        });
+
+        // Add to the main content area
+        setContent(new VerticalLayout(addMessageButton,storeButton));
 
     }
 
@@ -109,11 +119,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         });
 
        nav.addItem(new SideNavItem("Payment", PaymentPage.class));
-        String user= CookiesHandler.getUsernameFromCookies(getRequest());
-       sub= ServiceInitializer.getInstance().getUserService().getUserFacade().getUserRepository().getUser(user).getMessages();
-
-        MessagesList.setMessages(sub);
-
 
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
         nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item

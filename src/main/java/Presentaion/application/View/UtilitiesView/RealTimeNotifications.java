@@ -7,12 +7,14 @@ import com.vaadin.flow.component.notification.Notification;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class RealTimeNotifications {
 
-    private static Queue<Message> messages;
+    private static Queue<Message> messages=new LinkedBlockingQueue<>();
 
-public static void start(UI ui){
+public static void start(UI ui,Queue<Message> messages){
+    RealTimeNotifications.messages = messages;
     CompletableFuture.runAsync(() -> checkMessageQueue(ui), Executors.newSingleThreadExecutor());
 
 }
@@ -34,4 +36,6 @@ public static void start(UI ui){
             }
         }
     }
+
+
 }

@@ -12,6 +12,7 @@ import Utilities.SystemLogger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class UserService {
@@ -430,4 +431,20 @@ public class UserService {
         Map<String, String> storesRole = userFacade.getStoresRole(username).getData();
         return storeService.getStoresRoleWithName(storesRole);
     }
+
+
+    /**
+     * get all messages for <user>
+     * @param user
+     * @return
+     */
+    public Response<Queue<Message>> getMessages(String user){
+        return  new Response<Queue<Message>>(true,"",userFacade.getUserRepository().getMessages(user));
+    }
+
+    public Response<String> addNormalMessage(String user,String message){
+        return new Response<String>(true,"",userFacade.getUserRepository().addNormalMessage(user,message));
+    }
+
+
 }
