@@ -33,11 +33,8 @@ public class PaymentService {
 
             SystemLogger.info("[START] User: " + user + " is trying to pay");
             return facade.getPaymentRepository().immediatePay(fee,credit);
-
        // SystemLogger.error("[ERROR] User: " + user + " tried to pay but the token was invalid");
         //return new Response<>(false,"token is invalid",null);
-
-
     }
 
    /* public void alternativePay(String user,String token,HashMap<Integer,Integer> products, Store store, Subscriber subscriber,double fee){
