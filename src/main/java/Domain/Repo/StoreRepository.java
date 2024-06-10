@@ -354,7 +354,7 @@ public class StoreRepository {
     }
 
     public Response<String> getStoreIDbyName(String storeName, String userName) {
-     Response<String> response = isStoreExist(storeName);
+        Response<String> response = isStoreExist(storeName);
         if (!response.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to get store ID by name: " + storeName + " but the store doesn't exist / is inactive");
             return Response.error(response.getMessage(), null);
@@ -489,6 +489,33 @@ public class StoreRepository {
         }
         return stores.get(storeID).isCategoryExist(category);
     }
+
+
+
+
+
+
+
+    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+        List<ProductDTO> products = new ArrayList<>();
+        ArrayList<String> storelock = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<List<ProductDTO>> resProtctDTO = stores.get(storeID).lockShoppingCart(productsInStore);
+            if (resProtctDTO.isSuccess()) {
+                products.addAll(resProtctDTO.getData());
+                storelock.add(storeID);
+            } else {
+                for (String store : storelock) {
+                    stores.get(store).unlockShoppingCart(shoppingCart.get(store));
+                }
+                return Response.error(resProtctDTO.getMessage(), null);
+            }
+        }
+        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
+    }
+
     public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
@@ -502,32 +529,6 @@ public class StoreRepository {
             }
         }
         return Response.success("[SUCCESS] Successfully released the shopping cart and calculated the price.", null);
-    }
-
-
-    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
-        List <ProductDTO> products = new ArrayList<>();
-        ArrayList<String> storelock = new ArrayList<>();
-        if(shoppingCart.isEmpty()){
-            return Response.error("Shopping cart is empty", null);
-        }
-        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
-            String storeID = storeEntry.getKey();
-            Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<List<ProductDTO>> resProtctDTO = stores.get(storeID).lockShoppingCart(productsInStore);
-            if (resProtctDTO.isSuccess()) {
-                products.addAll(resProtctDTO.getData());
-                storelock.add(storeID);
-            }
-            else {
-                for (String store : storelock) {
-                    stores.get(store).unlockShoppingCart(shoppingCart.get(store));
-                }
-                return Response.error(resProtctDTO.getMessage(), null);
-            }
-
-        }
-        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
     }
 
     public Response<String> CreatDiscount(String productID, String storeID, String category, String percent) {

@@ -33,3 +33,41 @@
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
+
+.open-store-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+
+.center-layout {
+    justify-content: center;
+    flex-grow: 8;
+}
+
+.right-layout {
+    justify-content: flex-end;
+    /*flex-grow: 1;*/
+}
+
+.left-layout {
+    justify-content: flex-start;
+    flex-grow: 1;
+}
+
+.round-button {
+    border-radius: 50%;  /* Makes the button round */
+    width: 180px;        /* Sets the width of the button */
+    height: 180px;       /* Sets the height of the button */
+}
+
+.close-button {
+    background-color: transparent;
+    color: black;
+}
+
+.books-button {
+     /* Green */
+
+    mask-image: url('books.png');
+}

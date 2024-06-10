@@ -1,8 +1,8 @@
+
 package Domain.Store.Inventory;
+
 import Utilities.Response;
 import Utilities.SystemLogger;
-
-import java.util.ArrayList;
 
 /**
  * Represents a product in the store inventory.
@@ -32,7 +32,7 @@ public class Product {
         this.desc = builder.desc;
         this.price = builder.price;
         this.quantity = builder.quantity;
-      //  this.categories = builder.categories;
+        //  this.categories = builder.categories;
     }
 
     /**
@@ -47,7 +47,7 @@ public class Product {
         private String desc;
         private double price;
         private int quantity;
-    //    public ArrayList<String> categories;
+        //    public ArrayList<String> categories;
 
         public Builder(String storeID,String name, int productID) {
             this.name = name;
@@ -203,7 +203,7 @@ public class Product {
 
 
     public synchronized Response<String> addQuantity(int amountToAdd) {
-       return setQuantity(this.quantity + amountToAdd);
+        return setQuantity(this.quantity + amountToAdd);
     }
 
     @Override

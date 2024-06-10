@@ -75,6 +75,8 @@ public class AdminTests {
         Assert.assertFalse(response2.isSuccess());
     }
 
+
+
     @Test
     public void recieveSystemInfo(){
         adminService.recieveSystemInfo();
