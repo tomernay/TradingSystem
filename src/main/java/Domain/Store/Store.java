@@ -1,5 +1,8 @@
 package Domain.Store;
 
+import Domain.Store.Discounts.Discount;
+import Domain.Store.Discounts.DiscountDTO;
+import Domain.Store.Discounts.SimpleDiscount;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
@@ -10,6 +13,7 @@ import Utilities.SystemLogger;
 
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
 
@@ -21,6 +25,10 @@ public class Store {
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
+    private Map<Integer, Discount> discounts = new HashMap<>();///
+    private final AtomicInteger productIDGenerator = new AtomicInteger(1);
+
+
 
     // Constructor
     public Store(String storeID, String name, String creator) {
@@ -33,6 +41,9 @@ public class Store {
         managerPermissions = new HashMap<>();
         nominationGraph = new HashMap<>();
         reverseNominationMap = new HashMap<>();
+        discounts = new HashMap<>();
+
+
     }
 
     public Store() {
@@ -560,4 +571,62 @@ public class Store {
     public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
         inventory.unlockShoppingCart(stringIntegerMap);
     }
+
+    public Response<String> CreatDiscount(String productID, String category, String percent, String type) {
+        Discount discount;
+        int IdDiscount;
+        if (type.equals("simple")) {
+            IdDiscount = productIDGenerator.getAndIncrement();
+            discount = new SimpleDiscount(percent, storeID, productID, category, IdDiscount);
+            discounts.put(IdDiscount, discount);
+        } else {
+            return new Response<>(false, "Failed to create discount");
+        }
+        return new Response<>(true, "Discount created successfully");
+    }
+
+    public Response<String> CalculateDiscounts(Map<String, Integer> productsInStore) {
+        double discount = 0;
+        List<ProductDTO> products = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
+            Response<ProductDTO> response = inventory.getProductFromStore(Integer.parseInt(entry.getKey()));
+            if (!response.isSuccess()) {
+                return new Response<>(false, "Failed to calculate discount");
+            }
+            products.add(response.getData());
+        }
+            for (Discount d : discounts.values()) {
+                Response<String> responseDiscount = d.CalculatorDiscount(products);
+                if (!responseDiscount.isSuccess()) {
+                    return new Response<>(false, "Failed to calculate discount");
+                }
+                discount += Double.parseDouble(responseDiscount.getData());
+            }
+        return new Response<>(true,"calculate discounts successfull", String.valueOf(discount));
+    }
+
+    public Response<String> ReleaseShoppSingCart(Map<String, Integer> productsInStore) {
+        return inventory.unlockShoppingCart(productsInStore);
+    }
+
+    public Response<String> removeDiscount(String discountID) {
+        if (discounts.containsKey(Integer.parseInt(discountID))) {
+            discounts.remove(Integer.parseInt(discountID));
+            return new Response<>(true, "Discount removed successfully");
+        }
+        return new Response<>(false, "Failed to remove discount");
+    }
+
+    public Response<List<DiscountDTO>> getDiscounts(String username) {
+        List<DiscountDTO> discounts = new ArrayList<>();
+        for (Discount d : this.discounts.values()) {
+            discounts.add(new DiscountDTO(d.getDiscountID(), d.getStoreID(), d.getDiscountType(), d.getPercent(), d.getProductID(), d.getCategory()));
+        }
+        return Response.success("Successfully fetched the discounts", discounts);
+    }
+
+    public Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+        return inventory.ReleaseShoppSingCartfromlock(productsInStore);
+    }
 }
+

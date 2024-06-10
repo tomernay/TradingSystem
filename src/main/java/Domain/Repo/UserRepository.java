@@ -4,13 +4,17 @@ import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Messages.Message;
+
 import Utilities.Messages.NormalMessage;
+import Domain.Users.Subscriber.Subscriber;
+import Domain.Users.User;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class UserRepository {
 
@@ -32,7 +36,7 @@ public class UserRepository {
         if(guests.get(username) == null) {
             return Response.error("User is already logged out", null);
         }
-        if(!guests.get(username).logoutAsGuest()){
+        if(guests.get(username).logoutAsGuest()){
             guests.remove(username);
             return Response.success("You signed out as a GUEST", null);
         }
@@ -319,5 +323,18 @@ public class UserRepository {
             return Response.error("User does not exist","");
         }
         return s.isCreator();
+    }
+
+    /**
+     * return user messages queue
+     * @param user
+     * @return
+     */
+    public Queue<Message> getMessages(String user) {
+        return subscribers.get(user).getMessages();
+    }
+
+    public String addNormalMessage(String user, String message) {
+        return subscribers.get(user).addMessage(new NormalMessage(message)).getMessage();
     }
 }

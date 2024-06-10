@@ -632,20 +632,66 @@ public class Inventory {
         return Response.success("Shopping cart locked successfully",productDTOList);
     }
 
-    public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+    public Response<String> unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
         for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
-            Integer productID = entry.getValue();
+            Integer productID = Integer.parseInt(entry.getKey());
+            int quantity = entry.getValue();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
-                return;
+                return Response.error("Product with ID: " + productID + " does not exist.", null);
             }
             Product product = getProduct(productID);
             if (product == null) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
-                return;
+                return Response.error("Product with ID: " + productID + " not found.", null);
             }
-            product.addQuantity(stringIntegerMap.get(productID));
-            lockedProducts.put(product,lockedProducts.get(product) - stringIntegerMap.get(productID));
+            product.addQuantity(quantity);
+            lockedProducts.put(product,lockedProducts.get(product) - quantity);
         }
+        SystemLogger.info("[SUCCESS] Shopping cart unlocked successfully");
+        return Response.success("Shopping cart unlocked successfully", null);
+    }
+
+    public Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
+            Integer productID = Integer.parseInt(entry.getKey());
+            int quantity = entry.getValue();
+            if (!isProductExist(productID)) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
+                return Response.error("Product with ID: " + productID + " does not exist.", null);
+            }
+            Product product = getProduct(productID);
+            if (product == null) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
+                return Response.error("Product with ID: " + productID + " not found.", null);
+            }
+            lockedProducts.put(product,lockedProducts.get(product) - quantity);
+        }
+        SystemLogger.info("[SUCCESS] Shopping cart unlocked successfully");
+        return Response.success("Shopping cart unlocked successfully", null);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

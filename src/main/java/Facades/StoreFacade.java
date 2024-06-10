@@ -1,6 +1,7 @@
 package Facades;
 
 import Domain.Repo.StoreRepository;
+import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
 import Utilities.Messages.Message;
@@ -197,7 +198,7 @@ public class StoreFacade {
     public Response<String> isProductExist(String storeID, String productID) {
         return storeRepository.isProductExist(storeID, productID);
     }
-
+    
     public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
         return storeRepository.getStoresRoleWithName(storesRole);
     }
@@ -228,5 +229,42 @@ public class StoreFacade {
 
     public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    }
+
+    public Response<String> CreatDiscount(String productID, String storeID, String username, String category, String percent) {
+        if (Double.parseDouble(percent) < 0 ||Double.parseDouble(percent) > 1) {
+            return new Response<>(false, "Discount percent must be between 0 and 1");
+        }
+        if (storeID != null || !isStoreOwner(storeID, username) || !isStoreManager(storeID, username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (productID != null || !storeRepository.isProductExist(storeID, productID).isSuccess()) {
+            return new Response<>(false, "Product does not exist in store");
+        }
+        if (category == null && productID == null)
+            {
+                return new Response<>(false, "productID and category can't be null at the same time");
+            }
+        return storeRepository.CreatDiscount(productID, storeID, category, percent);
+    }
+
+    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.CalculateDiscounts(shoppingCart);
+    }
+
+    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.ReleaseShoppSingCartAndbacktoInventory(shoppingCart);
+    }
+
+    public Response<List<DiscountDTO>> getDiscountsFromStore(String storeID, String username) {
+        return storeRepository.getDiscountsFromStore(storeID, username);
+    }
+
+    public Response<String> removeDiscount(String storeID, String username, String discountID) {
+        return storeRepository.removeDiscount(storeID, username, discountID);
+    }
+
+    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.ReleaseShoppSingCart(shoppingCart);
     }
 }

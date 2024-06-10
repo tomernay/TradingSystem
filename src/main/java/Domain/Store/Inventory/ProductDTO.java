@@ -1,4 +1,5 @@
 package Domain.Store.Inventory;
+import cn.hutool.json.ObjectMapper;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ public class ProductDTO {
     private String name;        // The name of the product
     //private String desc;        // The description of the product
     private double price;          // The price of the product
-    // private int quantity;       // The quantity of the product available in the inventory
+   // private int quantity;       // The quantity of the product available in the inventory
 
     public ArrayList<String> categories; // The category that a product is related to
 
@@ -19,7 +20,7 @@ public class ProductDTO {
         this.productID = productID;
         this.name = name;
         this.price = price;
-        //     this.categories = categories;
+   //     this.categories = categories;
     }
 
     public ProductDTO(Product product) {
