@@ -1,5 +1,6 @@
 package Presentaion.application.View.Store;
 
+import Presentaion.application.Presenter.StorePresenter.StorePresenter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.tabs.Tab;
@@ -51,9 +52,29 @@ public class StoreManagementView extends VerticalLayout {
         content.removeAll();
         String id = selectedTab.getId().orElse("");
         try {
-            content.add((Component) Class.forName("Presentaion.application.View.Store." + id).getDeclaredConstructor().newInstance());
+            Component component=new AddProductView();
+
+            switch (id) {
+                case "AddProductView":
+                     // Or obtain it from a DI framework
+                    component = new AddProductView();
+                    break;
+                case "EditProductView":
+                   // Use the appropriate presenter
+                    component = new EditProductDetailsView();
+                    break;
+                case "RemoveProductView":
+                    break;
+                // Add cases for other views that require specific presenters
+                default:
+                    component = new AddProductView();
+                    break;
+            }
+
+            content.add(component);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
 }

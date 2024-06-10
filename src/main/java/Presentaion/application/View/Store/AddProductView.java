@@ -24,7 +24,7 @@ public class AddProductView extends Div {
 
     private Button addButton;
 
-    private Binder<Product> binder;
+
 
     public AddProductView() {
         createForm();
@@ -46,8 +46,7 @@ public class AddProductView extends Div {
 
         add(formLayout);
 
-        binder = new Binder<>(Product.class);
-        binder.bindInstanceFields(this);
+
     }
 
     public void showNotification(String message) {
@@ -78,29 +77,5 @@ public class AddProductView extends Div {
 
 
 
-    private static class Product {
-        private String storeID;
-        private String name;
-        private String desc;
-        private String price;
-        private String quantity;
-        private String username;
-        private String token;
 
-        // Getters and setters for each field
-        public String getStoreID() { return storeID; }
-        public void setStoreID(String storeID) { this.storeID = storeID; }
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public String getDesc() { return desc; }
-        public void setDesc(String desc) { this.desc = desc; }
-        public String getPrice() { return price; }
-        public void setPrice(String price) { this.price = price; }
-        public String getQuantity() { return quantity; }
-        public void setQuantity(String quantity) { this.quantity = quantity; }
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getToken() { return token; }
-        public void setToken(String token) { this.token = token; }
-    }
 }
