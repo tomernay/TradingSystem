@@ -524,7 +524,8 @@ public class Inventory {
         }
         productsList.remove(productID);
         for (Map.Entry<String, ArrayList<Integer>> entry : categories.entrySet()) {
-            entry.getValue().remove(productID);
+            // Convert productID to an Integer object before removing
+            entry.getValue().remove(Integer.valueOf(productID));
         }
         SystemLogger.info("[SUCCESS] Product with ID: " + productID + " removed successfully");
         return Response.success("Product with ID: " + productID + " removed successfully", product.getName());

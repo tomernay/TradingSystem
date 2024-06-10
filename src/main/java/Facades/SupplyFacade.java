@@ -2,6 +2,7 @@ package Facades;
 
 import Domain.Externals.Suppliers.SupplierAdapter;
 import Domain.Repo.SupplyRepository;
+import Utilities.Response;
 
 public class SupplyFacade {
     private SupplyRepository supplyRepository;
@@ -10,7 +11,7 @@ public class SupplyFacade {
         supplyRepository = new SupplyRepository();
     }
 
-    public void addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
-        supplyRepository.addSupplierAdapter(supplierAdapter, name);
+    public Response<String> addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
+        return supplyRepository.addSupplierAdapter(supplierAdapter, name);
     }
 }
