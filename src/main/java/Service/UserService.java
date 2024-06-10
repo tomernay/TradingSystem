@@ -16,7 +16,7 @@ import java.util.Queue;
 import java.util.Set;
 
 public class UserService {
-    private UserFacade userFacade;
+    private  UserFacade userFacade;
     private StoreService storeService;
     private OrderService orderService;
 
@@ -227,8 +227,6 @@ public class UserService {
         return userFacade.register(username, password);
     }
 
-
-
     /**
      * This method sends a close store notification to the store subscribers & personnel.
      * @param subscriberNames The usernames of the subscribers.
@@ -431,39 +429,6 @@ public class UserService {
         Map<String, String> storesRole = userFacade.getStoresRole(username).getData();
         return storeService.getStoresRoleWithName(storesRole);
     }
-
-    public Response<String> isOwner(String username){
-        return userFacade.isOwner(username);
-    }
-
-    public Response<String> isManager(String username){
-        return userFacade.isManager(username);
-    }
-
-    public Response<String> isCreator(String username){
-        return userFacade.isCreator(username);
-    }
-
-
-    public Response<String> changePassword(String username, String password,String confirmPassword, String token) {
-        if(isValidToken(token,username)){
-            userFacade.changePassword(username, password, confirmPassword);
-            return Response.success("Password changed successfully", null);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to change his password but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
-
-    public Response<String> changeUsername(String username, String newUsername, String token) {
-        if(isValidToken(token,username)){
-            userFacade.changeUsername(username, newUsername);
-            return Response.success("Username changed successfully", null);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to change his username but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
-
-
 
     /**
      * This method releases the shopping cart and back to Inventory.

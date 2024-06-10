@@ -1,9 +1,17 @@
 package Presentaion.application;
 
+import Domain.Store.Store;
+import Domain.Users.Subscriber.Subscriber;
+import Service.ServiceInitializer;
+import Service.StoreService;
+import Service.UserService;
+import Utilities.Response;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.HashMap;
 
 /**
  * The entry point of the Spring Boot application.
@@ -17,7 +25,33 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {
+        init();
         SpringApplication.run(Application.class, args);
+    }
+
+    static ServiceInitializer serviceInitializer;
+    static StoreService storeService;
+    static UserService userService;
+    static Subscriber subscriber, notOwner;
+    static Store store;
+    public static void init(){
+        ServiceInitializer.reset();
+        serviceInitializer = ServiceInitializer.getInstance();
+        userService = serviceInitializer.getUserService();
+        userService.register("miaa","Password123!");
+        Response<String> resLogin=userService.loginAsSubscriber("miaa","Password123!");
+       String token=resLogin.getData();
+        subscriber=userService.getUserFacade().getUserRepository().getUser("miaa");
+        storeService = serviceInitializer.getStoreService();
+        userService.register("notOwner","Password123!");
+        userService.loginAsSubscriber("notOwner","Password123!");
+        notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
+        storeService.addStore("newStore", "miaa",subscriber.getToken());
+        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        storeService.addProductToStore("0","yair","d",20,30,"miaa",token);
+        System.out.println(store.getInventory().productsList);
+        ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
+        System.out.println( ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrdersHistory("0").getData());
     }
 
 }

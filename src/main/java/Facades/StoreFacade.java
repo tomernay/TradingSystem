@@ -14,7 +14,6 @@ import java.util.Set;
 
 public class StoreFacade {
     private StoreRepository storeRepository;
-
     public StoreFacade() {
         storeRepository = new StoreRepository();
     }

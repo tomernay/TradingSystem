@@ -594,14 +594,6 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-//    public Response<String> getStoreIDByName(String storeName, String username, String token) {
-//        SystemLogger.info("[START] User: " + username + " is trying to get storeID by storeName: " + storeName);
-//        if (userService.isValidToken(token, username)) {
-//            return storeFacade.getStoreIDByName(storeName, username);
-//        }
-//        SystemLogger.error("[ERROR] User: " + username + " tried to get storeID by storeName: " + storeName + " but the token was invalid");
-//        return Response.error("Invalid token", null);
-//    }
 
     /**
      * This method retrieves the name of a store by its ID

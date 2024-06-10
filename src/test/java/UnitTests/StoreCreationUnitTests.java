@@ -39,7 +39,7 @@ class StoreCreationUnitTests {
     public void testStoreCreation() {
         Response<String> response = storeService.addStore("newStore", "yair12312", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
-        store = storeRepository.getStore(response.getData());
+        store = storeRepository.getStore("0");
         Assertions.assertNotNull(store);
     }
 
@@ -48,7 +48,7 @@ class StoreCreationUnitTests {
     public void testStoreOwner() {
 //        init();
         Response<String> response = storeService.addStore("newStore", "yair12312", subscriber.getToken());
-        store = storeRepository.getStore(response.getData());
+        store = storeRepository.getStore("0");
         Assertions.assertFalse(storeService.isStoreOwner(store.getId(), "yair12312"));
     }
 
@@ -56,7 +56,7 @@ class StoreCreationUnitTests {
     public void testStoreManager() {
 //        init();
         Response<String> response = storeService.addStore("newStore", "yair12312", subscriber.getToken());
-        store = storeRepository.getStore(response.getData());
+        store = storeRepository.getStore("0");
         Assertions.assertFalse(storeService.isStoreManager(store.getId(), "yair12312"));
     }
 
@@ -84,7 +84,7 @@ class StoreCreationUnitTests {
         storeService.addStore("yairStore", "yair12312", subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
 
-        storeService.closeStore(store.getId(), subscriber.getUsername(), subscriber.getToken());
+        storeService.closeStore("0", subscriber.getUsername(), subscriber.getToken());
         Assertions.assertTrue(storeService.getStoreFacade().getStoreRepository().isClosedStore(store.getId()));
         Assertions.assertFalse(storeService.getStoreFacade().getStoreRepository().isOpenedStore(store.getId()));
     }

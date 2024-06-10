@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "C:/Users/sigi/Desktop/הנדסת תוכנה שנה א/סמסטר ו/סדנא/TradingSystem3/./frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "C:/Users/sigi/Desktop/הנדסת תוכנה שנה א/סמסטר ו/סדנא/TradingSystem3/./frontend/generated/jar-resources",
+  "staticOutput": "C:/Users/sigi/Desktop/הנדסת תוכנה שנה א/סמסטר ו/סדנא/TradingSystem3/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "C:\\Users\\sigi\\Desktop\\הנדסת תוכנה שנה א\\סמסטר ו\\סדנא\\TradingSystem3\\target\\classes\\META-INF\\VAADIN\\config",
+  "frontendBundleOutput": "C:\\Users\\sigi\\Desktop\\הנדסת תוכנה שנה א\\סמסטר ו\\סדנא\\TradingSystem3\\target\\classes\\META-INF\\VAADIN\\webapp",
+  "devBundleOutput": "C:/Users/sigi/Desktop/הנדסת תוכנה שנה א/סמסטר ו/סדנא/TradingSystem3/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "C:/Users/sigi/Desktop/הנדסת תוכנה שנה א/סמסטר ו/סדנא/TradingSystem3/target/dev-bundle/config",
+  "jarResourcesFolder": "C:/Users/sigi/Desktop/הנדסת תוכנה שנה א/סמסטר ו/סדנא/TradingSystem3/./frontend/generated/jar-resources",
+  "themeName": "my-app",
+  "clientServiceWorkerSource": "C:\\Users\\sigi\\Desktop\\הנדסת תוכנה שנה א\\סמסטר ו\\סדנא\\TradingSystem3\\target\\sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}

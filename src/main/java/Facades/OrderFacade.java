@@ -29,4 +29,8 @@ public class OrderFacade {
     public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
         return orderRepository.getPurchaseHistoryBySubscriber(subscriberID);
     }
+
+    public void CreatOrder(String username, Map<String, Map<String, Integer>> ShoppingcartContents) {
+        orderRepository.CreatOrder(username, ShoppingcartContents);
+    }
 }
