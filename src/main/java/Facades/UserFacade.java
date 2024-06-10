@@ -146,5 +146,25 @@ public class UserFacade {
         userRepository.removeStoreRole(subscriberUsername, storeID);
     }
 
+    public Response<String> isOwner(String username) {
+        return userRepository.isOwner(username);
+    }
+
+    public Response<String> isManager(String username) {
+        return userRepository.isManager(username);
+    }
+
+    public Response<String> isCreator(String username) {
+        return userRepository.isCreator(username);
+    }
+
+    public Response<String> changePassword( String username ,String password, String confirmPassword){
+        return userRepository.changePassword(username ,password, confirmPassword);
+    }
+
+    public Response<String> changeUsername(String username, String newUsername){
+        return userRepository.changeUsername(username, newUsername);
+    }
+
 
 }

@@ -468,5 +468,36 @@ public class UserService {
         return new Response<String>(true,"",userFacade.getUserRepository().addNormalMessage(user,message));
     }
 
+    public Response<String> isOwner(String username){
+        return userFacade.isOwner(username);
+    }
+
+    public Response<String> isManager(String username){
+        return userFacade.isManager(username);
+    }
+
+    public Response<String> isCreator(String username){
+        return userFacade.isCreator(username);
+    }
+
+
+    public Response<String> changePassword(String username, String password,String confirmPassword, String token) {
+        if(isValidToken(token,username)){
+            userFacade.changePassword(username, password, confirmPassword);
+            return Response.success("Password changed successfully", null);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to change his password but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
+
+    public Response<String> changeUsername(String username, String newUsername, String token) {
+        if(isValidToken(token,username)){
+            userFacade.changeUsername(username, newUsername);
+            return Response.success("Username changed successfully", null);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to change his username but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
+
 
 }
