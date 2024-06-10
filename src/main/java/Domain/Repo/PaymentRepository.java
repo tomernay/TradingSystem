@@ -11,12 +11,14 @@ import java.util.HashMap;
 public class PaymentRepository {
     private HashMap<String, PaymentAdapter> payments;
 
+
     public PaymentRepository() {
         this.payments = new HashMap<>();
     }
 
-    public void addPaymentAdapter(PaymentAdapter paymentAdapter, String name){
+    public Response<String> addPaymentAdapter(PaymentAdapter paymentAdapter, String name){
         payments.put(name, paymentAdapter);
+        return new Response<>(true,"payment added successfully");
     }
 
     /**
