@@ -5,6 +5,7 @@ import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
+import Utilities.Response;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.SpringApplication;
@@ -38,7 +39,8 @@ public class Application implements AppShellConfigurator {
         serviceInitializer = ServiceInitializer.getInstance();
         userService = serviceInitializer.getUserService();
         userService.register("miaa","Password123!");
-        userService.loginAsSubscriber("miaa","Password123!");
+        Response<String> resLogin=userService.loginAsSubscriber("miaa","Password123!");
+       String token=resLogin.getData();
         subscriber=userService.getUserFacade().getUserRepository().getUser("miaa");
         storeService = serviceInitializer.getStoreService();
         userService.register("notOwner","Password123!");
@@ -46,7 +48,10 @@ public class Application implements AppShellConfigurator {
         notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
         storeService.addStore("newStore", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        storeService.addProductToStore("0","yair","d",20,30,"miaa",token);
+        System.out.println(store.getInventory().productsList);
         ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
+        System.out.println( ServiceInitializer.getInstance().getAdminService().getOrderFacade().getOrdersHistory("0").getData());
     }
 
 }
