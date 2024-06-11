@@ -197,7 +197,7 @@ public class Product {
             return Response.error("Invalid Quantity: Quantity cannot be negative", null);
         }
         this.quantity = newQuantity;
-        SystemLogger.info("[SUCCESS] Quantity set successfully for product: " + this.name);
+        SystemLogger.info("[SUCCESS] Quantity set successfully for product: " + this.name + " to " + this.quantity);
         return Response.success("Quantity set successfully for product: " + this.name, null);
     }
 

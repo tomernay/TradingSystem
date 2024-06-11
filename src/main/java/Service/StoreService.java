@@ -690,6 +690,7 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
+    //may be deleted
     public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByCategory(String category, String UserName, String token) {
         SystemLogger.info("[START] User: " + UserName + " is trying to search products by category: " + category);
         if (userService.isValidToken(token, UserName)) {
@@ -699,6 +700,7 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
+    //may be deleted
     public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByName(String productName, String UserName, String token) {
         SystemLogger.info("[START] User: " + UserName + " is trying to search products by name: " + productName);
         if (userService.isValidToken(token, UserName)) {
