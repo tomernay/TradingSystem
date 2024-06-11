@@ -1,6 +1,7 @@
 package Domain.Repo;
 
 import Domain.Externals.Suppliers.SupplierAdapter;
+import Utilities.Response;
 
 import java.util.HashMap;
 
@@ -11,7 +12,8 @@ public class SupplyRepository {
         this.suppliers = new HashMap<>();
     }
 
-    public void addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
+    public Response<String> addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
         suppliers.put(name, supplierAdapter);
+        return new Response<>(true,"supplier added successfully");
     }
 }
