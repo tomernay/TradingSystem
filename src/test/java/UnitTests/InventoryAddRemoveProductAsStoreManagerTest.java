@@ -59,5 +59,10 @@ public class InventoryAddRemoveProductAsStoreManagerTest {
     public void removeProductTest(){
         Response<String> response = storeService.addProductToStore(store.getId(), "product1", "product1Dec", 10, 10, "mor", subscriber2.getToken());
         Assert.assertTrue(response.isSuccess());
+        Response<String> response2 = storeService.removeProductFromStore(1, store.getId(), "mor", subscriber2.getToken());
+        Assert.assertTrue(response2.isSuccess());
+        Response<ArrayList<ProductDTO>> response3 = storeService.getAllProductsFromStore(store.getId(), "mor", subscriber2.getToken());
+        Assert.assertTrue(response3.getData().isEmpty());
+
     }
 }

@@ -39,7 +39,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editProductQuantity() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editProductQuantity----------------------");
         Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(store.getId(), "mormor", subscriber.getToken());
         System.out.println(res.getData().size());
         Response<String> response = storeService.setProductQuantity(1, 30, store.getId(), "mormor", subscriber.getToken());
@@ -52,7 +52,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editAddProductQuantity() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editAddProductQuantity----------------------");
         Response<String> response = storeService.addProductQuantity(1, -10, store.getId(), "mormor", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
         Response<String> response2 = storeService.addProductQuantity(1, -11, store.getId(), "mormor", subscriber.getToken());
@@ -63,7 +63,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editProductPrice() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editProductPrice----------------------");
         Response<String> response = storeService.setProductPrice(1, 20, store.getId(), "mormor", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
         Response<String> response2 = storeService.setProductPrice(1, -8, store.getId(), "mormor", subscriber.getToken());
@@ -74,7 +74,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editProductName() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editProductName----------------------");
         Response<String> response = storeService.setProductName(1, "NAME CHANGED", store.getId(), "mormor", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
         Response<String> response2 = storeService.setProductName(1, "", store.getId(), "mormor", subscriber.getToken());
@@ -85,7 +85,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editProductDec() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editProductDec----------------------");
         Response<String> response = storeService.setProductDescription(1, "DESC CHANGED", store.getId(), "mormor", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
         Response<String> response2 = storeService.setProductDescription(2, "CHANGE MY DESC", store.getId(), "mormor", subscriber.getToken());
@@ -96,7 +96,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editProductCategory() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editProductCategory----------------------");
         Response<String> response = storeService.assignProductToCategory(1, "category1", store.getId(), "mormor", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
         Response<String> response2 = storeService.assignProductToCategory(1, "category1", store.getId(), "mormor", subscriber.getToken());
@@ -109,7 +109,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editAssignProductToCategory() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editAssignProductToCategory----------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mormor", subscriber.getToken());
         Response<String> response = storeService.assignProductToCategory(1, "category2", store.getId(), "mormor", subscriber.getToken());
         Assertions.assertTrue(response.isSuccess());
@@ -117,7 +117,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
 
     @Test
     public void editRemoveCategoryFromStore() {
-        System.out.println("--------------------------------------------------------");
+        System.out.println("----------------------editRemoveCategoryFromStore----------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mormor", subscriber.getToken());
         Response<String> response = storeService.isCategoryExist(store.getId(), "General", "mormor", subscriber.getToken());
         Assertions.assertFalse(response.isSuccess());

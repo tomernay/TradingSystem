@@ -151,7 +151,7 @@ public class Inventory {
         return Response.success("Product with ID: " + productID + " description retrieved successfully", description);
     }
 
-    public Response<String> setProductDescription(int productID, String newDescription) {
+    public synchronized Response<String> setProductDescription(int productID, String newDescription) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -170,7 +170,7 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         product.setDescription(newDescription);
-        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " description updated successfully");
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " description updated successfully to: " + newDescription);
         return Response.success("Product with ID: " + productID + " description updated successfully", newDescription);
 
     }
@@ -231,7 +231,7 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         product.setName(productName);
-        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " name updated successfully");
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " name updated successfully to: " + productName);
         return Response.success("Product with ID: " + productID + " name updated successfully", productName);
     }
 
@@ -271,7 +271,7 @@ public class Inventory {
         return Response.success("Product with ID: " + productID + " price retrieved successfully", String.valueOf(price));
     }
 
-    public Response<String> setProductPrice(int productID, double newPrice) {
+    public synchronized Response<String> setProductPrice(int productID, double newPrice) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -290,7 +290,7 @@ public class Inventory {
             SystemLogger.error("[ERROR] Invalid price: Price cannot be negative");
             return Response.error("Invalid price: Price cannot be negative", null);
         }
-        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " price updated successfully");
+        SystemLogger.info("[SUCCESS] Product with ID: " + productID + " price updated successfully to: " + newPrice);
         return Response.success("Product with ID: " + productID + " price updated successfully", String.valueOf(newPrice));
     }
 
@@ -420,7 +420,7 @@ public class Inventory {
     }
 
     //product with no category will be added to General category
-    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity) {
+    public synchronized Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity) {
         if (storeID == null || storeID.isEmpty()) {
             SystemLogger.error("[ERROR] Store ID cannot be null or empty");
             return Response.error("Store ID cannot be null or empty", null);
@@ -462,7 +462,7 @@ public class Inventory {
     }
 
     //product with categories will be added to the categories he is associated with
-    public Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity, ArrayList<String> categories) {
+    public synchronized Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity, ArrayList<String> categories) {
         if (storeID == null || storeID.isEmpty()) {
             SystemLogger.error("[ERROR] Store ID cannot be null or empty");
             return Response.error("Store ID cannot be null or empty", null);
@@ -508,7 +508,7 @@ public class Inventory {
         return Response.success("Product with ID: " + product.getProductID() + " added successfully", name);
     }
 
-    public Response<String> removeProductFromStore(int productID) {
+    public synchronized Response<String> removeProductFromStore(int productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -524,8 +524,10 @@ public class Inventory {
         }
         productsList.remove(productID);
         for (Map.Entry<String, ArrayList<Integer>> entry : categories.entrySet()) {
-            entry.getValue().remove(productID);
+            // Convert productID to an Integer object before removing
+            entry.getValue().remove(Integer.valueOf(productID));
         }
+
         SystemLogger.info("[SUCCESS] Product with ID: " + productID + " removed successfully");
         return Response.success("Product with ID: " + productID + " removed successfully", product.getName());
 

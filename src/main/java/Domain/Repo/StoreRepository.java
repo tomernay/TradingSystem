@@ -203,7 +203,7 @@ public class StoreRepository {
         return stores.containsKey(storeID);
     }
 
-    private Response<String> isStoreExist(String storeID) {
+    private synchronized Response<String> isStoreExist(String storeID) {
         if (!stores.containsKey(storeID)) {
             if (!deactivatedStores.containsKey(storeID)) {
                 return Response.error("Store with ID: " + storeID + " doesn't exist", null);

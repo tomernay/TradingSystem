@@ -268,7 +268,7 @@ public class Store {
         return Response.success("Successfully removed the store subscription for the user: " + currentUsername, null);
     }
 
-    private Response<String> checkUserPermission(String userName, Permissions requiredPermission) {
+    private synchronized Response<String> checkUserPermission(String userName, Permissions requiredPermission) {
         if (!subscribers.containsKey(userName)) {
             SystemLogger.error("[ERROR] The user: " + userName + " is not a subscriber of the store: " + storeName);
             return Response.error("The user: " + userName + " can't perform this action", null);
@@ -438,7 +438,7 @@ public class Store {
         return Response.success("The store ID is: " + storeID, storeID);
     }
 
-    public Response<String> addProductToStore(String name, String desc, double price, int quantity, String userName) {
+    public synchronized Response<String> addProductToStore(String name, String desc, double price, int quantity, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.ADD_PRODUCT);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
@@ -456,7 +456,7 @@ public class Store {
         return inventory.addProductToStore(storeID, storeName, name, desc, price, quantity, categories);
     }
 
-    public Response<String> removeProductFromStore(int productID, String userName) {
+    public synchronized Response<String> removeProductFromStore(int productID, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.REMOVE_PRODUCT);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to remove the product: " + productID + " from the store but he doesn't have the permission");
