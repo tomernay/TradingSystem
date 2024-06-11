@@ -8,9 +8,9 @@ public class ProductDTO {
     //private String storeName;   // The name of the store
     private Integer productID;  // The unique ID of the product
     private String name;        // The name of the product
-    //private String desc;        // The description of the product
+    private String desc;        // The description of the product
     private double price;          // The price of the product
-   // private int quantity;       // The quantity of the product available in the inventory
+    private int quantity;       // The quantity of the product available in the inventory
 
     public ArrayList<String> categories; // The category that a product is related to
 
@@ -27,7 +27,9 @@ public class ProductDTO {
         this.storeID = product.getStoreID();
         this.productID = product.getProductID();
         this.name = product.getName();
+        this.desc = product.getDescription();
         this.price = product.getPrice();
+        this.quantity = product.getQuantity();
         //this.categories = product.getCategories();
     }
 
@@ -40,10 +42,25 @@ public class ProductDTO {
     public Integer getProductID() {
         return productID;
     }
-
     public double getPrice() {
         return price;
     }
+    public String getDescription() {return desc;}
+    public int getQuantity() {return quantity;}
+
+
+
+    public String toString() {
+        return "ProductINFO{" +
+                "storeID='" + storeID + '\'' +
+                ", productID=" + productID +
+                ", name='" + name + '\'' +
+                ", desc='" + desc + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
+    }
+
 }
 
 
