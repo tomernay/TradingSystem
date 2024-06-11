@@ -353,14 +353,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             UI.getCurrent().navigate(StoreManagementView.class);
         });
 
-        Button purchaseHistoryButton = new Button("Purchase History");
-        purchaseHistoryButton.addClickListener(e -> {
+        Button purchaseHistoryByStoreButton = new Button("Purchase History By Store");
+        purchaseHistoryByStoreButton.addClickListener(e -> {
             UI.getCurrent().navigate(StorePurchaseHistory.class);
         });
 
 
         // Add to the main content area
-        setContent(new VerticalLayout(addMessageButton,storeButton,purchaseHistoryButton));
+        setContent(new VerticalLayout(addMessageButton,storeButton,purchaseHistoryByStoreButton));
 
     }
 
