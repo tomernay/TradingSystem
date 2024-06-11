@@ -65,4 +65,22 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    public Response<String> clearCart() {
+        if(shoppingCart != null){
+            shoppingCart = new ShoppingCart();
+            return Response.success("Cart cleared successfully", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
+        return Response.error("Error - can't clear cart", null);
+    }
+
+    public Response<String> checkout() {
+        if(shoppingCart != null){
+            shoppingCart = new ShoppingCart();
+            return Response.success("Checkout successful", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
+        return Response.error("Error - can't checkout", null);
+    }
 }

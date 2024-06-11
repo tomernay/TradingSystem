@@ -147,4 +147,11 @@ public class UserFacade {
     }
 
 
+    public Response<String> clearCart(String usernameFromCookies) {
+        return userRepository.clearCart(usernameFromCookies);
+    }
+
+    public Response<String> checkout(String usernameFromCookies) {
+        return userRepository.checkout(usernameFromCookies);
+    }
 }

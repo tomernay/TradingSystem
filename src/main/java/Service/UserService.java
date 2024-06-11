@@ -320,6 +320,7 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
+
     /**
      * This method updates a product in the shopping cart.
      * @param storeID The store ID of the store.
@@ -469,4 +470,21 @@ public class UserService {
     }
 
 
+    public Response<String> clearCart(String usernameFromCookies, String token) {
+        SystemLogger.info("[START] User: " + usernameFromCookies + " is trying to clear the shopping cart");
+        if (isValidToken(token, usernameFromCookies)) {
+            return userFacade.clearCart(usernameFromCookies);
+        }
+        SystemLogger.error("[ERROR] User: " + usernameFromCookies + " tried to clear the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+    public Response<String> checkout(String usernameFromCookies, String token) {
+        SystemLogger.info("[START] User: " + usernameFromCookies + " is trying to checkout");
+        if (isValidToken(token, usernameFromCookies)) {
+            return userFacade.checkout(usernameFromCookies);
+        }
+        SystemLogger.error("[ERROR] User: " + usernameFromCookies + " tried to checkout but the token was invalid");
+        return Response.error("invalid token", null);
+    }
 }

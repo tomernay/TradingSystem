@@ -270,4 +270,26 @@ public class UserRepository {
     public String addNormalMessage(String user, String message) {
         return subscribers.get(user).addMessage(new NormalMessage(message)).getMessage();
     }
+
+    public Response<String> clearCart(String usernameFromCookies) {
+        if (subscribers.containsKey(usernameFromCookies)) {
+            return subscribers.get(usernameFromCookies).clearCart();
+        }
+        else if (guests.containsKey(usernameFromCookies)) {
+            return guests.get(usernameFromCookies).clearCart();
+        }
+        SystemLogger.error("[ERROR] User " + usernameFromCookies + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<String> checkout(String usernameFromCookies) {
+        if (subscribers.containsKey(usernameFromCookies)) {
+            return subscribers.get(usernameFromCookies).checkout();
+        }
+        else if (guests.containsKey(usernameFromCookies)) {
+            return guests.get(usernameFromCookies).checkout();
+        }
+        SystemLogger.error("[ERROR] User " + usernameFromCookies + " does not exist");
+        return Response.error("User does not exist", null);
+    }
 }

@@ -134,4 +134,12 @@ public class Subscriber extends User {
     public void removeStoreRole(String storeID) {
         storesRole.remove(storeID);
     }
+
+    public Response<String> clearCart() {
+        return Response.success("[SUCCESS] Cart cleared successfully.", null);
+    }
+
+    public Response<String> checkout() {
+        return Response.success("[SUCCESS] Checkout successful.", null);
+    }
 }

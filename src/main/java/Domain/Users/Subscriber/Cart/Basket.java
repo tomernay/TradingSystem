@@ -64,4 +64,8 @@ public class Basket {
     public Map<String, Integer> getProductsQuantityMap() {
         return productsQuantityMap;
     }
+
+    public void setProductsQuantityMap(Map<String, Integer> value) {
+        productsQuantityMap = value;
+    }
 }
