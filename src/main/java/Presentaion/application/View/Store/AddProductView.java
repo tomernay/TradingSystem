@@ -7,7 +7,6 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +31,7 @@ public class AddProductView extends Div {
 
     private void createForm() {
         FormLayout formLayout = new FormLayout();
-
+      presenter=new StorePresenter();
         storeID = new TextField("Store ID");
         name = new TextField("Product Name");
         desc = new TextField("Product Description");
@@ -55,13 +54,13 @@ public class AddProductView extends Div {
 
     private void addProduct() {
         try {
-           // double p=Double.valueOf(price.getValue());
+            double p=Double.valueOf(price.getValue());
             System.out.println("pass1");
-          //  int q=Integer.valueOf(quantity.getValue());
+            int q=Integer.valueOf(quantity.getValue());
             System.out.println("pass2");
             String user= CookiesHandler.getUsernameFromCookies(getRequest());
-            String token= CookiesHandler.getUsernameFromCookies(getRequest());
-            presenter.addProduct(this, storeID.getValue(), name.getValue(), desc.getValue(), 20.0,10,user,token);
+            String token= CookiesHandler.getTokenFromCookies(getRequest());
+            presenter.addProduct(this, storeID.getValue(), name.getValue(), desc.getValue(), p,q,user,token);
         }catch (Exception e){
               e.printStackTrace();
         }
