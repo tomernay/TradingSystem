@@ -36,6 +36,10 @@ public class User {
 
 
     public Response<String> addProductToShoppingCart(String storeID,String productName,int quantity) {
+        if(quantity <= 0){
+            SystemLogger.error("[ERROR] User " + username + " tried to add product with quantity 0 or less");
+            return Response.error("Error - can't add product with quantity 0 or less", null);
+        }
         if(shoppingCart != null){
             return shoppingCart.addProductToCart(storeID, productName, quantity);
         }

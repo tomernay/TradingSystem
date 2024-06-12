@@ -52,6 +52,13 @@ public class Basket {
     }
 
     public Response<String> updateProductInBasket(String productID, int quantity) {
+        if (quantity < 0) {
+            SystemLogger.error("[ERROR] Can't update product in basket - quantity is invalid");
+            return Response.error("Error - can't update product in basket - quantity is invalid",null);
+        }
+        if (quantity == 0) {
+            return removeProductFromBasket(productID);
+        }
         if(productsQuantityMap.containsKey(productID)){
             productsQuantityMap.put(productID, quantity);
             SystemLogger.info("[SUCCESS] Product updated in basket successfully");
