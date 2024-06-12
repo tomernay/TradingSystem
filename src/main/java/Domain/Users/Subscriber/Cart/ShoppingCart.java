@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class ShoppingCart {
     private List<Basket> baskets;
+    boolean inPurchaseProcess = false;
 
     public ShoppingCart() {
         this.baskets = new ArrayList<>();
@@ -19,6 +20,11 @@ public class ShoppingCart {
     }
 
     public Response<String> addProductToCart(String storeID, String productID, int quantity) {
+        if (!inPurchaseProcess){
+            SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
+            return Response.error("Error - can't add product to cart - purchase process started", null);
+
+        }
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
 
@@ -31,6 +37,11 @@ public class ShoppingCart {
     }
 
     public Response<String> removeProductFromCart(String storeID, String productID) {
+        if (!inPurchaseProcess){
+            SystemLogger.error("[ERROR] Can't add product to cart - purchase process  started");
+            return Response.error("Error - can't add product to cart - purchase process  started", null);
+
+        }
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
                 return basket.removeProductFromBasket(productID);
@@ -41,6 +52,11 @@ public class ShoppingCart {
     }
 
     public Response<String> updateProductInCart(String storeID, String productID, int quantity) {
+        if (!inPurchaseProcess){
+            SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
+            return Response.error("Error - can't add product to cart - purchase process started", null);
+
+        }
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
                 return basket.updateProductInBasket(productID, quantity);
@@ -57,5 +73,13 @@ public class ShoppingCart {
         }
         SystemLogger.info("[SUCCESS] get ShoppingCart Contents successfull");
         return Response.success("get ShoppingCart Contents successfull", userProducts);
+    }
+
+    public void setInPurchaseProcess(boolean b) {
+        inPurchaseProcess = b;
+    }
+
+    public Boolean isInPurchaseProcess() {
+        return inPurchaseProcess;
     }
 }

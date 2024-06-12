@@ -167,4 +167,21 @@ public class UserFacade {
     }
 
 
+
+
+    public Response<String> ReleaseShoppSingCartForUser(String username) {
+        return userRepository.ReleaseShoppSingCartForUser(username);
+    }
+
+    public Response<String> lockFlagShoppingCart(String username) {
+        return userRepository.lockFlagShoppingCart(username);
+    }
+
+    public Response<String> unlockFlagShoppingCart(String username) {
+        return userRepository.unlockFlagShoppingCart(username);
+    }
+
+    public Response<Boolean> isFlagLock(String username) {
+        return userRepository.isFlagLock(username);
+    }
 }

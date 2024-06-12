@@ -337,4 +337,64 @@ public class UserRepository {
             return Response.error("User does not exist", null);
         }
     }
+
+
+
+    public Response<String> ReleaseShoppSingCartForUser(String username) {
+        if (subscribers.containsKey(username)) {
+            subscribers.get(username).setShoppingCart(new ShoppingCart());
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " released successfully");
+            return Response.success("Shopping cart released successfully", null);
+        }
+        else if (guests.containsKey(username)) {
+            guests.get(username).setShoppingCart(new ShoppingCart());
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " released successfully");
+            return Response.success("Shopping cart released successfully", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<String> lockFlagShoppingCart(String username) {
+        if (subscribers.containsKey(username)) {
+            subscribers.get(username).lockFlagShoppingCart();
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " locked successfully");
+            return Response.success("Shopping cart locked successfully", null);
+        }
+        else if (guests.containsKey(username)) {
+            guests.get(username).lockFlagShoppingCart();
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " locked successfully");
+            return Response.success("Shopping cart locked successfully", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<String> unlockFlagShoppingCart(String username) {
+        if (subscribers.containsKey(username)) {
+            subscribers.get(username).unlockFlagShoppingCart();
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " unlocked successfully");
+            return Response.success("Shopping cart unlocked successfully", null);
+        }
+        else if (guests.containsKey(username)) {
+            guests.get(username).unlockFlagShoppingCart();
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " unlocked successfully");
+            return Response.success("Shopping cart unlocked successfully", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<Boolean> isFlagLock(String username) {
+        if (subscribers.containsKey(username)) {
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " is locked");
+            return Response.success("Shopping cart is locked", subscribers.get(username).isFlagLock());
+        }
+        else if (guests.containsKey(username)) {
+            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " is locked");
+            return Response.success("Shopping cart is locked", guests.get(username).isFlagLock());
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
+    }
 }
