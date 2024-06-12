@@ -4,7 +4,8 @@ import Domain.Repo.AdminRepository;
 
 public class AdminFacade {
 
-    private AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
+
     public AdminFacade(){
         adminRepository = new AdminRepository();
     }

@@ -1,19 +1,17 @@
 package Domain.Users.StateOfSubscriber;
 
 import Domain.Store.Store;
-import Domain.Store.StoreData.Permissions;
 import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
-import Utilities.SystemLogger;
 
 
 import java.util.List;
 
 public abstract class SubscriberState {
-    private String subscriberUsername;
-    private Store store;
+    private final String subscriberUsername;
+    private final Store store;
 
     public SubscriberState(String subscriberUsername, Store store) {
         this.subscriberUsername = subscriberUsername;

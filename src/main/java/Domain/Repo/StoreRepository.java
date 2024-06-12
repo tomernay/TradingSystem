@@ -15,9 +15,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StoreRepository {
-    private Map<String, Store> stores;
-    private Map<String, Store> deactivatedStores; // <StoreID, Store>
-    AtomicInteger storeID = new AtomicInteger(0);
+    private final Map<String, Store> stores;
+    private final Map<String, Store> deactivatedStores; // <StoreID, Store>
+    private final AtomicInteger storeID = new AtomicInteger(0);
 
 
     public StoreRepository() {
@@ -489,16 +489,16 @@ public class StoreRepository {
         }
         return stores.get(storeID).isCategoryExist(category);
     }
-    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> ReleaseShoppSingCartAndBackToInventory(Map<String, Map<String, Integer>> shoppingCart) {
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProtctDTO = stores.get(storeID).ReleaseShoppSingCart(productsInStore);
-            if (!resProtctDTO.isSuccess()) {
-                return Response.error(resProtctDTO.getMessage(), null);
+            Response<String> resProductDTO = stores.get(storeID).ReleaseShoppSingCart(productsInStore);
+            if (!resProductDTO.isSuccess()) {
+                return Response.error(resProductDTO.getMessage(), null);
             }
         }
         return Response.success("[SUCCESS] Successfully released the shopping cart and calculated the price.", null);
@@ -507,23 +507,23 @@ public class StoreRepository {
 
     public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         List <ProductDTO> products = new ArrayList<>();
-        ArrayList<String> storelock = new ArrayList<>();
+        ArrayList<String> storeLock = new ArrayList<>();
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<List<ProductDTO>> resProtctDTO = stores.get(storeID).lockShoppingCart(productsInStore);
-            if (resProtctDTO.isSuccess()) {
-                products.addAll(resProtctDTO.getData());
-                storelock.add(storeID);
+            Response<List<ProductDTO>> resProductDTO = stores.get(storeID).lockShoppingCart(productsInStore);
+            if (resProductDTO.isSuccess()) {
+                products.addAll(resProductDTO.getData());
+                storeLock.add(storeID);
             }
             else {
-                for (String store : storelock) {
+                for (String store : storeLock) {
                     stores.get(store).unlockShoppingCart(shoppingCart.get(store));
                 }
-                return Response.error(resProtctDTO.getMessage(), null);
+                return Response.error(resProductDTO.getMessage(), null);
             }
 
         }

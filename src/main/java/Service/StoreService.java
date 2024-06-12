@@ -730,8 +730,8 @@ public class StoreService {
         return storeFacade.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeFacade.ReleaseShoppSingCartAndbacktoInventory(shoppingCart);
+    public Response<String> ReleaseShoppSingCartAndBackToInventory(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.ReleaseShoppSingCartAndBackToInventory(shoppingCart);
     }
 
 
@@ -759,8 +759,8 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> data) {
-        return storeFacade.ReleaseShoppSingCart(data);
+    public Response<String> ReleaseShoppingCart(Map<String, Map<String, Integer>> data) {
+        return storeFacade.ReleaseShoppingCart(data);
     }
 }
 

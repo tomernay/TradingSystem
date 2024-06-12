@@ -1,11 +1,9 @@
 package Domain.Store.Inventory;
-import cn.hutool.json.ObjectMapper;
 
 import java.util.ArrayList;
 
 public class ProductDTO {
     private String storeID;     // The ID of the store to which the product belongs
-    //private String storeName;   // The name of the store
     private Integer productID;  // The unique ID of the product
     private String name;        // The name of the product
     private String desc;        // The description of the product

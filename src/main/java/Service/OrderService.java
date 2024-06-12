@@ -7,7 +7,7 @@ import Utilities.SystemLogger;
 import java.util.Map;
 
 public class OrderService {
-    private OrderFacade orderFacade;
+    private final OrderFacade orderFacade;
     private UserService userService ;
 
 
@@ -15,11 +15,12 @@ public class OrderService {
     public OrderService() {
         orderFacade = new OrderFacade();
     }
+
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
-    public Response<Map<String, String>> getOrderHistorty(String storeID) {
+    public Response<Map<String, String>> getOrderHistory(String storeID) {
         return orderFacade.getOrdersHistory(storeID);
     }
 
@@ -27,7 +28,7 @@ public class OrderService {
         return orderFacade;
     }
 
-    public Response<String> CreatOrder(String username, String token) {
+    public Response<String> CreateOrder(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to purchase the shopping cart");
         Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userService.getShoppingCartContents(username, token);
         if (userService.isValidToken(token, username)) {

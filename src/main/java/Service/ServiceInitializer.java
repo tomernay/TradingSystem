@@ -19,13 +19,11 @@ public class ServiceInitializer {
         paymentService = new PaymentService();
         orderService = new OrderService();
         userService.setStoreService(storeService);
-        userService.setOrderService(orderService);
         userService.setAdminService(adminService);
         storeService.setUserService(userService);
         adminService.setUserService(userService);
         adminService.setStoreService(storeService);
         adminService.setOrderService(orderService);
-        paymentService.setUserService(userService);
         orderService.setUserService(userService);
 
 

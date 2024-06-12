@@ -8,6 +8,8 @@ import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
+import Utilities.Messages.nominateManagerMessage;
+import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -18,10 +20,17 @@ import java.util.Queue;
 
 public class UserRepository {
 
-    private Map<String, Subscriber> subscribers = new HashMap<>();
-    private Map<String, Subscriber> subscribersLoggedIn = new HashMap<>();
-    private Map<String, User> guests = new HashMap<>();
-    private int userIDS = 0;
+    private final Map<String, Subscriber> subscribers;
+    private final Map<String, Subscriber> subscribersLoggedIn;
+    private final Map<String, User> guests;
+    private int userIDS;
+
+    public UserRepository() {
+        subscribers = new HashMap<>();
+        subscribersLoggedIn = new HashMap<>();
+        guests = new HashMap<>();
+        userIDS = 0;
+    }
 
     public Response<List<String>> loginAsGuest() {
         String username = "Guest" + userIDS;
@@ -76,7 +85,7 @@ public class UserRepository {
         guests.put(user.getUsername(), user);
     }
 
-    public Response<Message> messageResponse(String subscriberUsername, boolean answer) {
+    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
         return subscribers.get(subscriberUsername).messageResponse(answer);
     }
 
@@ -136,10 +145,7 @@ public class UserRepository {
             return false;
         }
         // Check if the username contains only alphanumeric characters
-        if (!username.matches("[A-Za-z0-9]*")) {
-            return false;
-        }
-        return true;
+        return username.matches("[A-Za-z0-9]*");
     }
 
     public static boolean isValidPassword(String password) {
@@ -228,11 +234,23 @@ public class UserRepository {
     }
 
     public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
-        return subscribers.get(currentUsername).ownerNominationResponse(answer);
+        Response<Message> response = subscribers.get(currentUsername).ownerNominationResponse(answer);
+        if (response.isSuccess()) {
+            sendMessageToUser(((nominateOwnerMessage) response.getData()).getNominator(), new NormalMessage("Your request to nominate " + currentUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
+            SystemLogger.info("[SUCCESS] message responded successfully");
+            return response;
+        }
+        return Response.error(response.getMessage(), null);
     }
 
     public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
-        return subscribers.get(currentUsername).managerNominationResponse(answer);
+        Response<Message> response = subscribers.get(currentUsername).managerNominationResponse(answer);
+        if (response.isSuccess()) {
+            sendMessageToUser(((nominateManagerMessage) response.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + currentUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
+            SystemLogger.info("[SUCCESS] message responded successfully");
+            return response;
+        }
+        return Response.error(response.getMessage(), null);
     }
 
     public boolean isValidToken(String token, String currentUsername) {
@@ -259,11 +277,6 @@ public class UserRepository {
         subscribers.get(subscriberUsername).removeStoreRole(storeID);
     }
 
-    /**
-     * return user messages queue
-     * @param user
-     * @return
-     */
     public Queue<Message> getMessages(String user) {
         return subscribers.get(user).getMessages();
     }

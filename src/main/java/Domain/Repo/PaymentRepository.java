@@ -9,7 +9,7 @@ import Utilities.Response;
 import java.util.HashMap;
 
 public class PaymentRepository {
-    private HashMap<String, PaymentAdapter> payments;
+    private final HashMap<String, PaymentAdapter> payments;
 
     public PaymentRepository() {
         this.payments = new HashMap<>();

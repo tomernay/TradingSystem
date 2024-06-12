@@ -2,11 +2,10 @@ package Facades;
 
 import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Repo.PaymentRepository;
-import Service.PaymentService;
 import Utilities.Response;
 
 public class PaymentFacade {
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
 
     public PaymentFacade() {
         paymentRepository = new PaymentRepository();

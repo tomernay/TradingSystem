@@ -7,8 +7,9 @@ import Utilities.SystemLogger;
 import java.util.*;
 
 public class OrderRepository {
-    private Map<Integer, Order> orders;// <orderID, Order>
+    private final Map<Integer, Order> orders;// <orderID, Order>
     private int counterId = 0;
+
     public OrderRepository() {
         orders = new HashMap<>();
     }

@@ -2,7 +2,6 @@ package Domain.Store.Inventory;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
-import java.util.ArrayList;
 
 /**
  * Represents a product in the store inventory.

@@ -5,7 +5,7 @@ import Utilities.Response;
 
 
 public class StoreOwner extends SubscriberState {
-    private String nominatorUsername;
+    private final String nominatorUsername;
 
     public StoreOwner(Store store, String subscriberUsername, String nominatorUsername) {
         super(subscriberUsername, store);

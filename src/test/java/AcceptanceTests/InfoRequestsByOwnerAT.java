@@ -8,8 +8,6 @@ import org.junit.Test;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +128,7 @@ public class InfoRequestsByOwnerAT {
     //test order history with no orders
     @Test
     public void testOrderHistoryNoOrders(){
-        Response<Map<String,String>> response = orderService.getOrderHistorty(store.getData());
+        Response<Map<String,String>> response = orderService.getOrderHistory(store.getData());
         Assert.assertFalse(response.isSuccess());
     }
 //    test order history with orders

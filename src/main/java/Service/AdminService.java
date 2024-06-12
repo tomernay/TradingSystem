@@ -10,8 +10,7 @@ public class AdminService {
     private UserService userService;
     private StoreService storeService;
     private OrderService orderService;
-//    private OrderFacade orderFacade;
-    private AdminFacade adminFacade;
+    private final AdminFacade adminFacade;
 
     public AdminService(){
         adminFacade = new AdminFacade();

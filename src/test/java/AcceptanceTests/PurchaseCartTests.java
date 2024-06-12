@@ -42,13 +42,13 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
     }
 
     @Test
     public void lockCardNotExist(){
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
     }
 
@@ -56,7 +56,7 @@ public class PurchaseCartTests {
     public void lockCardNotQuantity(){
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),100);
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
     }
 
@@ -65,7 +65,7 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
     }
 
@@ -74,15 +74,15 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        Response<String> res1 = userService.ReleaseShoppSingCartAndbacktoInventory("yair12312",buyer.getToken());
+        Response<String> res1 = userService.ReleaseShoppingCartAndBacktoInventory("yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
     }
 
     @Test
     public void CartLockAndReleaseNotExist(){
-        Response<String> res1 = userService.ReleaseShoppSingCartAndbacktoInventory("yair12312",buyer.getToken());
+        Response<String> res1 = userService.ReleaseShoppingCartAndBacktoInventory("yair12312",buyer.getToken());
         Assert.assertFalse(res1.isSuccess());
     }
 
@@ -91,11 +91,11 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
         Response<String> res1 = userService.CalculateDiscounts("yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
-        Response<String> res3 = orderService.CreatOrder("yair12312",buyer.getToken());
+        Response<String> res3 = orderService.CreateOrder("yair12312",buyer.getToken());
         Assert.assertTrue(res3.isSuccess());
         Response<String> res4 = userService.ReleaseShoppSingCartFromStore("yair12312",buyer.getToken());
         Assert.assertTrue(res4.isSuccess());
@@ -108,9 +108,9 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
-        Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
+        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        Response<String> res1 = userService.ReleaseShoppSingCartAndbacktoInventory("yair12312",buyer.getToken());
+        Response<String> res1 = userService.ReleaseShoppingCartAndBacktoInventory("yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
     }
 

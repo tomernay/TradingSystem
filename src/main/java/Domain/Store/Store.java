@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
 
-    //private Integer id = 0;
     private String storeID;
     private String storeName;
     private Inventory inventory;

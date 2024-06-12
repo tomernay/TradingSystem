@@ -5,7 +5,7 @@ import Domain.Repo.SupplyRepository;
 import Utilities.Response;
 
 public class SupplyFacade {
-    private SupplyRepository supplyRepository;
+    private final SupplyRepository supplyRepository;
 
     public SupplyFacade() {
         supplyRepository = new SupplyRepository();

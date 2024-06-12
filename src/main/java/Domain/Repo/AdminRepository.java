@@ -9,8 +9,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public class AdminRepository {
-
-    private Admin admin;
+    private final Admin admin;
 
     public AdminRepository(){
         admin = new Admin();

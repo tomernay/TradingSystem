@@ -3,10 +3,10 @@ package Domain;
 import java.util.Map;
 
 public class Order {
-    private int orderID;
-    private String storeID;
-    private String username;
-    private Map<String,Map<String,String>> products; /// <productID, <PARMETER, VALUE>>
+    private final int orderID;
+    private final String storeID;
+    private final String username;
+    private final Map<String,Map<String,String>> products; /// <productID, <PARAMETER, VALUE>>
     ///LIST OF PARAMETERS: quantity, price
 
 

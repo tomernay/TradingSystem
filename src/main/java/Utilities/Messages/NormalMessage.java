@@ -12,6 +12,6 @@ public class NormalMessage extends Message {
 
     @Override
     public Response<Message> response(boolean answer) {
-        return null;
+        return Response.success("Successfully responded to message.", this);
     }
 }

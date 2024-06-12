@@ -7,7 +7,8 @@ import Utilities.Response;
 import java.util.Map;
 
 public class OrderFacade {
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+
     public OrderFacade() {
         orderRepository = new OrderRepository();
     }
@@ -15,9 +16,11 @@ public class OrderFacade {
     public Map<Integer, Order> getOrders() {
         return orderRepository.getOrders();
     }
+
     public Response<Map<String,String>> getOrdersHistory(String storeID) {
         return orderRepository.getOrdersHistory(storeID);
     }
+
     public OrderRepository getOrderRepository() {
         return orderRepository;
     }

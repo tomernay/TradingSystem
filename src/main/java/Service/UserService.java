@@ -16,9 +16,8 @@ import java.util.Queue;
 import java.util.Set;
 
 public class UserService {
-    private  UserFacade userFacade;
+    private final UserFacade userFacade;
     private StoreService storeService;
-    private OrderService orderService;
     private AdminService adminService;
 
 
@@ -28,9 +27,6 @@ public class UserService {
 
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
-    }
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
     }
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
@@ -212,14 +208,6 @@ public class UserService {
         return Response.error("Invalid token",null);
     }
 
-    // Method to prompt the subscriber to accept the subscription
-    private boolean promptSubscription(String subscriberUsername, String targetUsername) {
-        // Implement the prompt logic here
-        // For example, display a prompt to the subscriber
-        // and wait for user input to accept or decline the subscription
-        return true; // Assume subscription is accepted
-    }
-
     /**
      * This method registers a new subscriber to the system.
      * @param username The username of the subscriber.
@@ -363,7 +351,7 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
-    public Response <String> LockShoppSingCartAndCalculatedPrice(String username, String token) {
+    public Response <String> LockShoppingCartAndCalculatedPrice(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
             if(adminService.isSuspended(username)){
@@ -374,20 +362,20 @@ public class UserService {
             }
             lockFlagShoppingCart(username);
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
-            Response<List<ProductDTO>> list_prouct = storeService.LockShoppingCartAndCalculatedPrice(resShoppSingCartContents.getData());
-            if (list_prouct.isSuccess()) {
-                Double price = 0.0;
-                for (ProductDTO productDTO : list_prouct.getData()) {
+            Response<List<ProductDTO>> list_product = storeService.LockShoppingCartAndCalculatedPrice(resShoppSingCartContents.getData());
+            if (list_product.isSuccess()) {
+                double price = 0.0;
+                for (ProductDTO productDTO : list_product.getData()) {
                     price += productDTO.getPrice();
                 }
-                return new Response<String>(true, price.toString());
+                return new Response<String>(true, Double.toString(price));
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to lock the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
     /**
-     * This method locks flag the shopping cart.
+     * This method locks the purchasing flag of the shopping cart, preventing the user from making any changes to the shopping cart.
      * @param username The username of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
@@ -396,7 +384,7 @@ public class UserService {
         return userFacade.lockFlagShoppingCart(username);
     }
     /**
-     * This method unlocks flag the shopping cart.
+     * This method unlocks the purchasing flag of the shopping cart, allowing the user to make changes to the shopping cart.
      * @param username The username of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
@@ -409,10 +397,6 @@ public class UserService {
         SystemLogger.info("[START] User: " + username + " is trying to check if the shopping cart is locked");
         return userFacade.isFlagLock(username);
     }
-
-
-
-
 
     /**
      * This method calculates the discounts.
@@ -465,12 +449,12 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> ReleaseShoppSingCartAndbacktoInventory(String username, String token) {
+    public Response<String> ReleaseShoppingCartAndBacktoInventory(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
             unlockFlagShoppingCart(username);
-            return storeService.ReleaseShoppSingCartAndbacktoInventory(resShoppSingCartContents.getData());
+            return storeService.ReleaseShoppSingCartAndBackToInventory(resShoppSingCartContents.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
@@ -485,7 +469,7 @@ public class UserService {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
-            return storeService.ReleaseShoppSingCart(resShoppSingCartContents.getData());
+            return storeService.ReleaseShoppingCart(resShoppSingCartContents.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
@@ -507,13 +491,14 @@ public class UserService {
     }
 
     /**
-     * get all messages for <user>
-     * @param user
-     * @return
+     * get all messages for a user
+     * @param username the user to get the messages for
+     * @return If successful, returns a success message & the messages. <br> If not, returns an error message.
      */
-    public Response<Queue<Message>> getMessages(String user){
-        return  new Response<Queue<Message>>(true,"",userFacade.getUserRepository().getMessages(user));
+    public Response<Queue<Message>> getMessages(String username){
+        return  new Response<Queue<Message>>(true,"",userFacade.getUserRepository().getMessages(username));
     }
+
 
     public Response<String> addNormalMessage(String user,String message){
         return new Response<String>(true,"",userFacade.getUserRepository().addNormalMessage(user,message));

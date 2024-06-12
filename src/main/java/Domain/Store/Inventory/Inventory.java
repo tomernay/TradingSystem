@@ -17,8 +17,8 @@ public class Inventory {
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
     private final String storeID; //Inventory for specific store
     public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
-    private ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
-    private ConcurrentHashMap<Product, Integer> lockedProducts; // <Product, Quantity>
+    private final ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
+    private final ConcurrentHashMap<Product, Integer> lockedProducts; // <Product, Quantity>
 
     // Constructor
     public Inventory(String _storeID) {

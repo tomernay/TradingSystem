@@ -12,15 +12,11 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Subscriber extends User {
-    private List<String> subscribedStores;
-    private Queue<Message> messages;
+    private final List<String> subscribedStores;
+    private final Queue<Message> messages;
     private String password;
     private String credit;
-    private Map<String, String> storesRole;
-
-
-
-
+    private final Map<String, String> storesRole;
 
     public Subscriber(String username,String password) {
         super(username);
@@ -35,13 +31,14 @@ public class Subscriber extends User {
     }
 
 
-    public Response<Message> messageResponse(boolean answer) {
+    public Response<String> messageResponse(boolean answer) {
         Message message = messages.poll();
         if (message == null) {
             SystemLogger.error("[ERROR] No messages to respond to.");
             return Response.error("No messages to respond to.", null);
         }
-        return message.response(answer);
+        Response<Message> response = message.response(answer);
+        return Response.success(response.getMessage(), null);
     }
 
     public String getToken() {

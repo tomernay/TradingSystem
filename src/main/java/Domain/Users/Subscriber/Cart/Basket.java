@@ -1,6 +1,5 @@
 package Domain.Users.Subscriber.Cart;
 
-import Domain.Store.Inventory.Product;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -8,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Basket {
-    private String storeID;
-    private Map<String, Integer> productsQuantityMap;// <productID, quantity>
+    private final String storeID;
+    private final Map<String, Integer> productsQuantityMap;// <productID, quantity>
 
     // Constructor
     public Basket(String storeID) {

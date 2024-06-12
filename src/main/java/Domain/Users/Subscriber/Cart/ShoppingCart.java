@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ShoppingCart {
-    private List<Basket> baskets;
+    private final List<Basket> baskets;
     boolean inPurchaseProcess = false;
 
     public ShoppingCart() {

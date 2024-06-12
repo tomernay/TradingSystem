@@ -6,7 +6,7 @@ import Utilities.Response;
 import java.util.HashMap;
 
 public class SupplyRepository {
-    private HashMap<String, SupplierAdapter> suppliers;
+    private final HashMap<String, SupplierAdapter> suppliers;
 
     public SupplyRepository() {
         this.suppliers = new HashMap<>();
