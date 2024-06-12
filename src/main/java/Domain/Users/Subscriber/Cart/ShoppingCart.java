@@ -20,7 +20,7 @@ public class ShoppingCart {
     }
 
     public Response<String> addProductToCart(String storeID, String productID, int quantity) {
-        if (!inPurchaseProcess){
+        if (inPurchaseProcess){
             SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
             return Response.error("Error - can't add product to cart - purchase process started", null);
 
@@ -37,7 +37,7 @@ public class ShoppingCart {
     }
 
     public Response<String> removeProductFromCart(String storeID, String productID) {
-        if (!inPurchaseProcess){
+        if (inPurchaseProcess){
             SystemLogger.error("[ERROR] Can't add product to cart - purchase process  started");
             return Response.error("Error - can't add product to cart - purchase process  started", null);
 
@@ -52,7 +52,7 @@ public class ShoppingCart {
     }
 
     public Response<String> updateProductInCart(String storeID, String productID, int quantity) {
-        if (!inPurchaseProcess){
+        if (inPurchaseProcess){
             SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
             return Response.error("Error - can't add product to cart - purchase process started", null);
 
