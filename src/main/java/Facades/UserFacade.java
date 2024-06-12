@@ -95,36 +95,10 @@ public class UserFacade {
     }
 
     public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
-        Response<Map<String, Map<String, Integer>>> res = userRepository.getShoppingCartContents(userName);
-        if (res.getData() == null) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the shopping cart but its empty");
-            return Response.error("Error - can't get shopping cart contents", null);
-        } else {
-            SystemLogger.info("[SUCCESS] " + userName + " got the shopping cart contents successfully");
-            return res;
-        }
+        return userRepository.getShoppingCartContents(userName);
     }
 
-    public Response<String> purchaseShoppingCart(String userName) {
-//        Map<String, Map<String, Integer>> shoppingCartContents = userRepository.getShoppingCartContents(userName).getData();
-//        Response lockResponse = storeRepository.tryLockShoppingCart(shoppingCartContents);
-//        if(lockResponse.isSuccess()){
-//            Response payResponse = paymentRepository.userPayment(userName,lockResponse.getData());
-//
-//            if(payResponse.isSuccess()) {
-//                for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
-//                    String storeName = storeEntry.getKey();
-//                    orderRepository.addOrder(userName, storeName, lockResponse.getData());
-//                }
-//            }
-//            else{
-//                return Response.error("Error - can't purchase shopping cart", null);
-//            }
-//        return lockResponse;
-//        }
-        return Response.error("NOT IMPLEMENETED", null);
 
-    }
 
     public Response<String> sendMessageToUser(String username, Message Message) {
         return userRepository.sendMessageToUser(username, Message);

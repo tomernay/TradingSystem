@@ -231,20 +231,7 @@ public class StoreFacade {
     }
 
     public Response<String> CreatDiscount(String productID, String storeID, String username, String category, String percent) {
-        if (Double.parseDouble(percent) < 0 ||Double.parseDouble(percent) > 1) {
-            return new Response<>(false, "Discount percent must be between 0 and 1");
-        }
-        if (storeID != null || !isStoreOwner(storeID, username) || !isStoreManager(storeID, username)) {
-            return new Response<>(false, "Only store owners and managers can create discounts");
-        }
-        if (productID != null || !storeRepository.isProductExist(storeID, productID).isSuccess()) {
-            return new Response<>(false, "Product does not exist in store");
-        }
-        if (category == null && productID == null)
-            {
-                return new Response<>(false, "productID and category can't be null at the same time");
-            }
-        return storeRepository.CreatDiscount(productID, storeID, category, percent);
+        return storeRepository.CreatDiscount(productID, storeID, category, percent,username);
     }
 
     public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {

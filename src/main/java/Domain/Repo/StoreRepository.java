@@ -505,7 +505,7 @@ public class StoreRepository {
     }
 
 
-    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+    public  Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         List <ProductDTO> products = new ArrayList<>();
         ArrayList<String> storelock = new ArrayList<>();
         if(shoppingCart.isEmpty()){
@@ -530,12 +530,12 @@ public class StoreRepository {
         return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
     }
 
-    public Response<String> CreatDiscount(String productID, String storeID, String category, String percent) {
+    public Response<String> CreatDiscount(String productID, String storeID, String category, String percent, String userName) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).CreatDiscount(productID, category, percent,"simple");
+        return stores.get(storeID).CreatDiscount(productID, category, percent,"simple", userName);
     }
 
     public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
