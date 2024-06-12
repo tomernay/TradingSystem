@@ -13,6 +13,7 @@ import Utilities.SystemLogger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class UserRepository {
 
@@ -255,5 +256,18 @@ public class UserRepository {
             return;
         }
         subscribers.get(subscriberUsername).removeStoreRole(storeID);
+    }
+
+    /**
+     * return user messages queue
+     * @param user
+     * @return
+     */
+    public Queue<Message> getMessages(String user) {
+        return subscribers.get(user).getMessages();
+    }
+
+    public String addNormalMessage(String user, String message) {
+        return subscribers.get(user).addMessage(new NormalMessage(message)).getMessage();
     }
 }

@@ -145,4 +145,6 @@ public class UserFacade {
     public void removeStoreRole(String subscriberUsername, String storeID) {
         userRepository.removeStoreRole(subscriberUsername, storeID);
     }
+
+
 }
