@@ -69,8 +69,11 @@ public class OrderRepository {
         return Response.success(orderList.toString(), null);
     }
 
-    public void CreatOrder(String username, Map<String, Map<String, Integer>> shoppingcartContents) {
-
+    public Response<String> CreatOrder(String username, Map<String, Map<String, Integer>> shoppingcartContents) {
+        if (shoppingcartContents.isEmpty()) {
+            SystemLogger.error("[ERROR] User " + username + " tried to purchase an empty shopping cart");
+            return Response.error("Error - can't purchase an empty shopping cart", null);
+        }
         for (Map.Entry<String, Map<String, Integer>> entry : shoppingcartContents.entrySet()) {
             String storeID = entry.getKey();
             for (Map.Entry<String,Integer> entry1 : shoppingcartContents.get(storeID).entrySet()) {
@@ -81,5 +84,6 @@ public class OrderRepository {
                 addOrder(entry.getKey(), username, prouduct);
             }
         }
+        return Response.success("Order created successfully", null);
     }
 }

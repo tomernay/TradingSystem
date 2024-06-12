@@ -30,7 +30,7 @@ public class OrderFacade {
         return orderRepository.getPurchaseHistoryBySubscriber(subscriberID);
     }
 
-    public void CreatOrder(String username, Map<String, Map<String, Integer>> ShoppingcartContents) {
-        orderRepository.CreatOrder(username, ShoppingcartContents);
+    public Response<String> CreatOrder(String username, Map<String, Map<String, Integer>> ShoppingcartContents) {
+        return orderRepository.CreatOrder(username, ShoppingcartContents);
     }
 }

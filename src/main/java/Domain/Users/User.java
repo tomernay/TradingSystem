@@ -73,4 +73,20 @@ public class User {
     public String getUsername() {
         return username;
     }
+
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public void lockFlagShoppingCart() {
+        shoppingCart.setInPurchaseProcess(true);
+    }
+
+    public void unlockFlagShoppingCart() {
+        shoppingCart.setInPurchaseProcess(false);
+    }
+
+    public Boolean isFlagLock() {
+        return shoppingCart.isInPurchaseProcess();
+    }
 }

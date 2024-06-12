@@ -31,7 +31,7 @@ public class OrderService {
         SystemLogger.info("[START] User: " + username + " is trying to purchase the shopping cart");
         Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userService.getShoppingCartContents(username, token);
         if (userService.isValidToken(token, username)) {
-            orderFacade.CreatOrder(username, resShoppSingCartContents.getData());
+            return orderFacade.CreatOrder(username, resShoppSingCartContents.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to purchase the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
