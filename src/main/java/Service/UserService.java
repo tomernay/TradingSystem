@@ -354,7 +354,7 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
-    public Response <String> LockShoppSingCartAndCalculatedPrice(String username, String token) {
+    public Response<String> LockShoppSingCartAndCalculatedPrice(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);

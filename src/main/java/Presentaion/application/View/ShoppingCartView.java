@@ -1,16 +1,16 @@
 package Presentaion.application.View;
 
+import Domain.Store.Inventory.ProductDTO;
 import Presentaion.application.Presenter.ShoppingCartPresenter;
-import Domain.Users.Subscriber.Cart.Basket;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +18,12 @@ import java.util.Map;
 
 @PageTitle("Shopping Cart")
 @Route(value = "shopping-cart", layout = MainLayoutView.class)
-@StyleSheet("context://shopping-cart-view-styles.css")
+@StyleSheet("context://login-view-styles.css")
 public class ShoppingCartView extends VerticalLayout {
 
     private final ShoppingCartPresenter presenter;
-    private final Grid<Basket> cartGrid;
+    private final Grid<ProductDTO> cartGrid;
+    private final List<ProductDTO> productList;
 
     public ShoppingCartView(ShoppingCartPresenter presenter) {
         this.presenter = presenter;
@@ -32,22 +33,21 @@ public class ShoppingCartView extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        H1 title = new H1("Shopping Cart");
-        title.getStyle().set("font-size", "3em");
-
-        cartGrid = new Grid<>(Basket.class);
-        // Adjust the columns to match the Basket class properties
-        cartGrid.setColumns("storeID", "productsQuantityMap");
-        cartGrid.getColumnByKey("storeID").setHeader("Store ID");
-        cartGrid.getColumnByKey("productsQuantityMap").setHeader("Products Quantity Map");
-
+        cartGrid = new Grid<>(ProductDTO.class);
+        cartGrid.removeColumnByKey("storeID");
+        cartGrid.removeColumnByKey("productID");
+        cartGrid.addComponentColumn(item -> new Button("Remove", e -> {
+            presenter.removeProductFromCart(item.getProductID().toString(), item.getStoreID(), item.getName());
+        })).setHeader("Actions");
         Button checkoutButton = new Button("Checkout", e -> presenter.checkout());
         Button clearCartButton = new Button("Clear Cart", e -> presenter.clearCart());
 
         HorizontalLayout buttonsLayout = new HorizontalLayout(checkoutButton, clearCartButton);
         buttonsLayout.setAlignItems(Alignment.CENTER);
 
-        add(title, cartGrid, buttonsLayout);
+        productList = new ArrayList<>();
+
+        add(cartGrid, buttonsLayout);
         loadCartItems();
     }
 
@@ -56,13 +56,19 @@ public class ShoppingCartView extends VerticalLayout {
     }
 
     public void showCartItems(Map<String, Map<String, Integer>> products) {
-        List<Basket> baskets = new ArrayList<>();
+        // This method needs to be updated to handle ProductDTO objects
+        productList.clear();
         for (Map.Entry<String, Map<String, Integer>> entry : products.entrySet()) {
-            Basket basket = new Basket(entry.getKey());
-            basket.setProductsQuantityMap(entry.getValue());
-            baskets.add(basket);
+            for (Map.Entry<String, Integer> product : entry.getValue().entrySet()) {
+                productList.add(new ProductDTO(entry.getKey(), Integer.parseInt(product.getKey()), "Product Name", 0.0));
+            }
         }
-        cartGrid.setItems(baskets);
+        cartGrid.setItems(productList);
+    }
+
+    public void removeCartItem(String productId) {
+        productList.removeIf(item -> item.getProductID().toString().equals(productId));
+        cartGrid.setItems(productList);
     }
 
     public void showSuccess(String message) {
@@ -71,5 +77,17 @@ public class ShoppingCartView extends VerticalLayout {
 
     public void showError(String message) {
         Notification.show(message, 3000, Notification.Position.MIDDLE);
+    }
+
+    public void showProducts(ArrayList<ProductDTO> data) {
+        productList.clear();
+        productList.addAll(data);
+        cartGrid.setItems(productList);
+    }
+
+    public void showProduct(ProductDTO data) {
+        productList.clear();
+        productList.add(data);
+        cartGrid.setItems(productList);
     }
 }

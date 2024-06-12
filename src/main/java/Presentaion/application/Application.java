@@ -10,6 +10,8 @@ import com.vaadin.flow.theme.Theme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.ArrayList;
+
 /**
  * The entry point of the Spring Boot application.
  *
@@ -44,6 +46,10 @@ public class Application implements AppShellConfigurator {
         notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
         storeService.addStore("newStore", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        storeService.addProductToStore("0","Bamba","Bamba",200.0,1,"miaa",subscriber.getToken());
+        storeService.addProductToStore("0","Bisli","Bisli",100.0,1,"miaa",subscriber.getToken());
+        userService.addProductToShoppingCart("0","1","miaa",subscriber.getToken(), 1);
+        userService.addProductToShoppingCart("0","2","miaa",subscriber.getToken(), 1);
     }
 
 }
