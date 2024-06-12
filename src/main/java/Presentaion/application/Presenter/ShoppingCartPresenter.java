@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -19,12 +20,14 @@ public class ShoppingCartPresenter {
     private ShoppingCartView view;
     private UserService userService;
     private StoreService storeService;
+    private final List<ProductDTO> productList;
     private HttpServletRequest request;
 
     public ShoppingCartPresenter(HttpServletRequest request) {
         this.userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
         this.storeService = ServiceInitializer.getInstance().getStoreService();
+        productList = new ArrayList<>();
     }
 
     public void attachView(ShoppingCartView view) {
@@ -36,21 +39,52 @@ public class ShoppingCartPresenter {
         Response<String> response = userService.removeProductFromShoppingCart(storeId, productId, username, token);
         if (response.isSuccess()) {
             view.showSuccess(response.getData());
-            view.removeCartItem(productId); // Use the same product identifier as in the productList
+            removeCartItem(productId); // Use the same product identifier as in the productList
         } else {
             view.showError(response.getMessage());
         }
     }
 
+    public void showCartItems(Map<String, Integer> products, String storeID, String username, String token) {
+        List<ProductDTO> productList = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : products.entrySet()) {
+            String productID = entry.getKey();
+            Response<ProductDTO> response = storeService.viewProductFromStoreByID(Integer.parseInt(productID), storeID, username, token);
+            if (response.isSuccess()) {
+                productList.add(response.getData());
+            } else {
+                System.out.println("Error: " + response.getMessage());
+            }
+        }
+        view.getCartGrid().setItems(productList);
+    }
+
     public void getShoppingCartContents() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<Map<String, Map<String, Integer>>> response = userService.getShoppingCartContents(username,token);
+        Response<Map<String, Map<String, Integer>>> response = userService.getShoppingCartContents(username, token);
         if (response.isSuccess()) {
-            view.showCartItems(response.getData());
+            Map<String, Map<String, Integer>> products = response.getData();
+            for (Map.Entry<String, Map<String, Integer>> entry : products.entrySet()) {
+                String storeID = entry.getKey();
+                Map<String, Integer> storeProducts = entry.getValue();
+                showCartItems(storeProducts, storeID, username, token);
+            }
         } else {
             view.showError(response.getMessage());
         }
+    }
+
+    public void showProducts(ArrayList<ProductDTO> data) {
+        productList.clear();
+        productList.addAll(data);
+        view.getCartGrid().setItems(productList);
+    }
+
+    public void showProduct(ProductDTO data) {
+        productList.clear();
+        productList.add(data);
+        view.getCartGrid().setItems(productList);
     }
 
     public void checkout() {
@@ -78,7 +112,7 @@ public class ShoppingCartPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<ArrayList<ProductDTO>> response = storeService.getAllProductsFromStore(storeID, username, token);
         if (response.isSuccess()) {
-            view.showProducts(response.getData());
+            showProducts(response.getData());
         } else {
             view.showError(response.getMessage());
         }
@@ -89,9 +123,14 @@ public class ShoppingCartPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<ProductDTO> response = storeService.viewProductFromStoreByID(productID, storeID, username, token);
         if (response.isSuccess()) {
-            view.showProduct(response.getData());
+            showProduct(response.getData());
         } else {
             view.showError(response.getMessage());
         }
+    }
+
+    public void removeCartItem(String productId) {
+        productList.removeIf(item -> item.getProductID().toString().equals(productId));
+        view.getCartGrid().setItems(productList);
     }
 }

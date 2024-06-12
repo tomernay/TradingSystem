@@ -3,6 +3,7 @@ package Presentaion.application.View;
 import Domain.Store.Inventory.ProductDTO;
 import Presentaion.application.Presenter.ShoppingCartPresenter;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBoxBase;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -23,7 +24,7 @@ public class ShoppingCartView extends VerticalLayout {
 
     private final ShoppingCartPresenter presenter;
     private final Grid<ProductDTO> cartGrid;
-    private final List<ProductDTO> productList;
+
 
     public ShoppingCartView(ShoppingCartPresenter presenter) {
         this.presenter = presenter;
@@ -45,7 +46,7 @@ public class ShoppingCartView extends VerticalLayout {
         HorizontalLayout buttonsLayout = new HorizontalLayout(checkoutButton, clearCartButton);
         buttonsLayout.setAlignItems(Alignment.CENTER);
 
-        productList = new ArrayList<>();
+
 
         add(cartGrid, buttonsLayout);
         loadCartItems();
@@ -55,21 +56,6 @@ public class ShoppingCartView extends VerticalLayout {
         presenter.getShoppingCartContents();
     }
 
-    public void showCartItems(Map<String, Map<String, Integer>> products) {
-        // This method needs to be updated to handle ProductDTO objects
-        productList.clear();
-        for (Map.Entry<String, Map<String, Integer>> entry : products.entrySet()) {
-            for (Map.Entry<String, Integer> product : entry.getValue().entrySet()) {
-                productList.add(new ProductDTO(entry.getKey(), Integer.parseInt(product.getKey()), "Product Name", 0.0));
-            }
-        }
-        cartGrid.setItems(productList);
-    }
-
-    public void removeCartItem(String productId) {
-        productList.removeIf(item -> item.getProductID().toString().equals(productId));
-        cartGrid.setItems(productList);
-    }
 
     public void showSuccess(String message) {
         Notification.show(message, 3000, Notification.Position.MIDDLE);
@@ -79,15 +65,9 @@ public class ShoppingCartView extends VerticalLayout {
         Notification.show(message, 3000, Notification.Position.MIDDLE);
     }
 
-    public void showProducts(ArrayList<ProductDTO> data) {
-        productList.clear();
-        productList.addAll(data);
-        cartGrid.setItems(productList);
-    }
 
-    public void showProduct(ProductDTO data) {
-        productList.clear();
-        productList.add(data);
-        cartGrid.setItems(productList);
+
+    public Grid<ProductDTO> getCartGrid() {
+        return cartGrid;
     }
 }
