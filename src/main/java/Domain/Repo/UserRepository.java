@@ -1,5 +1,6 @@
 package Domain.Repo;
 
+import Domain.Externals.Security.PasswordEncoderUtil;
 import Domain.Externals.Security.Security;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Messages.Message;
@@ -45,7 +46,7 @@ public class UserRepository {
     public Response<String> loginAsSubscriber(String username, String password) {
         if (isUserExist(username)) {
             Subscriber subscriber = getUser(username);
-            if (subscriber.getPassword().equals(password)) {
+            if (PasswordEncoderUtil.matches(password,subscriber.getPassword())) {
                 String token = getUser(username).generateToken();
                 subscribersLoggedIn.put(username, subscriber);
                 SystemLogger.info("[SUCCESS] User " + username + " logged in successfully");
@@ -117,7 +118,7 @@ public class UserRepository {
             return  Response.error("User already exists", null);
         }
         else {
-            Subscriber subscriber = new Subscriber(username,password);
+            Subscriber subscriber = new Subscriber(username, PasswordEncoderUtil.encode(password));
             addUser(subscriber);
             SystemLogger.info("[SUCCESS] User " + username + " registered successfully");
             return Response.success("User registered successfully", username);
