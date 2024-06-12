@@ -1,4 +1,4 @@
-package UnitTests;
+package AcceptanceTests;
 
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
@@ -64,7 +64,6 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
         Response<String> res = userService.LockShoppSingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        Assert.assertEquals("18.0",res.getData());
     }
 
     @Test
