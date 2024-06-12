@@ -11,7 +11,7 @@ public class PaymentFacade {
         paymentRepository = new PaymentRepository();
     }
 
-    public Response<String> addPaymentAdapter(PaymentAdapter paymentAdapter, String name){
+    public Response<String> addPaymentAdapter(String paymentAdapter, String name){
         return paymentRepository.addPaymentAdapter(paymentAdapter, name);
     }
 

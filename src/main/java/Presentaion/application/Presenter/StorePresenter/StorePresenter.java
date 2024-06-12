@@ -67,7 +67,7 @@ public class StorePresenter {
      * @param user
      * @param token
      */
-    public void addPayment(AddPaymentServiceView view,PaymentAdapter paymentAdapter, String name, String user, String token){
+    public void addPayment(AddPaymentServiceView view,String paymentAdapter, String name, String user, String token){
         Response<String> res = paymentService.addPaymentAdapter(paymentAdapter,name,token,user);
         if (res.isSuccess()) {
             view.showSuccessMessage(res.getMessage());
@@ -84,7 +84,7 @@ public class StorePresenter {
      * @param user
      * @param token
      */
-    public void addSupplier(AddSupplierServiceView view, SupplierAdapter supplierAdapter, String value, String user, String token) {
+    public void addSupplier(AddSupplierServiceView view, String supplierAdapter, String value, String user, String token) {
         Response<String> res = paymentService.addSupplierAdapter(supplierAdapter,value,token,user);
         if (res.isSuccess()) {
             view.showSuccessMessage(res.getMessage());

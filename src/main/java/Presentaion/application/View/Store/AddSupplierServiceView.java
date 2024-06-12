@@ -38,7 +38,7 @@ public class AddSupplierServiceView extends VerticalLayout {
         printButton.addClickListener(event -> {
             String user= CookiesHandler.getUsernameFromCookies(getRequest());
             String token= CookiesHandler.getTokenFromCookies(getRequest());
-            presenter.addSupplier(this,paymentAdapterHashMap.get(paymentServiceComboBox.getValue()),paymentServiceComboBox.getValue(),user,token);
+            presenter.addSupplier(this,paymentServiceComboBox.getValue(),paymentServiceComboBox.getValue(),user,token);
 
         });
 

@@ -38,7 +38,7 @@ public class AddPaymentServiceView extends VerticalLayout {
         printButton.addClickListener(event -> {
             String user= CookiesHandler.getUsernameFromCookies(getRequest());
             String token= CookiesHandler.getTokenFromCookies(getRequest());
-            presenter.addPayment(this,paymentAdapterHashMap.get(paymentServiceComboBox.getValue()),paymentServiceComboBox.getValue(),user,token);
+            presenter.addPayment(this,paymentServiceComboBox.getValue(),paymentServiceComboBox.getValue(),user,token);
 
         });
 

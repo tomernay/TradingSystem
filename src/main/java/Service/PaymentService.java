@@ -30,7 +30,7 @@ public class PaymentService {
         return facade.getPaymentRepository().immediatePay(fee,credit);
     }
 
-    public Response<String> addPaymentAdapter(PaymentAdapter paymentAdapter, String name, String token, String user){
+    public Response<String> addPaymentAdapter(String paymentAdapter, String name, String token, String user){
         if(Security.isValidJWT(token,user)) {
             SystemLogger.info("[START] User: " + user + " is trying to add payment");
             return facade.addPaymentAdapter(paymentAdapter, name);
@@ -38,7 +38,7 @@ public class PaymentService {
         return new Response<>(false,"token is invalid",null);
     }
 
-    public Response<String> addSupplierAdapter(SupplierAdapter supplierAdapter, String value, String token, String user) {
+    public Response<String> addSupplierAdapter(String supplierAdapter, String value, String token, String user) {
         if(Security.isValidJWT(token,user)) {
             SystemLogger.info("[START] User: " + user + " is trying to add supplier");
             return supplyFacade.addSupplierAdapter(supplierAdapter,value);
