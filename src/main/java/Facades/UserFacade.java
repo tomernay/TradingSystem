@@ -2,9 +2,6 @@ package Facades;
 
 import Domain.Repo.UserRepository;
 import Utilities.Messages.Message;
-import Utilities.Messages.NormalMessage;
-import Utilities.Messages.nominateManagerMessage;
-import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -12,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserFacade {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserFacade() {
         userRepository = new UserRepository();
@@ -59,35 +56,16 @@ public class UserFacade {
         return userRepository.updateProductInShoppingCart(storeID, productID, userName, quantity);
     }
 
-
-
     public Response<String> messageResponse(String subscriberUsername, boolean answer) {
-        Response<Message> message = userRepository.messageResponse(subscriberUsername, answer);
-        if (message.isSuccess()) {
-            SystemLogger.info("[SUCCESS] message responded successfully");
-            return Response.success(message.getMessage(), null);
-        }
-        return Response.error(message.getMessage(), null);
+        return userRepository.messageResponse(subscriberUsername, answer);
     }
 
     public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
-        Response<Message> message =  userRepository.ownerNominationResponse(currentUsername, answer);
-        userRepository.sendMessageToUser(((nominateOwnerMessage) message.getData()).getNominator(), new NormalMessage("Your request to nominate " + currentUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
-        if (message.isSuccess()) {
-            SystemLogger.info("[SUCCESS] message responded successfully");
-            return message;
-        }
-        return Response.error(message.getMessage(), null);
+        return userRepository.ownerNominationResponse(currentUsername, answer);
     }
 
     public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
-        Response<Message> message = userRepository.managerNominationResponse(currentUsername, answer);
-        userRepository.sendMessageToUser(((nominateManagerMessage) message.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + currentUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
-        if (message.isSuccess()) {
-            SystemLogger.info("[SUCCESS] message responded successfully");
-            return message;
-        }
-        return Response.error(message.getMessage(), null);
+        return userRepository.managerNominationResponse(currentUsername, answer);
     }
 
     public boolean userExist(String subscriberUsername) {
@@ -139,9 +117,6 @@ public class UserFacade {
     public Response<String> changeUsername(String username, String newUsername){
         return userRepository.changeUsername(username, newUsername);
     }
-
-
-
 
     public Response<String> ReleaseShoppSingCartForUser(String username) {
         return userRepository.ReleaseShoppSingCartForUser(username);

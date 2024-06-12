@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class StoreFacade {
-    private StoreRepository storeRepository;
+    private final StoreRepository storeRepository;
+
     public StoreFacade() {
         storeRepository = new StoreRepository();
     }
-
 
     public boolean isStoreManager(String storeID, String currentUsername) {
         return storeRepository.isStoreManager(storeID, currentUsername);
@@ -222,10 +222,6 @@ public class StoreFacade {
         return storeRepository.viewProductFromAllStoresByCategory(category);
     }
 
-
-
-
-
     public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
     }
@@ -238,8 +234,8 @@ public class StoreFacade {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> ReleaseShoppSingCartAndbacktoInventory(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeRepository.ReleaseShoppSingCartAndbacktoInventory(shoppingCart);
+    public Response<String> ReleaseShoppSingCartAndBackToInventory(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.ReleaseShoppSingCartAndBackToInventory(shoppingCart);
     }
 
     public Response<List<DiscountDTO>> getDiscountsFromStore(String storeID, String username) {
@@ -250,7 +246,7 @@ public class StoreFacade {
         return storeRepository.removeDiscount(storeID, username, discountID);
     }
 
-    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> ReleaseShoppingCart(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.ReleaseShoppSingCart(shoppingCart);
     }
 }
