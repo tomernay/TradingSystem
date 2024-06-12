@@ -327,11 +327,11 @@ public class Store {
 
 
     public Response<String> getProductName(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the name of product: " + productID + " but he doesn't have the permission");
-            return permissionCheck;
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get the name of product: " + productID + " but he doesn't have the permission");
+//            return permissionCheck;
+//        }
         return inventory.getProductName(productID);
     }
 
@@ -345,11 +345,11 @@ public class Store {
     }
 
     public Response<String> getProductPrice(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the price of product: " + productID + " but he doesn't have the permission");
-            return permissionCheck;
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get the price of product: " + productID + " but he doesn't have the permission");
+//            return permissionCheck;
+//        }
         return inventory.getProductPrice(productID);
     }
 
@@ -363,11 +363,11 @@ public class Store {
     }
 
     public Response<String> getProductDescription(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the description of product: " + productID + " but he doesn't have the permission");
-            return permissionCheck;
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get the description of product: " + productID + " but he doesn't have the permission");
+//            return permissionCheck;
+//        }
         return inventory.getProductDescription(productID);
     }
 
@@ -381,11 +381,11 @@ public class Store {
     }
 
     public Response<String> getProductQuantity(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the quantity of product: " + productID + " but he doesn't have the permission");
-            return permissionCheck;
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get the quantity of product: " + productID + " but he doesn't have the permission");
+//            return permissionCheck;
+//        }
         return inventory.getProductQuantity(productID);
     }
 
@@ -394,11 +394,11 @@ public class Store {
     }
 
     public Response<String> retrieveProductCategories(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to retrieve the categories of product: " + productID + " but he doesn't have the permission");
-            return permissionCheck;
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to retrieve the categories of product: " + productID + " but he doesn't have the permission");
+//            return permissionCheck;
+//        }
         return inventory.retrieveProductCategories(productID);
     }
 
@@ -422,20 +422,20 @@ public class Store {
 
 
     public Response<ProductDTO> getProductFromStore(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productID + " but he doesn't have the permission");
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productID + " but he doesn't have the permission");
+//            return Response.error(permissionCheck.getMessage(), null);
+//        }
         return inventory.getProductFromStore(productID);
     }
 
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get all the products of the store but he doesn't have the permission");
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get all the products of the store but he doesn't have the permission");
+//            return Response.error(permissionCheck.getMessage(), null);
+//        }
         return inventory.getAllProductsFromStore();
     }
 
@@ -476,11 +476,11 @@ public class Store {
     }
 
     public Response<ProductDTO> viewProductFromStoreByName(String productName, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productName + " but he doesn't have the permission");
-            return Response.error(permissionCheck.getMessage(), null);
-        }
+//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
+//        if (!permissionCheck.isSuccess()) {
+//            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productName + " but he doesn't have the permission");
+//            return Response.error(permissionCheck.getMessage(), null);
+//        }
         return inventory.getProductByName(productName);
     }
 

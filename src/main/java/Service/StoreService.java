@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class StoreService {
-    private StoreFacade storeFacade;
+    private final StoreFacade storeFacade;
     private UserService userService;
+    private AdminService adminService;
 
     public StoreService() {
         storeFacade = new StoreFacade();
@@ -22,6 +23,10 @@ public class StoreService {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public void setAdminService(AdminService adminService) {
+        this.adminService = adminService;
     }
 
     /**
@@ -34,6 +39,10 @@ public class StoreService {
     public Response<String> addStore(String storeName, String creatorUsername, String token) {
         SystemLogger.info("[START] User: " + creatorUsername + " is trying to create a store with name: " + storeName);
         if (userService.isValidToken(token, creatorUsername)) {
+            if (adminService.isSuspended(creatorUsername)) {
+                SystemLogger.error("[ERROR] User: " + creatorUsername + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             Response<String> response =  storeFacade.openStore(storeName, creatorUsername);
             if (response.isSuccess()) {
                 userService.addCreatorRole(creatorUsername, response.getData());
@@ -85,6 +94,10 @@ public class StoreService {
     public Response<String> closeStore(String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to close store: " + storeID);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             Response<List<String>> storeCloseResponse = storeFacade.closeStore(storeID, username);
             if (!storeCloseResponse.isSuccess()) {
                 return Response.error(storeCloseResponse.getMessage(), null);
@@ -111,6 +124,10 @@ public class StoreService {
                 SystemLogger.error("[ERROR] User: " + managerUsername + " does not exist");
                 return Response.error("User: " + managerUsername + " does not exist", null);
             }
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.addManagerPermissions(storeID, username, managerUsername, permission);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add permissions: " + permission + " to " + managerUsername + " but the token was invalid");
@@ -132,6 +149,10 @@ public class StoreService {
             if (!userService.userExists(managerUsername)) {
                 SystemLogger.error("[ERROR] User: " + managerUsername + " does not exist");
                 return Response.error("User: " + managerUsername + " does not exist", null);
+            }
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
             }
             return storeFacade.removeManagerPermissions(storeID, username, managerUsername, permission);
         }
@@ -164,6 +185,10 @@ public class StoreService {
             if (!userService.userExists(subscriberUsername)) {
                 SystemLogger.error("[ERROR] User: " + subscriberUsername + " does not exist");
                 return Response.error("User: " + subscriberUsername + " does not exist", null);
+            }
+            if (adminService.isSuspended(currentUsername)) {
+                SystemLogger.error("[ERROR] User: " + currentUsername + " is suspended");
+                return Response.error("You're suspended", null);
             }
             return storeFacade.removeStoreSubscription(storeID, currentUsername);
         }
@@ -254,6 +279,10 @@ public class StoreService {
     public Response<String> setProductQuantity(int productID, int quantity, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set quantity of product: " + productID + " to: " + quantity);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.setProductQuantity(productID, quantity, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to set quantity of product: " + productID + " to: " + quantity + " but the token was invalid");
@@ -272,6 +301,10 @@ public class StoreService {
     public Response<String> addProductQuantity(int productID, int amountToAdd, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add quantity of product: " + productID + " by: " + amountToAdd);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.addProductQuantity(productID, amountToAdd, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add quantity of product: " + productID + " by: " + amountToAdd + " but the token was invalid");
@@ -324,6 +357,10 @@ public class StoreService {
     public Response<String> setProductName(int productID, String newName, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product name of product: " + productID + " to: " + newName);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.setProductName(productID, newName, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to set product name of product: " + productID + " to: " + newName + " but the token was invalid");
@@ -359,6 +396,10 @@ public class StoreService {
     public Response<String> setProductPrice(int productID, double newPrice, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product price of product: " + productID + " to: " + newPrice);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.setProductPrice(productID, newPrice, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to set product price of product: " + productID + " to: " + newPrice + " but the token was invalid");
@@ -394,6 +435,10 @@ public class StoreService {
     public Response<String> setProductDescription(int productID, String newDescription, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product description of product: " + productID + " to: " + newDescription);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.setProductDescription(productID, newDescription, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to set product description of product: " + productID + " to: " + newDescription + " but the token was invalid");
@@ -446,6 +491,10 @@ public class StoreService {
     public Response<String> assignProductToCategory(int productID, String category, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to assign product: " + productID + " to category: " + category);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.assignProductToCategory(productID, category, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to assign product: " + productID + " to category: " + category + " but the token was invalid");
@@ -463,6 +512,10 @@ public class StoreService {
     public Response<String> removeCategoryFromStore(String storeID, String category, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to remove category: " + category);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.removeCategoryFromStore(storeID, category, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to remove category: " + category + " but the token was invalid");
@@ -533,6 +586,10 @@ public class StoreService {
     public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.addProductToStore(storeID, name, desc, price, quantity, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add product: " + name + " to store: " + storeID + " but the token was invalid");
@@ -554,6 +611,10 @@ public class StoreService {
     public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, ArrayList<String> categories, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.addProductToStore(storeID, name, desc, price, quantity, categories, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add product: " + name + " to store: " + storeID + " but the token was invalid");
@@ -571,6 +632,10 @@ public class StoreService {
     public Response<String> removeProductFromStore(int productID, String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to remove product: " + productID + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.removeProductFromStore(productID, storeID, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to remove product: " + productID + " from store: " + storeID + " but the token was invalid");
@@ -712,6 +777,10 @@ public class StoreService {
     public Response<String> CreatDiscountSimple(String username,String token, String productID, String storeID, String category, String percent) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.CreatDiscount(productID, storeID, username,category,percent);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to create discount");
@@ -753,6 +822,10 @@ public class StoreService {
     public Response<String> removeDiscount(String storeID, String username, String token, String discountID) {
         SystemLogger.info("[START] User: " + username + " is trying to remove discount: " + discountID + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return storeFacade.removeDiscount(storeID, username, discountID);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to remove discount: " + discountID + " from store: " + storeID + " but the token was invalid");

@@ -88,6 +88,10 @@ public class UserService {
                 SystemLogger.error("[ERROR] User: " + nomineeUsername + " does not exist");
                 return Response.error("User: " + nomineeUsername + " does not exist", null);
             }
+            if (adminService.isSuspended(nominatorUsername)) {
+                SystemLogger.error("[ERROR] User: " + nominatorUsername + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             Message ownerNominationMessage = storeService.makeNominateOwnerMessage(storeID, nominatorUsername, nomineeUsername).getData();
             if (ownerNominationMessage != null) {
                 return userFacade.sendMessageToUser(nomineeUsername, ownerNominationMessage);
@@ -116,6 +120,10 @@ public class UserService {
                 SystemLogger.error("[ERROR] User: " + nomineeUsername + " does not exist");
                 return Response.error("User: " + nomineeUsername + " does not exist", null);
             }
+            if (adminService.isSuspended(nominatorUsername)) {
+                SystemLogger.error("[ERROR] User: " + nominatorUsername + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             Message managerNominationMessage = storeService.makeNominateManagerMessage(storeID,nominatorUsername, nomineeUsername, permissions).getData();
             if (managerNominationMessage != null) {
                 return userFacade.sendMessageToUser(nomineeUsername, managerNominationMessage);
@@ -135,6 +143,10 @@ public class UserService {
     public Response<String> waiveOwnership(String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to waive his ownership of the store");
         if(isValidToken(token,username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             Set<String> usernames = storeService.waiveOwnership(storeID, username).getData();
             userFacade.removeStoreRole(username, storeID);
             for (String subscriberUsername : usernames) {
@@ -157,6 +169,10 @@ public class UserService {
     public Response<String> ownerNominationResponse(String username, boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a store owner nomination");
         if(isValidToken(token,username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             nominateOwnerMessage nominationMessage = (nominateOwnerMessage)userFacade.ownerNominationResponse(username, answer).getData();
             if (nominationMessage != null && answer) {
                 return storeService.nominateOwner(nominationMessage.getStoreID(), username, nominationMessage.getNominatorUsername());
@@ -179,6 +195,10 @@ public class UserService {
     public Response<String> managerNominationResponse(String username, boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a store manager nomination");
         if(isValidToken(token,username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             nominateManagerMessage nominationMessage = (nominateManagerMessage)userFacade.managerNominationResponse(username, answer).getData();
             if (nominationMessage != null && answer) {
                 return storeService.nominateManager(nominationMessage.getStoreID(), username, nominationMessage.getPermissions(), nominationMessage.getNominatorUsername());
@@ -202,6 +222,10 @@ public class UserService {
     public Response<String> messageResponse(String username, boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a message");
         if(isValidToken(token,username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             return userFacade.messageResponse(username, answer);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to respond to a message but the token was invalid");
@@ -243,6 +267,10 @@ public class UserService {
     public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to request the employees status of the store");
         if (isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
                 return storeService.requestEmployeesStatus(storeID);
             }
@@ -263,6 +291,10 @@ public class UserService {
     public Response<Map<String, List<String>>> requestManagersPermissions(String storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to request the managers permissions of the store");
         if (isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
             if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
                 return storeService.requestManagersPermissions(storeID);
             }
@@ -465,7 +497,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> ReleaseShoppSingCartFromStore(String username, String token) {
+    public Response<String> ReleaseShoppingCartFromStore(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
@@ -480,7 +512,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> ReleaseShoppSingCartForUser(String username, String token) {
+    public Response<String> ReleaseShoppingCartForUser(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
             return userFacade.ReleaseShoppSingCartForUser(username);

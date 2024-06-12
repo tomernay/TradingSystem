@@ -97,9 +97,9 @@ public class PurchaseCartTests {
         Assert.assertTrue(res1.isSuccess());
         Response<String> res3 = orderService.CreateOrder("yair12312",buyer.getToken());
         Assert.assertTrue(res3.isSuccess());
-        Response<String> res4 = userService.ReleaseShoppSingCartFromStore("yair12312",buyer.getToken());
+        Response<String> res4 = userService.ReleaseShoppingCartFromStore("yair12312",buyer.getToken());
         Assert.assertTrue(res4.isSuccess());
-        Response<String> res2 = userService.ReleaseShoppSingCartForUser("yair12312",buyer.getToken());
+        Response<String> res2 = userService.ReleaseShoppingCartForUser("yair12312",buyer.getToken());
         Assert.assertTrue(res2.isSuccess());
     }
 
