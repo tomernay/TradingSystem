@@ -597,10 +597,10 @@ public class Inventory {
 
 
 
-    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> MapshoppingCard) {
+    public synchronized Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> MapShoppingCart) {
         ArrayList<Product> listLockedProducts = new ArrayList<>();
         List<ProductDTO> productDTOList = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : MapshoppingCard.entrySet()) {
+        for (Map.Entry<String, Integer> entry : MapShoppingCart.entrySet()) {
             Integer productQuantity = entry.getValue();
             int productID = Integer.parseInt(entry.getKey());
             if (!isProductExist(productID)) {
@@ -634,7 +634,7 @@ public class Inventory {
         return Response.success("Shopping cart locked successfully",productDTOList);
     }
 
-    public Response<String> unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+    public synchronized Response<String> unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
         for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
             Integer productID = Integer.parseInt(entry.getKey());
             int quantity = entry.getValue();
@@ -654,7 +654,7 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+    public synchronized Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
         for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
             Integer productID = Integer.parseInt(entry.getKey());
             int quantity = entry.getValue();

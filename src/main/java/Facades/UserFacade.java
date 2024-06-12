@@ -73,14 +73,7 @@ public class UserFacade {
     }
 
     public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
-        Response<Map<String, Map<String, Integer>>> res = userRepository.getShoppingCartContents(userName);
-        if (res.getData() == null) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the shopping cart but its empty");
-            return Response.error("Error - can't get shopping cart contents", null);
-        } else {
-            SystemLogger.info("[SUCCESS] " + userName + " got the shopping cart contents successfully");
-            return res;
-        }
+        return userRepository.getShoppingCartContents(userName);
     }
 
     public Response<String> sendMessageToUser(String username, Message Message) {

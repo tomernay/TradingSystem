@@ -496,7 +496,7 @@ public class StoreRepository {
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProductDTO = stores.get(storeID).ReleaseShoppSingCart(productsInStore);
+            Response<String> resProductDTO = stores.get(storeID).ReleaseShoppingCart(productsInStore);
             if (!resProductDTO.isSuccess()) {
                 return Response.error(resProductDTO.getMessage(), null);
             }
@@ -530,12 +530,12 @@ public class StoreRepository {
         return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
     }
 
-    public Response<String> CreatDiscount(String productID, String storeID, String category, String percent) {
+    public Response<String> CreateDiscount(String productID, String storeID, String category, String percent, String username) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).CreatDiscount(productID, category, percent,"simple");
+        return stores.get(storeID).CreateDiscount(productID, category, percent,"simple", username);
     }
 
     public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
@@ -582,7 +582,7 @@ public class StoreRepository {
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProtctDTO = stores.get(storeID).ReleaseShoppSingCartfromlock(productsInStore);
+            Response<String> resProtctDTO = stores.get(storeID).ReleaseShoppingCartfromlock(productsInStore);
             if (!resProtctDTO.isSuccess()) {
                 return Response.error(resProtctDTO.getMessage(), null);
             }

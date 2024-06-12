@@ -38,7 +38,7 @@ public class InventoryAddRemoveProductAsStoreManagerTest {
 
         userService.register("mor","MorPass123!");
         userService.loginAsSubscriber("mor","MorPass123!");
-        userService.SendStoreManagerNomination(store.getId(), "itay", "mor", List.of("ADD_PRODUCT", "REMOVE_PRODUCT", "VIEW_PRODUCT") ,subscriber.getToken());
+        userService.SendStoreManagerNomination(store.getId(), "itay", "mor", List.of("ADD_PRODUCT", "REMOVE_PRODUCT") ,subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.managerNominationResponse("mor",true, subscriber2.getToken());
 

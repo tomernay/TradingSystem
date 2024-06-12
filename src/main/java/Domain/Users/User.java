@@ -64,11 +64,7 @@ public class User {
     }
 
     public Response<Map<String, Map<String, Integer>>> getShoppingCartContents() {
-        if(shoppingCart != null){
-            return shoppingCart.getShoppingCartContents();
-        }
-        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
-        return Response.error("Error - can't get shopping cart contents", null);
+        return shoppingCart.getShoppingCartContents();
     }
     public String getUsername() {
         return username;

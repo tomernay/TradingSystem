@@ -571,8 +571,21 @@ public class Store {
         inventory.unlockShoppingCart(stringIntegerMap);
     }
 
-    public Response<String> CreatDiscount(String productID, String category, String percent, String type) {
+    public Response<String> CreateDiscount(String productID, String category, String percent, String type, String username) {
         Discount discount;
+        if (Double.parseDouble(percent) < 0 ||Double.parseDouble(percent) > 1) {
+            return new Response<>(false, "Discount percent must be between 0 and 1");
+        }
+        if (storeID != null || !isStoreOwner(username) || !isStoreManager(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (productID != null || isProductExist(productID).isSuccess()) {
+            return new Response<>(false, "Product does not exist in store");
+        }
+        if (category == null && productID == null)
+        {
+            return new Response<>(false, "productID and category can't be null at the same time");
+        }
         int IdDiscount;
         if (type.equals("simple")) {
             IdDiscount = productIDGenerator.getAndIncrement();
@@ -604,7 +617,7 @@ public class Store {
         return new Response<>(true,"calculate discounts successfull", String.valueOf(discount));
     }
 
-    public Response<String> ReleaseShoppSingCart(Map<String, Integer> productsInStore) {
+    public synchronized Response<String> ReleaseShoppingCart(Map<String, Integer> productsInStore) {
         return inventory.unlockShoppingCart(productsInStore);
     }
 
@@ -624,7 +637,7 @@ public class Store {
         return Response.success("Successfully fetched the discounts", discounts);
     }
 
-    public Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+    public synchronized Response<String> ReleaseShoppingCartfromlock(Map<String, Integer> productsInStore) {
         return inventory.ReleaseShoppSingCartfromlock(productsInStore);
     }
 }

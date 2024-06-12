@@ -781,7 +781,7 @@ public class StoreService {
                 SystemLogger.error("[ERROR] User: " + username + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            return storeFacade.CreatDiscount(productID, storeID, username,category,percent);
+            return storeFacade.CreateDiscount(productID, storeID, username,category,percent);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to create discount");
         return Response.error("Invalid token", null);

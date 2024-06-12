@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import java.util.Map;
 
-public class ShoppingCardUnitTest {
+public class ShoppingCartUnitTest {
     ServiceInitializer serviceInitializer;
     StoreService storeService;
     UserService userService;

@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ShoppingCardAccptTest {
+public class ShoppingCartAcceptanceTest {
     ServiceInitializer serviceInitializer;
     StoreService storeService;
     UserService userService;
