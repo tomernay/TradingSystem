@@ -11,7 +11,7 @@ public class SupplyFacade {
         supplyRepository = new SupplyRepository();
     }
 
-    public Response<String> addSupplierAdapter(SupplierAdapter supplierAdapter, String name){
+    public Response<String> addSupplierAdapter(String supplierAdapter, String name){
         return supplyRepository.addSupplierAdapter(supplierAdapter, name);
     }
 }

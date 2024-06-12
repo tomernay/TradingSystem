@@ -10,13 +10,16 @@ import java.util.HashMap;
 
 public class PaymentRepository {
     private final HashMap<String, PaymentAdapter> payments;
+    private final HashMap<String, PaymentAdapter> paymentAdapterHashMap;
 
     public PaymentRepository() {
         this.payments = new HashMap<>();
+        paymentAdapterHashMap=new HashMap<>();
+        paymentAdapterHashMap.put("DefaultPay",new DefaultPay(""));
     }
 
-    public Response<String> addPaymentAdapter(PaymentAdapter paymentAdapter, String name){
-        payments.put(name, paymentAdapter);
+    public Response<String> addPaymentAdapter(String paymentAdapter, String name){
+        payments.put(name, paymentAdapterHashMap.get(paymentAdapter));
         return new Response<>(true,"payment added successfully");
     }
 
