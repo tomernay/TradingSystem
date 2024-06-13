@@ -222,7 +222,7 @@ public class StoreFacade {
         return storeRepository.viewProductFromAllStoresByCategory(category);
     }
 
-    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
     }
 

@@ -505,18 +505,22 @@ public class StoreRepository {
     }
 
 
-    public Response<List<ProductDTO>> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
         List <ProductDTO> products = new ArrayList<>();
         ArrayList<String> storeLock = new ArrayList<>();
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
+        double price = 0;
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
             Response<List<ProductDTO>> resProductDTO = stores.get(storeID).lockShoppingCart(productsInStore);
             if (resProductDTO.isSuccess()) {
-                products.addAll(resProductDTO.getData());
+                for (ProductDTO product : resProductDTO.getData()) {
+                    price += product.getPrice();
+                    products.add(product);
+                }
                 storeLock.add(storeID);
             }
             else {
@@ -527,7 +531,7 @@ public class StoreRepository {
             }
 
         }
-        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", products);
+        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", Double.toString(price));
     }
 
     public Response<String> CreateDiscount(String productID, String storeID, String category, String percent, String username) {

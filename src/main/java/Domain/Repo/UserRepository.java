@@ -379,14 +379,10 @@ public class UserRepository {
 
     public Response<String> lockFlagShoppingCart(String username) {
         if (subscribers.containsKey(username)) {
-            subscribers.get(username).lockFlagShoppingCart();
-            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " locked successfully");
-            return Response.success("Shopping cart locked successfully", null);
+            return subscribers.get(username).lockFlagShoppingCart();
         }
         else if (guests.containsKey(username)) {
-            guests.get(username).lockFlagShoppingCart();
-            SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " locked successfully");
-            return Response.success("Shopping cart locked successfully", null);
+            return guests.get(username).lockFlagShoppingCart();
         }
         SystemLogger.error("[ERROR] User " + username + " does not exist");
         return Response.error("User does not exist", null);
@@ -476,5 +472,16 @@ public class UserRepository {
             guests.get(username).interruptPurchaseTimer();
         }
         SystemLogger.error("[ERROR] User " + username + " does not exist");
+    }
+
+    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents(String username) {
+        if (subscribers.containsKey(username)) {
+            return subscribers.get(username).lockAndGetShoppingCartContents();
+        }
+        else if (guests.containsKey(username)) {
+            return guests.get(username).lockAndGetShoppingCartContents();
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
     }
 }

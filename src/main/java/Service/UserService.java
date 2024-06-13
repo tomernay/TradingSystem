@@ -384,25 +384,20 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
-    public Response <String> LockShoppingCartAndCalculatedPrice(String username, String token) {
+    public Response<String> LockShoppingCartAndCalculatedPrice(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
             if(adminService.isSuspended(username)){
                 return Response.error("User is suspended", null);
             }
-            if(isFlagLock(username).getData()){
-                return Response.error("Shopping cart is already locked", null);
+            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.lockAndGetShoppingCartContents(username);
+            if (!resShoppingCartContents.isSuccess()) {
+                return Response.error(resShoppingCartContents.getMessage(), null);
             }
-            lockFlagShoppingCart(username);
-            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
-            Response<List<ProductDTO>> list_product = storeService.LockShoppingCartAndCalculatedPrice(resShoppSingCartContents.getData());
-            purchaseProcessTimer(username, token);
+            Response<String> list_product = storeService.LockShoppingCartAndCalculatedPrice(resShoppingCartContents.getData());
             if (list_product.isSuccess()) {
-                double price = 0.0;
-                for (ProductDTO productDTO : list_product.getData()) {
-                    price += productDTO.getPrice();
-                }
-                return Response.success("The price of the shopping cart is: " + price, Double.toString(price));
+                purchaseProcessTimer(username, token);
+                return Response.success("The price of the shopping cart is: " + list_product.getData(), list_product.getData());
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to lock the shopping cart but the token was invalid");

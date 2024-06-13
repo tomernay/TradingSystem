@@ -152,4 +152,8 @@ public class UserFacade {
     public void interruptPurchaseTimer(String username) {
         userRepository.interruptPurchaseTimer(username);
     }
+
+    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents(String username) {
+        return userRepository.lockAndGetShoppingCartContents(username);
+    }
 }

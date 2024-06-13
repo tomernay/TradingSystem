@@ -42,7 +42,7 @@ public class PurchaseCartUnitTests {
 
     }
     @Test
-    public void lockCard(){
+    public void lockCart(){
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
@@ -53,7 +53,7 @@ public class PurchaseCartUnitTests {
     }
 
     @Test
-    public void lockCardNotExist(){
+    public void lockCartNotExist(){
         Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Inventory inventory = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
         Assert.assertEquals(10,Integer.parseInt(inventory.getProductQuantity(1).getData()));
@@ -61,7 +61,7 @@ public class PurchaseCartUnitTests {
     }
 
     @Test
-    public void lockCardNotQuantityOneShop(){
+    public void lockCartNotQuantityOneShop(){
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),100);
         Response<String> res1 = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
@@ -70,7 +70,7 @@ public class PurchaseCartUnitTests {
         Assert.assertEquals(10,Integer.parseInt(inventory.getProductQuantity(2).getData()));
     }
     @Test
-    public void lockCardNotQuantityTwoShop(){
+    public void lockCartNotQuantityTwoShop(){
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),100);
@@ -86,7 +86,7 @@ public class PurchaseCartUnitTests {
 
 
     @Test
-    public void PricecCalculation(){
+    public void PricesCalculation(){
         userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);

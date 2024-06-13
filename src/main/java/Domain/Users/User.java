@@ -75,12 +75,12 @@ public class User {
         this.shoppingCart = shoppingCart;
     }
 
-    public void lockFlagShoppingCart() {
-        shoppingCart.setInPurchaseProcess(true);
+    public Response<String> lockFlagShoppingCart() {
+        return shoppingCart.setInPurchaseProcess(true);
     }
 
-    public void unlockFlagShoppingCart() {
-        shoppingCart.setInPurchaseProcess(false);
+    public Response<String> unlockFlagShoppingCart() {
+        return shoppingCart.setInPurchaseProcess(false);
     }
 
     public Boolean isFlagLock() {
@@ -119,5 +119,9 @@ public class User {
 
     public void interruptPurchaseTimer() {
         shoppingCart.cancelPurchaseProcess();
+    }
+
+    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents() {
+        return shoppingCart.lockAndGetShoppingCartContents();
     }
 }

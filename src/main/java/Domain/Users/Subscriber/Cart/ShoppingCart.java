@@ -80,8 +80,18 @@ public class ShoppingCart {
         return Response.success("get ShoppingCart Contents successfull", userProducts);
     }
 
-    public void setInPurchaseProcess(boolean b) {
+    public Response<String> setInPurchaseProcess(boolean b) {
+        if (b && inPurchaseProcess) {
+            SystemLogger.error("[ERROR] Purchase process already started.");
+            return Response.error("Error - purchase process already started.", null);
+        }
+        if (!b && !inPurchaseProcess) {
+            SystemLogger.error("[ERROR] Purchase process already stopped.");
+            return Response.error("Error - purchase process already stopped.", null);
+        }
         inPurchaseProcess = b;
+        SystemLogger.info("[SUCCESS] Purchase process status updated successfully.");
+        return Response.success("Purchase process status updated successfully.", null);
     }
 
     public synchronized CompletableFuture<String> startPurchaseTimer() {
@@ -130,5 +140,13 @@ public class ShoppingCart {
         }
         SystemLogger.error("[ERROR] Can't update product quantity in cart");
         return Response.error("Error - can't update product quantity in cart", null);
+    }
+
+    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents() {
+        if (inPurchaseProcess) {
+            SystemLogger.error("[ERROR] Can't lock and get shopping cart contents - purchase process started");
+            return Response.error("Error - can't lock and get shopping cart contents - purchase process started", null);
+        }
+        return getShoppingCartContents();
     }
 }
