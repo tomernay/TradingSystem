@@ -11,6 +11,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Objects;
+
 public class PurchaseCartUnitTests {
 
     ServiceInitializer serviceInitializer;
@@ -98,7 +100,7 @@ public class PurchaseCartUnitTests {
         userService.addProductToShoppingCart("0","2","yair12312",buyer.getToken(),1);
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
         Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
-        Assert.assertTrue(res.getData()=="18.0");
+        Assert.assertTrue(Objects.equals(res.getData(), "18.0"));
     }
 
     @Test
@@ -108,6 +110,6 @@ public class PurchaseCartUnitTests {
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
         Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312",buyer.getToken());
         Response<String> res1 = orderService.getPurchaseHistoryByStore("yair12312");
-        Assert.assertTrue(res1.getMessage()==null);
+        Assert.assertTrue(res1.getData()==null);
     }
 }
