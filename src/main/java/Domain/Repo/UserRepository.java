@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 
 public class UserRepository {
 
@@ -454,5 +455,26 @@ public class UserRepository {
 
     public Map<String, User> getGuests() {
         return guests;
+    }
+
+    public CompletableFuture<String> startPurchaseTimer(String username) {
+        if (subscribers.containsKey(username)) {
+            return subscribers.get(username).startPurchaseTimer();
+        }
+        else if (guests.containsKey(username)) {
+            return guests.get(username).startPurchaseTimer();
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return null;
+    }
+
+    public void interruptPurchaseTimer(String username) {
+        if (subscribers.containsKey(username)) {
+            subscribers.get(username).interruptPurchaseTimer();
+        }
+        else if (guests.containsKey(username)) {
+            guests.get(username).interruptPurchaseTimer();
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
     }
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class UserService {
     private final UserFacade userFacade;
@@ -395,6 +396,7 @@ public class UserService {
             lockFlagShoppingCart(username);
             Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
             Response<List<ProductDTO>> list_product = storeService.LockShoppingCartAndCalculatedPrice(resShoppSingCartContents.getData());
+            purchaseProcessTimer(username, token);
             if (list_product.isSuccess()) {
                 double price = 0.0;
                 for (ProductDTO productDTO : list_product.getData()) {
@@ -405,6 +407,20 @@ public class UserService {
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to lock the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
+    }
+
+    public void purchaseProcessTimer(String username, String token) {
+        CompletableFuture<String> future = userFacade.startPurchaseTimer(username);
+
+        // Add a callback to handle the completion of the timer
+        future.thenAccept(result -> {
+            System.out.println("Timer completed: " + result);
+            ReleaseShoppingCartAndBacktoInventory(username, token);
+        });
+    }
+
+    public void purchaseProcessInterrupt(String username) {
+        userFacade.interruptPurchaseTimer(username);
     }
     /**
      * This method locks the purchasing flag of the shopping cart, preventing the user from making any changes to the shopping cart.

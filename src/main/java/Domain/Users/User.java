@@ -6,6 +6,7 @@ import Utilities.Response;
 import Utilities.SystemLogger;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class User {
     protected String username;
@@ -110,5 +111,13 @@ public class User {
         }
         SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't update product quantity in cart", null);
+    }
+
+    public CompletableFuture<String> startPurchaseTimer() {
+        return shoppingCart.startPurchaseTimer();
+    }
+
+    public void interruptPurchaseTimer() {
+        shoppingCart.cancelPurchaseProcess();
     }
 }

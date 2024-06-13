@@ -1,8 +1,6 @@
 package Service;
 
-import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Externals.Security.Security;
-import Domain.Externals.Suppliers.SupplierAdapter;
 import Facades.PaymentFacade;
 import Facades.SupplyFacade;
 import Utilities.Response;
@@ -11,10 +9,21 @@ import Utilities.SystemLogger;
 public class PaymentService {
     private final PaymentFacade facade;
     private final SupplyFacade supplyFacade;
+    private UserService userService;
+    private OrderService orderService;
+
 
     public PaymentService(){
         facade=new PaymentFacade();
         supplyFacade=new SupplyFacade();
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     /**
@@ -27,7 +36,18 @@ public class PaymentService {
     public Response<String> immediatePay(String user,double fee,String credit,String token){
 
         SystemLogger.info("[START] User: " + user + " is trying to pay");
-        return facade.getPaymentRepository().immediatePay(fee,credit);
+        Response<String> response = facade.getPaymentRepository().immediatePay(fee,credit);
+        if (response.isSuccess()) {
+            userService.ReleaseShoppingCartFromStore(user, token);
+            orderService.CreateOrder(user, token);
+            userService.ReleaseShoppingCartForUser(user, token);
+            userService.purchaseProcessInterrupt(user);
+        }
+        else {
+            userService.ReleaseShoppingCartAndBacktoInventory(user, token);
+            userService.purchaseProcessInterrupt(user);
+        }
+        return response;
     }
 
     public Response<String> addPaymentAdapter(String paymentAdapter, String name, String token, String user){

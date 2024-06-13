@@ -6,10 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 public class ShoppingCart {
     private final List<Basket> baskets;
     boolean inPurchaseProcess = false;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> future;
+    private CompletableFuture<String> purchaseFuture;
+
 
     public ShoppingCart() {
         this.baskets = new ArrayList<>();
@@ -77,6 +82,40 @@ public class ShoppingCart {
 
     public void setInPurchaseProcess(boolean b) {
         inPurchaseProcess = b;
+    }
+
+    public synchronized CompletableFuture<String> startPurchaseTimer() {
+        purchaseFuture = new CompletableFuture<>();
+
+        if (inPurchaseProcess) {
+            // Schedule a task to cancel the purchase after 10 minutes
+            future = scheduler.schedule(() -> {
+                synchronized (this) {
+                    if (this.inPurchaseProcess) {
+                        this.inPurchaseProcess = false;
+                        SystemLogger.error("[ERROR] 10 minutes have passed. Purchase process cancelled.");
+                        purchaseFuture.complete("10 minutes have passed. Purchase process cancelled.");
+                    }
+                }
+            }, 10, TimeUnit.MINUTES);
+        } else {
+            // If set to false, cancel any existing scheduled task
+            cancelPurchaseProcess();
+            purchaseFuture.complete("Purchase process stopped.");
+        }
+
+        return purchaseFuture;
+    }
+
+    public synchronized void cancelPurchaseProcess() {
+        if (future != null && !future.isDone()) {
+            future.cancel(true);
+        }
+        if (!scheduler.isShutdown()) {
+            scheduler.shutdownNow();
+        }
+        inPurchaseProcess = false;
+        SystemLogger.info("[SUCCESS] Purchase process cancelled successfully.");
     }
 
     public Boolean isInPurchaseProcess() {

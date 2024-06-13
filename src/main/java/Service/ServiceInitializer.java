@@ -26,6 +26,8 @@ public class ServiceInitializer {
         adminService.setStoreService(storeService);
         adminService.setOrderService(orderService);
         orderService.setUserService(userService);
+        paymentService.setUserService(userService);
+        paymentService.setOrderService(orderService);
 
 
     }

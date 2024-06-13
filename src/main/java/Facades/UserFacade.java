@@ -7,6 +7,7 @@ import Utilities.SystemLogger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class UserFacade {
     private final UserRepository userRepository;
@@ -142,5 +143,13 @@ public class UserFacade {
 
     public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username) {
         return userRepository.updateProductQuantityInCart(storeId, productId, quantity, username);
+    }
+
+    public CompletableFuture<String> startPurchaseTimer(String username) {
+        return userRepository.startPurchaseTimer(username);
+    }
+
+    public void interruptPurchaseTimer(String username) {
+        userRepository.interruptPurchaseTimer(username);
     }
 }
