@@ -32,6 +32,14 @@ public class UserRepository {
         userIDS = 0;
     }
 
+    public Map<String, Subscriber> getSubscribers() {
+        return subscribers;
+    }
+
+    public Map<String, Subscriber> getSubscribersLoggedIn() {
+        return subscribersLoggedIn;
+    }
+
     public Response<List<String>> loginAsGuest() {
         String username = "Guest" + userIDS;
         User user = new User(username);
@@ -442,5 +450,9 @@ public class UserRepository {
         }
         SystemLogger.error("[ERROR] User " + username + " does not exist");
         return Response.error("User does not exist", null);
+    }
+
+    public Map<String, User> getGuests() {
+        return guests;
     }
 }

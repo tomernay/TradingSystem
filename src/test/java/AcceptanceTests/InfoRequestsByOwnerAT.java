@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Domain.Repo.OrderRepository;
 import Service.OrderService;
 import Service.ServiceInitializer;
 import org.junit.Assert;
@@ -75,6 +76,14 @@ public class InfoRequestsByOwnerAT {
 
     public void initProducts(){
         //add product
+    }
+
+    @Test
+    public void testGetOrdersHistoryNoOrders() {
+        OrderRepository orderRepository = serviceInitializer.getOrderService().getOrderFacade().getOrderRepository();
+        Response<Map<String,String>> response = orderRepository.getOrdersHistory(store.getData());
+        Assert.assertFalse(response.isSuccess());
+
     }
 
     @Test

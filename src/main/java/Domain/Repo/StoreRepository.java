@@ -589,4 +589,8 @@ public class StoreRepository {
         }
         return Response.success("[SUCCESS] Successfully released the shopping cart.", null);
     }
+
+    public Map<String, Store> getStores() {
+        return stores;
+    }
 }
