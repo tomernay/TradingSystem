@@ -137,4 +137,15 @@ public class ShoppingCartPresenter {
     public String getUsername() {
         return CookiesHandler.getUsernameFromCookies(request);
     }
+
+    public void updateProductQuantityInCart(String productId, String storeId, int quantity, String username) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<Map<String, Map<String, Integer>>> response = userService.getShoppingCartContents(username, token);
+        Response<String> response2 = userService.updateProductQuantityInCart(storeId, productId, response.getData().get(storeId).get(productId), username, token);
+        if (response2.isSuccess()) {
+            view.showSuccess(response2.getData());
+        } else {
+            view.showError(response2.getMessage());
+        }
+    }
 }

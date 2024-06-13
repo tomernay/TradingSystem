@@ -10,16 +10,17 @@ public class ProductDTO {
     private String name;        // The name of the product
     //private String desc;        // The description of the product
     private double price;          // The price of the product
-   // private int quantity;       // The quantity of the product available in the inventory
+    private int quantity;       // The quantity of the product available in the inventory
 
     public ArrayList<String> categories; // The category that a product is related to
 
 
-    public ProductDTO(String storeID, Integer productID, String name, double price) {
+    public ProductDTO(String storeID, Integer productID, String name, double price, int quantity) {
         this.storeID = storeID;
         this.productID = productID;
         this.name = name;
         this.price = price;
+        this.quantity = quantity;
    //     this.categories = categories;
     }
 
@@ -43,6 +44,14 @@ public class ProductDTO {
 
     public double getPrice() {
         return price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer integer) {
+        this.quantity = integer;
     }
 }
 

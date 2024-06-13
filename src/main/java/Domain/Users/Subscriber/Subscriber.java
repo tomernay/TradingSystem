@@ -1,5 +1,6 @@
 package Domain.Users.Subscriber;
 
+import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Messages.Message;
 
 import Domain.Users.User;
@@ -17,9 +18,6 @@ public class Subscriber extends User {
     private String password;
     private String credit;
     private Map<String, String> storesRole;
-
-
-
 
 
     public Subscriber(String username,String password) {
@@ -136,10 +134,15 @@ public class Subscriber extends User {
     }
 
     public Response<String> clearCart() {
+        shoppingCart = new ShoppingCart();
         return Response.success("[SUCCESS] Cart cleared successfully.", null);
     }
 
     public Response<String> checkout() {
         return Response.success("[SUCCESS] Checkout successful.", null);
+    }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity) {
+        return Response.success("[SUCCESS] Product quantity updated successfully.", null);
     }
 }

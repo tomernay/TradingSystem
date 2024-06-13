@@ -154,4 +154,8 @@ public class UserFacade {
     public Response<String> checkout(String usernameFromCookies) {
         return userRepository.checkout(usernameFromCookies);
     }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username) {
+        return userRepository.updateProductQuantityInCart(storeId, productId, quantity, username);
+    }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class User {
     protected String username;
-    private ShoppingCart shoppingCart;
+    protected ShoppingCart shoppingCart;
     protected String Token;
 
     public User(String username) {
@@ -82,5 +82,13 @@ public class User {
         }
         SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't checkout", null);
+    }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity) {
+        if(shoppingCart != null){
+            return shoppingCart.updateProductQuantityInCart(storeId, productId, quantity);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
+        return Response.error("Error - can't update product quantity in cart", null);
     }
 }

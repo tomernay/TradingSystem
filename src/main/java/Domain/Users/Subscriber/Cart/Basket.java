@@ -68,4 +68,18 @@ public class Basket {
     public void setProductsQuantityMap(Map<String, Integer> value) {
         productsQuantityMap = value;
     }
+
+    public Response<String> updateProductQuantityInBasket(String productId, Integer quantity) {
+        if (quantity <= 0) {
+            SystemLogger.error("[ERROR] Can't update product quantity in basket - quantity is invalid");
+            return Response.error("Error - can't update product quantity in basket - quantity is invalid",null);
+        }
+        if (productsQuantityMap.containsKey(productId)) {
+            productsQuantityMap.put(productId, quantity);
+            SystemLogger.info("[SUCCESS] Product quantity updated in basket successfully");
+            return Response.success("Product quantity updated in basket successfully",null);
+        }
+        SystemLogger.error("[ERROR] Can't update product quantity in basket");
+        return Response.error("Error - can't update product quantity in basket",null);
+    }
 }

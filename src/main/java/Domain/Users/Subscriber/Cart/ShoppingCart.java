@@ -58,4 +58,14 @@ public class ShoppingCart {
         SystemLogger.info("[SUCCESS] get ShoppingCart Contents successfull");
         return Response.success("get ShoppingCart Contents successfull", userProducts);
     }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity) {
+        for (Basket basket : baskets) {
+            if (basket.getStoreID().equals(storeId)) {
+                return basket.updateProductQuantityInBasket(productId, quantity);
+            }
+        }
+        SystemLogger.error("[ERROR] Can't update product quantity in cart");
+        return Response.error("Error - can't update product quantity in cart", null);
+    }
 }
