@@ -410,4 +410,37 @@ public class UserRepository {
         SystemLogger.error("[ERROR] User " + username + " does not exist");
         return Response.error("User does not exist", null);
     }
+
+    public Response<String> clearCart(String usernameFromCookies) {
+        if (subscribers.containsKey(usernameFromCookies)) {
+            return subscribers.get(usernameFromCookies).clearCart();
+        }
+        else if (guests.containsKey(usernameFromCookies)) {
+            return guests.get(usernameFromCookies).clearCart();
+        }
+        SystemLogger.error("[ERROR] User " + usernameFromCookies + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<String> checkout(String usernameFromCookies) {
+        if (subscribers.containsKey(usernameFromCookies)) {
+            return subscribers.get(usernameFromCookies).checkout();
+        }
+        else if (guests.containsKey(usernameFromCookies)) {
+            return guests.get(usernameFromCookies).checkout();
+        }
+        SystemLogger.error("[ERROR] User " + usernameFromCookies + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username) {
+        if (subscribers.containsKey(username)) {
+            return subscribers.get(username).updateProductQuantityInCart(storeId, productId, quantity);
+        }
+        else if (guests.containsKey(username)) {
+            return guests.get(username).updateProductQuantityInCart(storeId, productId, quantity);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
+    }
 }

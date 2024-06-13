@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Basket {
     private final String storeID;
-    private final Map<String, Integer> productsQuantityMap;// <productID, quantity>
+    private Map<String, Integer> productsQuantityMap;// <productID, quantity>
 
     // Constructor
     public Basket(String storeID) {
@@ -69,5 +69,23 @@ public class Basket {
 
     public Map<String, Integer> getProductsQuantityMap() {
         return productsQuantityMap;
+    }
+
+    public void setProductsQuantityMap(Map<String, Integer> value) {
+        productsQuantityMap = value;
+    }
+
+    public Response<String> updateProductQuantityInBasket(String productId, Integer quantity) {
+        if (quantity <= 0) {
+            SystemLogger.error("[ERROR] Can't update product quantity in basket - quantity is invalid");
+            return Response.error("Error - can't update product quantity in basket - quantity is invalid",null);
+        }
+        if (productsQuantityMap.containsKey(productId)) {
+            productsQuantityMap.put(productId, quantity);
+            SystemLogger.info("[SUCCESS] Product quantity updated in basket successfully");
+            return Response.success("Product quantity updated in basket successfully",null);
+        }
+        SystemLogger.error("[ERROR] Can't update product quantity in basket");
+        return Response.error("Error - can't update product quantity in basket",null);
     }
 }

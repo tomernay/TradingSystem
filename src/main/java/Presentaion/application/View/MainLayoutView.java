@@ -399,6 +399,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         nav.addItem(new SideNavItem("Messages", MessagesList.class));
         nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
+        nav.addItem(new SideNavItem("My Shopping Cart", ShoppingCartView.class)); // New navigation item
 
 
         return nav;

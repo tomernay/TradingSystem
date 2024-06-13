@@ -567,5 +567,32 @@ public class UserService {
         return Response.error("Invalid token",null);
     }
 
+    public Response<String> clearCart(String usernameFromCookies, String token) {
+        SystemLogger.info("[START] User: " + usernameFromCookies + " is trying to clear the shopping cart");
+        if (isValidToken(token, usernameFromCookies)) {
+            return userFacade.clearCart(usernameFromCookies);
+        }
+        SystemLogger.error("[ERROR] User: " + usernameFromCookies + " tried to clear the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+    public Response<String> checkout(String usernameFromCookies, String token) {
+        SystemLogger.info("[START] User: " + usernameFromCookies + " is trying to checkout");
+        if (isValidToken(token, usernameFromCookies)) {
+            return userFacade.checkout(usernameFromCookies);
+        }
+        SystemLogger.error("[ERROR] User: " + usernameFromCookies + " tried to checkout but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to update the quantity of a product in the shopping cart");
+        if (isValidToken(token, username)) {
+            return userFacade.updateProductQuantityInCart(storeId, productId, quantity, username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to update the quantity of a product in the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
 
 }

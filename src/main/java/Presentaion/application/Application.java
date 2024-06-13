@@ -52,6 +52,10 @@ public class Application implements AppShellConfigurator {
         System.out.println(store.getInventory().productsList);
         ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
         System.out.println( ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory("0").getData());
+        storeService.addProductToStore("0","Bamba","Bamba",200.0,1,"miaa",subscriber.getToken());
+        storeService.addProductToStore("0","Bisli","Bisli",100.0,1,"miaa",subscriber.getToken());
+        userService.addProductToShoppingCart("0","1","miaa",subscriber.getToken(), 1);
+        userService.addProductToShoppingCart("0","2","miaa",subscriber.getToken(), 1);
     }
 
 }

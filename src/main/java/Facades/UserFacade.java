@@ -131,4 +131,16 @@ public class UserFacade {
     public Response<Boolean> isFlagLock(String username) {
         return userRepository.isFlagLock(username);
     }
+
+    public Response<String> clearCart(String usernameFromCookies) {
+        return userRepository.clearCart(usernameFromCookies);
+    }
+
+    public Response<String> checkout(String usernameFromCookies) {
+        return userRepository.checkout(usernameFromCookies);
+    }
+
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username) {
+        return userRepository.updateProductQuantityInCart(storeId, productId, quantity, username);
+    }
 }
