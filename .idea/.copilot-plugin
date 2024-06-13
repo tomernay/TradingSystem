@@ -1,6 +1,6 @@
 #Vaadin Copilot Integration Runtime Properties
-#Wed Jun 12 21:09:04 IDT 2024
+#Thu Jun 13 17:42:40 IDT 2024
 ide=intellij
-port=58838
+port=57478
 supportedActions=write,undo,redo,refresh,showInIde
 version=1.0.8

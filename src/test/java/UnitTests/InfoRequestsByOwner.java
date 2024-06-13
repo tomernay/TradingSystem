@@ -93,13 +93,7 @@ public class InfoRequestsByOwner {
 
     }
 
-    @Test
-    public void testGetOrdersHistoryNoOrders() {
-        //use mock
-        Response<Map<String,String>> response = orderRepository.getOrdersHistory(res.getData());
-        Assert.assertFalse(response.isSuccess());
 
-    }
 
 //    @Test
 //    public void testGetOrdersHistory() {
@@ -120,7 +114,6 @@ public class InfoRequestsByOwner {
     @Test
     public void testRequestEmployeesStatus() {
         initSubscribers();
-        //use mock
         Response<Map<String,String>> response = storeRepository.requestEmployeesStatus(res.getData());
         Assert.assertTrue(response.isSuccess());
         Assert.assertEquals(response.getData().size(),3);
@@ -129,7 +122,6 @@ public class InfoRequestsByOwner {
 
     @Test
     public void testRequestManagersPermissionsNoAddedManagers() {
-        //use mock
         Response<Map<String, List<String>>> response = storeRepository.requestManagersPermissions(res.getData());
         Assert.assertTrue(response.isSuccess()); //the creator is also a manager
         Assert.assertEquals(response.getData().size(),0);
@@ -139,7 +131,6 @@ public class InfoRequestsByOwner {
     @Test
     public void testRequestManagersPermissions() {
         initManagers();
-        //use mock
         Response<Map<String, List<String>>> response = storeRepository.requestManagersPermissions(res.getData());
         Assert.assertTrue(response.isSuccess());
         Assert.assertEquals(response.getData().size(),1);

@@ -400,7 +400,7 @@ public class UserService {
                 for (ProductDTO productDTO : list_product.getData()) {
                     price += productDTO.getPrice();
                 }
-                return new Response<String>(true, Double.toString(price));
+                return Response.success("The price of the shopping cart is: " + price, Double.toString(price));
             }
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to lock the shopping cart but the token was invalid");

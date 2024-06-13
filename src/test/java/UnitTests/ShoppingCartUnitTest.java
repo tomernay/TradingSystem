@@ -34,96 +34,96 @@ public class ShoppingCartUnitTest {
 
 
     @Test
-    public void AddProuducdToShoppingcart(){
+    public void AddProductToShoppingCart(){
         storeService.addProductToStore("0","newProduct","tambal",10, 1,"newOwner",owner.getToken());
         Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
+        userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertTrue(ShoppingCardres.get("0").containsKey(ID));
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertTrue(ShoppingCarts.get("0").containsKey(ID));
 
     }
 
     @Test
-    public void AddProuducdNotExistToShoppingcart(){
+    public void AddProductNotExistToShoppingCart(){
         storeService.addProductToStore("0","1","DOG",10, 1,"newOwner",owner.getToken());
-        Response<String> res=userService.addProductToShoppingCart("0","0","yair12312",buyer.getToken(),1);
-        Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertTrue(ShoppingCardres.isEmpty());
+        userService.addProductToShoppingCart("0","0","yair12312",buyer.getToken(),1);
+        Response<Map<String,Map<String,Integer>>> ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertTrue(ShoppingCarts.isEmpty());
     }
 
     @Test
-    public void AddProuducdToShoppingcartQuantityZero(){
+    public void AddProductToShoppingCartQuantityZero(){
         storeService.addProductToStore("0","newProduct","tambal",10, 10,"newOwner",owner.getToken());
         Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),0);
-        Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertTrue(ShoppingCardres.isEmpty());
+        userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),0);
+        Response<Map<String,Map<String,Integer>>> ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertTrue(ShoppingCarts.isEmpty());
 
 
     }
     @Test
-    public void AddProuducdToShoppingcartQuantityMinos(){
+    public void AddProductToShoppingCartQuantityMinos(){
         storeService.addProductToStore("0","newProduct","tambal",10, 10,"newOwner",owner.getToken());
         Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertTrue(ShoppingCardres.isEmpty());
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertTrue(ShoppingCarts.isEmpty());
     }
 
 
 
 
     @Test
-    public void RemoveProuducdFromShoppingcart(){
+    public void RemoveProductFromShoppingCart(){
         storeService.addProductToStore("0","ProuducdRemove","DOG",10, 1,"newOwner",owner.getToken());
         Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","ProuducdRemove","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res1 = userService.removeProductFromShoppingCart("0",ID,"yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
-        Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        System.out.println(ShoppingCardres);
-        Assert.assertTrue(ShoppingCardres.get("0").isEmpty());
+        Response<Map<String,Map<String,Integer>>> ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        System.out.println(ShoppingCarts);
+        Assert.assertTrue(ShoppingCarts.get("0").isEmpty());
     }
 
     @Test
-    public void RemoveProuducdNotExistromShoppingcart(){
-        storeService.addProductToStore("0","ProuducdNotExist","DOG",10, 1,"newOwner",owner.getToken());
+    public void RemoveProductNotExistFromShoppingCart(){
+        storeService.addProductToStore("0","ProductNotExist","DOG",10, 1,"newOwner",owner.getToken());
         Response<String> res = userService.removeProductFromShoppingCart("0","0","yair12312",buyer.getToken());
         Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertTrue(ShoppingCardres.isEmpty());
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertTrue(ShoppingCarts.isEmpty());
     }
 
     @Test
-    public void EditProductAmountInShoppingcart(){
+    public void EditProductAmountInShoppingCart(){
         storeService.addProductToStore("0","EditProduct","EditProduct",10, 1,"newOwner",owner.getToken());
         Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res =userService.addProductToShoppingCart("0",ID,"yair12312",buyer.getToken(),1);
         Response<String> res1 = userService.updateProductInShoppingCart("0",ID,"yair12312",buyer.getToken(),2);
         Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertTrue(ShoppingCardres.get("0").get(ID)==2);
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertTrue(ShoppingCarts.get("0").get(ID)==2);
 
     }
 
     @Test
-    public void EditProductNotExistAmountInShoppingcart(){
+    public void EditProductNotExistAmountInShoppingCart(){
         storeService.addProductToStore("0","EditProduct","DOG",10, 1,"newOwner",owner.getToken());
         Response<String> res = userService.addProductToShoppingCart("0","1","yair12312",buyer.getToken(),1);
         Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
         String ID = String.valueOf(resID.getData().getProductID());
         Response<String> res1 = userService.updateProductInShoppingCart("0","0","yair12312",buyer.getToken(),2);
         Response<Map<String,Map<String,Integer>> >ResShoppingCart = userService.getShoppingCartContents("yair12312",buyer.getToken());
-        Map<String,Map<String,Integer>> ShoppingCardres = ResShoppingCart.getData();
-        Assert.assertFalse(ShoppingCardres.get("0").get(ID)==2);
+        Map<String,Map<String,Integer>> ShoppingCarts = ResShoppingCart.getData();
+        Assert.assertFalse(ShoppingCarts.get("0").get(ID)==2);
     }
 }

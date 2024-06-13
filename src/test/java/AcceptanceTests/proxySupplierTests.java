@@ -1,4 +1,4 @@
-package UnitTests;
+package AcceptanceTests;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -12,7 +12,7 @@ import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.checkSupplyLegal;
 import Utilities.Response;
 
-public class proxySupplierUnitTests {
+public class proxySupplierTests {
 
     static SupplierAdapter supplierAdapter;
     static Product p;
@@ -36,14 +36,12 @@ public class proxySupplierUnitTests {
     }
     @Test
     public void proxySupplierTest(){
-
-      Response<String> response= supplierAdapter.supply(p,"1",new CreditCard(FireBaseConstants.visa),new CreditCard(FireBaseConstants.secoundVisa),40,new DefaultPay("yair"),3,checkSupplyLegal);
+        Response<String> response= supplierAdapter.supply(p,"1",new CreditCard(FireBaseConstants.visa),new CreditCard(FireBaseConstants.secoundVisa),40,new DefaultPay("yair"),3,checkSupplyLegal);
         Assert.assertTrue(response.isSuccess());
     }
 
     @Test
     public void nullProduct(){
-
         Response<String> response= supplierAdapter.supply(null,"1",new CreditCard(FireBaseConstants.visa),new CreditCard(FireBaseConstants.secoundVisa),40,new DefaultPay("yair"),3,checkSupplyLegal);
         Assert.assertFalse(response.isSuccess());
     }

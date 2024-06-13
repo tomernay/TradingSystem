@@ -614,9 +614,11 @@ public class Inventory {
             }
             if (product.getQuantity() - productQuantity < 0) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " is out of stock.");
-                for (Product lockedProduct : listLockedProducts) {
-                    lockedProduct.addQuantity(- productQuantity);
-                    product.addQuantity( productQuantity);
+                for (Product Productlock : listLockedProducts) {
+                    int Quantitylock = MapShoppingCart.get(String.valueOf(Productlock.getProductID()));
+                    int oldQuantitylock =  lockedProducts.get(Productlock);
+                    lockedProducts.put(Productlock, oldQuantitylock - Quantitylock);
+                    Productlock.addQuantity( Quantitylock);
 
                 }
                 return Response.error("Product with ID: " + productID + " is out of stock.", null);
