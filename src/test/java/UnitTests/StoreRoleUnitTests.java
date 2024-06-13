@@ -10,7 +10,6 @@ import Service.UserService;
 import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
-import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -214,7 +213,7 @@ public class StoreRoleUnitTests {
 
     @Test
     public void makeStoreManagerNonExistentUserTest(){
-        Response<String> response = userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), "nonExistentUser", Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), "nonExistentUser", Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
         Assert.assertFalse(store.getSubscribers().containsKey("nonExistentUser") && store.getSubscribers().get("nonExistentUser") instanceof StoreManager);
     }
 
@@ -224,12 +223,12 @@ public class StoreRoleUnitTests {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        Response<String> response = userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
-        Response<String> response1 = userService.ownerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
+        userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
+        userService.ownerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
         Assert.assertTrue(storeService.isStoreOwner(store.getId(), subscriber2.getUsername()));
 
         // New owner waives their role
-        Response<String> waiveResponse = userService.waiveOwnership(store.getId(), subscriber2.getUsername(), subscriber2.getToken());
+        userService.waiveOwnership(store.getId(), subscriber2.getUsername(), subscriber2.getToken());
         Assert.assertFalse(storeService.isStoreOwner(store.getId(), subscriber2.getUsername()));
     }
 
