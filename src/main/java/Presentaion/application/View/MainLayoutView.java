@@ -441,10 +441,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     public void addSearchBar() {
         // Add search bar to the header
         ComboBox<String> searchBar = new ComboBox<>();
-        searchBar.setPlaceholder("Search for anything");
+        searchBar.setPlaceholder("Search by category or product name");
         searchBar.getElement().getStyle().setColor("black");
         searchBar.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search bar
-        searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
         searchBar.setWidthFull(); // Set the width of the search bar to 100%
 
         searchBar.setItemLabelGenerator(item -> item);
@@ -455,20 +454,81 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         searchBar.addCustomValueSetListener(event -> {
             String searchTerm = event.getDetail();
             if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-                List<String> results = search(searchTerm).stream()
-                        .map(ProductDTO::getName)
-                        .collect(Collectors.toList());
-                searchBar.setItems(results);
+                ArrayList<ProductDTO> results = search(searchTerm);
+                displaySearchResults(results);
             }
         });
 
         addToNavbar(searchBar);
     }
 
+    private void displaySearchResults(ArrayList<ProductDTO> results) {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("500px");
+        dialog.setHeight("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(new Span("Search Results"));
+
+        for (ProductDTO product : results) {
+            Div productDiv = new Div();
+            productDiv.setText(product.getName());
+            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product));
+            productDiv.add(addToCartButton);
+            dialogLayout.add(productDiv);
+        }
+
+        Button closeDialogButton = new Button("Close", e -> dialog.close());
+        dialogLayout.add(closeDialogButton);
+
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
 
     public ArrayList<ProductDTO> search(String search) {
         return presenter.searchProducts(search);
     }
+    private void addToCart(ProductDTO product) {
+        // Add logic to add the product to the cart
+    }
+
+
+
+
+
+
+//    public void addSearchBar() {
+//        // Add search bar to the header
+//        ComboBox<String> searchBar = new ComboBox<>();
+//        searchBar.setPlaceholder("Search for anything");
+//        searchBar.getElement().getStyle().setColor("black");
+//        searchBar.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search bar
+//        searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
+//        searchBar.setWidthFull(); // Set the width of the search bar to 100%
+//
+//        searchBar.setItemLabelGenerator(item -> item);
+//        searchBar.setClearButtonVisible(true);
+//        searchBar.setAllowCustomValue(true);
+//
+//        // Fetch and display search results as user types
+//        searchBar.addCustomValueSetListener(event -> {
+//            String searchTerm = event.getDetail();
+//            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+//                List<String> results = search(searchTerm).stream()
+//                        .map(ProductDTO::getName)
+//                        .collect(Collectors.toList());
+//                searchBar.setItems(results);
+//            }
+//        });
+//
+//        addToNavbar(searchBar);
+//    }
+
+
+//    public ArrayList<ProductDTO> search(String search) {
+//        return presenter.searchProducts(search);
+//    }
 
 
     private void openSettings(){

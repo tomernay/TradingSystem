@@ -12,9 +12,7 @@ import Utilities.Response;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Component
@@ -174,10 +172,34 @@ public class MainLayoutPresenter {
     public ArrayList<ProductDTO> searchProducts(String search){
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        Response<ArrayList<ProductDTO>> products = storeService.viewProductFromAllStoresByName(search ,username, token);
-        if(products.isSuccess()){
-            return products.getData();
-        }
-        return new ArrayList<>();
+        ArrayList<ProductDTO> products = combineSearchResults(search, username, token);
+        return products;
     }
+
+    private ArrayList<ProductDTO> combineSearchResults(String searchTerm, String username, String token) {
+        Response<ArrayList<ProductDTO>> resultsByName = searchProductsByName(searchTerm, username, token);
+        Response<ArrayList<ProductDTO>> resultsByCategory = searchProductsByCategory(searchTerm, username, token);
+
+        if (!resultsByName.isSuccess() && !resultsByCategory.isSuccess()) {
+            return new ArrayList<>();
+        }
+
+        // Combine both lists without duplicates
+        Set<ProductDTO> combinedResultsSet = new HashSet<>(resultsByName.getData());
+        combinedResultsSet.addAll(resultsByCategory.getData());
+
+        // Convert the set back to a list if needed
+        ArrayList<ProductDTO> combinedResults = new ArrayList<>(combinedResultsSet);
+
+        return combinedResults;
+    }
+
+    private Response<ArrayList<ProductDTO>> searchProductsByCategory(String searchTerm, String username, String token) {
+        return storeService.getProductsFromAllStoresByCategory(searchTerm, username, token);
+    }
+
+    private Response<ArrayList<ProductDTO>> searchProductsByName(String searchTerm, String username, String token) {
+        return storeService.viewProductFromAllStoresByName(searchTerm, username, token);
+    }
+
 }
