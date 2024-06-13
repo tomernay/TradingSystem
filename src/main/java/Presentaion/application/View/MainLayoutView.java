@@ -8,6 +8,7 @@ import Presentaion.application.View.Payment.PaymentPage;
 
 import Presentaion.application.View.PurchaseHistory.StorePurchaseHistory;
 import Presentaion.application.View.Store.StoreManagementView;
+import Presentaion.application.View.Store.StorePageView;
 import Presentaion.application.View.UtilitiesView.RealTimeNotifications;
 import Service.ServiceInitializer;
 import Utilities.Messages.Message;
@@ -69,16 +70,19 @@ import java.util.ArrayList;
 public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private final MainLayoutPresenter presenter;
-    private List<String> items = Stream.of("Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Honeydew")
-            .collect(Collectors.toList());
+
     private H1 viewTitle;
     private Queue<Message> sub;
+    private VerticalLayout mainContent;
 
 
     public MainLayoutView(MainLayoutPresenter presenter) {
         addClassName("main-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
+        mainContent = new VerticalLayout();
+        //display the main content
+        setContent(mainContent);
         sub=new LinkedBlockingQueue<>();
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -92,8 +96,18 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addCategoriesButton();
         addMessageButton();
         UI currentUI = UI.getCurrent();
-
+        navigateToStorePage();
         RealTimeNotifications.start(currentUI,sub);
+    }
+
+    private void navigateToStorePage() {
+//        UI.getCurrent().navigate(StorePageView.class);
+        //add the button to the main content area not the navbar
+        Button nav = new Button("Store Page", e -> UI.getCurrent().navigate(StorePageView.class));
+        nav.getElement().getStyle().set("color", "black");
+//        setContent(nav);
+        mainContent.add(nav);
+
     }
 
     private void openDialog() {
@@ -334,8 +348,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
 
         // Add the main layout to the main content area
-        setContent(mainLayout);
-
+//        setContent(mainLayout);
+        mainContent.add(mainLayout);
 
 //        categoriesLayout.add(category1, category2, category3, category4, category6);
 
@@ -362,7 +376,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
         // Add to the main content area
-        setContent(new VerticalLayout(addMessageButton,purchaseHistoryByStoreButton));
+        mainContent.add(addMessageButton,purchaseHistoryByStoreButton);
 
     }
 
