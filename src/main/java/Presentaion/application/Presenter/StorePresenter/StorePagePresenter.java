@@ -1,5 +1,6 @@
 package Presentaion.application.Presenter.StorePresenter;
 
+import Presentaion.application.CookiesHandler;
 import Presentaion.application.View.MainLayoutView;
 import Presentaion.application.View.Store.StorePageView;
 import Service.ServiceInitializer;
@@ -25,5 +26,19 @@ public class StorePagePresenter {
 
     public void attachView(StorePageView view) {
         this.view = view;
+    }
+
+    public void search(String search) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String storeID = "0";
+        storeService.viewProductFromStoreByName(storeID, search, username, token);
+    }
+
+    public void displayProducts() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String storeID = "0";
+        storeService.getAllProductsFromStore(storeID, username, token);
     }
 }
