@@ -38,7 +38,7 @@ public class ShoppingCartView extends VerticalLayout {
         cartGrid.removeColumnByKey("storeID");
         cartGrid.removeColumnByKey("productID");
         cartGrid.addComponentColumn(item -> new Button("Remove", e -> {
-            presenter.removeProductFromCart(item.getProductID().toString(), item.getStoreID(), item.getName());
+            presenter.removeProductFromCart(item.getProductID().toString(), item.getStoreID(),presenter.getUsername());
         })).setHeader("Actions");
         Button checkoutButton = new Button("Checkout", e -> presenter.checkout());
         Button clearCartButton = new Button("Clear Cart", e -> presenter.clearCart());

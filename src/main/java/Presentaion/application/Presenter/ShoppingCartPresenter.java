@@ -133,4 +133,8 @@ public class ShoppingCartPresenter {
         productList.removeIf(item -> item.getProductID().toString().equals(productId));
         view.getCartGrid().setItems(productList);
     }
+
+    public String getUsername() {
+        return CookiesHandler.getUsernameFromCookies(request);
+    }
 }
