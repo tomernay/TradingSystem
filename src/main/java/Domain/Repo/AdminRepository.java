@@ -3,6 +3,7 @@ package Domain.Repo;
 
 import Domain.Users.Admin;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -19,9 +20,14 @@ public class AdminRepository {
         try {
             if (!(admin.getSuspensionList().containsKey(subscriberID))) {
                 admin.getSuspensionList().put(subscriberID, endOfSuspensionDate);
+                SystemLogger.error("[SUCCESS] The User " +subscriberID+ " Has Been Suspended");
+                return new Response<>(true,"The user has been successfully suspended");
+            }
+            else{
+                SystemLogger.error("[ERROR] The User is Already Suspended");
+                return new Response<>(false,"The user is already suspended");
             }
 
-            return new Response<>(true,"The user has been successfully suspended");
         }
         catch (Exception exception){
             return new Response<>(false, "Other Exception");

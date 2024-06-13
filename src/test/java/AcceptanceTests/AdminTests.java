@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.sql.Date;
 import java.util.HashMap;
 
 public class AdminTests {
@@ -79,6 +80,34 @@ public class AdminTests {
         adminService.recieveSystemInfo();
     }
 
+    @Test
+    public void suspendUser(){
+        Response<String> response = adminService.suspendUser("yair",new Date(2024,10,15));
+        Assert.assertTrue(response.isSuccess());
 
+        Response<String> response2 = adminService.suspendUser("non-user",new Date(2024,10,17));
+        Assert.assertNull(response2.getData());
 
+        Response<String> response3 = adminService.suspendUser("yair",new Date(2024,10,19));
+        Assert.assertNull(response3.getData());
+    }
+
+    @Test
+    public void resumeUser(){
+        adminService.suspendUser("yair",new Date(2024,10,15));
+        Assert.assertTrue(adminService.getSuspensionList().getData().containsKey("yair"));
+
+        Response<String> response = adminService.reactivateUser("yair");
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertTrue(!adminService.getSuspensionList().getData().containsKey("yair"));
+    }
+
+    @Test
+    public void getSuspensionList(){
+        adminService.suspendUser("yair",new Date(2024,10,15));
+        adminService.suspendUser("yair2",new Date(2024,10,17));
+
+        Assert.assertTrue(adminService.getSuspensionList().getData().containsKey("yair"));
+        Assert.assertTrue(adminService.getSuspensionList().getData().containsKey("yair2"));
+    }
 }

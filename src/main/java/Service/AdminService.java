@@ -5,6 +5,7 @@ import Utilities.Response;
 import Utilities.SystemLogger;
 
 import java.sql.Date;
+import java.util.Map;
 
 public class AdminService {
     private UserService userService;
@@ -104,9 +105,9 @@ public class AdminService {
         }
     }
 
-    public Response<String> getSuspensionList(){
-        adminFacade.getAdminRepository().getSuspensionList();
-        return null;
+    public Response<Map<String,Date>> getSuspensionList(){
+        Map<String,Date> list = adminFacade.getAdminRepository().getSuspensionList();
+        return Response.success("suspension list", list);
     }
 
     public boolean isSuspended(String subscriberID){
