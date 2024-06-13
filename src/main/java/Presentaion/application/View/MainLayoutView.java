@@ -3,11 +3,13 @@ package Presentaion.application.View;
 
 import Presentaion.application.CookiesHandler;
 import Presentaion.application.Presenter.MainLayoutPresenter;
+import Presentaion.application.Presenter.StorePresenter.StorePagePresenter;
 import Presentaion.application.View.Messages.MessagesList;
 import Presentaion.application.View.Payment.PaymentPage;
 
 import Presentaion.application.View.PurchaseHistory.StorePurchaseHistory;
 import Presentaion.application.View.Store.StoreManagementView;
+import Presentaion.application.View.Store.StorePageView;
 import Presentaion.application.View.UtilitiesView.RealTimeNotifications;
 import Service.ServiceInitializer;
 import Utilities.Messages.Message;
@@ -67,8 +69,6 @@ import java.util.ArrayList;
 public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private final MainLayoutPresenter presenter;
-    private List<String> items = Stream.of("Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape", "Honeydew")
-            .collect(Collectors.toList());
     private H1 viewTitle;
     private Queue<Message> sub;
 
@@ -90,8 +90,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addCategoriesButton();
         addMessageButton();
         UI currentUI = UI.getCurrent();
-
+        addStorePageButton();
         RealTimeNotifications.start(currentUI,sub);
+    }
+
+    private void addStorePageButton() {
+        //nav to store page
+        Button storePage = new Button("Store Page", e -> {
+//            UI.getCurrent().navigate(StorePageView.class);
+        });
     }
 
     private void openDialog() {
