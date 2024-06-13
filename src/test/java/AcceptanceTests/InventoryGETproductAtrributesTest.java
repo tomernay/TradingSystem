@@ -1,4 +1,4 @@
-package UnitTests;
+package AcceptanceTests;
 
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;

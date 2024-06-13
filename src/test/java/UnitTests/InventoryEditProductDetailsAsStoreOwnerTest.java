@@ -1,21 +1,22 @@
 package UnitTests;
 
-import Domain.Store.Inventory.ProductDTO;
+import Domain.Store.Inventory.Inventory;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
-import org.junit.jupiter.api.*;
-
-import java.util.ArrayList;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class InventoryEditProductDetailsAsStoreOwnerTest {
     private Subscriber subscriber, subscriber2;
     private ServiceInitializer serviceInitializer;
     private Store store;
     private StoreService storeService;
+    private Inventory inventory;
 
     @BeforeEach
     public void init() {
@@ -30,6 +31,7 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
         subscriber = userService.getUserFacade().getUserRepository().getUser("itay");
         storeService.addStore("itayStore", "itay", subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        inventory = store.getInventory();
 
         userService.register("mor","MorPass123!");
         userService.loginAsSubscriber("mor","MorPass123!");
@@ -45,87 +47,87 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
 
     public void editProductQuantity() {
         System.out.println("---------------------editProductQuantity------------------------");
-        Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(store.getId(), "mor", subscriber2.getToken());
-        System.out.println(res.getData().size());
-        Response<String> response = storeService.setProductQuantity(1, 30, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
-        Response<String> response2 = storeService.setProductQuantity(1, -8, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response2.isSuccess());
-        Response<String> response3 = storeService.setProductQuantity(2, 20, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response3.isSuccess());
+        storeService.setProductQuantity(1, 30, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals(30, inventory.productsList.get(1).getQuantity());
+        storeService.setProductQuantity(1, -8, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals(30, inventory.productsList.get(1).getQuantity());
+        storeService.setProductQuantity(2, 20, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(2));
     }
 
     @Test
 
     public void editAddProductQuantity() {
         System.out.println("---------------------editAddProductQuantity------------------------");
-        Response<String> response = storeService.addProductQuantity(1, -10, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
-        Response<String> response2 = storeService.addProductQuantity(1, -11, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response2.isSuccess());
-        Response<String> response3 = storeService.addProductQuantity(2, 20, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response3.isSuccess());
+        storeService.addProductQuantity(1, -10, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals(10, inventory.productsList.get(1).getQuantity());
+        storeService.addProductQuantity(1, -11, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals(10, inventory.productsList.get(1).getQuantity());
+        storeService.addProductQuantity(2, 20, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(2));
+
     }
 
     @Test
     public void editProductPrice() {
         System.out.println("---------------------editProductPrice------------------------");
-        Response<String> response = storeService.setProductPrice(1, 20, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
-        Response<String> response2 = storeService.setProductPrice(1, -8, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response2.isSuccess());
-        Response<String> response3 = storeService.setProductPrice(2, 20, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response3.isSuccess());
+        storeService.setProductPrice(1, 20, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals(20, inventory.productsList.get(1).getPrice());
+        storeService.setProductPrice(1, -8, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals(20, inventory.productsList.get(1).getPrice());
+        storeService.setProductPrice(2, 20, store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(2));
     }
 
     @Test
     public void editProductName() {
         System.out.println("---------------------editProductName------------------------");
-        Response<String> response = storeService.setProductName(1, "NAME CHANGED", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
-        Response<String> response2 = storeService.setProductName(1, "", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response2.isSuccess());
-        Response<String> response3 = storeService.setProductName(2, null, store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response3.isSuccess());
+        storeService.setProductName(1, "NAME CHANGED", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals("NAME CHANGED", inventory.productsList.get(1).getName());
+        storeService.setProductName(1, "", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals("NAME CHANGED", inventory.productsList.get(1).getName());
+        storeService.setProductName(2, "NEW NAME", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(2));
     }
 
     @Test
     public void editProductDec() {
         System.out.println("---------------------editProductDec------------------------");
-        Response<String> response = storeService.setProductDescription(1, "DESC CHANGED", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
-        Response<String> response2 = storeService.setProductDescription(2, "CHANGE MY DESC", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response2.isSuccess());
-        Response<String> response3 = storeService.setProductDescription(2, "", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response3.isSuccess());
+        storeService.setProductDescription(1, "DESC CHANGED", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertEquals("DESC CHANGED", inventory.productsList.get(1).getDescription());
+        storeService.setProductDescription(2, "CHANGE MY DESC", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(2));
+        storeService.setProductDescription(1, "", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(2));
     }
 
     @Test
     public void editProductCategory() {
         System.out.println("---------------------editProductCategory------------------------");
-        Response<String> response = storeService.assignProductToCategory(1, "category1", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
-        Response<String> response2 = storeService.assignProductToCategory(1, "category1", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response2.isSuccess());
-        Response<String> response3 = storeService.assignProductToCategory(0, "category1", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response3.isSuccess());
-        Response<String> response4 = storeService.assignProductToCategory(1, "", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertFalse(response4.isSuccess());
-    }
+        storeService.assignProductToCategory(1, "category1", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertTrue(inventory.categories.get("category1").contains(inventory.productsList.get(1).getProductID()));
+        storeService.assignProductToCategory(1, "category1", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertTrue(inventory.categories.get("category1").contains(inventory.productsList.get(1).getProductID()));
+        storeService.assignProductToCategory(0, "category1", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.productsList.get(0));
+        storeService.assignProductToCategory(1, "", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.categories.get(""));
+        }
 
     @Test
     public void editAssignProductToCategory() {
         System.out.println("---------------------editAssignProductToCategory------------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mor", subscriber2.getToken());
-        Response<String> response = storeService.assignProductToCategory(1, "category2", store.getId(), "mor", subscriber2.getToken());
-        Assertions.assertTrue(response.isSuccess());
+        storeService.assignProductToCategory(1, "category2", store.getId(), "mor", subscriber2.getToken());
+        Assertions.assertTrue(inventory.categories.get("category2").contains(inventory.productsList.get(1).getProductID()));
     }
 
     @Test
     public void editRemoveCategoryFromStore() {
         System.out.println("---------------------editRemoveCategoryFromStore------------------------");
         storeService.removeCategoryFromStore(store.getId(), "General", "mor", subscriber2.getToken());
-        Response<String> response = storeService.isCategoryExist(store.getId(), "General", "mor", subscriber2.getToken());
-        Assertions.assertFalse(response.isSuccess());
+        storeService.isCategoryExist(store.getId(), "General", "mor", subscriber2.getToken());
+        Assertions.assertNull(inventory.categories.get("General"));
     }
 }
+
