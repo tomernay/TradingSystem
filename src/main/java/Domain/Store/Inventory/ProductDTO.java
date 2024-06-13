@@ -13,11 +13,12 @@ public class ProductDTO {
     public ArrayList<String> categories; // The category that a product is related to
 
 
-    public ProductDTO(String storeID, Integer productID, String name, double price) {
+    public ProductDTO(String storeID, Integer productID, String name, double price, int quantity) {
         this.storeID = storeID;
         this.productID = productID;
         this.name = name;
         this.price = price;
+        this.quantity = quantity;
    //     this.categories = categories;
     }
 
@@ -45,6 +46,10 @@ public class ProductDTO {
     }
     public String getDescription() {return desc;}
     public int getQuantity() {return quantity;}
+
+    public void setQuantity(Integer integer) {
+        this.quantity = integer;
+    }
 
 
 
