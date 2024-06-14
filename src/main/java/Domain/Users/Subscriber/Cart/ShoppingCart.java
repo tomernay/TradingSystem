@@ -97,7 +97,8 @@ public class ShoppingCart {
     public synchronized CompletableFuture<String> startPurchaseTimer() {
         purchaseFuture = new CompletableFuture<>();
 
-        if (inPurchaseProcess) {
+        if (!inPurchaseProcess) {
+            inPurchaseProcess = true;
             // Schedule a task to cancel the purchase after 10 minutes
             future = scheduler.schedule(() -> {
                 synchronized (this) {

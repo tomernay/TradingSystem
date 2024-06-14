@@ -52,7 +52,7 @@ public class OrderRepository {
             return Response.error("No orders found for store with ID: " + storeID, null);
         }
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
-        return Response.success(orderList.toString(), null);
+        return Response.success(orderList.toString(), orderList.toString());
     }
 
     public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
@@ -67,23 +67,23 @@ public class OrderRepository {
             return Response.error("No orders found for subscriber with ID: " + subscriberID, null);
         }
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
-        return Response.success(orderList.toString(), null);
+        return Response.success(orderList.toString(), orderList.toString());
     }
 
-    public Response<String> CreatOrder(String username, Map<String, Map<String, Integer>> shoppingcartContents) {
-        if (shoppingcartContents.isEmpty()) {
+    public Response<String> CreatOrder(String username, Map<String, Map<String, Integer>> shoppingCartContents) {
+        if (shoppingCartContents.isEmpty()) {
             SystemLogger.error("[ERROR] User " + username + " tried to purchase an empty shopping cart");
             return Response.error("Error - can't purchase an empty shopping cart", null);
         }
-        for (Map.Entry<String, Map<String, Integer>> entry : shoppingcartContents.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> entry : shoppingCartContents.entrySet()) {
             String storeID = entry.getKey();
-            for (Map.Entry<String,Integer> entry1 : shoppingcartContents.get(storeID).entrySet()) {
-                Map<String,Map<String,String>> prouduct = new HashMap<>();
-                Map<String,String> parmerter = new HashMap<>();
-                parmerter.put("quantity", String.valueOf(entry1.getValue()));
-                prouduct.put(entry1.getKey(), parmerter);
-                addOrder(entry.getKey(), username, prouduct);
+            Map<String,Map<String,String>> product = new HashMap<>();
+            for (Map.Entry<String,Integer> entry1 : shoppingCartContents.get(storeID).entrySet()) {
+                Map<String,String> parameter = new HashMap<>();
+                parameter.put("quantity", String.valueOf(entry1.getValue()));
+                product.put(entry1.getKey(), parameter);
             }
+            addOrder(entry.getKey(), username, product);
         }
         return Response.success("Order created successfully", null);
     }

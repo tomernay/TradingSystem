@@ -471,7 +471,9 @@ public class UserRepository {
         else if (guests.containsKey(username)) {
             guests.get(username).interruptPurchaseTimer();
         }
-        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        else {
+            SystemLogger.error("[ERROR] User " + username + " does not exist");
+        }
     }
 
     public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents(String username) {
