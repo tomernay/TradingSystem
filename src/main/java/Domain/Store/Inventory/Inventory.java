@@ -407,7 +407,13 @@ public class Inventory {
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
         SystemLogger.info("[SUCCESS] Product retrieved successfully");
-        return Response.success("Product retrieved successfully", new ProductDTO(product));
+        ArrayList<String> productCategories = new ArrayList<>();
+        for(Map.Entry<String, ArrayList<Integer>> entry2 : categories.entrySet()){
+            if(entry2.getValue().contains(productID)){
+                productCategories.add(entry2.getKey());
+            }
+        }
+        return Response.success("Product retrieved successfully", new ProductDTO(product, productCategories));
     }
 
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore() {
@@ -540,8 +546,14 @@ public class Inventory {
         }
         for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
             if (entry.getValue().getName().equals(productName)) {
+                ArrayList<String> productCategories = new ArrayList<>();
+                for(Map.Entry<String, ArrayList<Integer>> entry2 : categories.entrySet()){
+                    if(entry2.getValue().contains(entry.getKey())){
+                        productCategories.add(entry2.getKey());
+                    }
+                }
                 SystemLogger.info("[SUCCESS] Product with name: " + productName + " retrieved successfully");
-                return Response.success("Product with name: " + productName + " retrieved successfully", new ProductDTO(entry.getValue()));
+                return Response.success("Product with name: " + productName + " retrieved successfully", new ProductDTO(entry.getValue(), productCategories));
             }
         }
         SystemLogger.error("[ERROR] Product with name: " + productName + " not found");
