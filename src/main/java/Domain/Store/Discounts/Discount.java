@@ -9,6 +9,8 @@ import java.util.List;
 public interface Discount {
 
 
+
+
     public Response<String> CalculatorDiscount(List<ProductDTO> products);
 
     public String getDiscountID();
@@ -17,6 +19,7 @@ public interface Discount {
     public String getPercent();
     public String getProductID();
     public String getCategory();
+
 
 
 }

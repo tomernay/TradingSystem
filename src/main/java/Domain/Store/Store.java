@@ -5,6 +5,7 @@ import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Discounts.SimpleDiscount;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
+import Domain.Store.Policys.Policys;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
@@ -25,6 +26,7 @@ public class Store {
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
     private Map<Integer, Discount> discounts = new HashMap<>();///
+    private List<Policys> policys = new ArrayList<>();
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
 
 
@@ -41,6 +43,7 @@ public class Store {
         nominationGraph = new HashMap<>();
         reverseNominationMap = new HashMap<>();
         discounts = new HashMap<>();
+        policys = new ArrayList<>();
 
 
     }
