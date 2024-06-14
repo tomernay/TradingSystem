@@ -606,4 +606,7 @@ public class UserService {
     }
 
 
+    public boolean isInPurchaseProcess(String user) {
+        return userFacade.isInPurchaseProcess(user);
+    }
 }

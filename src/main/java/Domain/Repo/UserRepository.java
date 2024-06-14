@@ -484,4 +484,15 @@ public class UserRepository {
         SystemLogger.error("[ERROR] User " + username + " does not exist");
         return Response.error("User does not exist", null);
     }
+
+    public boolean isInPurchaseProcess(String user) {
+        if (subscribers.containsKey(user)) {
+            return subscribers.get(user).isInPurchaseProcess();
+        }
+        else if (guests.containsKey(user)) {
+            return guests.get(user).isInPurchaseProcess();
+        }
+        SystemLogger.error("[ERROR] User " + user + " does not exist");
+        return false;
+    }
 }

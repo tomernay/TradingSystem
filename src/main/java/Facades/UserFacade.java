@@ -156,4 +156,8 @@ public class UserFacade {
     public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents(String username) {
         return userRepository.lockAndGetShoppingCartContents(username);
     }
+
+    public boolean isInPurchaseProcess(String user) {
+        return userRepository.isInPurchaseProcess(user);
+    }
 }

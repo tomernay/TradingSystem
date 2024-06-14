@@ -124,4 +124,8 @@ public class User {
     public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents() {
         return shoppingCart.lockAndGetShoppingCartContents();
     }
+
+    public boolean isInPurchaseProcess() {
+        return shoppingCart.isInPurchaseProcess();
+    }
 }

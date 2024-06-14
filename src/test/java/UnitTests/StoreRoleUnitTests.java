@@ -46,7 +46,7 @@ public class StoreRoleUnitTests {
         userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), subscriber.getUsername(), subscriber.getToken());
         List<Message> messages = new ArrayList<>(subscriber.getMessages());
         for (Message message : messages) {
-            Assert.assertFalse(message instanceof nominateOwnerMessage && ((nominateOwnerMessage) message).getStoreID() == store.getId() && ((nominateOwnerMessage) message).getNominatorUsername().equals(subscriber.getUsername()));
+            Assert.assertFalse(message instanceof nominateOwnerMessage && Objects.equals(((nominateOwnerMessage) message).getStoreID(), store.getId()) && ((nominateOwnerMessage) message).getNominatorUsername().equals(subscriber.getUsername()));
         }
     }
 

@@ -34,20 +34,26 @@ public class PaymentService {
      * @param token
      */
     public Response<String> immediatePay(String user,double fee,String credit,String token){
-
         SystemLogger.info("[START] User: " + user + " is trying to pay");
-        Response<String> response = facade.getPaymentRepository().immediatePay(fee,credit);
-        if (response.isSuccess()) {
-            userService.ReleaseShoppingCartFromStore(user, token);
-            orderService.CreateOrder(user, token);
-            userService.ReleaseShoppingCartForUser(user, token);
-            userService.purchaseProcessInterrupt(user);
+        if (Security.isValidJWT(token,user)) {
+            if (!userService.isInPurchaseProcess(user)) {
+                SystemLogger.error("[ERROR] User: " + user + " is trying to pay without being in purchase process");
+                return Response.error("user is not in purchase process", null);
+            }
+            Response<String> response = facade.getPaymentRepository().immediatePay(fee, credit);
+            if (response.isSuccess()) {
+                userService.ReleaseShoppingCartFromStore(user, token);
+                orderService.CreateOrder(user, token);
+                userService.ReleaseShoppingCartForUser(user, token);
+                userService.purchaseProcessInterrupt(user);
+            } else {
+                userService.ReleaseShoppingCartAndBacktoInventory(user, token);
+                userService.purchaseProcessInterrupt(user);
+            }
+            return response;
         }
-        else {
-            userService.ReleaseShoppingCartAndBacktoInventory(user, token);
-            userService.purchaseProcessInterrupt(user);
-        }
-        return response;
+        SystemLogger.error("[ERROR] User: " + user + " is trying to pay with invalid token");
+        return Response.error("token is invalid", null);
     }
 
     public Response<String> addPaymentAdapter(String paymentAdapter, String name, String token, String user){
@@ -55,7 +61,8 @@ public class PaymentService {
             SystemLogger.info("[START] User: " + user + " is trying to add payment");
             return facade.addPaymentAdapter(paymentAdapter, name);
         }
-        return new Response<>(false,"token is invalid",null);
+        SystemLogger.error("[ERROR] User: " + user + " is trying to pay with invalid token");
+        return Response.error("token is invalid",null);
     }
 
     public Response<String> addSupplierAdapter(String supplierAdapter, String value, String token, String user) {
@@ -63,6 +70,7 @@ public class PaymentService {
             SystemLogger.info("[START] User: " + user + " is trying to add supplier");
             return supplyFacade.addSupplierAdapter(supplierAdapter,value);
         }
-        return new Response<>(false,"token is invalid",null);
+        SystemLogger.error("[ERROR] User: " + user + " is trying to pay with invalid token");
+        return Response.error("token is invalid",null);
     }
 }
