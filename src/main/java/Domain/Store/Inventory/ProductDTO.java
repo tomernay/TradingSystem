@@ -20,7 +20,6 @@ public class ProductDTO {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-   //     this.categories = categories;
     }
 
     public ProductDTO(Product product) {
@@ -34,9 +33,17 @@ public class ProductDTO {
         //this.categories = product.getCategories();
     }
 
-    public String getStoreID() {
-        return storeID;
+    public ProductDTO(Product product, ArrayList<String> categories) {
+        this.storeID = product.getStoreID();
+        this.productID = product.getProductID();
+        this.name = product.getName();
+        this.desc = product.getDescription();
+        this.price = product.getPrice();
+        this.quantity = product.getQuantity();
+        this.categories = categories;
     }
+
+    public String getStoreID() {return storeID;}
     public String getName() {
         return name;
     }
@@ -51,10 +58,12 @@ public class ProductDTO {
     public String getStoreName() {
         return storeName;
     }
+    public ArrayList<String> getCategories() {return categories;}
 
     public void setQuantity(Integer integer) {
         this.quantity = integer;
     }
+
 
 
 
@@ -66,6 +75,7 @@ public class ProductDTO {
                 ", desc='" + desc + '\'' +
                 ", price=" + price +
                 ", quantity=" + quantity +
+                ", categories=" + categories +
                 '}';
     }
 
