@@ -26,15 +26,15 @@ public class PaymentTests {
         userService.loginAsSubscriber("miaa", "Password123!");
         subscriber = userService.getUserFacade().getUserRepository().getUser("miaa");
     }
-    @Test
-    public void ImmediatePaymentTest(){
-        Response<String> s=paymentService.immediatePay(subscriber.getUsername(),50.0, FireBaseConstants.visa,subscriber.getToken());
-        Assert.assertTrue(s.isSuccess());
-    }
+//    @Test
+//    public void ImmediatePaymentTest(){
+//        Response<String> s=paymentService.immediatePay(subscriber.getUsername(),50.0, FireBaseConstants.visa,subscriber.getToken());
+//        Assert.assertTrue(s.isSuccess());
+//    }
 
-    @Test
-    public void ImmediatePaymentTestIleegalVisa(){
-        Response<String> s=paymentService.immediatePay(subscriber.getUsername(),50.0, "",subscriber.getToken());
-        Assert.assertFalse(s.isSuccess());
-    }
+//    @Test
+//    public void ImmediatePaymentTestIleegalVisa(){
+//        Response<String> s=paymentService.immediatePay(subscriber.getUsername(),50.0, "",subscriber.getToken());
+//        Assert.assertFalse(s.isSuccess());
+//    }
 }

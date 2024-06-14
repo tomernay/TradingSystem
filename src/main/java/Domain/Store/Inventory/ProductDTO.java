@@ -9,6 +9,7 @@ public class ProductDTO {
     private String desc;        // The description of the product
     private double price;          // The price of the product
     private int quantity;       // The quantity of the product available in the inventory
+    private String storeName;
 
     public ArrayList<String> categories; // The category that a product is related to
 
@@ -29,6 +30,7 @@ public class ProductDTO {
         this.desc = product.getDescription();
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
+        this.storeName = product.getStoreName();
         //this.categories = product.getCategories();
     }
 
@@ -46,6 +48,9 @@ public class ProductDTO {
     }
     public String getDescription() {return desc;}
     public int getQuantity() {return quantity;}
+    public String getStoreName() {
+        return storeName;
+    }
 
     public void setQuantity(Integer integer) {
         this.quantity = integer;
