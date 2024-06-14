@@ -162,17 +162,8 @@ public class Subscriber extends User {
         return Response.error("User is not a creator",null);
     }
 
-    public Response<String> clearCart() {
-        shoppingCart = new ShoppingCart();
-        return Response.success("[SUCCESS] Cart cleared successfully.", null);
-    }
-
     public Response<String> checkout() {
         return Response.success("[SUCCESS] Checkout successful.", null);
-    }
-
-    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity) {
-        return Response.success("[SUCCESS] Product quantity updated successfully.", null);
     }
 
 

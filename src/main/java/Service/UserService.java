@@ -610,4 +610,8 @@ public class UserService {
     public boolean isInPurchaseProcess(String user) {
         return userFacade.isInPurchaseProcess(user);
     }
+
+    public Response<Double> calculateTotalPriceInCart(String username, String token) {
+        return Response.success("Total price calculated successfully", 0.0); //NOT IMPLEMENTED YET
+    }
 }

@@ -90,9 +90,10 @@ public class User {
     public Response<String> clearCart() {
         if(shoppingCart != null){
             shoppingCart = new ShoppingCart();
+            SystemLogger.info("[SUCCESS] User: " + username + " cleared their shopping cart");
             return Response.success("Cart cleared successfully", null);
         }
-        SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
+        SystemLogger.error("[ERROR] User: " + username + " does not have a shopping cart");
         return Response.error("Error - can't clear cart", null);
     }
 

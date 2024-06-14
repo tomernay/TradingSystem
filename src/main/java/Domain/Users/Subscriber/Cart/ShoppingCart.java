@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 public class ShoppingCart {
     private final List<Basket> baskets;
     boolean inPurchaseProcess = false;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> future;
     private CompletableFuture<String> purchaseFuture;
 
@@ -125,6 +125,7 @@ public class ShoppingCart {
         if (!scheduler.isShutdown()) {
             scheduler.shutdownNow();
         }
+        scheduler = Executors.newScheduledThreadPool(1);
         inPurchaseProcess = false;
         SystemLogger.info("[SUCCESS] Purchase process cancelled successfully.");
     }

@@ -5,6 +5,7 @@ import Domain.Externals.Payment.DefaultPay;
 import Domain.Externals.Payment.PaymentAdapter;
 import Domain.Store.PurchasePolicy.PaymentTypes.ImmediatePay;
 import Utilities.Response;
+import Utilities.SystemLogger;
 
 import java.util.HashMap;
 
@@ -30,7 +31,10 @@ public class PaymentRepository {
      * @return
      */
     public Response<String> immediatePay(double fee, String credit){
-
+        if (credit == null) {
+            SystemLogger.error("[ERROR] User has cancelled payment");
+            return Response.error("Payment was cancelled", null);
+        }
         ImmediatePay payment=new ImmediatePay(fee, FireBaseConstants.secoundVisa,credit);
         Response<String> pay=payment.pay(new DefaultPay("str"));
         return pay;
