@@ -394,6 +394,7 @@ public class UserService {
             if (!resShoppingCartContents.isSuccess()) {
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
+
             Response<String> list_product = storeService.LockShoppingCartAndCalculatedPrice(resShoppingCartContents.getData());
             if (list_product.isSuccess()) {
                 purchaseProcessTimer(username, token);

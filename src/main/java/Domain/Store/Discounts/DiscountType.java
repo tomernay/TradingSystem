@@ -4,5 +4,5 @@ public enum DiscountType {
     SIMPLE,
     MAX,
     PLUS,
-    CONDITIONAL
+    CONDITION
 }
