@@ -14,6 +14,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -22,85 +24,104 @@ import java.util.Map;
 import java.util.Set;
 
 @PageTitle("Roles Management")
-@Route(value = "roles-management", layout = MainLayoutView.class)
+@Route(value = "roles-management/:storeId", layout = MainLayoutView.class)
 @StyleSheet("context://login-view-styles.css")
-public class RolesManagementView extends VerticalLayout {
-    private RolesManagementPresenter presenter;
-    private Grid<Map.Entry<String, String>> grid;
-    private MultiSelectListBox<String> roleFilter;
-    private TextField usernameFilter;
+public class RolesManagementView extends VerticalLayout implements BeforeEnterObserver {
+
+    private final RolesManagementPresenter presenter;
+    private final Grid<Map.Entry<String, String>> grid;
+    private final MultiSelectComboBox<String> roleFilter;
+    private final TextField usernameFilter;
+    private HorizontalLayout filterAndButtonLayout;  // Declare filterAndButtonLayout as a class member
+    private String storeId;
 
     public RolesManagementView(RolesManagementPresenter presenter) {
-        addClassName("roles-management-view");
         this.presenter = presenter;
         this.presenter.setView(this);
-        initUI();
-    }
 
-    private void initUI() {
+        addClassName("roles-management-view");
+        setSizeFull();
+        setMargin(true);
+        setPadding(true);
+        setSpacing(true);  // Set spacing to true for better visual appearance
+
+        // Initialize UI components
+        roleFilter = new MultiSelectComboBox<>();
+        roleFilter.setLabel("Filter by Role");
+        roleFilter.setItems("OWNER", "MANAGER", "CREATOR", "SUBSCRIBER");
+        roleFilter.setPlaceholder("Select roles...");
+        roleFilter.setClearButtonVisible(true);
+        roleFilter.addValueChangeListener(event -> updateRoles());
+
+        usernameFilter = new TextField("Search by Username");
+        usernameFilter.setValueChangeMode(ValueChangeMode.LAZY);
+        usernameFilter.addValueChangeListener(event -> updateRoles());
+
         grid = new Grid<>();
         grid.addColumn(Map.Entry::getKey).setHeader("Username");
         grid.addColumn(Map.Entry::getValue).setHeader("Role");
+        grid.addItemClickListener(event -> handleGridItemClick(event.getItem()));
 
+        HorizontalLayout filterLayout = new HorizontalLayout(roleFilter, usernameFilter);
+        filterLayout.setAlignItems(FlexComponent.Alignment.END);
+        filterLayout.setSpacing(true);
+        filterLayout.setWidthFull();
 
-        // Initialize UI components in the constructor
-        MultiSelectComboBox<String> roleFilter = new MultiSelectComboBox<>();
-        roleFilter.setLabel("Filter by Role");
-        roleFilter.setItems("Owner", "Manager", "Creator", "Subscriber");
-        roleFilter.setPlaceholder("Select roles...");
-        roleFilter.setClearButtonVisible(true);
-        roleFilter.getElement().setAttribute("multiple", true); // Set multiple attribute to enable multi-select
+        filterAndButtonLayout = new HorizontalLayout();
+        filterAndButtonLayout.setWidthFull();
+        filterAndButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        filterAndButtonLayout.setAlignItems(FlexComponent.Alignment.END);
+        filterAndButtonLayout.add(filterLayout);  // Add filterLayout to the filterAndButtonLayout
 
-        Button loadRolesButton = new Button("Load Roles", event -> {
-            // Replace "store-id" with the actual store ID
-            String storeID = "store-id"; // You may want to replace this with a dynamic value
+        add(filterAndButtonLayout);
+        // The buttonLayout will be initialized and added in the beforeEnter method
+        add(grid);
+        expand(grid);
+    }
 
-            // Get the selected roles from the roleFilter MultiSelectListBox
-            Set<String> selectedRoles = roleFilter.getValue();
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        storeId = event.getRouteParameters().get("storeId").orElse("");
+        initButtonLayout();
+        updateRoles();
+    }
 
-            // Pass the selected roles and an empty string for the username
-            presenter.loadRoles(storeID, selectedRoles, "");
-        });
-        usernameFilter = new TextField("Search by Username");
-        usernameFilter.setValueChangeMode(ValueChangeMode.LAZY);
-        usernameFilter.addValueChangeListener(event -> presenter.searchByUsername(event.getValue()));
+    private void initButtonLayout() {
+        HorizontalLayout buttonLayout = createButtonLayout();
+        filterAndButtonLayout.add(buttonLayout);  // Add buttonLayout to the filterAndButtonLayout
+    }
 
+    private HorizontalLayout createButtonLayout() {
         HorizontalLayout buttonLayout = new HorizontalLayout();
-        if (presenter.hasRole("Owner") || presenter.hasRole("Creator")) {
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        buttonLayout.setSpacing(true);
+        buttonLayout.setAlignItems(FlexComponent.Alignment.END);
+
+        if (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator")) {
             Button addButton = new Button("+ Nominate", e -> showNominationDialog());
+            addButton.addClassName("add-button");  // Adding class for custom styling
             buttonLayout.add(addButton);
         }
-        if (presenter.hasRole("Owner")) {
-            Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership());
+        if (presenter.hasRole(storeId, "Owner")) {
+            Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(storeId));
+            waiveOwnershipButton.addClassName("waive-button");  // Adding class for custom styling
             buttonLayout.add(waiveOwnershipButton);
         }
 
-        grid.addItemClickListener(event -> {
-            Map.Entry<String, String> item = event.getItem();
-            String role = item.getValue();
-            String username = item.getKey();
-
-            if ("Manager".equals(role) && (presenter.hasRole("Owner") || presenter.hasRole("Creator") || (presenter.hasRole("Manager")) && presenter.hasPermission("EDIT_PERMISSIONS"))) {
-                showPermissionManagementDialog(username);
-            }
-
-            if ("Subscriber".equals(role) && (presenter.hasRole("Owner") || presenter.hasRole("Creator") || (presenter.hasRole("Manager")) && presenter.hasPermission("REMOVE_STORE_SUBSCRIPTION"))) {
-                showSubscriberDialog(username);
-            }
-        });
-
-        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-
-        // Add components to the layout
-        add(buttonLayout, roleFilter, usernameFilter, grid);
-
-        // Add UI components to the layout
-        add(roleFilter, usernameFilter);
-        add(loadRolesButton, grid);
+        return buttonLayout;
     }
 
-    public void setPresenter(RolesManagementPresenter presenter) {
-        this.presenter = presenter;
+    private void handleGridItemClick(Map.Entry<String, String> item) {
+        String role = item.getValue();
+        String username = item.getKey();
+
+        if ("MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "EDIT_PERMISSIONS")))) {
+            showPermissionManagementDialog(username);
+        }
+
+        if ("SUBSCRIBER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "REMOVE_STORE_SUBSCRIPTION")))) {
+            showSubscriberDialog(username);
+        }
     }
 
     private void showSubscriberDialog(String username) {
@@ -108,13 +129,12 @@ public class RolesManagementView extends VerticalLayout {
         dialog.setCloseOnOutsideClick(false);
 
         Button removeSubscriptionButton = new Button("Remove Subscription", e -> {
-            presenter.removeSubscription(username);
+            presenter.removeSubscription(storeId, username);
             dialog.close();
         });
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(removeSubscriptionButton);
-
+        VerticalLayout dialogLayout = new VerticalLayout(removeSubscriptionButton);
+        dialogLayout.setPadding(false);
         dialog.add(dialogLayout);
         dialog.open();
     }
@@ -126,8 +146,10 @@ public class RolesManagementView extends VerticalLayout {
         Button nominateOwnerButton = new Button("Nominate Owner", e -> showOwnerNominationDialog());
         Button nominateManagerButton = new Button("Nominate Manager", e -> showManagerNominationDialog());
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(nominateOwnerButton, nominateManagerButton);
+        VerticalLayout dialogLayout = new VerticalLayout(nominateOwnerButton, nominateManagerButton);
+        dialogLayout.setPadding(true);
+        dialogLayout.setSpacing(true);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         dialog.add(dialogLayout);
         dialog.open();
@@ -139,13 +161,14 @@ public class RolesManagementView extends VerticalLayout {
 
         TextField usernameField = new TextField("Enter Username");
         Button nominateButton = new Button("Send Owner Nomination Request", e -> {
-            presenter.nominateOwner(usernameField.getValue());
-            // Logic to send owner nomination request
+            presenter.nominateOwner(storeId, usernameField.getValue());
             dialog.close();
         });
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(usernameField, nominateButton);
+        VerticalLayout dialogLayout = new VerticalLayout(usernameField, nominateButton);
+        dialogLayout.setPadding(true);
+        dialogLayout.setSpacing(true);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         dialog.add(dialogLayout);
         dialog.open();
@@ -157,46 +180,53 @@ public class RolesManagementView extends VerticalLayout {
 
         TextField usernameField = new TextField("Enter Username");
         MultiSelectListBox<String> permissionSelect = new MultiSelectListBox<>();
-        permissionSelect.setItems(presenter.getPermissions()); // Add your list of permissions here
+        permissionSelect.setItems(presenter.getPermissions());
 
         Button nominateButton = new Button("Send Manager Nomination Request", e -> {
-            // Get the nominated username and selected permissions
             String nominatedUsername = usernameField.getValue();
             Set<String> selectedPermissions = permissionSelect.getValue();
-            presenter.nominateManager(nominatedUsername, selectedPermissions);
-            // Logic to send manager nomination request
+            presenter.nominateManager(storeId, nominatedUsername, selectedPermissions);
             dialog.close();
         });
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(usernameField, permissionSelect, nominateButton);
+        VerticalLayout dialogLayout = new VerticalLayout(usernameField, permissionSelect, nominateButton);
+        dialogLayout.setPadding(true);
+        dialogLayout.setSpacing(true);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         dialog.add(dialogLayout);
         dialog.open();
     }
 
-
-
     private void showPermissionManagementDialog(String managerUsername) {
         Dialog dialog = new Dialog();
         dialog.setCloseOnOutsideClick(false);
 
-        // Create components for the dialog
         MultiSelectListBox<String> permissionSelect = new MultiSelectListBox<>();
-        permissionSelect.setItems("Permission 1", "Permission 2", "Permission 3"); // Add your list of permissions here
+        permissionSelect.setItems(presenter.getPermissions());
 
-        // Fetch current permissions and set them as selected
-        Set<String> currentPermissions = presenter.getManagerPermissions(managerUsername);
+        Set<String> currentPermissions = presenter.getManagerPermissions(storeId, managerUsername);
         permissionSelect.setValue(currentPermissions);
+
+        // Create a styled title with the manager's username
+        Span title = new Span("Manage Permissions for: ");
+        Span managerName = new Span(managerUsername);
+        title.addClassName("dialog-title");
+        managerName.addClassName("manager-name");
+
+        HorizontalLayout titleLayout = new HorizontalLayout(title, managerName);
+        titleLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
 
         Button saveButton = new Button("Save", e -> {
             Set<String> selectedPermissions = permissionSelect.getValue();
-            presenter.updateManagerPermissions(managerUsername, selectedPermissions);
+            presenter.updateManagerPermissions(storeId, managerUsername, selectedPermissions);
             dialog.close();
         });
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(new Span("Manage Permissions for: " + managerUsername), permissionSelect, saveButton);
+        VerticalLayout dialogLayout = new VerticalLayout(titleLayout, permissionSelect, saveButton);
+        dialogLayout.setPadding(true);
+        dialogLayout.setSpacing(true);
+        dialogLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         dialog.add(dialogLayout);
         dialog.open();
@@ -211,9 +241,14 @@ public class RolesManagementView extends VerticalLayout {
     }
 
     public void showError(String message) {
-        // Show error message
+        Notification.show(message, 3000, Notification.Position.MIDDLE);
     }
+
     public void showSuccess(String message) {
         Notification.show(message, 3000, Notification.Position.MIDDLE);
+    }
+
+    private void updateRoles() {
+        presenter.loadRoles(storeId, roleFilter.getValue(), usernameFilter.getValue());
     }
 }

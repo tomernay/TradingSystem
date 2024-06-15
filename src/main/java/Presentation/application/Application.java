@@ -54,7 +54,9 @@ public class Application implements AppShellConfigurator {
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
         storeService.addStore("newStore2", "miaa",subscriber.getToken());
         store2 = storeService.getStoreFacade().getStoreRepository().getStore("0");
-        storeService.addProductToStore("0","yair","d",20,30,"miaa",token);
+        storeService.addProductToStore("0","yair","d",20,30,"miaa",subscriber.getToken());
+        userService.SendStoreManagerNomination("0", "miaa", "notOwner", List.of("ADD_PRODUCT"), token);
+        userService.managerNominationResponse("notOwner", true, notOwner.getToken());
         System.out.println(store.getInventory().productsList);
         ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
         System.out.println( ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory("0").getData());
@@ -65,6 +67,7 @@ public class Application implements AppShellConfigurator {
         userService.addProductToShoppingCart("0","1","miaa",subscriber.getToken(), 1);
         userService.addProductToShoppingCart("0","2","miaa",subscriber.getToken(), 1);
         userService.addProductToShoppingCart("1","1","miaa",subscriber.getToken(), 1);
+        userService.logoutAsSubscriber("miaa");
     }
 
 }
