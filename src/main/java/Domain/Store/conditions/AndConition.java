@@ -3,6 +3,7 @@ package Domain.Store.conditions;
 import Domain.Store.Inventory.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public class AndConition implements  Condition{
 
@@ -17,7 +18,7 @@ public class AndConition implements  Condition{
     }
 
     @Override
-    public boolean isValid(List<ProductDTO> products) {
+    public boolean isValid(Map<ProductDTO,Integer> products) {
         return condition1.isValid(products) && condition2.isValid(products);
     }
 

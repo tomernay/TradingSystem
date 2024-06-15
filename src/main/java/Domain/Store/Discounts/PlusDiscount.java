@@ -5,6 +5,7 @@ import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 
 import java.util.List;
+import java.util.Map;
 
 public class PlusDiscount implements Discount {
 
@@ -20,7 +21,7 @@ public class PlusDiscount implements Discount {
 
 
         @Override
-        public Response<String> CalculatorDiscount(List<ProductDTO> products) {
+        public Response<String> CalculatorDiscount(Map<ProductDTO,Integer> products) {
             Response<String> response1 = discount1.CalculatorDiscount(products);
             Response<String> response2 = discount2.CalculatorDiscount(products);
             if(!response1.isSuccess() || !response2.isSuccess()){

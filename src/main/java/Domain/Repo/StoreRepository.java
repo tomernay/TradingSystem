@@ -506,21 +506,21 @@ public class StoreRepository {
 
 
     public Response<String> lockShopping(Map<String, Map<String, Integer>> shoppingCart) {
-        List <ProductDTO> products = new ArrayList<>();
         ArrayList<String> storeLock = new ArrayList<>();
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
-        double price = 0;
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<List<ProductDTO>> resProductDTO = stores.get(storeID).lockShoppingCart(productsInStore);
-            if (resProductDTO.isSuccess()) {
-                for (ProductDTO product : resProductDTO.getData()) {
-                    price += product.getPrice();
-                    products.add(product);
+            if (!stores.containsKey(storeID)) {
+                for (String store : storeLock) {
+                    stores.get(store).unlockShoppingCart(shoppingCart.get(store));
                 }
+                return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+            }
+            Response<Map<ProductDTO,Integer>> resProductDTO = stores.get(storeID).lockShoppingCart(productsInStore);
+            if (resProductDTO.isSuccess()) {
                 storeLock.add(storeID);
             }
             else {
@@ -529,9 +529,8 @@ public class StoreRepository {
                 }
                 return Response.error(resProductDTO.getMessage(), null);
             }
-
         }
-        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", Double.toString(price));
+        return Response.success("[SUCCESS] Successfully locked the shopping cart and calculated the price.", null);
     }
 
     public Response<String> CreateDiscount(String productID, String storeID, String category, String percent, String username) {
@@ -542,21 +541,21 @@ public class StoreRepository {
         return stores.get(storeID).CreateDiscount(productID, category, percent,"simple", username);
     }
 
-    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<Double> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
         double discount = 0;
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> discountShop = stores.get(storeID).CalculateDiscounts(productsInStore);
+            Response<Double> discountShop = stores.get(storeID).CalculateDiscounts(productsInStore);
             if (discountShop.isSuccess()) {
 
-                discount += Double.parseDouble(discountShop.getData());
+                discount += discountShop.getData();
             }
             else {
                 return Response.error(discountShop.getMessage(), null);
             }
         }
-        return Response.success("[SUCCESS] Successfully calculated the discount.", String.valueOf(discount));
+        return Response.success("[SUCCESS] Successfully calculated the discount.", discount);
     }
 
 
@@ -630,5 +629,13 @@ public class StoreRepository {
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).makeConitionDiscount(username, discountId, conitionId);
+    }
+
+    public Response<String> addSimplePoliceToStore(String username, String storeID,String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).addSimplePoliceToStore(username,category,productID, minAmount, maxAmount, price);
     }
 }

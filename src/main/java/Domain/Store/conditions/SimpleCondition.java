@@ -3,6 +3,7 @@ package Domain.Store.conditions;
 import Domain.Store.Inventory.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class SimpleCondition implements Condition{
@@ -46,21 +47,21 @@ public class SimpleCondition implements Condition{
     }
 
     @Override
-    public boolean isValid(List<ProductDTO> products) {
+    public boolean isValid(Map<ProductDTO,Integer> products) {
         double amount = 0;
-        for(ProductDTO product : products){
+        for(ProductDTO product : products.keySet()){
             if(category != null){
                 if(product.getCategories().contains(category)){
-                    amount = amount + 1;
+                    amount = amount + products.get(product);
                 }
             }
             if (productID != null){
                 if (Objects.equals(product.getProductID(), productID)){
-                    amount = amount + 1;
+                    amount = amount + products.get(product);
                 }
             }
             if(price != null){
-                amount = amount + product.getPrice();
+                amount = amount + product.getPrice()*products.get(product);
             }
         }
         return (minAmount == null || !(minAmount > amount)) && (maxAmount == null || !(maxAmount < amount));

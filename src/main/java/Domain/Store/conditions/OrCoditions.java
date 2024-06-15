@@ -3,6 +3,7 @@ package Domain.Store.conditions;
 import Domain.Store.Inventory.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public class OrCoditions implements Condition{
     private Condition condition1;
@@ -14,7 +15,7 @@ public class OrCoditions implements Condition{
         this.condition2 = condition2;
     }
 
-    public boolean isValid(List<ProductDTO> products) {
+    public boolean isValid(Map<ProductDTO,Integer> products) {
         return condition1.isValid(products) || condition2.isValid(products);
     }
 

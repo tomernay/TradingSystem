@@ -4,10 +4,8 @@ import Utilities.SystemLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Utilities.Response;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -609,9 +607,9 @@ public class Inventory {
 
 
 
-    public synchronized Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> MapShoppingCart) {
+    public synchronized Response<Map<ProductDTO,Integer>> lockShoppingCart(Map<String, Integer> MapShoppingCart) {
         ArrayList<Product> listLockedProducts = new ArrayList<>();
-        List<ProductDTO> productDTOList = new ArrayList<>();
+        Map<ProductDTO,Integer> productDTOList = new HashMap<>();
         for (Map.Entry<String, Integer> entry : MapShoppingCart.entrySet()) {
             Integer productQuantity = entry.getValue();
             int productID = Integer.parseInt(entry.getKey());
@@ -642,7 +640,7 @@ public class Inventory {
                 lockedProducts.put(product, productQuantity);
             }
             listLockedProducts.add(product);
-            productDTOList.add(new ProductDTO(product));
+            productDTOList.put(new ProductDTO(product),productQuantity);
         }
         SystemLogger.info("[SUCCESS] Shopping cart locked successfully");
         return Response.success("Shopping cart locked successfully",productDTOList);

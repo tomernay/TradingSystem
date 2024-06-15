@@ -230,7 +230,7 @@ public class StoreFacade {
         return storeRepository.CreateDiscount(productID, storeID, category, percent, username);
     }
 
-    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<Double> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
 
@@ -260,5 +260,9 @@ public class StoreFacade {
 
     public Response<String> makeConitionDiscount(String username, String storeID, int discountId, int conitionId) {
         return storeRepository.makeConitionDiscount(username, storeID, discountId, conitionId);
+    }
+
+    public Response<String> addSimplePoliceToStore(String username,String category, String storeID, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+        return storeRepository.addSimplePoliceToStore(username, storeID, category,productID, minAmount, maxAmount, price);
     }
 }
