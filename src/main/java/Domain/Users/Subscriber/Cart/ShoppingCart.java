@@ -108,7 +108,7 @@ public class ShoppingCart {
                         purchaseFuture.complete("10 minutes have passed. Purchase process cancelled.");
                     }
                 }
-            }, 10, TimeUnit.MINUTES);
+            }, 60, TimeUnit.MINUTES);
         } else {
             // If set to false, cancel any existing scheduled task
             cancelPurchaseProcess();

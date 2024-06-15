@@ -24,7 +24,12 @@ public class PaymentPresenter {
 
     public void pay(String user, double fee, String credit, String token) {
         Response<String> payRes = paymentService.immediatePay(user, fee, credit, token);
-        paymentView.showNotification(payRes.getMessage());
+        if (!paymentView.hasTimerEnded() || credit == null) {
+            paymentView.showNotification(payRes.getMessage());
+        }
+        else{
+            paymentView.showNotification("Payment failed - time is up!");
+        }
         if (!payRes.isSuccess()) {
             paymentView.navigateToShoppingCart();
         }

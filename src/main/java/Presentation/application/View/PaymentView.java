@@ -36,7 +36,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
     private TextField totalPriceField;
     private Span timerLabel;
     private ScheduledExecutorService executor;
-    private int timeLeft = 10 * 60; // 10 minutes in seconds
+    private int timeLeft = 10*60; // 10 minutes in seconds
     private UI ui;
 
 
@@ -63,9 +63,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         // Cancel Payment Button
         Button cancelButton = new Button("Cancel Payment");
         cancelButton.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
-            String token = CookiesHandler.getTokenFromCookies(getRequest());
-            String user = CookiesHandler.getUsernameFromCookies(getRequest());
-            paymentPresenter.pay(user, fee, null, token);
+            cancelPayment();
         });
         cancelButton.getStyle()
                 .set("background-color", "#FF0000") // Red color for cancel button
@@ -119,6 +117,17 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         }
     }
 
+    private void cancelPayment() {
+        // Logic to handle payment cancellation
+        String token = CookiesHandler.getTokenFromCookies(getRequest());
+        String user = CookiesHandler.getUsernameFromCookies(getRequest());
+        paymentPresenter.pay(user, fee, null, token);
+    }
+
+    public boolean hasTimerEnded() {
+        return timeLeft <= 0;
+    }
+
     private void startTimer() {
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(() -> {
@@ -130,10 +139,8 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 });
                 if (timeLeft <= 0) {
                     executor.shutdown();
-                    ui.access(() -> navigateToShoppingCart());  // Use the stored UI instance
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }, 0, 1, TimeUnit.SECONDS);
@@ -241,10 +248,15 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         // Submit Button
         Button submitButton = new Button("Submit");
         submitButton.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
-            String token = CookiesHandler.getTokenFromCookies(getRequest());
-            String user = CookiesHandler.getUsernameFromCookies(getRequest());
-            String cardNumber = cardNumberField.getValue();
-            paymentPresenter.pay(user, fee, cardNumber, token);
+            // Check if all fields are filled
+            if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty()) {
+                showNotification("Please fill in all fields before submitting.");
+            } else {
+                String token = CookiesHandler.getTokenFromCookies(getRequest());
+                String user = CookiesHandler.getUsernameFromCookies(getRequest());
+                String cardNumber = cardNumberField.getValue();
+                paymentPresenter.pay(user, fee, cardNumber, token);
+            }
         });
         submitButton.getStyle()
                 .set("background-color", "#007BFF")
