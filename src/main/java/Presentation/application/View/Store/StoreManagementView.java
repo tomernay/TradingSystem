@@ -1,38 +1,59 @@
 package Presentation.application.View.Store;
 
+import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 
-@Route("store-management")
 @PageTitle("Store Management")
-public class StoreManagementView extends VerticalLayout {
+@Route(value = "store-management/:storeId", layout = MainLayoutView.class)
+@StyleSheet("context://login-view-styles.css")
+public class StoreManagementView extends VerticalLayout implements BeforeEnterObserver {
 
     private Div content;
+    private String storeId;
 
     public StoreManagementView() {
         content = new Div();
         content.setSizeFull();
+        addClassName("store-management-view");
 
-        Button addProductButton = new Button("Add Product", e -> setContent(new AddProductView()));
-        Button editProductDetailsButton = new Button("Edit Product Details", e -> setContent(new EditProductDetailsView()));
-        // Add more buttons for other views as needed
-        Button removeProductButton = new Button("remove Product Details", e -> setContent(new RemoveProductView()));
-        Button addPaymentButton = new Button("add payment service", e -> setContent(new AddPaymentServiceView()));
-        Button addSupplierButton = new Button("add supplier service", e -> setContent(new AddSupplierServiceView()));
-        Button createDiscountButton = new Button("create Discount", e -> setContent(new CreateDiscountView()));
 
-        VerticalLayout buttonLayout = new VerticalLayout(addProductButton, editProductDetailsButton,addPaymentButton,removeProductButton,addSupplierButton,createDiscountButton);
+        Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
+//        Button discountsButton = new Button("Discounts", e -> setContent(new DiscountsView()));
+//        Button policiesButton = new Button("Policies", e -> setContent(new PoliciesView()));
+//        Button paymentButton = new Button("Payment Methods", e -> setContent(new PaymentMethodsView()));
+//        Button suppliersButton = new Button("Suppliers", e -> setContent(new SuppliersView()));
+//        Button rolesManagementButton = new Button("Roles Management", e -> setContent(new RolesManagementView()));
+
+//        VerticalLayout buttonLayout = new VerticalLayout(
+//                productManagementButton, discountsButton, policiesButton,
+//                paymentButton, suppliersButton, rolesManagementButton
+//        );
+        VerticalLayout buttonLayout = new VerticalLayout(
+                productManagementButton
+        );
         buttonLayout.setSpacing(true);
 
         add(buttonLayout, content);
     }
 
+    private void navigateToProductManagement() {
+        RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+        UI.getCurrent().navigate(ProductManagementView.class, routeParameters);
+    }
+
     private void setContent(Component component) {
         content.removeAll();
         content.add(component);
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        storeId = event.getRouteParameters().get("storeId").orElse("");
     }
 }
