@@ -71,7 +71,7 @@ public class purchaseCart {
                 System.out.println("Thread " + Thread.currentThread().getName() + " locked cart and calculated price for user: " + userName);
 
                 // Lock the cart and calculate the price
-                Response<String> response = userService.LockShoppingCartAndCalculatedPrice("user" + finalI, token);
+                Response<String> response = userService.lockShoppingCart("user" + finalI, token);
 
 
                 // Log the response

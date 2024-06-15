@@ -1,7 +1,7 @@
 package Domain.Store.Discounts;
 
 public class DiscountDTO {
-    private String discountID;
+    private int discountID;
     private String storeID;
     private DiscountType discountType;
     private String percent;
@@ -11,7 +11,7 @@ public class DiscountDTO {
     private DiscountDTO discountDTO2;
 
 
-    public DiscountDTO(String discountID, String storeID, DiscountType discountType, String discountcategory, String discountPercentage, String discountOperator) {
+    public DiscountDTO(int discountID, String storeID, DiscountType discountType, String discountcategory, String discountPercentage, String discountOperator) {
         this.discountID = discountID;
         this.storeID = storeID;
         this.discountType = discountType;
@@ -21,7 +21,7 @@ public class DiscountDTO {
         this.discountDTO2 = null;
     }
 
-    public String getDiscountID() {
+    public int getDiscountID() {
         return discountID;
     }
 

@@ -13,7 +13,7 @@ public interface Discount {
 
     public Response<String> CalculatorDiscount(List<ProductDTO> products);
 
-    public String getDiscountID();
+    public int getDiscountID();
     public String getStoreID();
     public DiscountType getDiscountType();
     public String getPercent();

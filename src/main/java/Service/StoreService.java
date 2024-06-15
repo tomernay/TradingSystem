@@ -790,8 +790,8 @@ public class StoreService {
 
 
 
-    public Response<String> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeFacade.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    public Response<String> LockShoppingCart(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.lockShopping(shoppingCart);
     }
 
 
@@ -835,5 +835,30 @@ public class StoreService {
     public Response<String> ReleaseShoppingCart(Map<String, Map<String, Integer>> data) {
         return storeFacade.ReleaseShoppingCart(data);
     }
+
+    public Response<Double> calculatedPriceShoppingCart(String username, Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.calculatedPriceShoppingCart(username, shoppingCart);
+    }
+
+    public Response<String> makeComplexDiscount(String username, String token, String storeID ,int discountId1, int discountId2, String discountType) {
+        SystemLogger.info("[START] User: " + username + " is trying to create complex discount for store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.makeComplexDiscount( username,storeID ,discountId1,discountId2,discountType);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create complex discount for store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> makeConitionDiscount(String username, String token, String storeID ,int discountId,int conitionId) {
+        SystemLogger.info("[START] User: " + username + " is trying to create complex discount for store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.makeConitionDiscount(username, storeID , discountId,conitionId);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create complex discount for store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+
+
 }
 

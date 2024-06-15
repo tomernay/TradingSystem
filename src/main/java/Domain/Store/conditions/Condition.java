@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface Condition {
     boolean isValid(List<ProductDTO> products);
+
+    int getConditionID();
 }
