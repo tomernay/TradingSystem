@@ -6,6 +6,8 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,7 +30,7 @@ public class ShoppingCartView extends VerticalLayout {
 
     private final ShoppingCartPresenter presenter;
     private final List<Grid<ProductDTO>> storeGrids; // List to hold grids for each store
-    private TextField totalPriceField;
+    private Span totalPriceSpan;
     private HorizontalLayout buttonsLayout;
     private VerticalLayout gridContainer;
 
@@ -51,13 +53,19 @@ public class ShoppingCartView extends VerticalLayout {
         buttonsLayout.setSpacing(true);
 
         // Initialize total price field
-        totalPriceField = new TextField("Total Price");
-        totalPriceField.setReadOnly(true); // Make it read-only
-        totalPriceField.setWidth("10em"); // Adjust width as needed
-        totalPriceField.setValue("0.00"); // Initial value
+        totalPriceSpan = new Span("Total Price: 0.00");
+        totalPriceSpan.getElement().getStyle().set("font-size", "1.5em");
+
+        // Create a div for total price with title
+        Div totalPriceDiv = new Div();
+        totalPriceDiv.addClassName("total-price-div");
+        Span totalPriceLabel = new Span("Total Price: ");
+        totalPriceLabel.getElement().getStyle().set("font-size", "1.5em");
+        totalPriceLabel.getElement().getStyle().set("font-weight", "bold");
+        totalPriceDiv.add(totalPriceLabel, totalPriceSpan);
 
         // Add buttons and total price to header layout
-        HorizontalLayout headerLayout = new HorizontalLayout(buttonsLayout, totalPriceField);
+        HorizontalLayout headerLayout = new HorizontalLayout(buttonsLayout, totalPriceDiv);
         headerLayout.setAlignItems(Alignment.CENTER);
         headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
         headerLayout.setWidthFull();
@@ -74,9 +82,24 @@ public class ShoppingCartView extends VerticalLayout {
         loadCartItems();
     }
 
-    public void updateTotalPrice(double totalPrice) {
-        totalPriceField.setValue(String.format("%.2f", totalPrice));
+    public void updateTotalPrice(double totalPrice, double discountPercentage) {
+        double discountedPrice = calculateDiscountedPrice(totalPrice, discountPercentage);
+        if (discountPercentage > 0) {
+            totalPriceSpan.getElement().setProperty("innerHTML",
+                    String.format("<span style='text-decoration: line-through;'>%.2f</span> " +
+                                    "<span style='color: red;'>%.2f</span>",
+                            totalPrice, discountedPrice));
+        } else {
+            totalPriceSpan.setText(String.format("%.2f", totalPrice));
+            totalPriceSpan.getElement().removeProperty("innerHTML");
+        }
     }
+
+    private double calculateDiscountedPrice(double originalPrice, double discountPercentage) {
+        return originalPrice - (originalPrice * discountPercentage / 100);
+    }
+
+
 
     public void navigateToPayment(String totalPrice) {
         double Price = Double.parseDouble(totalPrice);

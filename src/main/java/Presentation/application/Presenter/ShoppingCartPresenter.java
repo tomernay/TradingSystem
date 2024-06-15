@@ -40,6 +40,7 @@ public class ShoppingCartPresenter {
         if (response.isSuccess()) {
             view.showSuccess(response.getData());
             removeCartItem(productId); // Use the same product identifier as in the productList
+            updateTotalPriceInCart();
         } else {
             view.showError(response.getMessage());
         }
@@ -74,12 +75,22 @@ public class ShoppingCartPresenter {
     private void updateTotalPriceInCart() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<Double> response = userService.calculateTotalPriceInCart(username, token);
-        if (response.isSuccess()) {
-            double totalPrice = response.getData();
-            view.updateTotalPrice(totalPrice);
+        Response<Double> totalPriceResponse = userService.calculatedPriceShoppingCart(username, token);
+
+        if (totalPriceResponse.isSuccess()) {
+            double totalPrice = totalPriceResponse.getData();
+            Response<String> discountResponse = userService.CalculateDiscounts(username, token);
+
+            if (discountResponse.isSuccess()) {
+                double discountAmount = Double.parseDouble(discountResponse.getData());
+                double discountPercentage = (discountAmount / totalPrice) * 100;
+                view.updateTotalPrice(totalPrice, discountPercentage);
+            } else {
+                view.showError(discountResponse.getMessage());
+                view.updateTotalPrice(totalPrice, 0); // No discount if calculation fails
+            }
         } else {
-            view.showError(response.getMessage());
+            view.showError(totalPriceResponse.getMessage());
         }
     }
 
