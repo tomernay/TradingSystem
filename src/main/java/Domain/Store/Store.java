@@ -643,5 +643,9 @@ public class Store {
     public synchronized Response<String> ReleaseShoppingCartfromlock(Map<String, Integer> productsInStore) {
         return inventory.ReleaseShoppSingCartfromlock(productsInStore);
     }
+
+    public Response<String> calculatedPriceShoppingCart(Map<String, Integer> productsInStore) {
+        return inventory.calculatedPriceShoppingCart(productsInStore);
+    }
 }
 

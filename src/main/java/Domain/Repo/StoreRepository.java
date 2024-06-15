@@ -597,4 +597,20 @@ public class StoreRepository {
     public Map<String, Store> getStores() {
         return stores;
     }
+
+    public Response<Double> calculatedPriceShoppingCart(String username, Map<String, Map<String, Integer>> shoppingCart) {
+        double price = 0;
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+            String storeID = storeEntry.getKey();
+            Map<String, Integer> productsInStore = storeEntry.getValue();
+            Response<String> resProductDTO = stores.get(storeID).calculatedPriceShoppingCart(productsInStore);
+            if (resProductDTO.isSuccess()) {
+                price += Double.parseDouble(resProductDTO.getData());
+            }
+            else {
+                return Response.error(resProductDTO.getMessage(), null);
+            }
+        }
+        return Response.success("[SUCCESS] Successfully calculated the price.", price);
+    }
 }

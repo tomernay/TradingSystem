@@ -835,5 +835,11 @@ public class StoreService {
     public Response<String> ReleaseShoppingCart(Map<String, Map<String, Integer>> data) {
         return storeFacade.ReleaseShoppingCart(data);
     }
+
+    public Response<Double> calculatedPriceShoppingCart(String username, Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.calculatedPriceShoppingCart(username, shoppingCart);
+    }
+
+    public Response<String> make
 }
 

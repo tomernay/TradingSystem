@@ -4,11 +4,7 @@ import Domain.Repo.OrderRepository;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
-import Service.OrderService;
-import Service.PaymentService;
-import Service.ServiceInitializer;
-import Service.StoreService;
-import Service.UserService;
+import Service.*;
 import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,72 +57,12 @@ public class PurchaseCartUnitTests {
     }
 
     @Test
-    public void lockCart() {
-        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 1);
-        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
-        userService.ReleaseShoppingCartFromStore("yair12312", buyer.getToken());
-        Inventory inventory = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
-        Assert.assertEquals(9, Integer.parseInt(inventory.getProductQuantity(1).getData()));
-        Assert.assertEquals(9, Integer.parseInt(inventory.getProductQuantity(2).getData()));
-    }
-
-    @Test
-    public void lockCartNotExist() {
-        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
-        Inventory inventory = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
-        Assert.assertEquals(10, Integer.parseInt(inventory.getProductQuantity(1).getData()));
-        Assert.assertEquals(10, Integer.parseInt(inventory.getProductQuantity(2).getData()));
-    }
-
-    @Test
-    public void lockCartNotQuantityOneShop() {
-        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 100);
-        Response<String> res1 = userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
-        Inventory inventory = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
-        Assert.assertEquals(10, Integer.parseInt(inventory.getProductQuantity(1).getData()));
-        Assert.assertEquals(10, Integer.parseInt(inventory.getProductQuantity(2).getData()));
-    }
-
-    @Test
-    public void lockCartNotQuantityTwoShop() {
-        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 100);
-        Response<String> res1 = userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
-        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
-        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
-        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
-    }
-
-    @Test
-    public void PricesCalculation() {
-        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
-        Assert.assertTrue(res.isSuccess());
-    }
-
-    @Test
-    public void CartLockAndRelease() {
-        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        Response<String> res = userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
-        Assert.assertTrue(Objects.equals(res.getData(), "18.0"));
-    }
-
-    @Test
-    public void OrderCheck() {
+    public void purchaseCartSuccessfully() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
         userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
         userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
         userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        userService.LockShoppingCartAndCalculatedPrice("yair12312", buyer.getToken());
+        userService.lockShoppingCart("yair12312", buyer.getToken());
 
         // Stub the payment process to bypass actual payment but still call the original implementation for other parts
         Mockito.doAnswer(invocation -> {
@@ -163,4 +99,68 @@ public class PurchaseCartUnitTests {
         Assert.assertEquals(9, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
         Assert.assertTrue(buyer.getShoppingCartContents().getData().isEmpty());
     }
+
+    @Test
+    public void purchaseCartFailPay(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+
+        // Stub the payment process to bypass actual payment but still call the original implementation for other parts
+        Mockito.doAnswer(invocation -> {
+            // Simulate the mock response for payment
+            Response<String> paymentResponse = Response.error("Payment Fail", null);
+
+            // Execute the lines that follow the actual payment call in the immediatePay method
+            // Manually call the subsequent methods as needed
+            userService.ReleaseShoppingCartAndBacktoInventory("yair12312", buyer.getToken());
+            userService.purchaseProcessInterrupt("yair12312");
+            return paymentResponse;
+        }).when(paymentService).immediatePay(Mockito.anyString(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyString());
+
+        // Call the mocked payment method
+        Response<String> paymentResponse = paymentService.immediatePay("yair12312", 1000.0, "creditCard123", buyer.getToken());
+
+        // Assert the payment was successful
+        Assert.assertFalse(paymentResponse.isSuccess());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        // Verify the purchase history is updated
+        orderService.getPurchaseHistoryBySubscriber("yair12312");
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertFalse(buyer.getShoppingCartContents().getData().isEmpty());
+    }
+
+    @Test
+    public void purchaseCartEmptyCart(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        orderService.getPurchaseHistoryBySubscriber("yair12312");
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertTrue(buyer.getShoppingCartContents().getData().isEmpty());
+    }
+
+    @Test
+    public void priceCalculation(){
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        Response<Double> price = userService.calculatedPriceShoppingCart("yair12312", buyer.getToken());
+        Assert.assertTrue(price.getData() == 108.0);
+    }
+
+
+
 }

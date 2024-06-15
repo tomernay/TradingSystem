@@ -85,7 +85,7 @@ public class ShoppingCartPresenter {
 
     public void checkout() {
         String token = CookiesHandler.getTokenFromCookies(request);
-        Response<String> response = userService.LockShoppingCartAndCalculatedPrice(CookiesHandler.getUsernameFromCookies(request), token);
+        Response<String> response = userService.lockShoppingCart(CookiesHandler.getUsernameFromCookies(request), token);
         if (response.isSuccess()) {
             view.navigateToPayment(response.getData());
         } else {

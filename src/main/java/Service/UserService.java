@@ -1,6 +1,5 @@
 package Service;
 
-import Domain.Store.Inventory.ProductDTO;
 import Facades.UserFacade;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
@@ -383,8 +382,21 @@ public class UserService {
         SystemLogger.error("[ERROR] User: " + username + " tried to get the shopping cart contents but the token was invalid");
         return Response.error("invalid token", null);
     }
+    public Response<Double> calculatedPriceShoppingCart(String username, String token){
+        SystemLogger.info("[START] User: " + username + " is trying calculated  shopping cart contents");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.lockAndGetShoppingCartContents(username);
+            if (!resShoppingCartContents.isSuccess()) {
+                return Response.error(resShoppingCartContents.getMessage(), null);
+            }
+            return storeService.calculatedPriceShoppingCart(username,resShoppingCartContents.getData());
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to get the shopping cart contents but the token was invalid");
+        return Response.error("invalid token", null);
 
-    public Response<String> LockShoppingCartAndCalculatedPrice(String username, String token) {
+    }
+
+    public Response<String> lockShoppingCart(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
             if(adminService.isSuspended(username)){
