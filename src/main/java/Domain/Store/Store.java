@@ -25,7 +25,7 @@ public class Store {
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
     private Map<Integer, Discount> discounts = new HashMap<>();///
-    private Map<Integer,Condition> policys = new HashMap<>();
+    private Map<Integer, Condition> policys = new HashMap<>();
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
 
 
@@ -723,6 +723,15 @@ if (isStoreOwner(username) || isStoreManager(username)) {
         int id = productIDGenerator.getAndIncrement();
         policys.put(id, new SimpleCondition(id,productID, category, minAmount, maxAmount, price));
         return new Response<>(true, "Condition created successfully");
+    }
+
+    public Response<String> removeProductFromCategory(int productId, String category, String username) {
+        Response<String> permissionCheck = checkUserPermission(username, Permissions.EDIT_PRODUCT);
+        if (!permissionCheck.isSuccess()) {
+            SystemLogger.error("[ERROR] " + username + " tried to assign the product: " + productId + " to the category: " + category + " but he doesn't have the permission");
+            return permissionCheck;
+        }
+        return inventory.removeProductFromCategory(productId, category);
     }
 }
 

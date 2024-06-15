@@ -496,7 +496,11 @@ public class UserService {
      */
     public Response<Map<String, String>> getStoresRole(String username) {
         Map<String, String> storesRole = userFacade.getStoresRole(username).getData();
-        return storeService.getStoresRoleWithName(storesRole);
+        if (storesRole == null) {
+            return Response.error("User does not have any stores", null);
+        }
+        return Response.success("Stores role retrieved successfully", storesRole);
+//        return storeService.getStoresRoleWithName(storesRole);
     }
 
     /**

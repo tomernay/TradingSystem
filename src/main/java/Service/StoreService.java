@@ -886,6 +886,13 @@ public class StoreService {
     }
 
 
-
+    public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to remove product: " + productId + " from category: " + category + " in store: " + storeId);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.removeProductFromCategory(productId, category, storeId, username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to remove product: " + productId + " from category: " + category + " in store: " + storeId + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
 }
 

@@ -354,12 +354,20 @@ public class StoreRepository {
     }
 
     public Response<String> getStoreIDbyName(String storeName, String userName) {
-     Response<String> response = isStoreExist(storeName);
-        if (!response.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get store ID by name: " + storeName + " but the store doesn't exist / is inactive");
-            return Response.error(response.getMessage(), null);
+        for (Store store : stores.values()) {
+            if (store.getName().equals(storeName)) {
+                SystemLogger.info("[SUCCESS] " + userName + " successfully retrieved the store ID by name: " + storeName);
+                return Response.success("Successfully retrieved the store ID by name.", store.getId());
+            }
         }
-        return stores.get(storeName).getStoreIDbyName(userName);
+        for (Store store : deactivatedStores.values()) {
+            if (store.getName().equals(storeName)) {
+                SystemLogger.info("[SUCCESS] " + userName + " successfully retrieved the store ID by name: " + storeName);
+                return Response.success("Successfully retrieved the store ID by name.", store.getId());
+            }
+        }
+        SystemLogger.error("[ERROR] " + userName + " tried to get store ID by name: " + storeName + " but the store doesn't exist");
+        return Response.error("Store with name: " + storeName + " doesn't exist", null);
     }
 
     public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, String userName) {
@@ -637,5 +645,13 @@ public class StoreRepository {
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeID).addSimplePoliceToStore(username,category,productID, minAmount, maxAmount, price);
+    }
+
+    public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {
+        Response<String> response = isStoreExist(storeId);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeId).removeProductFromCategory(productId, category, username);
     }
 }

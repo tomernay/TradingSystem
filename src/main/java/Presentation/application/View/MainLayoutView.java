@@ -27,10 +27,7 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServletRequest;
@@ -215,41 +212,36 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(new Span("Choose a store:"));
 
-        // Fetch store data
-
         List<String> stores = getUsersStores(presenter.getUserName());
-        ContextMenu dropdownMenu = new ContextMenu();
-        // Dropdown menu presenting the stores
-        //show stores only if the user is a manager/owner/creator
-        if(hasRole(presenter.getUserName())) {
-            for (String store : stores) {
-                dialogLayout.add(dropdownMenu.addItem(store, e -> {
-                    UI.getCurrent().navigate(StoreManagementView.class);
-                }));
-            }
+
+        for (String store : stores) {
+            Button storeButton = new Button(store, e -> {
+                String storeId = getStoreIdByName(store);
+                RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+                UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                dialog.close();
+            });
+            dialogLayout.add(storeButton);
         }
 
-
-        //add a button for adding a store called "open a new store"
         Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
         dialogLayout.add(openNewStore);
         openNewStore.getElement().getStyle().set("color", "black");
-        //put the button at the bottom whole width
         openNewStore.getElement().getStyle().set("position", "absolute");
         openNewStore.getElement().getStyle().set("bottom", "0");
         openNewStore.getElement().getStyle().set("left", "0");
         openNewStore.getElement().getStyle().set("right", "0");
-//        openNewStore.getElement().getStyle().set("background-color", "transparent");
 
-
-        //add a close button
         Button closeDialogButton = addCloseButton(dialog);
         dialogLayout.add(closeDialogButton);
-
-
-
         dialog.add(dialogLayout);
         dialog.open();
+    }
+
+    private String getStoreIdByName(String storeName) {
+        // Implement this method to fetch the storeId based on the store name
+        // This can be a call to your service layer
+        return presenter.getStoreIdByName(storeName);
     }
 
     private void openNewStoreDialog() {

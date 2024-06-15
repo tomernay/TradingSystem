@@ -265,4 +265,8 @@ public class StoreFacade {
     public Response<String> addSimplePoliceToStore(String username,String category, String storeID, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
         return storeRepository.addSimplePoliceToStore(username, storeID, category,productID, minAmount, maxAmount, price);
     }
+
+    public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {
+        return storeRepository.removeProductFromCategory(productId, category, storeId, username);
+    }
 }

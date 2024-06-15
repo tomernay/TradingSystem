@@ -201,4 +201,13 @@ public class MainLayoutPresenter {
         return storeService.viewProductFromAllStoresByName(searchTerm, username, token);
     }
 
+    public String getStoreIdByName(String storeName) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<String> response = storeService.getStoreIDbyName(storeName, username, token);
+        if (response.isSuccess()) {
+            return response.getData();
+        }
+        return null;
+    }
 }

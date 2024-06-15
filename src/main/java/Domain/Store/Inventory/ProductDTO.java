@@ -20,6 +20,7 @@ public class ProductDTO {
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.categories = new ArrayList<>();
     }
 
     public ProductDTO(Product product) {
@@ -30,7 +31,7 @@ public class ProductDTO {
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.storeName = product.getStoreName();
-        //this.categories = product.getCategories();
+        this.categories = new ArrayList<>();
     }
 
     public ProductDTO(Product product, ArrayList<String> categories) {

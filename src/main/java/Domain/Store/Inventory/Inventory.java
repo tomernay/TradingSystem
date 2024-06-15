@@ -344,6 +344,24 @@ public class Inventory {
         }
     }
 
+    public List<String> getProductsCategoriesAsList(int productID) {
+        if (productID < 0) {
+            SystemLogger.error("[ERROR] Invalid product ID: " + productID);
+            return null;
+        }
+        if (!isProductExist(productID)) {
+            SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
+            return null;
+        }
+        List<String> relatedCategories = new ArrayList<>();
+        for (Map.Entry<String, ArrayList<Integer>> entry : categories.entrySet()) {
+            if (entry.getValue().contains(productID)) {
+                relatedCategories.add(entry.getKey());
+            }
+        }
+        return relatedCategories;
+    }
+
     public Response<String> assignProductToCategory(int productID, String category) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
@@ -417,7 +435,13 @@ public class Inventory {
     public Response<ArrayList<ProductDTO>> getAllProductsFromStore() {
         ArrayList<ProductDTO> products = new ArrayList<>();
         for (Map.Entry<Integer, Product> entry : productsList.entrySet()) {
-            products.add(new ProductDTO(entry.getValue()));
+            List<String> categories = getProductsCategoriesAsList(entry.getKey());
+            if (categories.isEmpty()) {
+                products.add(new ProductDTO(entry.getValue()));
+            }
+            else {
+                products.add(new ProductDTO(entry.getValue(), new ArrayList<>(categories)));
+            }
         }
         SystemLogger.info("[SUCCESS] Products retrieved successfully");
         return Response.success("Products retrieved successfully", products);
@@ -703,6 +727,33 @@ public class Inventory {
         }
         SystemLogger.info("[SUCCESS] Total price calculated successfully");
         return Response.success("Total price calculated successfully", String.valueOf(totalPrice));
+    }
+
+    public Response<String> removeProductFromCategory(int productId, String category) {
+        if (productId < 0) {
+            SystemLogger.error("[ERROR] Invalid product ID: " + productId);
+            return Response.error("Invalid product ID: " + productId, null);
+        }
+        if (!isProductExist(productId)) {
+            SystemLogger.error("[ERROR] Product with ID: " + productId + " does not exist.");
+            return Response.error("Product with ID: " + productId + " does not exist.", null);
+        }
+        if (category == null || category.isEmpty()) {
+            SystemLogger.error("[ERROR] Category cannot be null or empty");
+            return Response.error("Category cannot be null or empty", null);
+        }
+        if (!categories.containsKey(category)) {
+            SystemLogger.error("[ERROR] Category does not exist: " + category);
+            return Response.error("Category does not exist: " + category, null);
+        }
+        ArrayList<Integer> productIDs = categories.get(category);
+        if (!productIDs.contains(productId)) {
+            SystemLogger.error("[ERROR] Product with ID: " + productId + " does not exist in category: " + category);
+            return Response.error("Product with ID: " + productId + " does not exist in category: " + category, null);
+        }
+        productIDs.remove(Integer.valueOf(productId));
+        SystemLogger.info("[SUCCESS] Product with ID: " + productId + " removed from category: " + category);
+        return Response.success("Product with ID: " + productId + " removed from category: " + category, category);
     }
 }
 
