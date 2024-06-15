@@ -5,6 +5,7 @@ import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
 import Domain.Store.conditions.Condition;
+import Domain.Store.conditions.SimpleCondition;
 import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -561,7 +562,7 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
-    public Response<Boolean> cheakPolice(List<ProductDTO>productsInShoppingCart) {
+    public Response<Boolean> cheakPolice(Map<ProductDTO,Integer>productsInShoppingCart) {
         for (Condition c : policys.values()) {
             if (!c.isValid(productsInShoppingCart)) {
                 return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
@@ -572,8 +573,8 @@ public class Store {
 
 
 
-    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> productsShoppingCart) {
-        Response<List<ProductDTO>> productDTOList = inventory.lockShoppingCart(productsShoppingCart);
+    public Response<Map<ProductDTO,Integer>> lockShoppingCart(Map<String, Integer> productsShoppingCart) {
+        Response<Map<ProductDTO,Integer>> productDTOList = inventory.lockShoppingCart(productsShoppingCart);
         if (!productDTOList.isSuccess()) {
             return productDTOList;
         }
@@ -583,9 +584,9 @@ public class Store {
             }
             else {
                 inventory.unlockShoppingCart(productsShoppingCart);
+                return new Response<>(false, "The conditions are not valid", null);
             }
         }
-        return productDTOList;
     }
 
 
@@ -619,15 +620,15 @@ public class Store {
         return new Response<>(true, "Discount created successfully");
     }
 
-    public Response<String> CalculateDiscounts(Map<String, Integer> productsInStore) {
+    public Response<Double> CalculateDiscounts(Map<String, Integer> productsInStore) {
         double discount = 0;
-        List<ProductDTO> products = new ArrayList<>();
+        Map<ProductDTO,Integer> products = new HashMap<>();
         for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
             Response<ProductDTO> response = inventory.getProductFromStore(Integer.parseInt(entry.getKey()));
             if (!response.isSuccess()) {
                 return new Response<>(false, "Failed to calculate discount");
             }
-            products.add(response.getData());
+            products.put(response.getData(),productsInStore.get(entry.getKey()));
         }
             for (Discount d : discounts.values()) {
                 Response<String> responseDiscount = d.CalculatorDiscount(products);
@@ -636,7 +637,7 @@ public class Store {
                 }
                 discount += Double.parseDouble(responseDiscount.getData());
             }
-        return new Response<>(true,"calculate discounts successfull", String.valueOf(discount));
+        return new Response<>(true,"calculate discounts successfull", discount);
     }
 
     public synchronized Response<String> ReleaseShoppingCart(Map<String, Integer> productsInStore) {
@@ -707,6 +708,21 @@ public class Store {
         discounts.remove(discountId);
         discounts.remove(conitionId);
         return new Response<>(true, "Discount created successfully");
+    }
+
+    public Response<String> addSimplePoliceToStore(String username,String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+if (isStoreOwner(username) || isStoreManager(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if ((productID == null || isProductExist(String.valueOf(productID)).isSuccess()) &&  (price == null && price <= 0) && (category == null || isCategoryExist(category).isSuccess())) {
+            return new Response<>(false, "productID,price and category can't be null");
+        }
+        if ((minAmount == null || minAmount < 0)&& (maxAmount == null || maxAmount < 0)) {
+            return new Response<>(false, "minAmount can't be null");
+        }
+        int id = productIDGenerator.getAndIncrement();
+        policys.put(id, new SimpleCondition(id,productID, category, minAmount, maxAmount, price));
+        return new Response<>(true, "Condition created successfully");
     }
 }
 

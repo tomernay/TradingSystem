@@ -101,6 +101,51 @@ public class PurchaseCartUnitTests {
     }
 
     @Test
+    public void purchaseCartSuccessfullyWithPolicy() {
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        storeService.addSimplePoliceToStore("newOwner",owner.getToken(),"1",null,null,10,null,1.0);
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+
+        // Stub the payment process to bypass actual payment but still call the original implementation for other parts
+        Mockito.doAnswer(invocation -> {
+            // Simulate the mock response for payment
+            Response<String> paymentResponse = Response.success("Payment Successful", null);
+
+            // Execute the lines that follow the actual payment call in the immediatePay method
+            // Manually call the subsequent methods as needed
+            userService.ReleaseShoppingCartFromStore("yair12312", buyer.getToken());
+            orderService.CreateOrder("yair12312", buyer.getToken());
+            userService.ReleaseShoppingCartForUser("yair12312", buyer.getToken());
+            userService.purchaseProcessInterrupt("yair12312");
+
+            return paymentResponse;
+        }).when(paymentService).immediatePay(Mockito.anyString(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyString());
+
+        // Call the mocked payment method
+        Response<String> paymentResponse = paymentService.immediatePay("yair12312", 1000.0, "creditCard123", buyer.getToken());
+
+        // Assert the payment was successful
+        Assert.assertTrue(paymentResponse.isSuccess());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        // Verify the purchase history is updated
+        orderService.getPurchaseHistoryBySubscriber("yair12312");
+        Assert.assertFalse(orderRepository.getOrders().isEmpty());
+        Assert.assertTrue(orderRepository.getOrders().size() == 2);
+        Assert.assertEquals(orderRepository.getOrders().get(0).getStoreID(), "0");
+        Assert.assertEquals(orderRepository.getOrders().get(0).getProducts().size(), 2);
+        Assert.assertEquals(orderRepository.getOrders().get(1).getStoreID(), "1");
+        Assert.assertEquals(orderRepository.getOrders().get(1).getProducts().size(), 1);
+        Assert.assertEquals(9, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
+        Assert.assertEquals(0, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(9, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertTrue(buyer.getShoppingCartContents().getData().isEmpty());
+    }
+
+    @Test
     public void purchaseCartFailPay(){
         orderRepository = orderService.getOrderFacade().getOrderRepository();
         userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
@@ -117,6 +162,43 @@ public class PurchaseCartUnitTests {
             // Manually call the subsequent methods as needed
             userService.ReleaseShoppingCartAndBacktoInventory("yair12312", buyer.getToken());
             userService.purchaseProcessInterrupt("yair12312");
+            return paymentResponse;
+        }).when(paymentService).immediatePay(Mockito.anyString(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyString());
+
+        // Call the mocked payment method
+        Response<String> paymentResponse = paymentService.immediatePay("yair12312", 1000.0, "creditCard123", buyer.getToken());
+
+        // Assert the payment was successful
+        Assert.assertFalse(paymentResponse.isSuccess());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        // Verify the purchase history is updated
+        orderService.getPurchaseHistoryBySubscriber("yair12312");
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertFalse(buyer.getShoppingCartContents().getData().isEmpty());
+    }
+
+    @Test
+    public void purchaseCartFailPolicy(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        storeService.addSimplePoliceToStore("newOwner",owner.getToken(),null,"0",1,0,3,0.0);
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+
+        // Stub the payment process to bypass actual payment but still call the original implementation for other parts
+        Mockito.doAnswer(invocation -> {
+            // Simulate the mock response for payment
+            Response<String> paymentResponse = Response.error("Payment Fail", null);
+
+            // Execute the lines that follow the actual payment call in the immediatePay method
+            // Manually call the subsequent methods as needed
+
             return paymentResponse;
         }).when(paymentService).immediatePay(Mockito.anyString(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyString());
 
@@ -167,10 +249,6 @@ public class PurchaseCartUnitTests {
         Assert.assertEquals(0, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
         Assert.assertEquals(9, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
         Assert.assertFalse(buyer.getShoppingCartContents().getData().isEmpty());
-
-
-
-
     }
 
     @Test
@@ -202,9 +280,39 @@ public class PurchaseCartUnitTests {
         Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
         Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
         Assert.assertTrue(orderRepository.getOrders().isEmpty());
+    }
 
+    @Test
+    public void purchaseCartFailRemoveShop(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        storeService.closeStore("0", "newOwner", owner.getToken());
+        userService.lockShoppingCart("yair12312", buyer.getToken());
 
+        // Stub the payment process to bypass actual payment but still call the original implementation for other parts
+        Mockito.doAnswer(invocation -> {
+            // Simulate the mock response for payment
+            Response<String> paymentResponse = Response.error("Payment Fail", null);
 
+            // Execute the lines that follow the actual payment call in the immediatePay method
+            // Manually call the subsequent methods as needed
+
+            return paymentResponse;
+        }).when(paymentService).immediatePay(Mockito.anyString(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyString());
+
+        // Call the mocked payment method
+        Response<String> paymentResponse = paymentService.immediatePay("yair12312", 1000.0, "creditCard123", buyer.getToken());
+
+        // Assert the payment was successful
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        // Verify the purchase history is updated
+        orderService.getPurchaseHistoryBySubscriber("yair12312");
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertFalse(buyer.getShoppingCartContents().getData().isEmpty());
     }
 
     @Test

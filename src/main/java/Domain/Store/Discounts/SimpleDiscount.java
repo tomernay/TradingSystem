@@ -5,6 +5,7 @@ import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 
 import java.util.List;
+import java.util.Map;
 
 public class SimpleDiscount implements Discount{
 
@@ -22,12 +23,12 @@ public class SimpleDiscount implements Discount{
     }
 
 
-    public Response<String> CalculatorDiscount(List<ProductDTO> products) {
+    public Response<String> CalculatorDiscount(Map<ProductDTO,Integer> products) {
         double discount = 0;
-        for (ProductDTO product : products) {
+        for (ProductDTO product : products.keySet()) {
             if (productID == null || String.valueOf(product.getProductID()).equals(productID)){
                 if (category == null || product.getCategories().contains(category)){
-                        discount += product.getPrice() * Double.parseDouble(percent);
+                        discount += product.getPrice() * Double.parseDouble(percent) * products.get(product);
                     }
                 }
             }

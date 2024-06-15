@@ -5,13 +5,14 @@ import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Discount {
 
 
 
 
-    public Response<String> CalculatorDiscount(List<ProductDTO> products);
+    public Response<String> CalculatorDiscount(Map<ProductDTO,Integer> products);
 
     public int getDiscountID();
     public String getStoreID();
