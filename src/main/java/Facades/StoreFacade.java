@@ -222,8 +222,8 @@ public class StoreFacade {
         return storeRepository.viewProductFromAllStoresByCategory(category);
     }
 
-    public Response<String> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeRepository.LockShoppingCartAndCalculatedPrice(shoppingCart);
+    public Response<String> lockShopping(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeRepository.lockShopping(shoppingCart);
     }
 
     public Response<String> CreateDiscount(String productID, String storeID, String username, String category, String percent) {
@@ -252,5 +252,13 @@ public class StoreFacade {
 
     public Response<Double> calculatedPriceShoppingCart(String username, Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.calculatedPriceShoppingCart(username, shoppingCart);
+    }
+
+    public Response<String> makeComplexDiscount(String username, String storeID, int discountId1, int discountId2, String discountType) {
+        return storeRepository.makeComplexDiscount(username, storeID, discountId1, discountId2, discountType);
+    }
+
+    public Response<String> makeConitionDiscount(String username, String storeID, int discountId, int conitionId) {
+        return storeRepository.makeConitionDiscount(username, storeID, discountId, conitionId);
     }
 }

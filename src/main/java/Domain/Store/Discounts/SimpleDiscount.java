@@ -34,8 +34,8 @@ public class SimpleDiscount implements Discount{
         return new Response<String>(true,String.valueOf(discount));
     }
     @Override
-    public String getDiscountID() {
-        return String.valueOf(discountID);
+    public int getDiscountID() {
+        return discountID;
     }
     @Override
     public String getStoreID() {

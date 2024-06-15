@@ -407,7 +407,7 @@ public class UserService {
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
 
-            Response<String> list_product = storeService.LockShoppingCartAndCalculatedPrice(resShoppingCartContents.getData());
+            Response<String> list_product = storeService.LockShoppingCart(resShoppingCartContents.getData());
             if (list_product.isSuccess()) {
                 purchaseProcessTimer(username, token);
                 return Response.success("The price of the shopping cart is: " + list_product.getData(), list_product.getData());

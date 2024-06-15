@@ -33,8 +33,8 @@ public class MaxDiscount implements Discount{
     }
 
     @Override
-    public String getDiscountID() {
-        return String.valueOf(discount1.getDiscountID()) + String.valueOf(discount2.getDiscountID());
+    public int getDiscountID() {
+        return discountID;
     }
     @Override
     public String getStoreID() {

@@ -1,12 +1,10 @@
 package Domain.Store;
 
-import Domain.Store.Discounts.Discount;
-import Domain.Store.Discounts.DiscountDTO;
-import Domain.Store.Discounts.SimpleDiscount;
+import Domain.Store.Discounts.*;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.Policys.Policys;
 import Domain.Store.StoreData.Permissions;
+import Domain.Store.conditions.Condition;
 import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -26,7 +24,7 @@ public class Store {
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
     private Map<Integer, Discount> discounts = new HashMap<>();///
-    private List<Policys> policys = new ArrayList<>();
+    private Map<Integer,Condition> policys = new HashMap<>();
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
 
 
@@ -43,7 +41,7 @@ public class Store {
         nominationGraph = new HashMap<>();
         reverseNominationMap = new HashMap<>();
         discounts = new HashMap<>();
-        policys = new ArrayList<>();
+        policys = new HashMap<>();
 
 
     }
@@ -563,10 +561,31 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
+    public Response<Boolean> cheakPolice(List<ProductDTO>productsInShoppingCart) {
+        for (Condition c : policys.values()) {
+            if (!c.isValid(productsInShoppingCart)) {
+                return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
+            }
+        }
+        return new Response<>(true, "All conditions are valid", true);
+    }
 
 
-    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> productsInStore) {
-        return inventory.lockShoppingCart(productsInStore);
+
+    public Response<List<ProductDTO>> lockShoppingCart(Map<String, Integer> productsShoppingCart) {
+        Response<List<ProductDTO>> productDTOList = inventory.lockShoppingCart(productsShoppingCart);
+        if (!productDTOList.isSuccess()) {
+            return productDTOList;
+        }
+        else {
+            if(cheakPolice(productDTOList.getData()).getData()){
+                return productDTOList;
+            }
+            else {
+                inventory.unlockShoppingCart(productsShoppingCart);
+            }
+        }
+        return productDTOList;
     }
 
 
@@ -646,6 +665,48 @@ public class Store {
 
     public Response<String> calculatedPriceShoppingCart(Map<String, Integer> productsInStore) {
         return inventory.calculatedPriceShoppingCart(productsInStore);
+    }
+
+    public Response<String> makeComplexDiscount(String username, int discountId1, int discountId2, String discountType) {
+        if (!isStoreOwner(username) && !isStoreManager(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (!discounts.containsKey(discountId1) || !discounts.containsKey(discountId2)) {
+            return new Response<>(false, "Discounts does not exist in store");
+        }
+        Discount discount1 = discounts.get(discountId1);
+        Discount discount2 = discounts.get(discountId2);
+        Discount NewDiscount = null;
+        if (discountType.equals("MAX")) {
+             NewDiscount = new MaxDiscount(discount1, discount2, productIDGenerator.getAndIncrement());
+        }
+        if (discountType.equals("PLUS")) {
+            NewDiscount = new PlusDiscount(discount1, discount2, productIDGenerator.getAndIncrement());
+        }
+        discounts.put(productIDGenerator.getAndIncrement(), NewDiscount);
+        discounts.remove(discountId1);
+        discounts.remove(discountId2);
+        return new Response<>(true, "Discount created successfully");
+        }
+
+    public Response<String> makeConitionDiscount(String username, int discountId, int conitionId) {
+        if (!isStoreOwner(username) && !isStoreManager(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (!discounts.containsKey(discountId)) {
+            return new Response<>(false, "Discount does not exist in store");
+        }
+
+        if (!policys.containsKey(conitionId)) {
+            return new Response<>(false, "Condition does not exist in store");
+        }
+        Condition condition = policys.get(conitionId);
+        Discount discount = discounts.get(discountId);
+        Discount NewDiscount = new DiscountConition(discount, condition, productIDGenerator.getAndIncrement());
+        discounts.put(productIDGenerator.getAndIncrement(), NewDiscount);
+        discounts.remove(discountId);
+        discounts.remove(conitionId);
+        return new Response<>(true, "Discount created successfully");
     }
 }
 

@@ -505,7 +505,7 @@ public class StoreRepository {
     }
 
 
-    public Response<String> LockShoppingCartAndCalculatedPrice(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> lockShopping(Map<String, Map<String, Integer>> shoppingCart) {
         List <ProductDTO> products = new ArrayList<>();
         ArrayList<String> storeLock = new ArrayList<>();
         if(shoppingCart.isEmpty()){
@@ -612,5 +612,23 @@ public class StoreRepository {
             }
         }
         return Response.success("[SUCCESS] Successfully calculated the price.", price);
+    }
+
+    public Response<String> makeComplexDiscount(String username, String storeID, int discountId1, int discountId2, String discountType) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).makeComplexDiscount(username, discountId1, discountId2, discountType);
+    }
+
+
+
+    public Response<String> makeConitionDiscount(String username, String storeID, int discountId, int conitionId) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).makeConitionDiscount(username, discountId, conitionId);
     }
 }

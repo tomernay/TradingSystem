@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class SimpleCondition implements Condition{
-    private String conditionID;
+    private int conditionID;
     private Integer productID;
     private String category;
     private Integer minAmount;
@@ -14,7 +14,7 @@ public class SimpleCondition implements Condition{
     private Double price;
 
 
-    public SimpleCondition(String conditionID, Integer productID, String category, int minAmount, int maxAmount,double price) {
+    public SimpleCondition(int conditionID, Integer productID, String category, int minAmount, int maxAmount,double price) {
         this.conditionID = conditionID;
         this.productID = productID;
         this.category = category;
@@ -23,7 +23,7 @@ public class SimpleCondition implements Condition{
         this.price = price;
     }
 
-    public String getConditionID() {
+    public int getConditionID() {
         return conditionID;
     }
 

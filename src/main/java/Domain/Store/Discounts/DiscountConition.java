@@ -9,13 +9,13 @@ import java.util.List;
 public class DiscountConition implements Discount{
     private Discount discount;
     private Condition condition;
-    private String discountID;
+    private int discountID;
     private DiscountType discountType;
 
 
 
 
-    public DiscountConition(Discount discount, Condition condition, String discountID) {
+    public DiscountConition(Discount discount, Condition condition, int discountID) {
         this.discount = discount;
         this.condition = condition;
         this.discountID = discountID;
@@ -29,9 +29,10 @@ public class DiscountConition implements Discount{
     }
 
     @Override
-    public String getDiscountID() {
+    public int getDiscountID() {
         return discountID;
     }
+
 
     @Override
     public String getStoreID() {

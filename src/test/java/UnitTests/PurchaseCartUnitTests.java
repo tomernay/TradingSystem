@@ -153,6 +153,61 @@ public class PurchaseCartUnitTests {
     }
 
     @Test
+    public void TryToPurchaseTwise(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+        Assert.assertEquals(9, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
+        Assert.assertEquals(0, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(9, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertFalse(buyer.getShoppingCartContents().getData().isEmpty());
+
+
+
+
+    }
+
+    @Test
+    public void purchaseCartRemoveProuductFromStore(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        storeService.removeProductFromStore(1, "0", "newOwner", owner.getToken());
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertFalse(buyer.getShoppingCartContents().getData().isEmpty());
+
+    }
+
+    @Test
+    public void notEnoughQuantity(){
+        orderRepository = orderService.getOrderFacade().getOrderRepository();
+        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 100);
+        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        userService.lockShoppingCart("yair12312", buyer.getToken());
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore("0").getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore("1").getInventory();
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(1).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory1.getProductQuantity(2).getData()));
+        Assert.assertEquals(10, Integer.parseInt(inventory2.getProductQuantity(1).getData()));
+        Assert.assertTrue(orderRepository.getOrders().isEmpty());
+
+
+
+    }
+
+    @Test
     public void priceCalculation(){
         userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
         userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
