@@ -36,7 +36,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        Button loginButton = new Button("Login", e -> presenter.loginAsSubscriber(username.getValue(), password.getValue(), this::navigateToMain));
+        Button loginButton = new Button("Login", e -> presenter.loginAsSubscriber(username.getValue(), password.getValue()));
         Button registerButton = new Button("Register", e -> navigateToRegister());
         Button guestButton = new Button("Continue as Guest", e -> presenter.loginAsGuest());
 
