@@ -1,6 +1,7 @@
 package Presentation.application.View.Store;
 
 import Presentation.application.View.MainLayoutView;
+import Presentation.application.View.RolesManagementView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -28,18 +29,23 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
 //        Button policiesButton = new Button("Policies", e -> setContent(new PoliciesView()));
 //        Button paymentButton = new Button("Payment Methods", e -> setContent(new PaymentMethodsView()));
 //        Button suppliersButton = new Button("Suppliers", e -> setContent(new SuppliersView()));
-//        Button rolesManagementButton = new Button("Roles Management", e -> setContent(new RolesManagementView()));
+        Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
 
 //        VerticalLayout buttonLayout = new VerticalLayout(
 //                productManagementButton, discountsButton, policiesButton,
 //                paymentButton, suppliersButton, rolesManagementButton
 //        );
         VerticalLayout buttonLayout = new VerticalLayout(
-                productManagementButton
+                productManagementButton, rolesManagementButton
         );
         buttonLayout.setSpacing(true);
 
         add(buttonLayout, content);
+    }
+
+    private void navigateToRolesManagement() {
+        RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+        UI.getCurrent().navigate(RolesManagementView.class, routeParameters);
     }
 
     private void navigateToProductManagement() {

@@ -26,7 +26,7 @@ public class RolesManagementPresenter {
         this.storeService = ServiceInitializer.getInstance().getStoreService();
         this.userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
-        this.roleFilter = new HashSet<>(Arrays.asList("Owner", "Manager", "Creator", "Subscriber"));
+        this.roleFilter = new HashSet<>(Arrays.asList("OWNER", "MANAGER", "CREATOR", "SUBSCRIBER"));
     }
 
     public void loadRoles(String storeID, Set<String> roleFilter, String username) {
@@ -37,8 +37,8 @@ public class RolesManagementPresenter {
         if (response.isSuccess()) {
             Map<String, String> rolesMap = response.getData();
             List<Map.Entry<String, String>> roles = rolesMap.entrySet().stream()
-                    .filter(entry -> roleFilter.contains(entry.getValue()))
-                    .filter(entry -> username.isEmpty() || entry.getKey().contains(username))
+                    .filter(entry -> roleFilter == null || roleFilter.isEmpty() || roleFilter.contains(entry.getValue()))
+                    .filter(entry -> username == null || username.isEmpty() || entry.getKey().contains(username))
                     .collect(Collectors.toList());
             view.showRoles(roles);
         } else {
@@ -46,11 +46,11 @@ public class RolesManagementPresenter {
         }
     }
 
-    public void searchByUsername(String username) {
-        loadRoles(storeID, roleFilter, username);
+    public void searchByUsername(String storeId, String username) {
+        loadRoles(storeId, roleFilter, username);
     }
 
-    public void waiveOwnership() {
+    public void waiveOwnership(String storeID) {
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<String> response = userService.waiveOwnership(storeID, CookiesHandler.getUsernameFromCookies(request), token);
         if (response.isSuccess()) {
@@ -60,40 +60,42 @@ public class RolesManagementPresenter {
         }
     }
 
-    public void nominateOwner(String subscriberUsername) {
+    public void nominateOwner(String storeID, String subscriberUsername) {
         String token = CookiesHandler.getTokenFromCookies(request);
         userService.SendStoreOwnerNomination(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, token);
+        view.showSuccess("Owner nomination request sent");
     }
 
-    public void nominateManager(String subscriberUsername, Set<String> selectedPermissions) {
+    public void nominateManager(String storeID, String subscriberUsername, Set<String> selectedPermissions) {
         String token = CookiesHandler.getTokenFromCookies(request);
         userService.SendStoreManagerNomination(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, selectedPermissions.stream().toList(), token);
+        view.showSuccess("Manager nomination request sent");
     }
 
     public void setView(RolesManagementView view) {
         this.view = view;
     }
 
-    public boolean hasRole(String role) {
-        String token = CookiesHandler.getTokenFromCookies(request);
+    public boolean hasRole(String storeID, String role) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
         if (role.equals("Owner")) {
-            return storeService.isStoreOwner(storeID, token);
+            return storeService.isStoreOwner(storeID, username);
         } else if (role.equals("Subscriber")) {
-            return storeService.isStoreSubscriber(storeID, token);
+            return storeService.isStoreSubscriber(storeID, username);
         } else if (role.equals("Creator")) {
-            return storeService.isStoreCreator(storeID, token);
+            return storeService.isStoreCreator(storeID, username);
         } else if (role.equals("Manager")) {
-            return storeService.isStoreManager(storeID, token);
+            return storeService.isStoreManager(storeID, username);
         }
         return false;
     }
 
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(String storeID, String permission) {
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.hasPermission(storeID, token, permission);
     }
 
-    public Set<String> getManagerPermissions(String managerUsername) {
+    public Set<String> getManagerPermissions(String storeID, String managerUsername) {
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<Map<String, List<String>>> response = storeService.requestManagersPermissions(storeID);
         if (response.isSuccess()) {
@@ -105,10 +107,10 @@ public class RolesManagementPresenter {
         }
     }
 
-    public void updateManagerPermissions(String managerUsername, Set<String> selectedPermissions) {
+    public void updateManagerPermissions(String storeID, String managerUsername, Set<String> selectedPermissions) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Set<String> currentPermissions = getManagerPermissions(managerUsername);
+        Set<String> currentPermissions = getManagerPermissions(storeID, managerUsername);
         Set<String> permissionsToAdd = new HashSet<>(selectedPermissions);
         permissionsToAdd.removeAll(currentPermissions);
         Set<String> permissionsToRemove = new HashSet<>(currentPermissions);
@@ -123,12 +125,12 @@ public class RolesManagementPresenter {
         return storeService.getPermissionsList();
     }
 
-    public void removeSubscription(String subscriber) {
+    public void removeSubscription(String storeID, String subscriber) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> response = storeService.removeStoreSubscription(storeID, username, subscriber, token);
         if (response.isSuccess()) {
-            view.showSuccess("Removed subscription successfully from " + username);
+            view.showSuccess("Removed subscription successfully from " + subscriber);
         } else {
             view.showError(response.getMessage());
         }
