@@ -36,7 +36,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
-        Button loginButton = new Button("Login", e -> presenter.loginAsSubscriber(username.getValue(), password.getValue()));
+        Button loginButton = new Button("Login", e -> presenter.loginAsSubscriber(username.getValue(), password.getValue(), this::navigateToMain));
         Button registerButton = new Button("Register", e -> navigateToRegister());
         Button guestButton = new Button("Continue as Guest", e -> presenter.loginAsGuest());
 
@@ -108,8 +108,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void loginSuccessful(String username, String token) {
-        CookiesHandler.setCookie("username", username, 5 * 60); // 5 minutes
-        CookiesHandler.setCookie("token", token, 5 * 60); // 5 minutes
+        CookiesHandler.setCookie("username", username, 24 * 60 * 60); // 24 hours
+        CookiesHandler.setCookie("token", token, 24 * 60 * 60); // 24 hours
         navigateToMain();
     }
 

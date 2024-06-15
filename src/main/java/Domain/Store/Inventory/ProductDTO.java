@@ -41,6 +41,7 @@ public class ProductDTO {
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.categories = categories;
+        this.storeName = product.getStoreName();
     }
 
     public String getStoreID() {return storeID;}

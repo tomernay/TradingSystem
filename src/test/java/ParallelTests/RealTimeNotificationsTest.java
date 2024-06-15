@@ -1,5 +1,5 @@
 package ParallelTests;
-import Presentaion.application.View.UtilitiesView.RealTimeNotifications;
+import Presentation.application.View.UtilitiesView.RealTimeNotifications;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import com.vaadin.flow.component.UI;

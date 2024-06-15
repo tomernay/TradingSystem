@@ -1,6 +1,7 @@
 package Presentation.application;
 
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -37,5 +38,16 @@ public class CookiesHandler {
             }
         }
         return null;
+    }
+
+    public static void deleteCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0); // This will delete the cookie
+                cookie.setPath("/"); // Allow the entire application to access it
+                ((VaadinServletResponse) VaadinService.getCurrentResponse()).addCookie(cookie);
+            }
+        }
     }
 }

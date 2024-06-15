@@ -83,12 +83,11 @@ public class MainLayoutPresenter {
         assert username != null;
         if (username.contains("Guest")) {
             userService.logoutAsGuest(username);
-            view.navigateToLogin();
-        }
-        else {
+        } else {
             userService.logoutAsSubscriber(username);
-            view.navigateToLogin();
         }
+        CookiesHandler.deleteCookies(request); // Delete cookies after logout
+        view.navigateToLogin();
     }
 
     public String getUserName(){
