@@ -1,13 +1,12 @@
 package Domain.Store.Discounts;
 
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.conditions.Condition;
+import Domain.Store.Conditions.Condition;
 import Utilities.Response;
 
-import java.util.List;
 import java.util.Map;
 
-public class DiscountConition implements Discount{
+public class DiscountCondition implements Discount{
     private Discount discount;
     private Condition condition;
     private int discountID;
@@ -16,7 +15,7 @@ public class DiscountConition implements Discount{
 
 
 
-    public DiscountConition(Discount discount, Condition condition, int discountID) {
+    public DiscountCondition(Discount discount, Condition condition, int discountID) {
         this.discount = discount;
         this.condition = condition;
         this.discountID = discountID;

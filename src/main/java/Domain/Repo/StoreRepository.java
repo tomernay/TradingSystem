@@ -631,20 +631,20 @@ public class StoreRepository {
 
 
 
-    public Response<String> makeConitionDiscount(String username, String storeID, int discountId, int conitionId) {
+    public Response<String> makeConditionDiscount(String username, String storeID, int discountId, int conditionId) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).makeConitionDiscount(username, discountId, conitionId);
+        return stores.get(storeID).makeConditionDiscount(username, discountId, conditionId);
     }
 
-    public Response<String> addSimplePoliceToStore(String username, String storeID,String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+    public Response<String> addSimplePolicyToStore(String username, String storeID, String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).addSimplePoliceToStore(username,category,productID, minAmount, maxAmount, price);
+        return stores.get(storeID).addSimplePolicyToStore(username,category,productID, minAmount, maxAmount, price);
     }
 
     public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {

@@ -4,8 +4,8 @@ import Domain.Store.Discounts.*;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
-import Domain.Store.conditions.Condition;
-import Domain.Store.conditions.SimpleCondition;
+import Domain.Store.Conditions.Condition;
+import Domain.Store.Conditions.SimpleCondition;
 import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -25,7 +25,7 @@ public class Store {
     private Map<String, List<String>> nominationGraph;
     private Map<String, String> reverseNominationMap;
     private Map<Integer, Discount> discounts = new HashMap<>();///
-    private Map<Integer, Condition> policys = new HashMap<>();
+    private Map<Integer, Condition> policies = new HashMap<>();
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
 
 
@@ -42,7 +42,7 @@ public class Store {
         nominationGraph = new HashMap<>();
         reverseNominationMap = new HashMap<>();
         discounts = new HashMap<>();
-        policys = new HashMap<>();
+        policies = new HashMap<>();
 
 
     }
@@ -563,7 +563,7 @@ public class Store {
     }
 
     public Response<Boolean> cheakPolice(Map<ProductDTO,Integer>productsInShoppingCart) {
-        for (Condition c : policys.values()) {
+        for (Condition c : policies.values()) {
             if (!c.isValid(productsInShoppingCart)) {
                 return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
             }
@@ -690,7 +690,7 @@ public class Store {
         return new Response<>(true, "Discount created successfully");
         }
 
-    public Response<String> makeConitionDiscount(String username, int discountId, int conitionId) {
+    public Response<String> makeConditionDiscount(String username, int discountId, int conditionId) {
         if (!isStoreOwner(username) && !isStoreManager(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
@@ -698,19 +698,19 @@ public class Store {
             return new Response<>(false, "Discount does not exist in store");
         }
 
-        if (!policys.containsKey(conitionId)) {
+        if (!policies.containsKey(conditionId)) {
             return new Response<>(false, "Condition does not exist in store");
         }
-        Condition condition = policys.get(conitionId);
+        Condition condition = policies.get(conditionId);
         Discount discount = discounts.get(discountId);
-        Discount NewDiscount = new DiscountConition(discount, condition, productIDGenerator.getAndIncrement());
+        Discount NewDiscount = new DiscountCondition(discount, condition, productIDGenerator.getAndIncrement());
         discounts.put(productIDGenerator.getAndIncrement(), NewDiscount);
         discounts.remove(discountId);
-        discounts.remove(conitionId);
+        discounts.remove(conditionId);
         return new Response<>(true, "Discount created successfully");
     }
 
-    public Response<String> addSimplePoliceToStore(String username,String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+    public Response<String> addSimplePolicyToStore(String username, String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
 if (isStoreOwner(username) || isStoreManager(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
@@ -721,7 +721,7 @@ if (isStoreOwner(username) || isStoreManager(username)) {
             return new Response<>(false, "minAmount can't be null");
         }
         int id = productIDGenerator.getAndIncrement();
-        policys.put(id, new SimpleCondition(id,productID, category, minAmount, maxAmount, price));
+        policies.put(id, new SimpleCondition(id,productID, category, minAmount, maxAmount, price));
         return new Response<>(true, "Condition created successfully");
     }
 

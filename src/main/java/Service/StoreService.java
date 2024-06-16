@@ -867,19 +867,19 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of discounts. <br> If not, returns an error message.
      */
-    public Response<String> makeConitionDiscount(String username, String token, String storeID ,int discountId,int conitionId) {
+    public Response<String> makeConditionDiscount(String username, String token, String storeID , int discountId, int conditionId) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex discount for store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.makeConitionDiscount(username, storeID , discountId,conitionId);
+            return storeFacade.makeConditionDiscount(username, storeID , discountId,conditionId);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to create complex discount for store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> addSimplePoliceToStore(String username, String token,String storeID,String category, Integer productID, Integer minAmount, Integer maxAmount,Double price) {
+    public Response<String> addSimplePolicyToStore(String username, String token, String storeID, String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
         SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.addSimplePoliceToStore(username,storeID,category, productID, minAmount, maxAmount,price);
+            return storeFacade.addSimplePolicyToStore(username,storeID,category, productID, minAmount, maxAmount,price);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add simple purchase policy for product: " + productID + " in store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);

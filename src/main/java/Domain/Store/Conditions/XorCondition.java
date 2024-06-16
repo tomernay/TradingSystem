@@ -1,16 +1,15 @@
-package Domain.Store.conditions;
+package Domain.Store.Conditions;
 
 import Domain.Store.Inventory.ProductDTO;
 
-import java.util.List;
 import java.util.Map;
 
-public class XorConition implements  Condition{
+public class XorCondition implements  Condition{
     private Condition condition1;
     private Condition condition2;
     private int conditionID;
 
-    public XorConition(Condition condition1, Condition condition2, int conditionID) {
+    public XorCondition(Condition condition1, Condition condition2, int conditionID) {
         this.condition1 = condition1;
         this.condition2 = condition2;
         this.conditionID = conditionID;

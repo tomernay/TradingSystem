@@ -1,8 +1,7 @@
-package Domain.Store.conditions;
+package Domain.Store.Conditions;
 
 import Domain.Store.Inventory.ProductDTO;
 
-import java.util.List;
 import java.util.Map;
 
 public interface Condition {

@@ -258,12 +258,12 @@ public class StoreFacade {
         return storeRepository.makeComplexDiscount(username, storeID, discountId1, discountId2, discountType);
     }
 
-    public Response<String> makeConitionDiscount(String username, String storeID, int discountId, int conitionId) {
-        return storeRepository.makeConitionDiscount(username, storeID, discountId, conitionId);
+    public Response<String> makeConditionDiscount(String username, String storeID, int discountId, int conditionId) {
+        return storeRepository.makeConditionDiscount(username, storeID, discountId, conditionId);
     }
 
-    public Response<String> addSimplePoliceToStore(String username,String category, String storeID, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
-        return storeRepository.addSimplePoliceToStore(username, storeID, category,productID, minAmount, maxAmount, price);
+    public Response<String> addSimplePolicyToStore(String username, String category, String storeID, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+        return storeRepository.addSimplePolicyToStore(username, storeID, category,productID, minAmount, maxAmount, price);
     }
 
     public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {

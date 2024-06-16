@@ -16,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Map;
-
 @RunWith(MockitoJUnitRunner.class)
 public class PurchaseCartUnitTest {
 
@@ -109,7 +107,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
         userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
         userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        storeService.addSimplePoliceToStore("newOwner", owner.getToken(), "1", null, null, 10, null, 1.0);
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), "1", null, null, 10, null, 1.0);
         userService.lockShoppingCart("yair12312", buyer.getToken());
 
         // Mock the handshake method to return true
@@ -187,7 +185,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
         userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
         userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        storeService.addSimplePoliceToStore("newOwner", owner.getToken(), null, "0", 1, 0, 3, 0.0);
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), null, "0", 1, 0, 3, 0.0);
         userService.lockShoppingCart("yair12312", buyer.getToken());
 
         // Mock the handshake method to return true
