@@ -6,13 +6,15 @@ import Facades.OrderFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class OrderService {
     private final OrderFacade orderFacade;
     private UserService userService;
-    private final SupplySystem supplySystem;
-    private final PaymentGateway paymentGateway;
+    private SupplySystem supplySystem;
+    private PaymentGateway paymentGateway;
 
     public OrderService(PaymentGateway paymentGateway, SupplySystem supplySystem) {
         this.orderFacade = new OrderFacade();
@@ -32,13 +34,27 @@ public class OrderService {
         return orderFacade.getOrdersHistory(storeID);
     }
 
-    public Response<String> payAndSupply(double purchasePrice, String username, String token, String deliveryAddress, String creditCardNumber, String expirationDate, String cvv, String fullName) {
+    public void setPaymentGateway(PaymentGateway paymentGateway) {
+        this.paymentGateway = paymentGateway;
+    }
+
+    public void setSupplySystem(SupplySystem supplySystem) {
+        this.supplySystem = supplySystem;
+    }
+
+    public Response<String> payAndSupply(double purchasePrice, String username, String token, String deliveryAddress, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
         if (creditCardNumber == null) {
             handlePaymentFailure(username, token);
             SystemLogger.error("[ERROR] User: " + username + " has cancelled payment");
             return Response.error("Payment cancelled", null);
         }
         SystemLogger.info("[START] User: " + username + " is trying to pay");
+
+        if (!paymentGateway.handshake() || !supplySystem.handshake()) {
+            SystemLogger.error("[ERROR] External system is not available");
+            return Response.error("External system is not available", null);
+        }
+
         if (!userService.isValidToken(token, username)) {
             SystemLogger.error("[ERROR] User: " + username + " is trying to pay with invalid token");
             return Response.error("Invalid token", null);
@@ -49,23 +65,42 @@ public class OrderService {
             return Response.error("User is not in purchase process", null);
         }
 
-        boolean paymentStatus = paymentGateway.processPayment(purchasePrice, creditCardNumber, expirationDate, cvv, fullName);
-        if (!paymentStatus) {
+        int paymentTransactionId = processPayment(purchasePrice, creditCardNumber, expirationDate, cvv, fullName, id);
+        if (paymentTransactionId == -1) {
             handlePaymentFailure(username, token);
             SystemLogger.error("[ERROR] User: " + username + " payment failed");
             return Response.error("Payment failed", null);
         }
 
         Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
-        boolean supplyStatus = SupplyOrder(resShoppingCartContents.getData(), deliveryAddress);
-        if (!supplyStatus) {
-            handlePaymentFailure(username, token);
-            SystemLogger.error("[ERROR] User: " + username + " supply order failed");
-            return Response.error("Supply order failed", null);
+        List<Integer> supplyTransactionIds = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Integer>> entry : resShoppingCartContents.getData().entrySet()) {
+            Map<String, Integer> products = entry.getValue();
+            int supplyTransactionId = processSupply(products, deliveryAddress, fullName);
+            if (supplyTransactionId == -1) {
+                paymentGateway.cancelPayment(paymentTransactionId); // Cancel the payment
+                for (int transactionId : supplyTransactionIds) {
+                    supplySystem.cancelSupply(transactionId); // Cancel the supply
+                }
+                handlePaymentFailure(username, token);
+                SystemLogger.error("[ERROR] User: " + username + " supply order failed");
+                return Response.error("Supply order failed", null);
+            }
+            supplyTransactionIds.add(supplyTransactionId);
         }
 
         finalizeOrder(username, token, deliveryAddress);
         return Response.success("Payment and supply successful", null);
+    }
+
+    private int processPayment(double purchasePrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
+        // Call the payment gateway and get the transaction ID
+        return paymentGateway.processPayment(purchasePrice, creditCardNumber, expirationDate, cvv, fullName, id);
+    }
+
+    private int processSupply(Map<String, Integer> shoppingCartContents, String deliveryAddress, String name) {
+        // Call the supply system and get the transaction ID
+        return supplySystem.orderSupply(shoppingCartContents, deliveryAddress, name);
     }
 
     private void handlePaymentFailure(String username, String token) {
@@ -88,8 +123,6 @@ public class OrderService {
             SystemLogger.error("[ERROR] User: " + username + " tried to purchase the shopping cart but the token was invalid");
             return Response.error("Invalid token", null);
         }
-
-        SupplyOrder(resShoppingCartContents.getData(), deliveryAddress);
         return orderFacade.CreatOrder(username, deliveryAddress, resShoppingCartContents.getData());
     }
 
@@ -99,18 +132,5 @@ public class OrderService {
 
     public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
         return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
-    }
-
-    private boolean SupplyOrder(Map<String, Map<String, Integer>> shoppingCartContents, String deliveryAddress) {
-        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
-            String storeID = storeEntry.getKey();
-            Map<String, Integer> items = storeEntry.getValue();
-            SystemLogger.info("Ordering supplies from store: " + storeID);
-            if (!supplySystem.orderSupply(items, deliveryAddress)) {
-                SystemLogger.error("Failed to order supply for store: " + storeID);
-                return false;
-            }
-        }
-        return true;
     }
 }

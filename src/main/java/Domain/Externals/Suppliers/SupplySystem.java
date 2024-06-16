@@ -3,5 +3,7 @@ package Domain.Externals.Suppliers;
 import java.util.Map;
 
 public interface SupplySystem {
-    boolean orderSupply(Map<String, Integer> items, String deliveryAddress);
+    int orderSupply(Map<String, Integer> items, String deliveryAddress, String name);
+    boolean cancelSupply(int transactionId);
+    boolean handshake();
 }

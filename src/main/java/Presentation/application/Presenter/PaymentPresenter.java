@@ -22,8 +22,8 @@ public class PaymentPresenter {
         this.paymentView = view;
     }
 
-    public void pay(String user, double totalPrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String address, String token) {
-        Response<String> payRes = orderService.payAndSupply(totalPrice, user, token, address, creditCardNumber, expirationDate, cvv, fullName);
+    public void pay(String user, double totalPrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String address, String token, String ID) {
+        Response<String> payRes = orderService.payAndSupply(totalPrice, user, token, address, creditCardNumber, expirationDate, cvv, fullName, ID);
         if (!paymentView.hasTimerEnded() || creditCardNumber == null) {
             paymentView.showNotification(payRes.getMessage());
         }

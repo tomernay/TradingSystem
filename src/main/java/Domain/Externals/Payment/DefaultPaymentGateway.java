@@ -1,52 +1,72 @@
 package Domain.Externals.Payment;
 
-public class DefaultPaymentGateway implements PaymentGateway{
+import Domain.Externals.HttpUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DefaultPaymentGateway implements PaymentGateway {
+
+    private static final String EXTERNAL_API_URL = "https://damp-lynna-wsep-1984852e.koyeb.app/";
 
     @Override
-    public boolean processPayment(double amount, String creditCardNumber, String expirationDate, String cvv, String fullName) {
-        if (amount <= 0) {
-            System.out.println("Invalid amount: " + amount);
-            return false;
-        }
+    public int processPayment(double amount, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("action_type", "pay");
+            params.put("amount", String.valueOf(amount));
+            params.put("currency", "USD");
+            params.put("card_number", creditCardNumber);
+            params.put("month", getMonth(expirationDate));
+            params.put("year", getYear(expirationDate));
+            params.put("holder", fullName);
+            params.put("ccv", cvv);
+            params.put("id", id);
 
-        if (!isValidCreditCardNumber(creditCardNumber)) {
-            System.out.println("Invalid credit card number: " + creditCardNumber);
-            return false;
+            String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            int transactionId = Integer.parseInt(response.trim());
+            return (transactionId >= 10000 && transactionId <= 100000) ? transactionId : -1;
+        } catch (Exception e) {
+            System.out.println("Payment failed: " + e.getMessage());
+            return -1;
         }
-
-        if (!isValidExpirationDate(expirationDate)) {
-            System.out.println("Invalid expiration date: " + expirationDate);
-            return false;
-        }
-
-        if (!isValidCVV(cvv)) {
-            System.out.println("Invalid CVV: " + cvv);
-            return false;
-        }
-
-        if (fullName == null || fullName.trim().isEmpty()) {
-            System.out.println("Invalid full name: " + fullName);
-            return false;
-        }
-
-        // Simulate successful payment
-        System.out.println("Payment of $" + amount + " processed successfully for " + fullName);
-        return true;
     }
 
-    private boolean isValidCreditCardNumber(String creditCardNumber) {
-        // Basic validation for credit card number length
-        return creditCardNumber != null && creditCardNumber.length() == 16 && creditCardNumber.matches("\\d+");
+    @Override
+    public boolean cancelPayment(int transactionId) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("action_type", "cancel_pay");
+            params.put("transaction_id", String.valueOf(transactionId));
+
+            String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            int result = Integer.parseInt(response.trim());
+            return result == 1;
+        } catch (Exception e) {
+            System.out.println("Cancel payment failed: " + e.getMessage());
+            return false;
+        }
     }
 
-    private boolean isValidExpirationDate(String expirationDate) {
-        // Basic validation for expiration date format MM/YY
-        return expirationDate != null && expirationDate.matches("(0[1-9]|1[0-2])/\\d{2}");
+    @Override
+    public boolean handshake() {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("action_type", "handshake");
+
+            String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            return "OK".equals(response.trim());
+        } catch (Exception e) {
+            System.out.println("Handshake failed: " + e.getMessage());
+            return false;
+        }
     }
 
-    private boolean isValidCVV(String cvv) {
-        // Basic validation for CVV length and digits
-        return cvv != null && cvv.length() == 3 && cvv.matches("\\d+");
+    private String getMonth(String expirationDate) {
+        return expirationDate.split("/")[0];
     }
 
+    private String getYear(String expirationDate) {
+        return expirationDate.split("/")[1];
+    }
 }

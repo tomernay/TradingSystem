@@ -1,7 +1,9 @@
 package Service;
 
 import Domain.Externals.Payment.DefaultPaymentGateway;
+import Domain.Externals.Payment.ProxyPaymentGateway;
 import Domain.Externals.Suppliers.DefaultSupplySystem;
+import Domain.Externals.Suppliers.ProxySupplySystem;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +20,7 @@ public class ServiceInitializer {
         userService = new UserService();
         storeService = new StoreService();
         adminService = new AdminService();
-        orderService = new OrderService(new DefaultPaymentGateway(), new DefaultSupplySystem());
+        orderService = new OrderService(new ProxyPaymentGateway(), new ProxySupplySystem());
         userService.setStoreService(storeService);
         userService.setAdminService(adminService);
         storeService.setUserService(userService);
