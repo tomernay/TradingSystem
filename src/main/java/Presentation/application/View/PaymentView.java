@@ -39,6 +39,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
     private TextField cityField;
     private TextField stateField;
     private TextField zipCodeField;
+    private TextField IdField;
     private Div creditCard;
     private TextField totalPriceField;
     private Span timerLabel;
@@ -127,7 +128,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         // Logic to handle payment cancellation
         String token = CookiesHandler.getTokenFromCookies(getRequest());
         String user = CookiesHandler.getUsernameFromCookies(getRequest());
-        paymentPresenter.pay(user, 0, null, "","","","", token);
+        paymentPresenter.pay(user, 0, null, "", "", "", "", token, ""); // Added empty string for payment ID
     }
 
     public boolean hasTimerEnded() {
@@ -262,6 +263,10 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         zipCodeField = createField("Zip Code", "Enter your zip code");
         formContainer.add(zipCodeField);
 
+        // Payment ID Field
+        IdField = createField("ID", "Enter your ID"); // New payment ID field
+        formContainer.add(IdField);
+
         // Total Price Field
         totalPriceField = new TextField("Total Price");
         totalPriceField.setReadOnly(true); // Make it read-only
@@ -271,7 +276,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         Button submitButton = new Button("Submit");
         submitButton.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
             // Check if all fields are filled
-            if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty() || streetAddressField.isEmpty() || cityField.isEmpty() || stateField.isEmpty() || zipCodeField.isEmpty()) {
+            if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty() || streetAddressField.isEmpty() || cityField.isEmpty() || stateField.isEmpty() || zipCodeField.isEmpty() || IdField.isEmpty()) {
                 showNotification("Please fill in all fields before submitting.");
             } else {
                 String token = CookiesHandler.getTokenFromCookies(getRequest());
@@ -285,7 +290,8 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 String state = stateField.getValue();
                 String zipCode = zipCodeField.getValue();
                 String address = streetAddress + ", " + city + ", " + state + ", " + zipCode;
-                paymentPresenter.pay(user, totalPrice, cardNumber, expirationDate, cvv, fullName, address, token);
+                String paymentId = IdField.getValue(); // Get payment ID value
+                paymentPresenter.pay(user, totalPrice, cardNumber, expirationDate, cvv, fullName, address, token, paymentId);
             }
         });
         submitButton.getStyle()
