@@ -573,8 +573,8 @@ public class Store {
 
 
 
-    public Response<Map<ProductDTO,Integer>> lockShoppingCart(Map<String, Integer> productsShoppingCart) {
-        Response<Map<ProductDTO,Integer>> productDTOList = inventory.lockShoppingCart(productsShoppingCart);
+    public Response<Map<ProductDTO,Integer>> LockProducts(Map<String, Integer> productsShoppingCart) {
+        Response<Map<ProductDTO,Integer>> productDTOList = inventory.LockProducts(productsShoppingCart);
         if (!productDTOList.isSuccess()) {
             return productDTOList;
         }
@@ -583,7 +583,7 @@ public class Store {
                 return productDTOList;
             }
             else {
-                inventory.unlockShoppingCart(productsShoppingCart);
+                inventory.unlockProductsBackToStore(productsShoppingCart);
                 return new Response<>(false, "The conditions are not valid", null);
             }
         }
@@ -591,7 +591,7 @@ public class Store {
 
 
     public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
-        inventory.unlockShoppingCart(stringIntegerMap);
+        inventory.unlockProductsBackToStore(stringIntegerMap);
     }
 
     public Response<String> CreateDiscount(String productID, String category, String percent, String type, String username) {
@@ -640,8 +640,8 @@ public class Store {
         return new Response<>(true,"calculate discounts successfull", discount);
     }
 
-    public synchronized Response<String> ReleaseShoppingCart(Map<String, Integer> productsInStore) {
-        return inventory.unlockShoppingCart(productsInStore);
+    public synchronized Response<String> unlockProductsBackToStore(Map<String, Integer> productsInStore) {
+        return inventory.unlockProductsBackToStore(productsInStore);
     }
 
     public Response<String> removeDiscount(String discountID) {
@@ -660,12 +660,12 @@ public class Store {
         return Response.success("Successfully fetched the discounts", discounts);
     }
 
-    public synchronized Response<String> ReleaseShoppingCartfromlock(Map<String, Integer> productsInStore) {
-        return inventory.ReleaseShoppSingCartfromlock(productsInStore);
+    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Integer> productsInStore) {
+        return inventory.RemoveOrderFromStoreAfterSuccessfulPurchase(productsInStore);
     }
 
-    public Response<String> calculatedPriceShoppingCart(Map<String, Integer> productsInStore) {
-        return inventory.calculatedPriceShoppingCart(productsInStore);
+    public Response<String> calculateShoppingCartPrice(Map<String, Integer> productsInStore) {
+        return inventory.calculateShoppingCartPrice(productsInStore);
     }
 
     public Response<String> makeComplexDiscount(String username, int discountId1, int discountId2, String discountType) {

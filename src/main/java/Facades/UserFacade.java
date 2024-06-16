@@ -3,7 +3,6 @@ package Facades;
 import Domain.Repo.UserRepository;
 import Utilities.Messages.Message;
 import Utilities.Response;
-import Utilities.SystemLogger;
 
 import java.util.List;
 import java.util.Map;
@@ -117,8 +116,8 @@ public class UserFacade {
         return userRepository.changeUsername(username, newUsername);
     }
 
-    public Response<String> ReleaseShoppSingCartForUser(String username) {
-        return userRepository.ReleaseShoppSingCartForUser(username);
+    public Response<String> ResetCartAfterPurchase(String username) {
+        return userRepository.ResetCartAfterPurchase(username);
     }
 
     public Response<String> lockFlagShoppingCart(String username) {

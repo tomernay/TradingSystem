@@ -53,7 +53,7 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
@@ -71,7 +71,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendStoreOwnerNomination(store.getId(), owner.getUsername(), subscriber2.getUsername(), owner.getToken());
+                    Response<String> response = userService.SendOwnerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), owner.getToken());
                     if (nominationSucceeded.get()) {
                         // If another thread has already succeeded, this thread should fail
                         Assert.assertFalse(response.isSuccess());
@@ -112,7 +112,7 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
@@ -130,7 +130,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendStoreManagerNomination(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), owner.getToken());
+                    Response<String> response = userService.SendManagerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), owner.getToken());
                     if (nominationSucceeded.compareAndSet(false, true)) {
                         Assert.assertTrue(response.isSuccess());
                     } else {
@@ -164,11 +164,11 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
         userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
@@ -219,11 +219,11 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendStoreOwnerNomination(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendStoreManagerNomination(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
         userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads

@@ -50,7 +50,7 @@ public class InfoRequestsByOwnerAT {
         perms.add("EDIT_PRODUCT");
 //        perms.add("ADD_MANAGER");
         perms.add("EDIT_PRODUCT");
-        userService.SendStoreManagerNomination("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendManagerNominationRequest("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
     }
@@ -59,13 +59,13 @@ public class InfoRequestsByOwnerAT {
         //subscribe ziv
         userService.register("ziv","Password123!");
         userService.loginAsSubscriber("ziv","Password123!");
-        userService.SendStoreOwnerNomination("0", "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendOwnerNominationRequest("0", "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.ownerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
         //subscribe dor
         userService.register("dor","Password123!");
         userService.loginAsSubscriber("dor","Password123!");
-        userService.SendStoreOwnerNomination("0", "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.SendOwnerNominationRequest("0", "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.ownerNominationResponse("dor",true, userService.getUserFacade().getUserRepository().getUser("dor").getToken());
 
         //subscribe niv

@@ -25,12 +25,21 @@ public class UserService {
         userFacade = new UserFacade();
     }
 
+
+
+    // Setters for dependencies
+
     public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
     }
     public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
     }
+
+
+
+
+    // User Authentication Methods
 
     /**
      * This method connects a guest to the system.
@@ -70,6 +79,24 @@ public class UserService {
     }
 
     /**
+     * This method registers a new subscriber to the system.
+     * @param username The username of the subscriber.
+     * @param password The password of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public synchronized Response<String> register(String username, String password) {
+        SystemLogger.info("[START] User: " + username + " is trying to register");
+        return userFacade.register(username, password);
+    }
+
+
+
+
+
+
+    // Nomination Methods
+
+    /**
      * This method sends an owner nomination request to a subscriber.
      * @param storeID The store ID of the store.
      * @param nominatorUsername The username of the nominator.
@@ -77,7 +104,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> SendStoreOwnerNomination(String storeID, String nominatorUsername, String nomineeUsername, String token) {
+    public Response<String> SendOwnerNominationRequest(String storeID, String nominatorUsername, String nomineeUsername, String token) {
         SystemLogger.info("[START] User: " + nominatorUsername + " is trying to make " + nomineeUsername + " a store owner");
         if(isValidToken(token,nominatorUsername)) {
             if (nominatorUsername.equals(nomineeUsername)) {
@@ -109,7 +136,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> SendStoreManagerNomination(String storeID, String nominatorUsername, String nomineeUsername, List<String> permissions, String token) {
+    public Response<String> SendManagerNominationRequest(String storeID, String nominatorUsername, String nomineeUsername, List<String> permissions, String token) {
         SystemLogger.info("[START] User: " + nominatorUsername + " is trying to make " + nomineeUsername + " a store manager");
         if(isValidToken(token,nominatorUsername)) {
             if (nominatorUsername.equals(nomineeUsername)) {
@@ -130,32 +157,6 @@ public class UserService {
             }
         }
         SystemLogger.error("[ERROR] User: " + nominatorUsername + " tried to make " + nomineeUsername + " a store manager but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
-
-    /**
-     * This method waives a subscriber's ownership of a store.
-     * @param storeID The store ID of the store.
-     * @param username The username of the subscriber.
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public Response<String> waiveOwnership(String storeID, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to waive his ownership of the store");
-        if(isValidToken(token,username)) {
-            if (adminService.isSuspended(username)) {
-                SystemLogger.error("[ERROR] User: " + username + " is suspended");
-                return Response.error("You're suspended", null);
-            }
-            Set<String> usernames = storeService.waiveOwnership(storeID, username).getData();
-            userFacade.removeStoreRole(username, storeID);
-            for (String subscriberUsername : usernames) {
-                userFacade.removeStoreRole(subscriberUsername, storeID);
-                userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
-            }
-            return Response.success("The owner of the store has self-waived and all of its' nominess have been removed as well.", null);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to waive his ownership of the store but the token was invalid");
         return Response.error("Invalid token",null);
     }
 
@@ -211,97 +212,38 @@ public class UserService {
         return Response.error("Invalid token",null);
     }
 
-
     /**
-     * This method sends a response for a message.
+     * This method waives a subscriber's ownership of a store.
+     * @param storeID The store ID of the store.
      * @param username The username of the subscriber.
-     * @param answer The answer for the nomination request (true for accept, false for decline).
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> messageResponse(String username, boolean answer, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to respond to a message");
+    public Response<String> waiveOwnership(String storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to waive his ownership of the store");
         if(isValidToken(token,username)) {
             if (adminService.isSuspended(username)) {
                 SystemLogger.error("[ERROR] User: " + username + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            return userFacade.messageResponse(username, answer);
+            Set<String> usernames = storeService.waiveOwnership(storeID, username).getData();
+            userFacade.removeStoreRole(username, storeID);
+            for (String subscriberUsername : usernames) {
+                userFacade.removeStoreRole(subscriberUsername, storeID);
+                userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
+            }
+            return Response.success("The owner of the store has self-waived and all of its' nominess have been removed as well.", null);
         }
-        SystemLogger.error("[ERROR] User: " + username + " tried to respond to a message but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to waive his ownership of the store but the token was invalid");
         return Response.error("Invalid token",null);
     }
 
-    /**
-     * This method registers a new subscriber to the system.
-     * @param username The username of the subscriber.
-     * @param password The password of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public synchronized Response<String> register(String username, String password) {
-        SystemLogger.info("[START] User: " + username + " is trying to register");
-        return userFacade.register(username, password);
-    }
 
-    /**
-     * This method sends a close store notification to the store subscribers & personnel.
-     * @param subscriberNames The usernames of the subscribers.
-     * @param storeID The store ID of the store.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
-        return userFacade.sendCloseStoreNotification(subscriberNames, storeID);
-    }
 
-    public boolean userExists(String subscriberUsername) {
-        return userFacade.userExist(subscriberUsername);
-    }
 
-    /**
-     * This method requests the employees status of a store.
-     * @param storeID The store ID of the store.
-     * @param username The username of the requesting subscriber.
-     * @param token The token of the requesting subscriber.
-     * @return If successful, returns a success message & map of {username, role}. <br> If not, returns an error message.
-     */
-    public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to request the employees status of the store");
-        if (isValidToken(token, username)) {
-            if (adminService.isSuspended(username)) {
-                SystemLogger.error("[ERROR] User: " + username + " is suspended");
-                return Response.error("You're suspended", null);
-            }
-            if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
-                return storeService.requestEmployeesStatus(storeID);
-            }
-            SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but is not the store owner / creator");
-            return Response.error("The user trying to do this action is not the store owner / creator.", null);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but the token was invalid");
-        return Response.error("invalid token", null);
-    }
 
-    /**
-     * This method requests the managers permissions of a store.
-     * @param storeID The store ID of the store.
-     * @param username The username of the requesting subscriber.
-     * @param token The token of the requesting subscriber.
-     * @return If successful, returns a success message & map of {username, permissions}. <br> If not, returns an error message.
-     */
-    public Response<Map<String, List<String>>> requestManagersPermissions(String storeID, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to request the managers permissions of the store");
-        if (isValidToken(token, username)) {
-            if (adminService.isSuspended(username)) {
-                SystemLogger.error("[ERROR] User: " + username + " is suspended");
-                return Response.error("You're suspended", null);
-            }
-            if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
-                return storeService.requestManagersPermissions(storeID);
-            }
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to request the managers permissions of the store but the token was invalid");
-        return Response.error("invalid token", null);
-    }
+    // Shopping Cart Products Management
+
 
     /**
      * This method adds a product to the shopping cart.
@@ -369,6 +311,48 @@ public class UserService {
     }
 
     /**
+     * This method clears the shopping cart.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> clearCart(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to clear the shopping cart");
+        if (isValidToken(token, username)) {
+            return userFacade.clearCart(username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to clear the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+    /**
+     * This method updates the quantity of a product in the shopping cart.
+     * @param storeId The store ID of the store.
+     * @param productId The product ID of the product.
+     * @param quantity The quantity of the product.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to update the quantity of a product in the shopping cart");
+        if (isValidToken(token, username)) {
+            return userFacade.updateProductQuantityInCart(storeId, productId, quantity, username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to update the quantity of a product in the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+
+
+
+
+
+    // Shopping Cart - Purchase Process
+
+
+
+    /**
      * This method gets the shopping cart contents.
      * @param username The username of the subscriber.
      * @param token The token of the subscriber.
@@ -382,54 +366,147 @@ public class UserService {
         SystemLogger.error("[ERROR] User: " + username + " tried to get the shopping cart contents but the token was invalid");
         return Response.error("invalid token", null);
     }
-    public Response<Double> calculatedPriceShoppingCart(String username, String token){
+
+
+    /**
+     * This method calculates the price of the shopping cart contents, WITHOUT discounts.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message & the price. <br> If not, returns an error message.
+     */
+    public Response<Double> calculateShoppingCartPrice(String username, String token){
         SystemLogger.info("[START] User: " + username + " is trying calculated  shopping cart contents");
         if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.lockAndGetShoppingCartContents(username);
-            if (!resShoppingCartContents.isSuccess()) {
+            // Get the shopping cart contents
+            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.getShoppingCartContents(username);
+            if (!resShoppingCartContents.isSuccess()) { // If the shopping cart contents retrieval failed
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
-            return storeService.calculatedPriceShoppingCart(username,resShoppingCartContents.getData());
+            // Calculate the price of the shopping cart contents
+            return storeService.calculateShoppingCartPrice(resShoppingCartContents.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to get the shopping cart contents but the token was invalid");
         return Response.error("invalid token", null);
-
     }
 
+
+    /**
+     * This method locks the shopping cart - preventing the user from making any changes to the shopping cart & removes the products from the stores.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return
+     */
     public Response<String> lockShoppingCart(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
             if(adminService.isSuspended(username)){
                 return Response.error("User is suspended", null);
             }
-            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.lockAndGetShoppingCartContents(username);
-            if (!resShoppingCartContents.isSuccess()) {
+            // Get the shopping cart contents
+            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.getShoppingCartContents(username);
+            if (!resShoppingCartContents.isSuccess()) { // If the shopping cart contents retrieval failed
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
-
-            Response<String> list_product = storeService.LockShoppingCart(resShoppingCartContents.getData());
-            if (list_product.isSuccess()) {
-                purchaseProcessTimer(username, token);
-                return Response.success("The price of the shopping cart is: " + list_product.getData(), list_product.getData());
+            // Lock the shopping cart products in the stores
+            Response<String> list_product = storeService.LockProducts(resShoppingCartContents.getData());
+            if (list_product.isSuccess()) { // If the shopping cart locking was successful
+                purchaseProcessTimer(username, token); // Start the purchase process timer for the user
+                return Response.success("[SUCCESS] Shopping cart locked successfully", null);
             }
+            SystemLogger.error("[ERROR] " + list_product.getMessage());
+            return list_product;
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to lock the shopping cart but the token was invalid");
         return Response.error("invalid token", null);
     }
 
+    /**
+     * This method removes the products from the store after a successful purchase.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> ShoppingCartContents = userFacade.getShoppingCartContents(username);
+            return storeService.RemoveOrderFromStoreAfterSuccessfulPurchase(ShoppingCartContents.getData());
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+    /**
+     * This method resets the shopping cart after a successful purchase.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> ResetCartAfterPurchase(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
+        if (isValidToken(token, username)) {
+            return userFacade.ResetCartAfterPurchase(username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+
+    /**
+     * This method removes the products lock & adds the products back to the store.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> unlockProductsBackToStore(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> ShoppingCartContents = userFacade.getShoppingCartContents(username);
+            unlockFlagShoppingCart(username);
+            return storeService.unlockProductsBackToStore(ShoppingCartContents.getData());
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
+    /**
+     * This method starts the purchase process timer.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     */
     public void purchaseProcessTimer(String username, String token) {
         CompletableFuture<String> future = userFacade.startPurchaseTimer(username);
 
         // Add a callback to handle the completion of the timer
         future.thenAccept(result -> {
             System.out.println("Timer completed: " + result);
-            ReleaseShoppingCartAndBacktoInventory(username, token);
+            unlockProductsBackToStore(username, token);
         });
     }
 
+    /**
+     * This method interrupts the purchase process timer.
+     * @param username The username of the subscriber.
+     */
     public void purchaseProcessInterrupt(String username) {
         userFacade.interruptPurchaseTimer(username);
     }
+
+    /**
+     * This method calculates the discount price for a shopping cart.
+     * @param username The username of the subscriber.
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message & the discounts. <br> If not, returns an error message.
+     */
+    public Response<Double> CalculateDiscounts(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
+        if (isValidToken(token, username)) {
+            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            return storeService.CalculateDiscounts(resShoppSingCartContents.getData());
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");
+        return Response.error("invalid token", null);
+    }
+
     /**
      * This method locks the purchasing flag of the shopping cart, preventing the user from making any changes to the shopping cart.
      * @param username The username of the subscriber.
@@ -449,36 +526,151 @@ public class UserService {
         return userFacade.unlockFlagShoppingCart(username);
     }
 
+    /**
+     * This method checks if the shopping cart is locked.
+     * @param username The username of the subscriber.
+     * @return If successful, returns a success message & the flag status. <br> If not, returns an error message.
+     */
     public Response<Boolean> isFlagLock(String username) {
         SystemLogger.info("[START] User: " + username + " is trying to check if the shopping cart is locked");
         return userFacade.isFlagLock(username);
     }
 
     /**
-     * This method calculates the discounts.
-     * @param username The username of the subscriber.
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message & the discounts. <br> If not, returns an error message.
+     * This method checks if the user is in the purchase process.
+     * @param user The username of the subscriber.
+     * @return If successful, returns a success message & the flag status. <br> If not, returns an error message.
      */
-    public Response<Double> CalculateDiscounts(String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
-        if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
-            return storeService.CalculateDiscounts(resShoppSingCartContents.getData());
+    public boolean isInPurchaseProcess(String user) {
+        return userFacade.isInPurchaseProcess(user);
+    }
+
+
+
+
+
+
+
+    // Message Methods
+
+
+
+
+    /**
+     * This method sends a response for a message.
+     * @param username The username of the subscriber.
+     * @param answer The answer for the nomination request (true for accept, false for decline).
+     * @param token The token of the subscriber.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> messageResponse(String username, boolean answer, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to respond to a message");
+        if(isValidToken(token,username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
+            return userFacade.messageResponse(username, answer);
         }
-        SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to respond to a message but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
+
+
+    /**
+     * This method sends a close store notification to the store subscribers & personnel.
+     * @param subscriberNames The usernames of the subscribers.
+     * @param storeID The store ID of the store.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
+        return userFacade.sendCloseStoreNotification(subscriberNames, storeID);
+    }
+
+    /**
+     * get all messages for a user
+     * @param username the user to get the messages for
+     * @return If successful, returns a success message & the messages. <br> If not, returns an error message.
+     */
+    public Response<Queue<Message>> getMessages(String username){
+        return  new Response<Queue<Message>>(true,"",userFacade.getUserRepository().getMessages(username));
+    }
+
+
+    public Response<String> addNormalMessage(String user,String message){
+        return new Response<String>(true,"",userFacade.getUserRepository().addNormalMessage(user,message));
+    }
+
+
+
+
+
+
+    // User Existence and Role Methods
+
+
+
+    public boolean userExists(String subscriberUsername) {
+        return userFacade.userExist(subscriberUsername);
+    }
+
+    public Response<String> isOwner(String username){
+        return userFacade.isOwner(username);
+    }
+
+    public Response<String> isManager(String username){
+        return userFacade.isManager(username);
+    }
+
+    public Response<String> isCreator(String username){
+        return userFacade.isCreator(username);
+    }
+
+    /**
+     * This method requests the employees status of a store.
+     * @param storeID The store ID of the store.
+     * @param username The username of the requesting subscriber.
+     * @param token The token of the requesting subscriber.
+     * @return If successful, returns a success message & map of {username, role}. <br> If not, returns an error message.
+     */
+    public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to request the employees status of the store");
+        if (isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
+            if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
+                return storeService.requestEmployeesStatus(storeID);
+            }
+            SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but is not the store owner / creator");
+            return Response.error("The user trying to do this action is not the store owner / creator.", null);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to request the employees status of the store but the token was invalid");
         return Response.error("invalid token", null);
-
     }
 
-    public boolean isValidToken(String token, String currentUsername) {
-        return userFacade.isValidToken(token, currentUsername);
+    /**
+     * This method requests the managers permissions of a store.
+     * @param storeID The store ID of the store.
+     * @param username The username of the requesting subscriber.
+     * @param token The token of the requesting subscriber.
+     * @return If successful, returns a success message & map of {username, permissions}. <br> If not, returns an error message.
+     */
+    public Response<Map<String, List<String>>> requestManagersPermissions(String storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to request the managers permissions of the store");
+        if (isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
+            if (storeService.isStoreOwner(storeID, username) || storeService.isStoreCreator(storeID, username)) {
+                return storeService.requestManagersPermissions(storeID);
+            }
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to request the managers permissions of the store but the token was invalid");
+        return Response.error("invalid token", null);
     }
-
-    public UserFacade getUserFacade() {
-        return userFacade;
-    }
-
 
     /**
      * This method adds a creator role to a subscriber.
@@ -500,81 +692,13 @@ public class UserService {
             return Response.error("User does not have any stores", null);
         }
         return Response.success("Stores role retrieved successfully", storesRole);
-//        return storeService.getStoresRoleWithName(storesRole);
-    }
-
-    /**
-     * This method releases the shopping cart and back to Inventory.
-     * @param username The username of the subscriber.
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public Response<String> ReleaseShoppingCartAndBacktoInventory(String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
-        if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
-            unlockFlagShoppingCart(username);
-            return storeService.ReleaseShoppSingCartAndBackToInventory(resShoppSingCartContents.getData());
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
-        return Response.error("invalid token", null);
-    }
-    /**
-     * This method releases the shopping cart.
-     * @param username The username of the subscriber.
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public Response<String> ReleaseShoppingCartFromStore(String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
-        if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
-            return storeService.ReleaseShoppingCart(resShoppSingCartContents.getData());
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
-        return Response.error("invalid token", null);
-    }
-    /**
-     * This method releases the shopping cart.
-     * @param username The username of the subscriber.
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-    public Response<String> ReleaseShoppingCartForUser(String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
-        if (isValidToken(token, username)) {
-            return userFacade.ReleaseShoppSingCartForUser(username);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
-        return Response.error("invalid token", null);
-
-    }
-
-    /**
-     * get all messages for a user
-     * @param username the user to get the messages for
-     * @return If successful, returns a success message & the messages. <br> If not, returns an error message.
-     */
-    public Response<Queue<Message>> getMessages(String username){
-        return  new Response<Queue<Message>>(true,"",userFacade.getUserRepository().getMessages(username));
     }
 
 
-    public Response<String> addNormalMessage(String user,String message){
-        return new Response<String>(true,"",userFacade.getUserRepository().addNormalMessage(user,message));
-    }
 
-    public Response<String> isOwner(String username){
-        return userFacade.isOwner(username);
-    }
 
-    public Response<String> isManager(String username){
-        return userFacade.isManager(username);
-    }
+    // User's Details Change Methods
 
-    public Response<String> isCreator(String username){
-        return userFacade.isCreator(username);
-    }
 
 
     public Response<String> changePassword(String username, String password,String confirmPassword, String token) {
@@ -595,39 +719,35 @@ public class UserService {
         return Response.error("Invalid token",null);
     }
 
-    public Response<String> clearCart(String usernameFromCookies, String token) {
-        SystemLogger.info("[START] User: " + usernameFromCookies + " is trying to clear the shopping cart");
-        if (isValidToken(token, usernameFromCookies)) {
-            return userFacade.clearCart(usernameFromCookies);
-        }
-        SystemLogger.error("[ERROR] User: " + usernameFromCookies + " tried to clear the shopping cart but the token was invalid");
-        return Response.error("invalid token", null);
+
+
+
+
+
+
+    public boolean isValidToken(String token, String currentUsername) {
+        return userFacade.isValidToken(token, currentUsername);
     }
 
-    public Response<String> checkout(String usernameFromCookies, String token) {
-        SystemLogger.info("[START] User: " + usernameFromCookies + " is trying to checkout");
-        if (isValidToken(token, usernameFromCookies)) {
-            return userFacade.checkout(usernameFromCookies);
-        }
-        SystemLogger.error("[ERROR] User: " + usernameFromCookies + " tried to checkout but the token was invalid");
-        return Response.error("invalid token", null);
-    }
-
-    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to update the quantity of a product in the shopping cart");
-        if (isValidToken(token, username)) {
-            return userFacade.updateProductQuantityInCart(storeId, productId, quantity, username);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to update the quantity of a product in the shopping cart but the token was invalid");
-        return Response.error("invalid token", null);
+    public UserFacade getUserFacade() {
+        return userFacade;
     }
 
 
-    public boolean isInPurchaseProcess(String user) {
-        return userFacade.isInPurchaseProcess(user);
-    }
 
-    public Response<Double> calculateTotalPriceInCart(String username, String token) {
-        return Response.success("Total price calculated successfully", 0.0); //NOT IMPLEMENTED YET
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

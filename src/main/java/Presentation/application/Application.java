@@ -55,10 +55,10 @@ public class Application implements AppShellConfigurator {
         storeService.addStore("newStore2", "miaa",subscriber.getToken());
         store2 = storeService.getStoreFacade().getStoreRepository().getStore("0");
         storeService.addProductToStore("0","yair","d",20,30,"miaa",subscriber.getToken());
-        userService.SendStoreManagerNomination("0", "miaa", "notOwner", List.of("ADD_PRODUCT"), token);
+        userService.SendManagerNominationRequest("0", "miaa", "notOwner", List.of("ADD_PRODUCT"), token);
         userService.managerNominationResponse("notOwner", true, notOwner.getToken());
         System.out.println(store.getInventory().productsList);
-        ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa",new HashMap<>());
+        ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa","Address",new HashMap<>());
         System.out.println( ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory("0").getData());
         storeService.addProductToStore("0","Bamba","Bamba",200.0,1, new ArrayList<>(List.of("test")),"miaa",subscriber.getToken());
         storeService.addProductToStore("0","Bisli","Bisli",100.0,1,"miaa",subscriber.getToken());

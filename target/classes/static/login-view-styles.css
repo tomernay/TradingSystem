@@ -33,3 +33,65 @@
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
+.store-management-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+.product-management-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+
+/* Styles for the Roles Management View */
+.roles-management-view {
+    padding: 20px;
+}
+
+.roles-management-view .filter-layout {
+    margin-bottom: 10px;
+}
+
+.roles-management-view .grid {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Button Styles */
+.add-button {
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.waive-button {
+    background-color: #DC3545;
+    color: white;
+    border-radius: 5px;
+}
+
+.add-button:hover, .waive-button:hover {
+    background-color: #0056b3;  /* Adjust hover color */
+    color: white;
+}
+
+/* Dialog Styles */
+.dialog-layout {
+    padding: 20px;
+    spacing: true;
+    align-items: center;
+}
+
+/* Styles for Dialog Titles */
+.dialog-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.manager-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #007BFF;
+}

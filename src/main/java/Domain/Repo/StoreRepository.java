@@ -497,14 +497,14 @@ public class StoreRepository {
         }
         return stores.get(storeID).isCategoryExist(category);
     }
-    public Response<String> ReleaseShoppSingCartAndBackToInventory(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> unlockProductsBackToStore(Map<String, Map<String, Integer>> shoppingCart) {
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProductDTO = stores.get(storeID).ReleaseShoppingCart(productsInStore);
+            Response<String> resProductDTO = stores.get(storeID).unlockProductsBackToStore(productsInStore);
             if (!resProductDTO.isSuccess()) {
                 return Response.error(resProductDTO.getMessage(), null);
             }
@@ -513,26 +513,26 @@ public class StoreRepository {
     }
 
 
-    public Response<String> lockShopping(Map<String, Map<String, Integer>> shoppingCart) {
-        ArrayList<String> storeLock = new ArrayList<>();
+    public Response<String> LockProducts(Map<String, Map<String, Integer>> shoppingCart) {
+        ArrayList<String> storeLocked = new ArrayList<>();
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            if (!stores.containsKey(storeID)) {
-                for (String store : storeLock) {
-                    stores.get(store).unlockShoppingCart(shoppingCart.get(store));
+            if (!stores.containsKey(storeID)) { //The store doesn't exist
+                for (String store : storeLocked) {
+                    stores.get(store).unlockShoppingCart(shoppingCart.get(store)); //Unlock all the stores that were locked
                 }
                 return Response.error("Store with ID: " + storeID + " doesn't exist", null);
             }
-            Response<Map<ProductDTO,Integer>> resProductDTO = stores.get(storeID).lockShoppingCart(productsInStore);
+            Response<Map<ProductDTO,Integer>> resProductDTO = stores.get(storeID).LockProducts(productsInStore); //Lock the shopping cart
             if (resProductDTO.isSuccess()) {
-                storeLock.add(storeID);
+                storeLocked.add(storeID);
             }
             else {
-                for (String store : storeLock) {
+                for (String store : storeLocked) {
                     stores.get(store).unlockShoppingCart(shoppingCart.get(store));
                 }
                 return Response.error(resProductDTO.getMessage(), null);
@@ -586,16 +586,16 @@ public class StoreRepository {
         return stores.get(storeID).removeDiscount(discountID);
     }
 
-    public Response<String> ReleaseShoppSingCart(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Map<String, Integer>> shoppingCart) {
         if(shoppingCart.isEmpty()){
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProtctDTO = stores.get(storeID).ReleaseShoppingCartfromlock(productsInStore);
-            if (!resProtctDTO.isSuccess()) {
-                return Response.error(resProtctDTO.getMessage(), null);
+            Response<String> res = stores.get(storeID).RemoveOrderFromStoreAfterSuccessfulPurchase(productsInStore);
+            if (!res.isSuccess()) {
+                return Response.error(res.getMessage(), null);
             }
         }
         return Response.success("[SUCCESS] Successfully released the shopping cart.", null);
@@ -605,17 +605,17 @@ public class StoreRepository {
         return stores;
     }
 
-    public Response<Double> calculatedPriceShoppingCart(String username, Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<Double> calculateShoppingCartPrice(Map<String, Map<String, Integer>> shoppingCartContents) {
         double price = 0;
-        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCartContents.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProductDTO = stores.get(storeID).calculatedPriceShoppingCart(productsInStore);
-            if (resProductDTO.isSuccess()) {
-                price += Double.parseDouble(resProductDTO.getData());
+            Response<String> res = stores.get(storeID).calculateShoppingCartPrice(productsInStore);
+            if (res.isSuccess()) {
+                price += Double.parseDouble(res.getData());
             }
             else {
-                return Response.error(resProductDTO.getMessage(), null);
+                return Response.error(res.getMessage(), null);
             }
         }
         return Response.success("[SUCCESS] Successfully calculated the price.", price);

@@ -9,8 +9,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import Domain.Store.Inventory.ProductDTO;
-
 public class Inventory {
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
     private final String storeID; //Inventory for specific store
@@ -631,8 +629,8 @@ public class Inventory {
 
 
 
-    public synchronized Response<Map<ProductDTO,Integer>> lockShoppingCart(Map<String, Integer> MapShoppingCart) {
-        ArrayList<Product> listLockedProducts = new ArrayList<>();
+    public synchronized Response<Map<ProductDTO,Integer>> LockProducts(Map<String, Integer> MapShoppingCart) {
+        ArrayList<Product> LockedProducts = new ArrayList<>();
         Map<ProductDTO,Integer> productDTOList = new HashMap<>();
         for (Map.Entry<String, Integer> entry : MapShoppingCart.entrySet()) {
             Integer productQuantity = entry.getValue();
@@ -646,16 +644,16 @@ public class Inventory {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
                 return Response.error("Product with ID: " + productID + " not found.", null);
             }
-            if (product.getQuantity() - productQuantity < 0) {
+            if (product.getQuantity() - productQuantity < 0) { // check if product is out of stock
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " is out of stock.");
-                for (Product Productlock : listLockedProducts) {
-                    int Quantitylock = MapShoppingCart.get(String.valueOf(Productlock.getProductID()));
-                    int oldQuantitylock =  lockedProducts.get(Productlock);
-                    lockedProducts.put(Productlock, oldQuantitylock - Quantitylock);
-                    Productlock.addQuantity( Quantitylock);
+                for (Product LockedProduct : LockedProducts) { // unlock all locked products
+                    int LockedQuantity = MapShoppingCart.get(String.valueOf(LockedProduct.getProductID()));
+                    int oldLockedQuantity =  lockedProducts.get(LockedProduct);
+                    lockedProducts.put(LockedProduct, oldLockedQuantity - LockedQuantity);
+                    LockedProduct.addQuantity( LockedQuantity);
 
                 }
-                return Response.error("Product with ID: " + productID + " is out of stock.", null);
+                return Response.error("Product with ID: " + product.getName() + " in store: " + product.getStoreName() + " has only: " + product.getQuantity() + " units left in stock!", null);
             }
             product.addQuantity(-productQuantity);
             if(lockedProducts.containsKey(product)) {
@@ -663,14 +661,14 @@ public class Inventory {
             } else {
                 lockedProducts.put(product, productQuantity);
             }
-            listLockedProducts.add(product);
+            LockedProducts.add(product);
             productDTOList.put(new ProductDTO(product),productQuantity);
         }
         SystemLogger.info("[SUCCESS] Shopping cart locked successfully");
         return Response.success("Shopping cart locked successfully",productDTOList);
     }
 
-    public synchronized Response<String> unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+    public synchronized Response<String> unlockProductsBackToStore(Map<String, Integer> stringIntegerMap) {
         for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
             Integer productID = Integer.parseInt(entry.getKey());
             int quantity = entry.getValue();
@@ -690,7 +688,7 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public synchronized Response<String> ReleaseShoppSingCartfromlock(Map<String, Integer> productsInStore) {
+    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Integer> productsInStore) {
         for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
             Integer productID = Integer.parseInt(entry.getKey());
             int quantity = entry.getValue();
@@ -709,7 +707,7 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public Response<String> calculatedPriceShoppingCart(Map<String, Integer> productsInStore) {
+    public Response<String> calculateShoppingCartPrice(Map<String, Integer> productsInStore) {
         double totalPrice = 0;
         for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
             Integer productID = Integer.parseInt(entry.getKey());

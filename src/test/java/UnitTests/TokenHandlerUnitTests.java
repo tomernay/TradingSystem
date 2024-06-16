@@ -1,24 +1,24 @@
 package UnitTests;
 
 import Domain.Externals.Security.PasswordEncoderUtil;
-import Domain.Externals.Security.Security;
+import Domain.Externals.Security.TokenHandler;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SecurityUnitTests {
+public class TokenHandlerUnitTests {
     static String token;
     static String encodedPassword;
     @BeforeClass
     public static void init(){
-        token= Security.generateJWT("yair");
+        token= TokenHandler.generateJWT("yair");
         encodedPassword= PasswordEncoderUtil.encode("Password123!");
     }
 
     @Test
     public void checkToken(){
-        Assert.assertTrue(Security.isValidJWT(token,"yair"));
-        Assert.assertFalse(Security.isValidJWT(token,"yairby"));
+        Assert.assertTrue(TokenHandler.isValidJWT(token,"yair"));
+        Assert.assertFalse(TokenHandler.isValidJWT(token,"yairby"));
 
     }
 

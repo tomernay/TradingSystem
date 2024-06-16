@@ -62,13 +62,13 @@ public class RolesManagementPresenter {
 
     public void nominateOwner(String storeID, String subscriberUsername) {
         String token = CookiesHandler.getTokenFromCookies(request);
-        userService.SendStoreOwnerNomination(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, token);
+        userService.SendOwnerNominationRequest(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, token);
         view.showSuccess("Owner nomination request sent");
     }
 
     public void nominateManager(String storeID, String subscriberUsername, Set<String> selectedPermissions) {
         String token = CookiesHandler.getTokenFromCookies(request);
-        userService.SendStoreManagerNomination(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, selectedPermissions.stream().toList(), token);
+        userService.SendManagerNominationRequest(storeID, CookiesHandler.getUsernameFromCookies(request), subscriberUsername, selectedPermissions.stream().toList(), token);
         view.showSuccess("Manager nomination request sent");
     }
 
