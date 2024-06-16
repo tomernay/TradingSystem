@@ -1,7 +1,7 @@
 package Domain.Repo;
 
 import Domain.Externals.Security.PasswordEncoderUtil;
-import Domain.Externals.Security.Security;
+import Domain.Externals.Security.TokenHandler;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Messages.Message;
 
@@ -263,7 +263,7 @@ public class UserRepository {
     }
 
     public boolean isValidToken(String token, String currentUsername) {
-        return Security.isValidJWT(token,currentUsername);
+        return TokenHandler.isValidJWT(token,currentUsername);
     }
 
     public void addCreatorRole(String creatorUsername, String storeID) {
@@ -362,7 +362,7 @@ public class UserRepository {
 
 
 
-    public Response<String> ReleaseShoppSingCartForUser(String username) {
+    public Response<String> ResetCartAfterPurchase(String username) {
         if (subscribers.containsKey(username)) {
             subscribers.get(username).setShoppingCart(new ShoppingCart());
             SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " released successfully");

@@ -76,8 +76,8 @@ public class ShoppingCart {
         for (Basket basket : baskets) {
             userProducts.put(basket.getStoreID(), basket.getProductsQuantityMap());
         }
-        SystemLogger.info("[SUCCESS] get ShoppingCart Contents successfull");
-        return Response.success("get ShoppingCart Contents successfull", userProducts);
+        SystemLogger.info("[SUCCESS] Retrieved shopping cart contents successfully.");
+        return Response.success("Retrieved shopping cart contents successfully", userProducts);
     }
 
     public Response<String> setInPurchaseProcess(boolean b) {

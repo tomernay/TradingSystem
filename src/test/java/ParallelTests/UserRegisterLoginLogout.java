@@ -1,6 +1,6 @@
 package ParallelTests;
 
-import Domain.Externals.Security.Security;
+import Domain.Externals.Security.TokenHandler;
 import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
@@ -200,7 +200,7 @@ public class UserRegisterLoginLogout {
         Assert.assertTrue(response1.isSuccess());
 
         // Generate a valid token for a different user
-        String invalidToken = Security.generateJWT("anotherUser");
+        String invalidToken = TokenHandler.generateJWT("anotherUser");
 
         // Submit a task to check if the token is valid for the original user
         Future<Boolean> future2 = executorService.submit(() -> userService.isValidToken(invalidToken, "validUser"));

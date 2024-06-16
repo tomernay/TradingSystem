@@ -1,7 +1,7 @@
 package UnitTests;
 
 import Domain.Externals.Security.PasswordEncoderUtil;
-import Domain.Externals.Security.Security;
+import Domain.Externals.Security.TokenHandler;
 import Domain.Repo.UserRepository;
 import Service.ServiceInitializer;
 import Service.UserService;
@@ -117,7 +117,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 1);
 
         // Generate a valid token for a different user
-        String invalidToken = Security.generateJWT("anotherUser");
+        String invalidToken = TokenHandler.generateJWT("anotherUser");
 
         // Check if the token is valid for the original user
         boolean isValid = userService.isValidToken(invalidToken, "validUser");

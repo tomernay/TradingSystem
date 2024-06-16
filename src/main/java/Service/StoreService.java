@@ -790,8 +790,8 @@ public class StoreService {
 
 
 
-    public Response<String> LockShoppingCart(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeFacade.lockShopping(shoppingCart);
+    public Response<String> LockProducts(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.LockProducts(shoppingCart);
     }
 
 
@@ -799,8 +799,8 @@ public class StoreService {
         return storeFacade.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> ReleaseShoppSingCartAndBackToInventory(Map<String, Map<String, Integer>> shoppingCart) {
-        return storeFacade.ReleaseShoppSingCartAndBackToInventory(shoppingCart);
+    public Response<String> unlockProductsBackToStore(Map<String, Map<String, Integer>> shoppingCart) {
+        return storeFacade.unlockProductsBackToStore(shoppingCart);
     }
 
     /**
@@ -838,12 +838,12 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> ReleaseShoppingCart(Map<String, Map<String, Integer>> data) {
-        return storeFacade.ReleaseShoppingCart(data);
+    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Map<String, Integer>> data) {
+        return storeFacade.RemoveOrderFromStoreAfterSuccessfulPurchase(data);
     }
 
-    public Response<Double> calculatedPriceShoppingCart(String username, Map<String, Map<String, Integer>> shoppingCart) {
-        return storeFacade.calculatedPriceShoppingCart(username, shoppingCart);
+    public Response<Double> calculateShoppingCartPrice(Map<String, Map<String, Integer>> shoppingCartContents) {
+        return storeFacade.calculateShoppingCartPrice(shoppingCartContents);
     }
     /**
      * This method retrieves the discounts of a store

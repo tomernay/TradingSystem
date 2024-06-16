@@ -1,6 +1,6 @@
 package Domain.Users;
 
-import Domain.Externals.Security.Security;
+import Domain.Externals.Security.TokenHandler;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -19,8 +19,12 @@ public class User {
     }
 
     public String generateToken() {
-        Token = Security.generateJWT(this.username);
+        Token = TokenHandler.generateJWT(this.username);
         return Token;
+    }
+
+    public void setToken(String token) {
+        Token = token;
     }
 
     public boolean logoutAsGuest(){

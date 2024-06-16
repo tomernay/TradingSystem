@@ -57,7 +57,7 @@ public class AdminTests {
 
     @Test
     public void getPurchasesHistoryByStore(){
-        orderService.getOrderFacade().getOrderRepository().addOrder("0","yair2",new HashMap<>());
+        orderService.getOrderFacade().getOrderRepository().addOrder("0","yair2","Address",new HashMap<>());
         Response<String> response = adminService.getPurchaseHistoryByStore("0");
         Assert.assertTrue(response.isSuccess());
 
@@ -67,7 +67,7 @@ public class AdminTests {
 
     @Test
     public void getPurchasesHistoryBySubscriber(){
-        orderService.getOrderFacade().getOrderRepository().addOrder("yairStore","yair2",new HashMap<>());
+        orderService.getOrderFacade().getOrderRepository().addOrder("yairStore","yair2", "Address",new HashMap<>());
         Response<String> response = adminService.getPurchaseHistoryBySubscriber("yair2");
         Assert.assertTrue(response.isSuccess());
 

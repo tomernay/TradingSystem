@@ -8,7 +8,6 @@ import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -45,7 +44,7 @@ public class InventoryAddRemoveProductAsStoreOwnerTest {
 
         userService.register("mor", "MorPass123!");
         userService.loginAsSubscriber("mor", "MorPass123!");
-        userService.SendStoreOwnerNomination(store.getId(), "itay", "mor", subscriber.getToken());
+        userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.ownerNominationResponse("mor", true, subscriber2.getToken());
 

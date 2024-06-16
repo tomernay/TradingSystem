@@ -1,7 +1,6 @@
 package UnitTests;
 
 import Domain.Store.Inventory.Inventory;
-import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
@@ -10,7 +9,6 @@ import Service.UserService;
 import Utilities.Response;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryEditProductDetailsAsStoreManagerTest {
@@ -37,7 +35,7 @@ public class InventoryEditProductDetailsAsStoreManagerTest {
 
         userService.register("mor","MorPass123!");
         userService.loginAsSubscriber("mor","MorPass123!");
-        userService.SendStoreManagerNomination(store.getId(), "itay", "mor", List.of("EDIT_PRODUCT", "ADD_PRODUCT", "REMOVE_CATEGORY") ,subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), "itay", "mor", List.of("EDIT_PRODUCT", "ADD_PRODUCT", "REMOVE_CATEGORY") ,subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.managerNominationResponse("mor",true, subscriber2.getToken());
 

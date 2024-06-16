@@ -22,6 +22,7 @@ public class ShoppingCartPresenter {
     private StoreService storeService;
     private final List<ProductDTO> productList;
     private HttpServletRequest request;
+    private double totalPrice; // Store the total price
 
     public ShoppingCartPresenter(HttpServletRequest request) {
         this.userService = ServiceInitializer.getInstance().getUserService();
@@ -75,7 +76,7 @@ public class ShoppingCartPresenter {
     private void updateTotalPriceInCart() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<Double> totalPriceResponse = userService.calculatedPriceShoppingCart(username, token);
+        Response<Double> totalPriceResponse = userService.calculateShoppingCartPrice(username, token);
 
         if (totalPriceResponse.isSuccess()) {
             double totalPrice = totalPriceResponse.getData();
@@ -85,9 +86,11 @@ public class ShoppingCartPresenter {
                 double discountAmount = discountResponse.getData();
                 double discountPercentage = (discountAmount / totalPrice) * 100;
                 view.updateTotalPrice(totalPrice, discountPercentage);
+                this.totalPrice = totalPrice - discountAmount; // Store the discounted price
             } else {
                 view.showError(discountResponse.getMessage());
                 view.updateTotalPrice(totalPrice, 0); // No discount if calculation fails
+                this.totalPrice = totalPrice; // Store the total price without discount
             }
         } else {
             view.showError(totalPriceResponse.getMessage());
@@ -96,9 +99,10 @@ public class ShoppingCartPresenter {
 
     public void checkout() {
         String token = CookiesHandler.getTokenFromCookies(request);
-        Response<String> response = userService.lockShoppingCart(CookiesHandler.getUsernameFromCookies(request), token);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        Response<String> response = userService.lockShoppingCart(username, token);
         if (response.isSuccess()) {
-            view.navigateToPayment(response.getData());
+            view.navigateToPayment(this.totalPrice);
         } else {
             view.showError(response.getMessage());
         }
@@ -141,5 +145,6 @@ public class ShoppingCartPresenter {
         } else {
             view.showError(response.getMessage());
         }
+        updateTotalPriceInCart();
     }
 }

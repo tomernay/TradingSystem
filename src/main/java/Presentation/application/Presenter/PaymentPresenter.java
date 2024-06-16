@@ -1,7 +1,7 @@
 package Presentation.application.Presenter;
 
 import Presentation.application.View.PaymentView;
-import Service.PaymentService;
+import Service.OrderService;
 import Service.ServiceInitializer;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class PaymentPresenter {
     private PaymentView paymentView;
-    private final PaymentService paymentService;
+    private final OrderService orderService;
     private HttpServletRequest request;
 
     public PaymentPresenter(HttpServletRequest request) {
-        paymentService = ServiceInitializer.getInstance().getPaymentService();
+        orderService = ServiceInitializer.getInstance().getOrderService();
         this.request = request;
     }
 
@@ -22,9 +22,9 @@ public class PaymentPresenter {
         this.paymentView = view;
     }
 
-    public void pay(String user, double fee, String credit, String token) {
-        Response<String> payRes = paymentService.immediatePay(user, fee, credit, token);
-        if (!paymentView.hasTimerEnded() || credit == null) {
+    public void pay(String user, double totalPrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String address, String token) {
+        Response<String> payRes = orderService.payAndSupply(totalPrice, user, token, address, creditCardNumber, expirationDate, cvv, fullName);
+        if (!paymentView.hasTimerEnded() || creditCardNumber == null) {
             paymentView.showNotification(payRes.getMessage());
         }
         else{

@@ -1,5 +1,7 @@
 package Service;
 
+import Domain.Externals.Payment.DefaultPaymentGateway;
+import Domain.Externals.Suppliers.DefaultSupplySystem;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -9,15 +11,14 @@ public class ServiceInitializer {
     private UserService userService;
     private StoreService storeService;
     private AdminService adminService;
-    private PaymentService paymentService;
+//    private PaymentService paymentService;
     private OrderService orderService;
 
     private ServiceInitializer() {
         userService = new UserService();
         storeService = new StoreService();
         adminService = new AdminService();
-        paymentService = new PaymentService();
-        orderService = new OrderService();
+        orderService = new OrderService(new DefaultPaymentGateway(), new DefaultSupplySystem());
         userService.setStoreService(storeService);
         userService.setAdminService(adminService);
         storeService.setUserService(userService);
@@ -26,8 +27,6 @@ public class ServiceInitializer {
         adminService.setStoreService(storeService);
         adminService.setOrderService(orderService);
         orderService.setUserService(userService);
-        paymentService.setUserService(userService);
-        paymentService.setOrderService(orderService);
 
 
     }
@@ -53,11 +52,6 @@ public class ServiceInitializer {
 
     public OrderService getOrderService() {
         return orderService;
-    }
-
-
-    public PaymentService getPaymentService() {
-        return paymentService;
     }
 
     public static void reset() {

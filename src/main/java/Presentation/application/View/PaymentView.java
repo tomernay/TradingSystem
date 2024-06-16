@@ -32,13 +32,19 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
     private double totalPrice = 0.0;
     private final PaymentPresenter paymentPresenter;
     private TextField cardNumberField;
+    private TextField expirationField;
+    private PasswordField securityCodeField;
+    private TextField nameField;
+    private TextField streetAddressField;
+    private TextField cityField;
+    private TextField stateField;
+    private TextField zipCodeField;
     private Div creditCard;
     private TextField totalPriceField;
     private Span timerLabel;
     private ScheduledExecutorService executor;
-    private int timeLeft = 10*60; // 10 minutes in seconds
+    private int timeLeft = 10 * 60; // 10 minutes in seconds
     private UI ui;
-
 
     public PaymentView(PaymentPresenter paymentPresenter) {
         setClassName("payment-view");
@@ -84,7 +90,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 .set("font-size", "20px")  // Set the font size
                 .set("color", "red");  // Set the color to red
 
-// Timer Label
+        // Timer Label
         timerLabel = new Span();
         timerLabel.getStyle()
                 .set("position", "absolute")
@@ -98,7 +104,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 .set("font-family", "'Courier New', Courier, monospace");  // Change the font
         timerLabel.setText(formatTime(timeLeft)); // Update the timer label immediately
 
-// Add the title and timer to the layout
+        // Add the title and timer to the layout
         add(timerTitle, timerLabel);
     }
 
@@ -121,7 +127,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         // Logic to handle payment cancellation
         String token = CookiesHandler.getTokenFromCookies(getRequest());
         String user = CookiesHandler.getUsernameFromCookies(getRequest());
-        paymentPresenter.pay(user, fee, null, token);
+        paymentPresenter.pay(user, 0, null, "","","","", token);
     }
 
     public boolean hasTimerEnded() {
@@ -208,7 +214,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 .set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.1)");
 
         // Name Field
-        TextField nameField = createField("Name", "Enter your name");
+        nameField = createField("Name", "Enter your name");
         nameField.addValueChangeListener(e -> updateCardHolderName(e.getValue()));
         formContainer.add(nameField);
 
@@ -226,7 +232,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Expiration Date and Security Code Fields
         HorizontalLayout expirationAndSecurityLayout = new HorizontalLayout();
-        TextField expirationField = createField("Expiration (MM/YY)", "MM/YY");
+        expirationField = createField("Expiration (MM/YY)", "MM/YY");
         expirationField.setMaxLength(5);
         expirationField.addValueChangeListener(e -> updateCardExpiry(e.getValue()));
         expirationField.addKeyPressListener(keyPressEvent -> {
@@ -235,10 +241,26 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 expirationField.setValue(value + "/");
             }
         });
-        PasswordField securityCodeField = createPasswordField("Security Code", "Enter security code");
+        securityCodeField = createPasswordField("Security Code", "Enter security code");
         securityCodeField.setMaxLength(3);
         expirationAndSecurityLayout.add(expirationField, securityCodeField);
         formContainer.add(expirationAndSecurityLayout);
+
+        // Street Address Field
+        streetAddressField = createField("Street Address", "Enter your street address");
+        formContainer.add(streetAddressField);
+
+        // City Field
+        cityField = createField("City", "Enter your city");
+        formContainer.add(cityField);
+
+        // State Field
+        stateField = createField("State", "Enter your state");
+        formContainer.add(stateField);
+
+        // Zip Code Field
+        zipCodeField = createField("Zip Code", "Enter your zip code");
+        formContainer.add(zipCodeField);
 
         // Total Price Field
         totalPriceField = new TextField("Total Price");
@@ -249,13 +271,21 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         Button submitButton = new Button("Submit");
         submitButton.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
             // Check if all fields are filled
-            if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty()) {
+            if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty() || streetAddressField.isEmpty() || cityField.isEmpty() || stateField.isEmpty() || zipCodeField.isEmpty()) {
                 showNotification("Please fill in all fields before submitting.");
             } else {
                 String token = CookiesHandler.getTokenFromCookies(getRequest());
                 String user = CookiesHandler.getUsernameFromCookies(getRequest());
                 String cardNumber = cardNumberField.getValue();
-                paymentPresenter.pay(user, fee, cardNumber, token);
+                String expirationDate = expirationField.getValue();
+                String cvv = securityCodeField.getValue();
+                String fullName = nameField.getValue();
+                String streetAddress = streetAddressField.getValue();
+                String city = cityField.getValue();
+                String state = stateField.getValue();
+                String zipCode = zipCodeField.getValue();
+                String address = streetAddress + ", " + city + ", " + state + ", " + zipCode;
+                paymentPresenter.pay(user, totalPrice, cardNumber, expirationDate, cvv, fullName, address, token);
             }
         });
         submitButton.getStyle()

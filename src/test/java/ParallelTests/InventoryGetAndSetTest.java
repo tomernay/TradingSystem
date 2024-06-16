@@ -39,7 +39,7 @@ public class InventoryGetAndSetTest {
 
         userService.register("mor","MorPass123!");
         userService.loginAsSubscriber("mor","MorPass123!");
-        userService.SendStoreManagerNomination(store.getId(), "itay", "mor", List.of("EDIT_PRODUCT", "ADD_PRODUCT", "REMOVE_CATEGORY"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), "itay", "mor", List.of("EDIT_PRODUCT", "ADD_PRODUCT", "REMOVE_CATEGORY"), subscriber.getToken());
         subscriber2 = userService.getUserFacade().getUserRepository().getUser("mor");
         userService.managerNominationResponse("mor", true, subscriber2.getToken());
 

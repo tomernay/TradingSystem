@@ -4,13 +4,10 @@ import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
 import Service.StoreService;
-import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +62,12 @@ public class InfoRequestsByOwner {
         //subscribe ziv
         userRepository.register("ziv","Password123!");
         userRepository.loginAsSubscriber("ziv","Password123!");
-        serviceInitializer.getUserService().SendStoreOwnerNomination("0", "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().SendOwnerNominationRequest("0", "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         serviceInitializer.getUserService().ownerNominationResponse("ziv",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("ziv").getToken());
         //subscribe dor
         userRepository.register("dor","Password123!");
         userRepository.loginAsSubscriber("dor","Password123!");
-        serviceInitializer.getUserService().SendStoreOwnerNomination("0", "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().SendOwnerNominationRequest("0", "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         serviceInitializer.getUserService().ownerNominationResponse("dor",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("dor").getToken());
         //subscribe niv
         userRepository.register("niv","Password123!");
@@ -87,7 +84,7 @@ public class InfoRequestsByOwner {
         perms.add("EDIT_PRODUCT");
 
         //send nomination msg
-        serviceInitializer.getUserService().SendStoreManagerNomination(res.getData(), "mia", "ziv", perms, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        serviceInitializer.getUserService().SendManagerNominationRequest(res.getData(), "mia", "ziv", perms, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         //accept the msg
         serviceInitializer.getUserService().managerNominationResponse("ziv",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("ziv").getToken());
 

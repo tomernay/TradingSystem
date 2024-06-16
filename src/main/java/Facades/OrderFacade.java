@@ -17,7 +17,7 @@ public class OrderFacade {
         return orderRepository.getOrders();
     }
 
-    public Response<Map<String,String>> getOrdersHistory(String storeID) {
+    public Response<Map<String, String>> getOrdersHistory(String storeID) {
         return orderRepository.getOrdersHistory(storeID);
     }
 
@@ -33,7 +33,7 @@ public class OrderFacade {
         return orderRepository.getPurchaseHistoryBySubscriber(subscriberID);
     }
 
-    public Response<String> CreatOrder(String username, Map<String, Map<String, Integer>> ShoppingcartContents) {
-        return orderRepository.CreatOrder(username, ShoppingcartContents);
+    public Response<String> CreatOrder(String username, String deliveryAddress, Map<String, Map<String, Integer>> shoppingCartContents) {
+        return orderRepository.CreatOrder(username, deliveryAddress, shoppingCartContents);
     }
 }
