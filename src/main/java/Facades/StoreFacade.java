@@ -1,6 +1,7 @@
 package Facades;
 
 import Domain.Repo.StoreRepository;
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
@@ -268,5 +269,9 @@ public class StoreFacade {
 
     public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {
         return storeRepository.removeProductFromCategory(productId, category, storeId, username);
+    }
+
+    public Response<String> makeComplexPolicy(String username, String storeID, int policyId1, int policyId2, ConditionType conditionType) {
+        return storeRepository.makeComplexPolicy(username, storeID, policyId1, policyId2, conditionType);
     }
 }

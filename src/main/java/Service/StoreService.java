@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
@@ -892,6 +893,16 @@ public class StoreService {
             return storeFacade.removeProductFromCategory(productId, category, storeId, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to remove product: " + productId + " from category: " + category + " in store: " + storeId + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+
+    public Response<String> makeCoplexCondition(String username, String token, String storeID, int policyId1, int policyId2, ConditionType ConditionType) {
+        SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, ConditionType);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 }

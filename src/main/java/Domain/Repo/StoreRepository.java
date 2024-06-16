@@ -1,5 +1,6 @@
 package Domain.Repo;
 
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
@@ -653,5 +654,13 @@ public class StoreRepository {
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeId).removeProductFromCategory(productId, category, username);
+    }
+
+    public Response<String> makeComplexPolicy(String username, String storeID, int policyId1, int policyId2, ConditionType conditionType) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).makeComplexPolicy(username, policyId1, policyId2, conditionType);
     }
 }

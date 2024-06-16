@@ -10,7 +10,7 @@ public class AndCondition implements  Condition{
     private Condition condition2;
     private int conditionID;
 
-    AndCondition(Condition condition1, Condition condition2, int conditionID) {
+    public AndCondition(Condition condition1, Condition condition2, int conditionID) {
         this.condition1 = condition1;
         this.condition2 = condition2;
         this.conditionID = conditionID;

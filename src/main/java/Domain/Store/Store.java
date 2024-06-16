@@ -1,11 +1,10 @@
 package Domain.Store;
 
+import Domain.Store.Conditions.*;
 import Domain.Store.Discounts.*;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
-import Domain.Store.Conditions.Condition;
-import Domain.Store.Conditions.SimpleCondition;
 import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -732,6 +731,31 @@ if (isStoreOwner(username) || isStoreManager(username)) {
             return permissionCheck;
         }
         return inventory.removeProductFromCategory(productId, category);
+    }
+
+    public Response<String> makeComplexPolicy(String username, int policyId1, int policyId2, ConditionType conditionType) {
+        if (isStoreOwner(username) || isStoreManager(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (!policies.containsKey(policyId1) || !policies.containsKey(policyId2)) {
+            return new Response<>(false, "Discounts does not exist in store");
+        }
+        Condition policy1 = policies.get(policyId1);
+        Condition policy2 = policies.get(policyId2);
+        Condition NewPolicy = null;
+        if (conditionType.equals(ConditionType.AND)) {
+            NewPolicy = new AndCondition(policy1, policy2, productIDGenerator.getAndIncrement());
+        }
+        if (conditionType.equals(ConditionType.OR)) {
+            NewPolicy = new OrCondition(policy1, policy2, productIDGenerator.getAndIncrement());
+        }
+        if (conditionType.equals(ConditionType.XOR)) {
+            NewPolicy = new XorCondition(policy1, policy2, productIDGenerator.getAndIncrement());
+        }
+        policies.put(productIDGenerator.getAndIncrement(), NewPolicy);
+        policies.remove(policyId1);
+        policies.remove(policyId2);
+        return new Response<>(true, "Discount created successfully");
     }
 }
 
