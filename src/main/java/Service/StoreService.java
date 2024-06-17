@@ -905,5 +905,14 @@ public class StoreService {
         SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
+
+    public Response<String> makePoliceCondition(String username, String token, String storeID, int policyId, int conditionId) {
+        SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.makePolicyCondition(username, storeID, policyId, conditionId);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
 }
 

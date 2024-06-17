@@ -665,4 +665,12 @@ public class StoreRepository {
         }
         return stores.get(storeID).makeComplexPolicy(username, policyId1, policyId2, conditionType);
     }
+
+    public Response<String> makePolicyCondition(String username, String storeID, int policyId, int conditionId) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).makePolicyCondition(username, policyId, conditionId);
+    }
 }

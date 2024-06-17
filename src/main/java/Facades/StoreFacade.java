@@ -274,4 +274,8 @@ public class StoreFacade {
     public Response<String> makeComplexPolicy(String username, String storeID, int policyId1, int policyId2, ConditionType conditionType) {
         return storeRepository.makeComplexPolicy(username, storeID, policyId1, policyId2, conditionType);
     }
+
+    public Response<String> makePolicyCondition(String username, String storeID, int policyId, int conditionId) {
+        return storeRepository.makePolicyCondition(username, storeID, policyId, conditionId);
+    }
 }

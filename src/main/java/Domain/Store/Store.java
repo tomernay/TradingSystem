@@ -757,5 +757,26 @@ if (isStoreOwner(username) || isStoreManager(username)) {
         policies.remove(policyId2);
         return new Response<>(true, "Discount created successfully");
     }
+
+    public Response<String> makePolicyCondition(String username, int policyId, int conditionId) {
+        if (!isStoreOwner(username) || !isStoreManager(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (!policies.containsKey(policyId)) {
+            return new Response<>(false, "Discount does not exist in store");
+        }
+
+        if (!policies.containsKey(conditionId)) {
+            return new Response<>(false, "Condition does not exist in store");
+        }
+        Condition condition = policies.get(conditionId);
+        Condition policy = policies.get(policyId);
+        int Id = productIDGenerator.getAndIncrement();
+        Condition NewPolicy = new PolicyCondition(policy, condition, Id);
+        policies.put(Id, NewPolicy);
+        policies.remove(policyId);
+        policies.remove(conditionId);
+        return new Response<>(true, "Discount created successfully");
+    }
 }
 
