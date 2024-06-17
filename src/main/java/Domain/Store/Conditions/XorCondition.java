@@ -25,5 +25,45 @@ public class XorCondition implements  Condition{
         return conditionID;
     }
 
+    @Override
+    public Integer getProductID() {
+        return null;
+    }
+
+    @Override
+    public String getCategory() {
+        return null;
+    }
+
+    @Override
+    public String getMinAmount() {
+        return null;
+    }
+
+    @Override
+    public String getMaxAmount() {
+        return null;
+    }
+
+    @Override
+    public String getAmount() {
+        return null;
+    }
+
+    @Override
+    public Condition getCondition1() {
+        return condition1;
+    }
+
+    @Override
+    public Condition getCondition2() {
+        return condition2;
+    }
+
+    @Override
+    public String getPrice() {
+        return null;
+    }
+
 
 }

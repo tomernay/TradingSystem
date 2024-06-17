@@ -1,5 +1,6 @@
 package Domain.Store.Discounts;
 
+import Domain.Store.Conditions.Condition;
 import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
@@ -47,15 +48,30 @@ public class MaxDiscount implements Discount{
     }
     @Override
     public String getPercent() {
-        return String.valueOf(discount1.getPercent()) + String.valueOf(discount2.getPercent());
+        return null;
     }
     @Override
     public String getProductID() {
-        return String.valueOf(discount1.getProductID()) + String.valueOf(discount2.getProductID());
+        return null;
     }
     @Override
     public String getCategory() {
-        return String.valueOf(discount1.getCategory()) + String.valueOf(discount2.getCategory());
+        return null;
+    }
+
+    @Override
+    public Discount getDiscount1() {
+        return discount1;
+    }
+
+    @Override
+    public Discount getDiscount2() {
+        return discount2;
+    }
+
+    @Override
+    public Condition getCondition() {
+        return null;
     }
 
 

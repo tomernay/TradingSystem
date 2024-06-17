@@ -9,18 +9,27 @@ public class SimpleCondition implements Condition{
     private int conditionID;
     private Integer productID;
     private String category;
-    private Integer minAmount;
-    private Integer maxAmount;
+    private Double minAmount;
+    private Double maxAmount;
+    private Double amount;
     private Double price;
 
 
-    public SimpleCondition(int conditionID, Integer productID, String category, int minAmount, int maxAmount,double price) {
+    public SimpleCondition(int conditionID, Integer productID, String category, Double amount, Double minAmount, Double maxAmount,Double price) {
         this.conditionID = conditionID;
         this.productID = productID;
         this.category = category;
+        this.amount = amount;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
         this.price = price;
+    }
+
+    public String getPrice() {
+        if (price == null){
+            return null;
+        }
+        return String.valueOf(price);
     }
 
     public int getConditionID() {
@@ -37,12 +46,36 @@ public class SimpleCondition implements Condition{
         return category;
     }
 
-    public int getMinAmount() {
-        return minAmount;
+    public String getMinAmount() {
+        if (minAmount == null){
+            return null;
+        }
+        return String.valueOf(minAmount);
     }
 
-    public int getMaxAmount() {
-        return maxAmount;
+    public String getMaxAmount() {
+        if (maxAmount == null){
+            return null;
+        }
+        return String.valueOf(maxAmount);
+    }
+
+    @Override
+    public String getAmount() {
+        if (amount == null){
+            return null;
+        }
+        return String.valueOf(amount);
+    }
+
+    @Override
+    public Condition getCondition1() {
+        return null;
+    }
+
+    @Override
+    public Condition getCondition2() {
+        return null;
     }
 
     @Override

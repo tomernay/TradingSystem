@@ -1,5 +1,7 @@
 package Service;
 
+import Domain.Store.Conditions.ConditionDTO;
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
@@ -774,6 +776,20 @@ public class StoreService {
         SystemLogger.error("[ERROR] User: " + UserName + " tried to search products by name: " + productName + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
+
+    /**
+     * Whole store discount - productID null, category null
+     * Product discount - category null
+     * Category discount - productID null
+     *
+     * @param username
+     * @param token
+     * @param productID
+     * @param storeID
+     * @param category
+     * @param percent
+     * @return
+     */
     public Response<String> CreatDiscountSimple(String username,String token, String productID, String storeID, String category, String percent) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
@@ -818,6 +834,24 @@ public class StoreService {
         SystemLogger.error("[ERROR] User: " + username + " tried to get discounts from store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
+
+    /**
+     * This method retrieves the policies of a store
+     * @param storeID the ID of the store
+     * @param username the username of the user
+     * @param token the token of the user
+     * @return If successful, returns a list of discounts. <br> If not, returns an error message.
+     */
+    public Response<List<ConditionDTO>> getPoliciesFromStore(String storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to get policies from store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.getPoliciesFromStore(storeID, username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to get policies from store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+
     /**
      * This method remove Discount from store
      * @param storeID the ID of the store
@@ -846,6 +880,11 @@ public class StoreService {
         return storeFacade.calculateShoppingCartPrice(shoppingCartContents);
     }
     /**
+     * Create 2 simple discounts and make a complex discount from them, with MAX or PLUS type
+     *
+     *
+     *
+     *
      * This method retrieves the discounts of a store
      * @param storeID the ID of the store
      * @param username the username of the user
@@ -876,12 +915,45 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String token, String storeID, String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+    /**
+     * 1. The cart must have at least / at most / exactly X products from category C - product null, price null, (min + max null / min null + max / min + max)
+     * 2. The cart must have at least / at most / exactly X products from product P - category null, price null, (min + max null / min null + max / min + max)
+     * 3. The cart must have at least / at most price - product null, category null, (min + max null / min null + max / min + max)
+     *
+     * @param username
+     * @param token
+     * @param storeID
+     * @param category
+     * @param productID
+     * @param minAmount
+     * @param maxAmount
+     * @param price
+     * @return
+     */
+    public Response<String> addSimplePolicyToStore(String username, String token, String storeID, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
         SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.addSimplePolicyToStore(username,storeID,category, productID, minAmount, maxAmount,price);
+            return storeFacade.addSimplePolicyToStore(username,category, storeID, productID, amount, minAmount, maxAmount,price);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to add simple purchase policy for product: " + productID + " in store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> makeComplexCondition(String username, String token, String storeID, int policyId1, int policyId2, String ConditionType) {
+        SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, ConditionType);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> makeConditionPolicy(String username, String token, String storeID, int policyId, int conditionId) {
+        SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.makeConditionPolicy(username, storeID, policyId, conditionId);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
@@ -892,6 +964,15 @@ public class StoreService {
             return storeFacade.removeProductFromCategory(productId, category, storeId, username);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to remove product: " + productId + " from category: " + category + " in store: " + storeId + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<String> removePolicy(String storeId, String username, String token, String policyId) {
+        SystemLogger.info("[START] User: " + username + " is trying to remove policy: " + policyId + " from store: " + storeId);
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.removePolicy(storeId, username, policyId);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to remove policy: " + policyId + " from store: " + storeId + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 }

@@ -1,6 +1,8 @@
 package Facades;
 
 import Domain.Repo.StoreRepository;
+import Domain.Store.Conditions.ConditionDTO;
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
@@ -262,11 +264,27 @@ public class StoreFacade {
         return storeRepository.makeConditionDiscount(username, storeID, discountId, conditionId);
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String category, String storeID, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
-        return storeRepository.addSimplePolicyToStore(username, storeID, category,productID, minAmount, maxAmount, price);
+    public Response<String> addSimplePolicyToStore(String username, String category, String storeID, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
+        return storeRepository.addSimplePolicyToStore(username, storeID, category,productID, amount, minAmount, maxAmount, price);
     }
 
     public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {
         return storeRepository.removeProductFromCategory(productId, category, storeId, username);
+    }
+
+    public Response<String> makeComplexPolicy(String username, String storeID, int policyId1, int policyId2, String conditionType) {
+        return storeRepository.makeComplexPolicy(username, storeID, policyId1, policyId2, conditionType);
+    }
+
+    public Response<List<ConditionDTO>> getPoliciesFromStore(String storeID, String username) {
+        return storeRepository.getPoliciesFromStore(storeID, username);
+    }
+
+    public Response<String> makeConditionPolicy(String username, String storeID, int policyId, int conditionId) {
+        return storeRepository.makeConditionPolicy(username, storeID, policyId, conditionId);
+    }
+
+    public Response<String> removePolicy(String storeId, String username, String policyId) {
+        return storeRepository.removePolicy(storeId, username, policyId);
     }
 }
