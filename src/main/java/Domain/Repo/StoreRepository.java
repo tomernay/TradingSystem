@@ -505,9 +505,11 @@ public class StoreRepository {
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProductDTO = stores.get(storeID).unlockProductsBackToStore(productsInStore);
-            if (!resProductDTO.isSuccess()) {
-                return Response.error(resProductDTO.getMessage(), null);
+            if (stores.containsKey(storeID)) { //The store exist
+                Response<String> resProductDTO = stores.get(storeID).unlockProductsBackToStore(productsInStore);
+                if (!resProductDTO.isSuccess()) {
+                    return Response.error(resProductDTO.getMessage(), null);
+                }
             }
         }
         return Response.success("[SUCCESS] Successfully released the shopping cart and calculated the price.", null);

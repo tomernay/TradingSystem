@@ -51,11 +51,13 @@ public class OrderService {
         SystemLogger.info("[START] User: " + username + " is trying to pay");
 
         if (!paymentGateway.handshake() || !supplySystem.handshake()) {
+            handlePaymentFailure(username, token);
             SystemLogger.error("[ERROR] External system is not available");
             return Response.error("External system is not available", null);
         }
 
         if (!userService.isValidToken(token, username)) {
+            handlePaymentFailure(username, token);
             SystemLogger.error("[ERROR] User: " + username + " is trying to pay with invalid token");
             return Response.error("Invalid token", null);
         }
