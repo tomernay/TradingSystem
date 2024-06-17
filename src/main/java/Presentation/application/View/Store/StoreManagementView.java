@@ -1,14 +1,20 @@
 package Presentation.application.View.Store;
 
+import Presentation.application.Presenter.StoreManagementPresenter;
 import Presentation.application.View.MainLayoutView;
 import Presentation.application.View.RolesManagementView;
+import Service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
+
+import java.util.List;
+import Domain.Store.Inventory.ProductDTO;
 
 @PageTitle("Store Management")
 @Route(value = "store-management/:storeId", layout = MainLayoutView.class)
@@ -17,26 +23,22 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
 
     private Div content;
     private String storeId;
+    private StoreManagementPresenter presenter;
 
-    public StoreManagementView() {
+    public StoreManagementView(StoreManagementPresenter presenter) {
         content = new Div();
         content.setSizeFull();
         addClassName("store-management-view");
 
+        this.presenter = presenter;
+        presenter.attachView(this);
 
         Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
-//        Button discountsButton = new Button("Discounts", e -> setContent(new DiscountsView()));
-//        Button policiesButton = new Button("Policies", e -> setContent(new PoliciesView()));
-//        Button paymentButton = new Button("Payment Methods", e -> setContent(new PaymentMethodsView()));
-//        Button suppliersButton = new Button("Suppliers", e -> setContent(new SuppliersView()));
+        Button createDiscountButton = new Button("Discounts / Policies", e -> openCreateDiscountDialog());
         Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
 
-//        VerticalLayout buttonLayout = new VerticalLayout(
-//                productManagementButton, discountsButton, policiesButton,
-//                paymentButton, suppliersButton, rolesManagementButton
-//        );
         VerticalLayout buttonLayout = new VerticalLayout(
-                productManagementButton, rolesManagementButton
+                productManagementButton, createDiscountButton, rolesManagementButton
         );
         buttonLayout.setSpacing(true);
 
@@ -56,6 +58,12 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
     private void setContent(Component component) {
         content.removeAll();
         content.add(component);
+    }
+
+    private void openCreateDiscountDialog() {
+        List<ProductDTO> products = presenter.getProducts(storeId);
+        Dialog createDiscountDialog = new CreateDiscountDialog(presenter, storeId, products);
+        createDiscountDialog.open();
     }
 
     @Override

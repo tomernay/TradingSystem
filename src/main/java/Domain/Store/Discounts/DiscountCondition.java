@@ -59,5 +59,20 @@ public class DiscountCondition implements Discount{
         return "";
     }
 
+    @Override
+    public Discount getDiscount1() {
+        return discount;
+    }
+
+    @Override
+    public Discount getDiscount2() {
+        return null;
+    }
+
+    @Override
+    public Condition getCondition() {
+        return condition;
+    }
+
 
 }

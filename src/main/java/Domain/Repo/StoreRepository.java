@@ -1,5 +1,7 @@
 package Domain.Repo;
 
+import Domain.Store.Conditions.ConditionDTO;
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
@@ -504,9 +506,11 @@ public class StoreRepository {
         for (Map.Entry<String, Map<String, Integer>> storeEntry : shoppingCart.entrySet()) {
             String storeID = storeEntry.getKey();
             Map<String, Integer> productsInStore = storeEntry.getValue();
-            Response<String> resProductDTO = stores.get(storeID).unlockProductsBackToStore(productsInStore);
-            if (!resProductDTO.isSuccess()) {
-                return Response.error(resProductDTO.getMessage(), null);
+            if (stores.containsKey(storeID)) { //The store exist
+                Response<String> resProductDTO = stores.get(storeID).unlockProductsBackToStore(productsInStore);
+                if (!resProductDTO.isSuccess()) {
+                    return Response.error(resProductDTO.getMessage(), null);
+                }
             }
         }
         return Response.success("[SUCCESS] Successfully released the shopping cart and calculated the price.", null);
@@ -639,12 +643,12 @@ public class StoreRepository {
         return stores.get(storeID).makeConditionDiscount(username, discountId, conditionId);
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String storeID, String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
+    public Response<String> addSimplePolicyToStore(String username, String storeID, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
         Response<String> response = isStoreExist(storeID);
         if (!response.isSuccess()) {
             return Response.error(response.getMessage(), null);
         }
-        return stores.get(storeID).addSimplePolicyToStore(username,category,productID, minAmount, maxAmount, price);
+        return stores.get(storeID).addSimplePolicyToStore(username,category,productID, amount, minAmount, maxAmount, price);
     }
 
     public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username) {
@@ -653,5 +657,33 @@ public class StoreRepository {
             return Response.error(response.getMessage(), null);
         }
         return stores.get(storeId).removeProductFromCategory(productId, category, username);
+    }
+
+    public Response<String> makeComplexPolicy(String username, String storeID, int policyId1, int policyId2, String conditionType) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).makeComplexPolicy(username, policyId1, policyId2, conditionType);
+    }
+
+    public Response<List<ConditionDTO>> getPoliciesFromStore(String storeID, String username) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).getPolicies(username);
+    }
+
+    public Response<String> makeConditionPolicy(String username, String storeID, int policyId, int conditionId) {
+        Response<String> response = isStoreExist(storeID);
+        if (!response.isSuccess()) {
+            return Response.error(response.getMessage(), null);
+        }
+        return stores.get(storeID).makeConditionPolicy(username, policyId, conditionId);
+    }
+
+    public Response<String> removePolicy(String storeId, String username, String policyId) {
+        return stores.get(storeId).removePolicy(username, policyId);
     }
 }

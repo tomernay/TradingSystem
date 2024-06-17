@@ -1,5 +1,6 @@
 package Domain.Store.Discounts;
 
+import Domain.Store.Conditions.Condition;
 import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
@@ -20,6 +21,9 @@ public interface Discount {
     public String getPercent();
     public String getProductID();
     public String getCategory();
+    public Discount getDiscount1();
+    public Discount getDiscount2();
+    public Condition getCondition();
 
 
 

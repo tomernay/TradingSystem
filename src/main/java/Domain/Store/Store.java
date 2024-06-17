@@ -1,11 +1,10 @@
 package Domain.Store;
 
+import Domain.Store.Conditions.*;
 import Domain.Store.Discounts.*;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
-import Domain.Store.Conditions.Condition;
-import Domain.Store.Conditions.SimpleCondition;
 import Domain.Users.StateOfSubscriber.*;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -562,7 +561,7 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
-    public Response<Boolean> cheakPolice(Map<ProductDTO,Integer>productsInShoppingCart) {
+    public Response<Boolean> checkPolicy(Map<ProductDTO,Integer>productsInShoppingCart) {
         for (Condition c : policies.values()) {
             if (!c.isValid(productsInShoppingCart)) {
                 return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
@@ -579,7 +578,7 @@ public class Store {
             return productDTOList;
         }
         else {
-            if(cheakPolice(productDTOList.getData()).getData()){
+            if(checkPolicy(productDTOList.getData()).getData()){
                 return productDTOList;
             }
             else {
@@ -596,13 +595,13 @@ public class Store {
 
     public Response<String> CreateDiscount(String productID, String category, String percent, String type, String username) {
         Discount discount;
-        if (Double.parseDouble(percent) < 0 ||Double.parseDouble(percent) > 1) {
+        if (Double.parseDouble(percent) <= 0 ||Double.parseDouble(percent) > 100) {
             return new Response<>(false, "Discount percent must be between 0 and 1");
         }
-        if (storeID != null || !isStoreOwner(username) || !isStoreManager(username)) {
+        if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if (productID != null || isProductExist(productID).isSuccess()) {
+        if (productID != null && !isProductExist(productID).isSuccess()) {
             return new Response<>(false, "Product does not exist in store");
         }
         if (category == null && productID == null)
@@ -617,7 +616,7 @@ public class Store {
         } else {
             return new Response<>(false, "Failed to create discount");
         }
-        return new Response<>(true, "Discount created successfully");
+        return Response.success("Discount created successfully", String.valueOf(IdDiscount));
     }
 
     public Response<Double> CalculateDiscounts(Map<String, Integer> productsInStore) {
@@ -647,17 +646,66 @@ public class Store {
     public Response<String> removeDiscount(String discountID) {
         if (discounts.containsKey(Integer.parseInt(discountID))) {
             discounts.remove(Integer.parseInt(discountID));
+            SystemLogger.info("[SUCCESS] Discount removed successfully");
             return new Response<>(true, "Discount removed successfully");
         }
+        SystemLogger.error("[ERROR] Failed to remove discount");
         return new Response<>(false, "Failed to remove discount");
     }
 
     public Response<List<DiscountDTO>> getDiscounts(String username) {
         List<DiscountDTO> discounts = new ArrayList<>();
         for (Discount d : this.discounts.values()) {
-            discounts.add(new DiscountDTO(d.getDiscountID(), d.getStoreID(), d.getDiscountType(), d.getPercent(), d.getProductID(), d.getCategory()));
+            discounts.add(buildDiscountDTO(d, username));
         }
         return Response.success("Successfully fetched the discounts", discounts);
+    }
+
+    public Response<List<ConditionDTO>> getPolicies(String username) {
+        List<ConditionDTO> policies = new ArrayList<>();
+        for (Condition c : this.policies.values()) {
+            policies.add(buildConditionDTO(c, username));
+        }
+        return Response.success("Successfully fetched the policies", policies);
+    }
+
+    public DiscountDTO buildDiscountDTO(Discount d, String username) {
+        if (d instanceof SimpleDiscount) {
+            if (d.getProductID() == null) {
+                return new DiscountDTO(d.getDiscountID(), null, null,storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
+            }
+            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(Integer.parseInt(d.getProductID()), username).getData(),storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
+        }
+        else if (d instanceof MaxDiscount) {
+            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "MAX", null, null, buildDiscountDTO(d.getDiscount1(), username), buildDiscountDTO(d.getDiscount2(), username), null);
+        }
+        else if (d instanceof PlusDiscount) {
+            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "PLUS", null, null, buildDiscountDTO(d.getDiscount1(), username), buildDiscountDTO(d.getDiscount2(), username), null);
+        }
+        else {
+            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "CONDITION", null, null, buildDiscountDTO(d.getDiscount1(), username), null, buildConditionDTO(d.getCondition(), username));
+        }
+    }
+
+    private ConditionDTO buildConditionDTO(Condition condition, String username) {
+        if (condition instanceof SimpleCondition) {
+            if (condition.getProductID() == null) {
+                return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
+            }
+            return new ConditionDTO(condition.getConditionID(),  String.valueOf(condition.getProductID()),String.valueOf(getProductName(condition.getProductID(), username).getData()), condition.getCategory(),"Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
+        }
+        else if (condition instanceof AndCondition) {
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "AND");
+        }
+        else if (condition instanceof OrCondition) {
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "OR");
+        }
+        else if (condition instanceof XorCondition) {
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "XOR");
+        }
+        else {
+            return new ConditionDTO(condition.getConditionID(), null,null, null, "Condition", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, null);
+        }
     }
 
     public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Integer> productsInStore) {
@@ -669,7 +717,7 @@ public class Store {
     }
 
     public Response<String> makeComplexDiscount(String username, int discountId1, int discountId2, String discountType) {
-        if (!isStoreOwner(username) && !isStoreManager(username)) {
+        if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
         if (!discounts.containsKey(discountId1) || !discounts.containsKey(discountId2)) {
@@ -678,20 +726,21 @@ public class Store {
         Discount discount1 = discounts.get(discountId1);
         Discount discount2 = discounts.get(discountId2);
         Discount NewDiscount = null;
+        int id = productIDGenerator.getAndIncrement();
         if (discountType.equals("MAX")) {
-             NewDiscount = new MaxDiscount(discount1, discount2, productIDGenerator.getAndIncrement());
+             NewDiscount = new MaxDiscount(discount1, discount2, id);
         }
         if (discountType.equals("PLUS")) {
-            NewDiscount = new PlusDiscount(discount1, discount2, productIDGenerator.getAndIncrement());
+            NewDiscount = new PlusDiscount(discount1, discount2, id);
         }
-        discounts.put(productIDGenerator.getAndIncrement(), NewDiscount);
+        discounts.put(id, NewDiscount);
         discounts.remove(discountId1);
         discounts.remove(discountId2);
-        return new Response<>(true, "Discount created successfully");
+        return Response.success("Discount created successfully", String.valueOf(id - 1));
         }
 
     public Response<String> makeConditionDiscount(String username, int discountId, int conditionId) {
-        if (!isStoreOwner(username) && !isStoreManager(username)) {
+        if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
         if (!discounts.containsKey(discountId)) {
@@ -703,25 +752,26 @@ public class Store {
         }
         Condition condition = policies.get(conditionId);
         Discount discount = discounts.get(discountId);
-        Discount NewDiscount = new DiscountCondition(discount, condition, productIDGenerator.getAndIncrement());
-        discounts.put(productIDGenerator.getAndIncrement(), NewDiscount);
+        int id = productIDGenerator.getAndIncrement();
+        Discount NewDiscount = new DiscountCondition(discount, condition, id);
+        discounts.put(id, NewDiscount);
         discounts.remove(discountId);
-        discounts.remove(conditionId);
+        policies.remove(conditionId);
         return new Response<>(true, "Discount created successfully");
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String category, Integer productID, Integer minAmount, Integer maxAmount, Double price) {
-if (isStoreOwner(username) || isStoreManager(username)) {
+    public Response<String> addSimplePolicyToStore(String username, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
+        if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if ((productID == null || isProductExist(String.valueOf(productID)).isSuccess()) &&  (price == null && price <= 0) && (category == null || isCategoryExist(category).isSuccess())) {
+        if ((productID == null && category == null && price == null) || (productID != null && !isProductExist(String.valueOf(productID)).isSuccess())){
             return new Response<>(false, "productID,price and category can't be null");
         }
-        if ((minAmount == null || minAmount < 0)&& (maxAmount == null || maxAmount < 0)) {
+        if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
             return new Response<>(false, "minAmount can't be null");
         }
         int id = productIDGenerator.getAndIncrement();
-        policies.put(id, new SimpleCondition(id,productID, category, minAmount, maxAmount, price));
+        policies.put(id, new SimpleCondition(id,productID, category, amount, minAmount, maxAmount, price));
         return new Response<>(true, "Condition created successfully");
     }
 
@@ -732,6 +782,65 @@ if (isStoreOwner(username) || isStoreManager(username)) {
             return permissionCheck;
         }
         return inventory.removeProductFromCategory(productId, category);
+    }
+
+    public Response<String> makeComplexPolicy(String username, int policyId1, int policyId2, String conditionType) {
+        if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (!policies.containsKey(policyId1) || !policies.containsKey(policyId2)) {
+            return new Response<>(false, "Discounts does not exist in store");
+        }
+        Condition policy1 = policies.get(policyId1);
+        Condition policy2 = policies.get(policyId2);
+        Condition NewPolicy = null;
+        ConditionType type = ConditionType.valueOf(conditionType);
+        int id = productIDGenerator.getAndIncrement();
+        if (type.equals(ConditionType.AND)) {
+            NewPolicy = new AndCondition(policy1, policy2, id);
+        }
+        if (type.equals(ConditionType.OR)) {
+            NewPolicy = new OrCondition(policy1, policy2, id);
+        }
+        if (type.equals(ConditionType.XOR)) {
+            NewPolicy = new XorCondition(policy1, policy2, id);
+        }
+        policies.put(id, NewPolicy);
+        policies.remove(policyId1);
+        policies.remove(policyId2);
+        return new Response<>(true, "Discount created successfully");
+    }
+
+
+    public Response<String> makeConditionPolicy(String username, int policyId, int conditionId) {
+        if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
+            return new Response<>(false, "Only store owners and managers can create discounts");
+        }
+        if (!policies.containsKey(policyId)) {
+            return new Response<>(false, "Discount does not exist in store");
+        }
+
+        if (!policies.containsKey(conditionId)) {
+            return new Response<>(false, "Condition does not exist in store");
+        }
+        Condition condition = policies.get(conditionId);
+        Condition policy = policies.get(policyId);
+        int Id = productIDGenerator.getAndIncrement();
+        Condition NewPolicy = new PolicyCondition(policy, condition, Id);
+        policies.put(Id, NewPolicy);
+        policies.remove(policyId);
+        policies.remove(conditionId);
+        return Response.success("Discount created successfully", String.valueOf(Id));
+    }
+
+    public Response<String> removePolicy(String username, String policyId) {
+        if (policies.containsKey(Integer.parseInt(policyId))) {
+            policies.remove(Integer.parseInt(policyId));
+            SystemLogger.info("[SUCCESS] Policy removed successfully");
+            return new Response<>(true, "Discount removed successfully");
+        }
+        SystemLogger.error("[ERROR] Failed to remove discount");
+        return new Response<>(false, "Failed to remove discount");
     }
 }
 

@@ -1,5 +1,6 @@
 package Domain.Store.Discounts;
 
+import Domain.Store.Conditions.Condition;
 import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
@@ -56,7 +57,22 @@ public class SimpleDiscount implements Discount{
     }
     @Override
     public String getCategory() {
-        return String.valueOf(category);
+        return category;
+    }
+
+    @Override
+    public Discount getDiscount1() {
+        return null;
+    }
+
+    @Override
+    public Discount getDiscount2() {
+        return null;
+    }
+
+    @Override
+    public Condition getCondition() {
+        return null;
     }
 
 }

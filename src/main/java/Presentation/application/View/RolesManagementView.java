@@ -1,6 +1,8 @@
 package Presentation.application.View;
 
 import Presentation.application.Presenter.RolesManagementPresenter;
+import Presentation.application.View.Store.StoreManagementView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -14,10 +16,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 
 import java.util.Collection;
 import java.util.Map;
@@ -107,6 +106,13 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             waiveOwnershipButton.addClassName("waive-button");  // Adding class for custom styling
             buttonLayout.add(waiveOwnershipButton);
         }
+        // Back to Store Management button
+        Button backButton = new Button("Back to Store Management", event -> {
+            RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+            UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+        });
+        backButton.addClassName("back-button");  // Adding class for custom styling
+        buttonLayout.add(backButton);
 
         return buttonLayout;
     }
