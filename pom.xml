@@ -116,6 +116,20 @@
             <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+           <!-- Replace with your Spring Boot version -->
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <!-- Replace with your JUnit Jupiter version -->
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

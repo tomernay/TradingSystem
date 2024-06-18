@@ -7,6 +7,9 @@ import Presentation.application.Presenter.MainLayoutPresenter;
 import Presentation.application.View.Store.StoreManagementView;
 import Presentation.application.View.Store.StorePageView;
 import Presentation.application.View.UtilitiesView.RealTimeNotifications;
+
+
+import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import com.vaadin.flow.component.AttachEvent;
@@ -23,6 +26,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -35,8 +39,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
@@ -89,7 +95,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addMessageButton();
         UI currentUI = UI.getCurrent();
         navigateToStorePage();
-        RealTimeNotifications.start(currentUI,sub);
+      //  RealTimeNotifications.start(currentUI,sub);
     }
 
     private void navigateToStorePage() {
@@ -343,11 +349,42 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //        addToNavbar(categoriesLayout);
     }
 
-
-    private void addMessageButton() {
+  WSClient webSocketClient;
+    private void addMessageButton()  {
         Button addMessageButton = new Button("Add Message");
-        addMessageButton.addClickListener(e -> sub.add(new NormalMessage("New message!")));
+        UI ui= UI.getCurrent();
+        String user=CookiesHandler.getUsernameFromCookies(getRequest());
         // Add to the main content area
+        try {
+
+            webSocketClient = new WSClient(ui,user);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Notification.show("Error initializing WebSocket client");
+        }
+
+        // Set up button click listener to send a message
+        addMessageButton.addClickListener(e -> {
+
+            try {
+                webSocketClient.sendMessage("user:message");
+                webSocketClient.sendMessage(user+":message2");
+            } catch (InterruptedException | ExecutionException ex) {
+                ex.printStackTrace();
+                Notification.show("Error sending WebSocket message");
+            }
+        });
+
+        // Listen for WebSocket messages and update the UI
+        webSocketClient.setOnMessageListener(message -> {
+            String[] m=message.split(":");
+
+            if(m[0].equals(user)) {
+                ui.access(() -> Notification.show("New message: " + message));
+            }
+        });
+
+
 
 
 
