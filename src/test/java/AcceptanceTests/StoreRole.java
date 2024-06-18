@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Set;
 
 public class StoreRole {
     ServiceInitializer serviceInitializer;
@@ -290,7 +291,7 @@ public class StoreRole {
         Assert.assertTrue(response1.isSuccess());
 
         // New owner waives their role
-        Response<String> waiveResponse = userService.waiveOwnership(store.getId(), subscriber2.getUsername(), subscriber2.getToken());
+        Response<Set<String>> waiveResponse = userService.waiveOwnership(store.getId(), subscriber2.getUsername(), subscriber2.getToken());
         Assert.assertTrue(waiveResponse.isSuccess());
     }
 
