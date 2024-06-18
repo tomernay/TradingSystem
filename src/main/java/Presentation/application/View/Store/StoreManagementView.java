@@ -10,6 +10,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 
@@ -43,6 +44,8 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         Button confirmButton = new Button("Yes", e -> {
             presenter.reopenStore(storeId);
             confirmationDialog.close();
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+            showSuccess("Store re-opened successfully");
         });
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
@@ -63,6 +66,8 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         Button confirmButton = new Button("Yes", e -> {
             presenter.closeStore(storeId);
             confirmationDialog.close();
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+            showSuccess("Store closed successfully");
         });
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
@@ -110,13 +115,25 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             buttonLayout.add(rolesManagementButton);
         }
         if (presenter.isCreator(storeId)) {
-            Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());
-            buttonLayout.add(storeClosingButton);
-            Button storeReopeningButton = new Button("Reopen Store", e -> navigateToStoreReopening());
-            buttonLayout.add(storeReopeningButton);
+            if (presenter.isActiveStore(storeId)) {
+                Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());
+                buttonLayout.add(storeClosingButton);
+            }
+            else {
+                Button storeReopeningButton = new Button("Reopen Store", e -> navigateToStoreReopening());
+                buttonLayout.add(storeReopeningButton);
+            }
         }
         buttonLayout.setSpacing(true);
 
         add(buttonLayout, content);
+    }
+
+    public void showError(String message) {
+        Notification.show(message, 3000, Notification.Position.MIDDLE);
+    }
+
+    public void showSuccess(String message) {
+        Notification.show(message, 3000, Notification.Position.MIDDLE);
     }
 }

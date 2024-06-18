@@ -42,10 +42,10 @@ public class InventoryGETproductAtrributesTest {
 
         userService.register("mor", "MorPass123!");
         userService.loginAsSubscriber("mor", "MorPass123!");
-        userService.SendManagerNominationRequest(store.getId(), "itay", "mor", List.of("ADD_PRODUCT", "REMOVE_PRODUCT", "REMOVE_CATEGORY", "EDIT_PRODUCT"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), "itay", "mor", List.of("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.managerNominationResponse("mor", true, subscriber2.getToken());
-        userService.SendManagerNominationRequest(store2.getId(), "itay", "mor", List.of("ADD_PRODUCT", "REMOVE_PRODUCT", "REMOVE_CATEGORY", "EDIT_PRODUCT"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store2.getId(), "itay", "mor", List.of("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse("mor", true, subscriber2.getToken());
 
         storeService.addProductToStore(store.getId(), "product1", "product1Dec", 10, 30, "mor", subscriber2.getToken());

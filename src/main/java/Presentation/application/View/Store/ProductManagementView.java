@@ -202,7 +202,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
         headerLayout.add(backButton);
-        if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS")) {
+        if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS") && presenter.isActiveStore(storeId)) {
             addProductButton = new Button("+ Add Product", event1 -> showAddProductDialog());
             addProductButton.addClassName("add-product-button");
             headerLayout.add(addProductButton);
@@ -216,7 +216,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             ArrayList<String> categories = product.getCategories();
             return categories != null ? String.join(", ", categories) : "";
         }).setHeader("Categories");
-        if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS")) {
+        if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS") && presenter.isActiveStore(storeId)) {
             productGrid.addComponentColumn(product -> {
                 Button removeButton = new Button("Remove", event1 -> {
                     presenter.removeProduct(product.getProductID());

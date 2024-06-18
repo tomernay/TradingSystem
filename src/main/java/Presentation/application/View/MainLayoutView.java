@@ -6,7 +6,6 @@ import Presentation.application.Presenter.MainLayoutPresenter;
 
 import Presentation.application.View.Store.StoreManagementView;
 import Presentation.application.View.Store.StorePageView;
-import Presentation.application.View.UtilitiesView.RealTimeNotifications;
 
 
 import Presentation.application.View.UtilitiesView.WSClient;
@@ -217,18 +216,29 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         List<String> stores = getUsersStores(presenter.getUserName());
 
+        VerticalLayout activeStoresLayout = new VerticalLayout();
+        activeStoresLayout.add(new H3("Active Stores:"));
+
+        VerticalLayout deactivatedStoresLayout = new VerticalLayout();
+        deactivatedStoresLayout.add(new H3("Deactivated Stores:"));
+
         for (String store : stores) {
+            final String storeId = getStoreIdByName(store);  // Get the store ID once per iteration
+
             Button storeButton = new Button(store, e -> {
-                String storeId = getStoreIdByName(store);
                 RouteParameters routeParameters = new RouteParameters("storeId", storeId);
                 UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
                 dialog.close();
             });
-            dialogLayout.add(storeButton);
+
+            if (isStoreActive(storeId)) {
+                activeStoresLayout.add(storeButton);
+            } else {
+                deactivatedStoresLayout.add(storeButton);
+            }
         }
 
         Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
-        dialogLayout.add(openNewStore);
         openNewStore.getElement().getStyle().set("color", "black");
         openNewStore.getElement().getStyle().set("position", "absolute");
         openNewStore.getElement().getStyle().set("bottom", "0");
@@ -236,9 +246,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         openNewStore.getElement().getStyle().set("right", "0");
 
         Button closeDialogButton = addCloseButton(dialog);
-        dialogLayout.add(closeDialogButton);
+
+        dialogLayout.add(activeStoresLayout, deactivatedStoresLayout, openNewStore, closeDialogButton);
         dialog.add(dialogLayout);
         dialog.open();
+    }
+
+    // Assume these methods are part of your presenter or some utility class
+    private boolean isStoreActive(String storeName) {
+        // Implement logic to determine if the store is active
+        return presenter.isStoreActive(storeName);
+    }
+
+    private boolean isStoreDeactivated(String storeName) {
+        // Implement logic to determine if the store is deactivated
+        return !presenter.isStoreActive(storeName);
     }
 
     private String getStoreIdByName(String storeName) {
@@ -928,7 +950,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //make the button round
         closeButton.addClassName("close-button");
         closeButton.addClickListener(e -> dialog.close());
-        closeButton.addClassName("close-button");
         closeButton.getElement().getStyle().set("position", "absolute");
         closeButton.getElement().getStyle().set("top", "0");
         closeButton.getElement().getStyle().set("right", "0");

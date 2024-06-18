@@ -65,7 +65,7 @@ public class StoreManagementPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         if (Objects.equals(type, "Simple")) {
-            Response<String> res = storeService.CreatDiscountSimple(username, token, productId, storeId, category, String.valueOf(discountPercent));
+            Response<String> res = storeService.CreateDiscountSimple(username, token, productId, storeId, category, String.valueOf(discountPercent));
         }
         else if (Objects.equals(type, "Complex")) {
             Response<String> res =  storeService.makeComplexDiscount(username, token, storeId, Integer.parseInt(discount1.getID()), Integer.parseInt(discount2.getID()), discountType);
@@ -166,5 +166,11 @@ public class StoreManagementPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         storeService.reopenStore(storeId, username, token);
+    }
+
+    public boolean isActiveStore(String storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.isStoreActive(storeId, username, token);
     }
 }
