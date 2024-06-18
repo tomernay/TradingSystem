@@ -102,7 +102,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             buttonLayout.add(addButton);
         }
         if (presenter.hasRole(storeId, "Owner")) {
-            Button waiveOwnershipButton = new Button("Waive Ownership", e -> presenter.waiveOwnership(storeId));
+            Button waiveOwnershipButton = new Button("Waive Ownership", e -> navigateToOwnershipWaiving());
             waiveOwnershipButton.addClassName("waive-button");  // Adding class for custom styling
             buttonLayout.add(waiveOwnershipButton);
         }
@@ -117,12 +117,37 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         return buttonLayout;
     }
 
+    private void navigateToOwnershipWaiving() {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add("Are you sure you want to waive your ownership?");
+
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.waiveOwnership(storeId);
+            confirmationDialog.close();
+            showSuccess("Ownership waived successfully");
+            UI.getCurrent().navigate("");
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+        });
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+
+        dialogLayout.add(confirmButton, cancelButton);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
     private void handleGridItemClick(Map.Entry<String, String> item) {
         String role = item.getValue();
         String username = item.getKey();
 
-        if ("MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "EDIT_PERMISSIONS")))) {
+        if ("MANAGER".equals(role) && ((presenter.hasRole(storeId, "Owner") && presenter.isNominatorOf(storeId, username)) || presenter.hasRole(storeId, "Creator"))) {
             showPermissionManagementDialog(username);
+        }
+        if ("MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") && !presenter.isNominatorOf(storeId, username))) {
+            showError("You're not the nominator of this manager");
         }
 
         if ("SUBSCRIBER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "REMOVE_STORE_SUBSCRIPTION")))) {

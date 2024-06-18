@@ -12,9 +12,7 @@ import Presentation.application.View.UtilitiesView.RealTimeNotifications;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -47,7 +45,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 import Domain.Store.Inventory.ProductDTO;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
@@ -972,7 +969,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
     private String getCurrentPageTitle() {
-        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
+        Component content = getContent();
+        if (content == null) {
+            return "";
+        }
+        PageTitle title = content.getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
 

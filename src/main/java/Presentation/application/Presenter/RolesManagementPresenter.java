@@ -135,4 +135,9 @@ public class RolesManagementPresenter {
             view.showError(response.getMessage());
         }
     }
+
+    public boolean isNominatorOf(String storeId, String manager) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.isNominatorOf(storeId, username, manager);
+    }
 }

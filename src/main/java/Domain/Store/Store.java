@@ -307,7 +307,7 @@ public class Store {
 
 
     public Response<String> setProductQuantity(int productID, int newQuantity, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the quantity of product: " + productID + " to: " + newQuantity + " but he doesn't have the permission");
             return permissionCheck;
@@ -318,7 +318,7 @@ public class Store {
 
 
     public Response<String> addProductQuantity(int productID, int amountToAdd, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add " + amountToAdd + " to the quantity of product: " + productID + " but he doesn't have the permission");
             return permissionCheck;
@@ -337,7 +337,7 @@ public class Store {
     }
 
     public Response<String> setProductName(int productID, String newName, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the name of product: " + productID + " to: " + newName + " but he doesn't have the permission");
             return permissionCheck;
@@ -355,7 +355,7 @@ public class Store {
     }
 
     public Response<String> setProductPrice(int productID, double newPrice, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the price of product: " + productID + " to: " + newPrice + " but he doesn't have the permission");
             return permissionCheck;
@@ -373,7 +373,7 @@ public class Store {
     }
 
     public Response<String> setProductDescription(int productID, String newDescription, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the description of product: " + productID + " to: " + newDescription + " but he doesn't have the permission");
             return permissionCheck;
@@ -404,7 +404,7 @@ public class Store {
     }
 
     public Response<String> assignProductToCategory(int productID, String category, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to assign the product: " + productID + " to the category: " + category + " but he doesn't have the permission");
             return permissionCheck;
@@ -413,7 +413,7 @@ public class Store {
     }
 
     public Response<String> removeCategoryFromStore(String category, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.REMOVE_CATEGORY);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to remove the category: " + category + " from the store but he doesn't have the permission");
             return permissionCheck;
@@ -441,16 +441,11 @@ public class Store {
     }
 
     public Response<String> getStoreIDbyName(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the store ID but he doesn't have the permission");
-            return permissionCheck;
-        }
         return Response.success("The store ID is: " + storeID, storeID);
     }
 
     public synchronized Response<String> addProductToStore(String name, String desc, double price, int quantity, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.ADD_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
             return permissionCheck;
@@ -459,7 +454,7 @@ public class Store {
     }
 
     public Response<String> addProductToStore(String name, String desc, double price, int quantity, ArrayList<String> categories, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.ADD_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
             return permissionCheck;
@@ -468,7 +463,7 @@ public class Store {
     }
 
     public synchronized Response<String> removeProductFromStore(int productID, String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.REMOVE_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to remove the product: " + productID + " from the store but he doesn't have the permission");
             return permissionCheck;
@@ -486,29 +481,14 @@ public class Store {
     }
 
     public Response<String> getStoreIDByName(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the store ID but he doesn't have the permission");
-            return permissionCheck;
-        }
         return Response.success("The store ID is: " + storeID, storeID);
     }
 
     public Response<StoreDTO> getStoreByID(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the store by ID but he doesn't have the permission");
-            return Response.error(permissionCheck.getMessage(), null);
-        }
         return Response.success("The store ID is: " + storeID, new StoreDTO(storeID, storeName));
     }
 
     public Response<String> getStoreNameByID(String userName) {
-        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_STORE_DETAILS);
-        if (!permissionCheck.isSuccess()) {
-            SystemLogger.error("[ERROR] " + userName + " tried to get the store name by ID but he doesn't have the permission");
-            return permissionCheck;
-        }
         return Response.success("The store name is: " + storeName, storeName);
     }
 
@@ -526,8 +506,13 @@ public class Store {
         if (isStoreOwner(username) || isStoreCreator(username)) {
             return true;
         }
-        if (isStoreManager(username)) {
-            return managerPermissions.get(username).contains(Permissions.valueOf(permission));
+        try {
+            if (isStoreManager(username)) {
+                return managerPermissions.get(username).contains(Permissions.valueOf(permission));
+            }
+        }
+        catch (IllegalArgumentException e) {
+            return false;
         }
         return false;
     }
@@ -776,7 +761,7 @@ public class Store {
     }
 
     public Response<String> removeProductFromCategory(int productId, String category, String username) {
-        Response<String> permissionCheck = checkUserPermission(username, Permissions.EDIT_PRODUCT);
+        Response<String> permissionCheck = checkUserPermission(username, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + username + " tried to assign the product: " + productId + " to the category: " + category + " but he doesn't have the permission");
             return permissionCheck;
@@ -841,6 +826,10 @@ public class Store {
         }
         SystemLogger.error("[ERROR] Failed to remove discount");
         return new Response<>(false, "Failed to remove discount");
+    }
+
+    public boolean isNominatorOf(String username, String manager) {
+        return nominationGraph.containsKey(username) && nominationGraph.get(username).contains(manager);
     }
 }
 

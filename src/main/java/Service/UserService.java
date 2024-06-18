@@ -588,6 +588,16 @@ public class UserService {
     }
 
     /**
+     * This method sends a reopen store notification to the store subscribers & personnel.
+     * @param subscriberNames The usernames of the subscribers.
+     * @param storeID The store ID of the store.
+     * @return If successful, returns a success message. <br> If not, returns an error message.
+     */
+    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeID) {
+        return userFacade.sendReopenStoreNotification(subscriberNames, storeID);
+    }
+
+    /**
      * get all messages for a user
      * @param username the user to get the messages for
      * @return If successful, returns a success message & the messages. <br> If not, returns an error message.

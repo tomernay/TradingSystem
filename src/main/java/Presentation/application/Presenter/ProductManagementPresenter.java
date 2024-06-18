@@ -112,4 +112,9 @@ public class ProductManagementPresenter {
             view.showError(res.getMessage()); // Show error message
         }
     }
+
+    public boolean hasPermission(String storeId, String permission) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.hasPermission(storeId, username, permission);
+    }
 }

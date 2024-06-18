@@ -975,5 +975,26 @@ public class StoreService {
         SystemLogger.error("[ERROR] User: " + username + " tried to remove policy: " + policyId + " from store: " + storeId + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
+
+    public boolean isNominatorOf(String storeId, String username, String manager) {
+        return storeFacade.isNominatorOf(storeId, username, manager);
+    }
+
+    public Response<String> reopenStore(String storeId, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to reopen store: " + storeId);
+        if (userService.isValidToken(token, username)) {
+            if (adminService.isSuspended(username)) {
+                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+                return Response.error("You're suspended", null);
+            }
+            Response<List<String>> storeReopenResponse = storeFacade.reopenStore(storeId, username);
+            if (!storeReopenResponse.isSuccess()) {
+                return Response.error(storeReopenResponse.getMessage(), null);
+            }
+            return userService.sendReopenStoreNotification(storeReopenResponse.getData(), storeId);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to reopen store: " + storeId + " but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
 }
 

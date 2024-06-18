@@ -28,21 +28,48 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
     public StoreManagementView(StoreManagementPresenter presenter) {
         content = new Div();
         content.setSizeFull();
-        addClassName("store-management-view");
-
         this.presenter = presenter;
         presenter.attachView(this);
+        addClassName("store-management-view");
+    }
 
-        Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
-        Button createDiscountButton = new Button("Discounts / Policies", e -> openCreateDiscountDialog());
-        Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
+    private void navigateToStoreReopening() {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setWidth("400px");
 
-        VerticalLayout buttonLayout = new VerticalLayout(
-                productManagementButton, createDiscountButton, rolesManagementButton
-        );
-        buttonLayout.setSpacing(true);
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add("Are you sure you want to re-open this store?");
 
-        add(buttonLayout, content);
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.reopenStore(storeId);
+            confirmationDialog.close();
+        });
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+
+        dialogLayout.add(confirmButton, cancelButton);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
+
+    private void navigateToStoreClosing() {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add("Are you sure you want to close this store?");
+
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.closeStore(storeId);
+            confirmationDialog.close();
+        });
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+
+        dialogLayout.add(confirmButton, cancelButton);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
     }
 
     private void navigateToRolesManagement() {
@@ -69,5 +96,27 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         storeId = event.getRouteParameters().get("storeId").orElse("");
+        VerticalLayout buttonLayout = new VerticalLayout();
+        if (presenter.hasPermission(storeId, "VIEW_PRODUCTS")) {
+            Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
+            buttonLayout.add(productManagementButton);
+        }
+        if (presenter.hasPermission(storeId,"VIEW_DISCOUNTS_POLICIES")) {
+            Button createDiscountButton = new Button("Discounts / Policies", e -> openCreateDiscountDialog());
+            buttonLayout.add(createDiscountButton);
+        }
+        if (presenter.hasPermission(storeId,"VIEW_STORE_STAFF_INFO")) {
+            Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
+            buttonLayout.add(rolesManagementButton);
+        }
+        if (presenter.isCreator(storeId)) {
+            Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());
+            buttonLayout.add(storeClosingButton);
+            Button storeReopeningButton = new Button("Reopen Store", e -> navigateToStoreReopening());
+            buttonLayout.add(storeReopeningButton);
+        }
+        buttonLayout.setSpacing(true);
+
+        add(buttonLayout, content);
     }
 }

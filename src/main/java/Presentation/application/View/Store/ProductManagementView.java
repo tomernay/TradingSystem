@@ -29,9 +29,9 @@ import java.util.Set;
 public class ProductManagementView extends VerticalLayout implements BeforeEnterObserver {
 
     private final ProductManagementPresenter presenter;
-    private final Grid<ProductDTO> productGrid;
-    private final Button addProductButton;
-    private final Button backButton;
+    private Grid<ProductDTO> productGrid;
+    private Button addProductButton;
+    private Button backButton;
     private String storeId;
 
     public ProductManagementView(ProductManagementPresenter presenter) {
@@ -45,41 +45,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         setPadding(false);
         setSpacing(false);
 
-        // Creating the header layout with back button and add product button
-        HorizontalLayout headerLayout = new HorizontalLayout();
-        headerLayout.setWidthFull();
-        headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        headerLayout.setAlignItems(Alignment.CENTER);
-        headerLayout.setPadding(true);
 
-        backButton = new Button("Back to Store Management", event -> {
-            RouteParameters routeParameters = new RouteParameters("storeId", storeId);
-            UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
-        });
-
-        addProductButton = new Button("+ Add Product", event -> showAddProductDialog());
-        addProductButton.addClassName("add-product-button");
-
-        headerLayout.add(backButton, addProductButton);
-
-        // Setting up the product grid
-        productGrid = new Grid<>(ProductDTO.class);
-        productGrid.setSizeFull();
-        productGrid.setColumns("name", "description", "price", "quantity");
-        productGrid.addColumn(product -> {
-            ArrayList<String> categories = product.getCategories();
-            return categories != null ? String.join(", ", categories) : "";
-        }).setHeader("Categories");
-        productGrid.addComponentColumn(product -> {
-            Button removeButton = new Button("Remove", event -> {
-                presenter.removeProduct(product.getProductID());
-            });
-            return removeButton;
-        }).setHeader("Actions");
-        productGrid.addItemClickListener(event -> showEditProductDialog(event.getItem()));
-
-        add(headerLayout, productGrid);
-        expand(productGrid); // Allow the grid to expand and take available space
     }
 
     public void setProducts(List<ProductDTO> products) {
@@ -224,6 +190,44 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         storeId = event.getRouteParameters().get("storeId").orElse("");
+        // Creating the header layout with back button and add product button
+        HorizontalLayout headerLayout = new HorizontalLayout();
+        headerLayout.setWidthFull();
+        headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        headerLayout.setAlignItems(Alignment.CENTER);
+        headerLayout.setPadding(true);
+
+        backButton = new Button("Back to Store Management", event1 -> {
+            RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+            UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+        });
+        headerLayout.add(backButton);
+        if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS")) {
+            addProductButton = new Button("+ Add Product", event1 -> showAddProductDialog());
+            addProductButton.addClassName("add-product-button");
+            headerLayout.add(addProductButton);
+        }
+
+        // Setting up the product grid
+        productGrid = new Grid<>(ProductDTO.class);
+        productGrid.setSizeFull();
+        productGrid.setColumns("name", "description", "price", "quantity");
+        productGrid.addColumn(product -> {
+            ArrayList<String> categories = product.getCategories();
+            return categories != null ? String.join(", ", categories) : "";
+        }).setHeader("Categories");
+        if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS")) {
+            productGrid.addComponentColumn(product -> {
+                Button removeButton = new Button("Remove", event1 -> {
+                    presenter.removeProduct(product.getProductID());
+                });
+                return removeButton;
+            }).setHeader("Actions");
+            productGrid.addItemClickListener(event1 -> showEditProductDialog(event1.getItem()));
+        }
+
+        add(headerLayout, productGrid);
+        expand(productGrid); // Allow the grid to expand and take available space
         presenter.loadProducts(storeId);
     }
 

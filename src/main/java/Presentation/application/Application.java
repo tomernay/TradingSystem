@@ -36,7 +36,7 @@ public class Application implements AppShellConfigurator {
     static ServiceInitializer serviceInitializer;
     static StoreService storeService;
     static UserService userService;
-    static Subscriber subscriber, notOwner;
+    static Subscriber subscriber, owner, manager;
     static Store store, store2;
     public static void init(){
         ServiceInitializer.reset();
@@ -47,16 +47,21 @@ public class Application implements AppShellConfigurator {
        String token=resLogin.getData();
         subscriber=userService.getUserFacade().getUserRepository().getUser("miaa");
         storeService = serviceInitializer.getStoreService();
-        userService.register("notOwner","Password123!");
-        userService.loginAsSubscriber("notOwner","Password123!");
-        notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
+        userService.register("manager","Password123!");
+        userService.loginAsSubscriber("manager","Password123!");
+        userService.register("owner","Password123!");
+        userService.loginAsSubscriber("owner","Password123!");
+        owner=userService.getUserFacade().getUserRepository().getUser("owner");
+        manager = userService.getUserFacade().getUserRepository().getUser("manager");
         storeService.addStore("newStore", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore("0");
         storeService.addStore("newStore2", "miaa",subscriber.getToken());
         store2 = storeService.getStoreFacade().getStoreRepository().getStore("0");
         storeService.addProductToStore("0","yair","d",20,30,"miaa",subscriber.getToken());
-        userService.SendManagerNominationRequest("0", "miaa", "notOwner", List.of("ADD_PRODUCT"), token);
-        userService.managerNominationResponse("notOwner", true, notOwner.getToken());
+        userService.SendManagerNominationRequest("0", "miaa", "manager", List.of("VIEW_PRODUCTS","MANAGE_PRODUCTS", "VIEW_DISCOUNTS_POLICIES"), token);
+        userService.managerNominationResponse("manager", true, manager.getToken());
+        userService.SendOwnerNominationRequest("0", "miaa", "owner", token);
+        userService.ownerNominationResponse("owner", true, owner.getToken());
         System.out.println(store.getInventory().productsList);
         ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa","Address",new HashMap<>());
         System.out.println( ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory("0").getData());
