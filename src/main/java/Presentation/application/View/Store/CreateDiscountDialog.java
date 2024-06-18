@@ -41,28 +41,30 @@ public class CreateDiscountDialog extends Dialog {
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
+        if (presenter.hasPermission(storeId, "MANAGE_DISCOUNTS_POLICIES")) {
+            // Create and style buttons
+            Button simpleDiscountButton = new Button("Create Simple Discount", e -> openSimpleDiscountForm());
+            Button simplePolicyButton = new Button("Create Simple Policy", e -> openSimplePolicyForm());
+            Button removeDiscountButton = new Button("Remove Discount", e -> openRemoveDiscountDialog());
+            Button removePolicyButton = new Button("Remove Policy", e -> openRemovePolicyDialog());
 
-        // Create and style buttons
-        Button simpleDiscountButton = new Button("Create Simple Discount", e -> openSimpleDiscountForm());
-        Button simplePolicyButton = new Button("Create Simple Policy", e -> openSimplePolicyForm());
-        Button removeDiscountButton = new Button("Remove Discount", e -> openRemoveDiscountDialog());
-        Button removePolicyButton = new Button("Remove Policy", e -> openRemovePolicyDialog());
+            VerticalLayout createButtonsLayout = new VerticalLayout(simpleDiscountButton, simplePolicyButton);
+            VerticalLayout removeButtonsLayout = new VerticalLayout(removeDiscountButton, removePolicyButton);
 
-        VerticalLayout createButtonsLayout = new VerticalLayout(simpleDiscountButton, simplePolicyButton);
-        VerticalLayout removeButtonsLayout = new VerticalLayout(removeDiscountButton, removePolicyButton);
-
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setWidthFull();
-        buttonLayout.setSpacing(true);
-        buttonLayout.add(createButtonsLayout, removeButtonsLayout);
-        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+            HorizontalLayout buttonLayout = new HorizontalLayout();
+            buttonLayout.setWidthFull();
+            buttonLayout.setSpacing(true);
+            buttonLayout.add(createButtonsLayout, removeButtonsLayout);
+            buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+            layout.add(buttonLayout);
+        }
 
         // Titles
         H3 policiesTitle = new H3("Policies:");
         H3 discountsTitle = new H3("Discounts:");
 
         // Add layouts to main layout
-        layout.add(buttonLayout, policiesTitle, policyCanvas, discountsTitle, discountCanvas);
+        layout.add(policiesTitle, policyCanvas, discountsTitle, discountCanvas);
         discountCanvas.setSizeFull();
         discountCanvas.getStyle().set("border", "1px solid black");
         discountCanvas.getStyle().set("overflow", "auto"); // Make canvas scrollable
@@ -315,46 +317,50 @@ public class CreateDiscountDialog extends Dialog {
     }
 
     private void addDiscountBoxToCanvas(DiscountBox discountBox) {
-        DragSource<DiscountBox> dragSource = DragSource.create(discountBox);
-        dragSource.setDraggable(true);
+        if (presenter.hasPermission(storeId, "MANAGE_DISCOUNTS_POLICIES")) {
+            DragSource<DiscountBox> dragSource = DragSource.create(discountBox);
+            dragSource.setDraggable(true);
 
-        DropTarget<DiscountBox> dropTarget = DropTarget.create(discountBox);
-        dropTarget.setDropEffect(DropEffect.MOVE);
-        dropTarget.addDropListener(event -> {
-            if (event.getDragSourceComponent().isPresent()) {
-                Component sourceComponent = event.getDragSourceComponent().get();
-                if (sourceComponent instanceof PolicyBox) {
-                    PolicyBox source = (PolicyBox) sourceComponent;
-                    showPolicyToDiscountConnectionTypeDialog(source, discountBox);
-                } else if (sourceComponent instanceof DiscountBox) {
-                    DiscountBox source = (DiscountBox) sourceComponent;
-                    showConnectionTypeDialog(source, discountBox);
+            DropTarget<DiscountBox> dropTarget = DropTarget.create(discountBox);
+            dropTarget.setDropEffect(DropEffect.MOVE);
+            dropTarget.addDropListener(event -> {
+                if (event.getDragSourceComponent().isPresent()) {
+                    Component sourceComponent = event.getDragSourceComponent().get();
+                    if (sourceComponent instanceof PolicyBox) {
+                        PolicyBox source = (PolicyBox) sourceComponent;
+                        showPolicyToDiscountConnectionTypeDialog(source, discountBox);
+                    } else if (sourceComponent instanceof DiscountBox) {
+                        DiscountBox source = (DiscountBox) sourceComponent;
+                        showConnectionTypeDialog(source, discountBox);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         discountBoxes.add(discountBox);
         discountCanvas.add(discountBox);
     }
 
     private void addPolicyBoxToCanvas(PolicyBox policyBox) {
-        DragSource<PolicyBox> dragSource = DragSource.create(policyBox);
-        dragSource.setDraggable(true);
+        if (presenter.hasPermission(storeId, "MANAGE_DISCOUNTS_POLICIES")) {
+            DragSource<PolicyBox> dragSource = DragSource.create(policyBox);
+            dragSource.setDraggable(true);
 
-        DropTarget<PolicyBox> dropTarget = DropTarget.create(policyBox);
-        dropTarget.setDropEffect(DropEffect.MOVE);
-        dropTarget.addDropListener(event -> {
-            if (event.getDragSourceComponent().isPresent()) {
-                Component sourceComponent = event.getDragSourceComponent().get();
-                if (sourceComponent instanceof DiscountBox) {
-                    DiscountBox source = (DiscountBox) sourceComponent;
-                    showDiscountToPolicyConnectionTypeDialog(source, policyBox);
-                } else if (sourceComponent instanceof PolicyBox) {
-                    PolicyBox source = (PolicyBox) sourceComponent;
-                    showPolicyConnectionTypeDialog(source, policyBox);
+            DropTarget<PolicyBox> dropTarget = DropTarget.create(policyBox);
+            dropTarget.setDropEffect(DropEffect.MOVE);
+            dropTarget.addDropListener(event -> {
+                if (event.getDragSourceComponent().isPresent()) {
+                    Component sourceComponent = event.getDragSourceComponent().get();
+                    if (sourceComponent instanceof DiscountBox) {
+                        DiscountBox source = (DiscountBox) sourceComponent;
+                        showDiscountToPolicyConnectionTypeDialog(source, policyBox);
+                    } else if (sourceComponent instanceof PolicyBox) {
+                        PolicyBox source = (PolicyBox) sourceComponent;
+                        showPolicyConnectionTypeDialog(source, policyBox);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         policyBoxes.add(policyBox);
         policyCanvas.add(policyBox);

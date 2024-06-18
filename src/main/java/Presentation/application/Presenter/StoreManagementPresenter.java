@@ -145,4 +145,26 @@ public class StoreManagementPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.getProductName(Integer.parseInt(productId), storeId, username, token).getData();
     }
+
+    public boolean hasPermission(String storeID, String permission) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.hasPermission(storeID, username, permission);
+    }
+
+    public boolean isCreator(String storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.isStoreCreator(storeId, username);
+    }
+
+    public void closeStore(String storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        storeService.closeStore(storeId, username, token);
+    }
+
+    public void reopenStore(String storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        storeService.reopenStore(storeId, username, token);
+    }
 }

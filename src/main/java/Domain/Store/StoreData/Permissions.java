@@ -7,21 +7,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum Permissions {
-    // Permissions examples for now. Will be updated later.
-    ADD_PRODUCT,
-    REMOVE_PRODUCT,
-    VIEW_STORE_DETAILS,
-    EDIT_PRODUCT,
-    REMOVE_CATEGORY,
-//    VIEW_PRODUCT,
-    ADD_DISCOUNT,
-    REMOVE_DISCOUNT,
-    EDIT_DISCOUNT,
-    EDIT_PERMISSIONS,
-    VIEW_STORE_PURCHASE_HISTORY,
-    VIEW_STORE_DISCOUNTS,
-    VIEW_STORE_MESSAGES,
-    REMOVE_STORE_SUBSCRIPTION;
+    MANAGE_PRODUCTS, //Add + remove + edit products
+    MANAGE_DISCOUNTS_POLICIES, //Add + remove + edit discounts and purchase policies
+    MANAGE_MANAGERS_PERMISSIONS, //Add + remove + edit permissions of managers
+    VIEW_PURCHASE_HISTORY, //View purchase history of store
+    VIEW_DISCOUNTS_POLICIES, //View discounts and purchase policies of store
+    VIEW_PRODUCTS, //View products
+    VIEW_STORE_STAFF_INFO, //View store staff list
+    REMOVE_STORE_SUBSCRIPTION; //Remove store subscription
 
     public static List<Permissions> convertStringList(List<String> permissions) {
         List<Permissions> permissionList = new ArrayList<>();

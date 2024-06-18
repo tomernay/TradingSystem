@@ -122,6 +122,14 @@ public class UserRepository {
         return Response.success("Notification sent successfully", null);
     }
 
+    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeID) {
+        for (String subscriberName : subscriberNames) {
+            subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+        }
+        SystemLogger.info("[SUCCESS] Store " + storeID + " has been reopened. Notifications sent to all related subscribers.");
+        return Response.success("Notification sent successfully", null);
+    }
+
     public Response<String> register(String username, String password) {
         if(!isUsernameValid(username) ) {
             SystemLogger.error("[ERROR] Username does not meet the requirements");

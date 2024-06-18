@@ -39,6 +39,9 @@ public class UserFacade {
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
         return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
     }
+    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeID) {
+        return userRepository.sendReopenStoreNotification(subscriberNames, storeID);
+    }
 
     public Response<String> register(String username, String password) {
         return userRepository.register(username, password);

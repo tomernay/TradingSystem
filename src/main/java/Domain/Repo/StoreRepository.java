@@ -29,14 +29,20 @@ public class StoreRepository {
 
     public boolean isStoreOwner(String storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {
-            return false;
+            if (!deactivatedStores.containsKey(storeID)) {
+                return false;
+            }
+            return deactivatedStores.get(storeID).isStoreOwner(currentUsername);
         }
         return stores.get(storeID).isStoreOwner(currentUsername);
     }
 
     public boolean isStoreManager(String storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {
-            return false;
+            if (!deactivatedStores.containsKey(storeID)) {
+                return false;
+            }
+            return deactivatedStores.get(storeID).isStoreManager(currentUsername);
         }
         return stores.get(storeID).isStoreManager(currentUsername);
     }
@@ -109,7 +115,10 @@ public class StoreRepository {
 
     public boolean isStoreCreator(String storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {
-            return false;
+            if (!deactivatedStores.containsKey(storeID)) {
+                return false;
+            }
+            return deactivatedStores.get(storeID).isStoreCreator(currentUsername);
         }
         return stores.get(storeID).isStoreCreator(currentUsername);
     }
@@ -444,7 +453,10 @@ public class StoreRepository {
 
     public boolean hasPermission(String storeID, String username, String permission) {
         if (!stores.containsKey(storeID)) {
-            return false;
+            if (!deactivatedStores.containsKey(storeID)) {
+                return false;
+            }
+            return deactivatedStores.get(storeID).hasPermission(username, permission);
         }
         return stores.get(storeID).hasPermission(username, permission);
     }
@@ -685,5 +697,33 @@ public class StoreRepository {
 
     public Response<String> removePolicy(String storeId, String username, String policyId) {
         return stores.get(storeId).removePolicy(username, policyId);
+    }
+
+    public boolean isNominatorOf(String storeId, String username, String manager) {
+        if (!stores.containsKey(storeId)) {
+            return false;
+        }
+        return stores.get(storeId).isNominatorOf(username, manager);
+    }
+
+    public Response<List<String>> reopenStore(String storeID, String currentUsername) {
+        if (!deactivatedStores.containsKey(storeID)) {
+            if (!stores.containsKey(storeID)) {
+                return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+            }
+            else{
+                return Response.error("Store with ID: " + storeID + " is already opened", null);
+            }
+        }
+        if (!isStoreCreator(storeID, currentUsername)) { //The subscriber is not the store manager
+            return Response.error("The user trying to do this action is not the store creator.",null);
+        }
+        Store store = deactivatedStores.get(storeID);
+        if (store == null) {
+            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
+        }
+        deactivatedStores.remove(storeID);
+        stores.put(storeID, store);
+        return Response.success("Store with ID: " + storeID + " was reopened successfully", new ArrayList<>(stores.get(storeID).getSubscribers().keySet()));
     }
 }

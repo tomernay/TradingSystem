@@ -287,4 +287,12 @@ public class StoreFacade {
     public Response<String> removePolicy(String storeId, String username, String policyId) {
         return storeRepository.removePolicy(storeId, username, policyId);
     }
+
+    public boolean isNominatorOf(String storeId, String username, String manager) {
+        return storeRepository.isNominatorOf(storeId, username, manager);
+    }
+
+    public Response<List<String>> reopenStore(String storeId, String username) {
+        return storeRepository.reopenStore(storeId, username);
+    }
 }
