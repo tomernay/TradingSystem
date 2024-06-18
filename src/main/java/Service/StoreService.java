@@ -1,7 +1,6 @@
 package Service;
 
 import Domain.Store.Conditions.ConditionDTO;
-import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
@@ -104,7 +103,7 @@ public class StoreService {
             if (!storeCloseResponse.isSuccess()) {
                 return Response.error(storeCloseResponse.getMessage(), null);
             }
-            return userService.sendCloseStoreNotification(storeCloseResponse.getData(), storeID);
+            return userService.sendCloseStoreNotification(storeCloseResponse.getData(), getStoreNameByID(storeID, username, token).getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to close store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
@@ -724,9 +723,6 @@ public class StoreService {
     public Response<String> isProductExist(String storeID, String productID) {
         return storeFacade.isProductExist(storeID, productID);
     }
-    public Response<Map<String, String>> getStoresRoleWithName(Map<String, String> storesRole) {
-        return storeFacade.getStoresRoleWithName(storesRole);
-    }
 
 
     public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category, String UserName ,String token) {
@@ -778,19 +774,16 @@ public class StoreService {
     }
 
     /**
-     * Whole store discount - productID null, category null
-     * Product discount - category null
-     * Category discount - productID null
-     *
-     * @param username
-     * @param token
-     * @param productID
-     * @param storeID
-     * @param category
-     * @param percent
-     * @return
+     * This method adds a simple discount to the store
+     * @param username the username of the user
+     * @param token the token of the user
+     * @param productID the ID of the product
+     * @param storeID the ID of the store
+     * @param category the category
+     * @param percent the percent of the discount
+     * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> CreatDiscountSimple(String username,String token, String productID, String storeID, String category, String percent) {
+    public Response<String> CreateDiscountSimple(String username, String token, String productID, String storeID, String category, String percent) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -880,12 +873,7 @@ public class StoreService {
         return storeFacade.calculateShoppingCartPrice(shoppingCartContents);
     }
     /**
-     * Create 2 simple discounts and make a complex discount from them, with MAX or PLUS type
-     *
-     *
-     *
-     *
-     * This method retrieves the discounts of a store
+     * This method adds a simple discount to the store
      * @param storeID the ID of the store
      * @param username the username of the user
      * @param token the token of the user
@@ -916,19 +904,16 @@ public class StoreService {
     }
 
     /**
-     * 1. The cart must have at least / at most / exactly X products from category C - product null, price null, (min + max null / min null + max / min + max)
-     * 2. The cart must have at least / at most / exactly X products from product P - category null, price null, (min + max null / min null + max / min + max)
-     * 3. The cart must have at least / at most price - product null, category null, (min + max null / min null + max / min + max)
-     *
-     * @param username
-     * @param token
-     * @param storeID
-     * @param category
-     * @param productID
-     * @param minAmount
-     * @param maxAmount
-     * @param price
-     * @return
+     * This method adds a simple purchase policy to the store
+     * @param username the username of the user
+     * @param token the token of the user
+     * @param storeID the ID of the store
+     * @param category the category
+     * @param productID the ID of the product
+     * @param minAmount the minimum amount
+     * @param maxAmount the maximum amount
+     * @param price the price
+     * @return If successful, returns a success message. <br> If not, returns an error message.
      */
     public Response<String> addSimplePolicyToStore(String username, String token, String storeID, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
         SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy for product: " + productID + " in store: " + storeID);
@@ -991,10 +976,14 @@ public class StoreService {
             if (!storeReopenResponse.isSuccess()) {
                 return Response.error(storeReopenResponse.getMessage(), null);
             }
-            return userService.sendReopenStoreNotification(storeReopenResponse.getData(), storeId);
+            return userService.sendReopenStoreNotification(storeReopenResponse.getData(), getStoreNameByID(storeId, username, token).getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to reopen store: " + storeId + " but the token was invalid");
         return Response.error("Invalid token", null);
+    }
+
+    public boolean isStoreActive(String storeID, String username, String token) {
+        return storeFacade.isStoreActive(storeID, username, token);
     }
 }
 

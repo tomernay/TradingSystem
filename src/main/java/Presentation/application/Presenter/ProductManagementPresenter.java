@@ -117,4 +117,10 @@ public class ProductManagementPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         return storeService.hasPermission(storeId, username, permission);
     }
+
+    public boolean isActiveStore(String storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.isStoreActive(storeId, username, token);
+    }
 }

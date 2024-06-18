@@ -140,4 +140,10 @@ public class RolesManagementPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         return storeService.isNominatorOf(storeId, username, manager);
     }
+
+    public boolean isActiveStore(String storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.isStoreActive(storeId, username, token);
+    }
 }

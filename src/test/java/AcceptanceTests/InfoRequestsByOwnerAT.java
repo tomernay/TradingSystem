@@ -47,9 +47,9 @@ public class InfoRequestsByOwnerAT {
         userService.loginAsSubscriber("ziv","Password123!");
         //make ziv manager
         List<String> perms = new ArrayList<>();
-        perms.add("EDIT_PRODUCT");
+        perms.add("MANAGE_PRODUCTS");
 //        perms.add("ADD_MANAGER");
-        perms.add("EDIT_PRODUCT");
+        perms.add("MANAGE_PRODUCTS");
         userService.SendManagerNominationRequest("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
         userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 

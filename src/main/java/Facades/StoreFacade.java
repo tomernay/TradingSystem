@@ -2,7 +2,6 @@ package Facades;
 
 import Domain.Repo.StoreRepository;
 import Domain.Store.Conditions.ConditionDTO;
-import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreDTO;
@@ -173,9 +172,9 @@ public class StoreFacade {
         return storeRepository.viewProductFromStoreByName(storeID, productName, userName);
     }
 
-    public Response<String> getStoreIDByName(String storeName, String userName) {
-        return storeRepository.getStoreIDByName(storeName, userName);
-    }
+//    public Response<String> getStoreIDByName(String storeName, String userName) {
+//        return storeRepository.getStoreIDByName(storeName, userName);
+//    }
 
     public Response<StoreDTO> getStoreByID(String storeID, String userName) {
         return storeRepository.getStoreByID(storeID, userName);
@@ -294,5 +293,9 @@ public class StoreFacade {
 
     public Response<List<String>> reopenStore(String storeId, String username) {
         return storeRepository.reopenStore(storeId, username);
+    }
+
+    public boolean isStoreActive(String storeID, String username, String token) {
+        return storeRepository.isStoreActive(storeID, username, token);
     }
 }

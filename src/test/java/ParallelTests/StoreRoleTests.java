@@ -130,7 +130,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendManagerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), owner.getToken());
+                    Response<String> response = userService.SendManagerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), owner.getToken());
                     if (nominationSucceeded.compareAndSet(false, true)) {
                         Assert.assertTrue(response.isSuccess());
                     } else {
@@ -168,7 +168,7 @@ public class StoreRoleTests {
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
@@ -223,7 +223,7 @@ public class StoreRoleTests {
             userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("ADD_PRODUCT", "REMOVE_PRODUCT", "EDIT_PRODUCT", "ADD_DISCOUNT", "REMOVE_DISCOUNT"), subscriber.getToken());
+        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS"), subscriber.getToken());
         userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads

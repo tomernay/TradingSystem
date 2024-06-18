@@ -210,4 +210,10 @@ public class MainLayoutPresenter {
         }
         return null;
     }
+
+    public boolean isStoreActive(String storeID) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.isStoreActive(storeID, username, token);
+    }
 }

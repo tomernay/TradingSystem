@@ -80,8 +80,7 @@ public class InfoRequestsByOwner {
         userRepository.loginAsSubscriber("ziv","Password123!");
         //make ziv manager
         List<String> perms = new ArrayList<>();
-        perms.add("EDIT_PRODUCT");
-        perms.add("EDIT_PRODUCT");
+        perms.add("MANAGE_PRODUCTS");
 
         //send nomination msg
         serviceInitializer.getUserService().SendManagerNominationRequest(res.getData(), "mia", "ziv", perms, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());

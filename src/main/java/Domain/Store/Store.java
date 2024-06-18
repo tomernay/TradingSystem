@@ -215,23 +215,7 @@ public class Store {
         for (Map.Entry<String, List<Permissions>> entry : this.managerPermissions.entrySet()) {
             managerPermissions.put(entry.getKey(), Permissions.convertPermissionList(entry.getValue()));
         }
-        return Response.success("successfuly fetched the managers permissions of the store", managerPermissions);
-    }
-
-    public Map<String, SubscriberState> getSubscribersMap() {
-        return subscribers;
-    }
-
-    public Map<String, List<Permissions>> getManagersPermissions() {
-        return managerPermissions;
-    }
-
-    public void removeSubscriber(String subscriberUsername) {
-        if (subscribers.containsKey(subscriberUsername)) {
-            SystemLogger.info("[SUCCESS] " + subscriberUsername + " successfully removed from the store: " + storeName);
-            subscribers.remove(subscriberUsername);
-        }
-        SystemLogger.error("[ERROR] tried to remove " + subscriberUsername + " from the store: " + storeName + " but he's not a subscriber of the store");
+        return Response.success("successfully fetched the managers permissions of the store", managerPermissions);
     }
 
     public Response<Set<String>> waiveOwnership(String currentUsername) {
@@ -242,18 +226,14 @@ public class Store {
             while (!queue.isEmpty()) {
                 String current = queue.poll();
                 if (nominationGraph.containsKey(current)) {
-                    for (String nominee : nominationGraph.get(current)) {
-                        queue.add(nominee);
-                    }
+                    queue.addAll(nominationGraph.get(current));
                 }
                 toRemove.add(current);
             }
             // Remove all collected nodes
             for (String subscriber : toRemove) {
                 subscribers.remove(subscriber);
-                if (managerPermissions.containsKey(subscriber)) {
-                    managerPermissions.remove(subscriber);
-                }
+                managerPermissions.remove(subscriber);
                 nominationGraph.remove(subscriber);
                 reverseNominationMap.remove(subscriber);
                 // Remove from any nominator's list
@@ -327,12 +307,7 @@ public class Store {
     }
 
 
-    public Response<String> getProductName(int productID, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get the name of product: " + productID + " but he doesn't have the permission");
-//            return permissionCheck;
-//        }
+    public Response<String> getProductName(int productID) {
         return inventory.getProductName(productID);
     }
 
@@ -345,12 +320,7 @@ public class Store {
         return inventory.setProductName(productID, newName);
     }
 
-    public Response<String> getProductPrice(int productID, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get the price of product: " + productID + " but he doesn't have the permission");
-//            return permissionCheck;
-//        }
+    public Response<String> getProductPrice(int productID) {
         return inventory.getProductPrice(productID);
     }
 
@@ -363,12 +333,7 @@ public class Store {
         return inventory.setProductPrice(productID, newPrice);
     }
 
-    public Response<String> getProductDescription(int productID, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get the description of product: " + productID + " but he doesn't have the permission");
-//            return permissionCheck;
-//        }
+    public Response<String> getProductDescription(int productID) {
         return inventory.getProductDescription(productID);
     }
 
@@ -381,12 +346,7 @@ public class Store {
         return inventory.setProductDescription(productID, newDescription);
     }
 
-    public Response<String> getProductQuantity(int productID, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get the quantity of product: " + productID + " but he doesn't have the permission");
-//            return permissionCheck;
-//        }
+    public Response<String> getProductQuantity(int productID) {
         return inventory.getProductQuantity(productID);
     }
 
@@ -394,12 +354,7 @@ public class Store {
         return inventory.retrieveProductsByCategoryFrom_OneStore(category);
     }
 
-    public Response<String> retrieveProductCategories(int productID, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to retrieve the categories of product: " + productID + " but he doesn't have the permission");
-//            return permissionCheck;
-//        }
+    public Response<String> retrieveProductCategories(int productID) {
         return inventory.retrieveProductCategories(productID);
     }
 
@@ -422,26 +377,12 @@ public class Store {
     }
 
 
-    public Response<ProductDTO> getProductFromStore(int productID, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productID + " but he doesn't have the permission");
-//            return Response.error(permissionCheck.getMessage(), null);
-//        }
+    public Response<ProductDTO> getProductFromStore(int productID) {
         return inventory.getProductFromStore(productID);
     }
 
-    public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get all the products of the store but he doesn't have the permission");
-//            return Response.error(permissionCheck.getMessage(), null);
-//        }
+    public Response<ArrayList<ProductDTO>> getAllProductsFromStore() {
         return inventory.getAllProductsFromStore();
-    }
-
-    public Response<String> getStoreIDbyName(String userName) {
-        return Response.success("The store ID is: " + storeID, storeID);
     }
 
     public synchronized Response<String> addProductToStore(String name, String desc, double price, int quantity, String userName) {
@@ -471,24 +412,15 @@ public class Store {
         return inventory.removeProductFromStore(productID);
     }
 
-    public Response<ProductDTO> viewProductFromStoreByName(String productName, String userName) {
-//        Response<String> permissionCheck = checkUserPermission(userName, Permissions.VIEW_PRODUCT);
-//        if (!permissionCheck.isSuccess()) {
-//            SystemLogger.error("[ERROR] " + userName + " tried to get the product: " + productName + " but he doesn't have the permission");
-//            return Response.error(permissionCheck.getMessage(), null);
-//        }
+    public Response<ProductDTO> viewProductFromStoreByName(String productName) {
         return inventory.getProductByName(productName);
     }
 
-    public Response<String> getStoreIDByName(String userName) {
-        return Response.success("The store ID is: " + storeID, storeID);
-    }
-
-    public Response<StoreDTO> getStoreByID(String userName) {
+    public Response<StoreDTO> getStoreByID() {
         return Response.success("The store ID is: " + storeID, new StoreDTO(storeID, storeName));
     }
 
-    public Response<String> getStoreNameByID(String userName) {
+    public Response<String> getStoreNameByID() {
         return Response.success("The store name is: " + storeName, storeName);
     }
 
@@ -589,10 +521,6 @@ public class Store {
         if (productID != null && !isProductExist(productID).isSuccess()) {
             return new Response<>(false, "Product does not exist in store");
         }
-        if (category == null && productID == null)
-        {
-            return new Response<>(false, "productID and category can't be null at the same time");
-        }
         int IdDiscount;
         if (type.equals("simple")) {
             IdDiscount = productIDGenerator.getAndIncrement();
@@ -659,7 +587,7 @@ public class Store {
             if (d.getProductID() == null) {
                 return new DiscountDTO(d.getDiscountID(), null, null,storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
             }
-            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(Integer.parseInt(d.getProductID()), username).getData(),storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
+            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(Integer.parseInt(d.getProductID())).getData(),storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
         }
         else if (d instanceof MaxDiscount) {
             return new DiscountDTO(d.getDiscountID(), null, null,storeID, "MAX", null, null, buildDiscountDTO(d.getDiscount1(), username), buildDiscountDTO(d.getDiscount2(), username), null);
@@ -677,7 +605,7 @@ public class Store {
             if (condition.getProductID() == null) {
                 return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
             }
-            return new ConditionDTO(condition.getConditionID(),  String.valueOf(condition.getProductID()),String.valueOf(getProductName(condition.getProductID(), username).getData()), condition.getCategory(),"Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
+            return new ConditionDTO(condition.getConditionID(),  String.valueOf(condition.getProductID()),String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(),"Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
         }
         else if (condition instanceof AndCondition) {
             return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "AND");
@@ -818,7 +746,7 @@ public class Store {
         return Response.success("Discount created successfully", String.valueOf(Id));
     }
 
-    public Response<String> removePolicy(String username, String policyId) {
+    public Response<String> removePolicy(String policyId) {
         if (policies.containsKey(Integer.parseInt(policyId))) {
             policies.remove(Integer.parseInt(policyId));
             SystemLogger.info("[SUCCESS] Policy removed successfully");

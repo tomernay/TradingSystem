@@ -96,12 +96,12 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         buttonLayout.setSpacing(true);
         buttonLayout.setAlignItems(FlexComponent.Alignment.END);
 
-        if (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator")) {
+        if ((presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator")) && presenter.isActiveStore(storeId)) {
             Button addButton = new Button("+ Nominate", e -> showNominationDialog());
             addButton.addClassName("add-button");  // Adding class for custom styling
             buttonLayout.add(addButton);
         }
-        if (presenter.hasRole(storeId, "Owner")) {
+        if (presenter.hasRole(storeId, "Owner") && presenter.isActiveStore(storeId)) {
             Button waiveOwnershipButton = new Button("Waive Ownership", e -> navigateToOwnershipWaiving());
             waiveOwnershipButton.addClassName("waive-button");  // Adding class for custom styling
             buttonLayout.add(waiveOwnershipButton);
@@ -143,14 +143,14 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         String role = item.getValue();
         String username = item.getKey();
 
-        if ("MANAGER".equals(role) && ((presenter.hasRole(storeId, "Owner") && presenter.isNominatorOf(storeId, username)) || presenter.hasRole(storeId, "Creator"))) {
+        if (presenter.isActiveStore(storeId) && "MANAGER".equals(role) && ((presenter.hasRole(storeId, "Owner") && presenter.isNominatorOf(storeId, username)) || presenter.hasRole(storeId, "Creator"))) {
             showPermissionManagementDialog(username);
         }
-        if ("MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") && !presenter.isNominatorOf(storeId, username))) {
+        if (!presenter.isActiveStore(storeId) && "MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") && !presenter.isNominatorOf(storeId, username))) {
             showError("You're not the nominator of this manager");
         }
 
-        if ("SUBSCRIBER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "REMOVE_STORE_SUBSCRIPTION")))) {
+        if (presenter.isActiveStore(storeId) && "SUBSCRIBER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "REMOVE_STORE_SUBSCRIPTION")))) {
             showSubscriberDialog(username);
         }
     }

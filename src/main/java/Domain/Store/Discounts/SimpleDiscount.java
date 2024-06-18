@@ -53,7 +53,9 @@ public class SimpleDiscount implements Discount{
     }
     @Override
     public String getProductID() {
-        return String.valueOf(productID);
+        if (productID == null)
+            return null;
+        return productID;
     }
     @Override
     public String getCategory() {
