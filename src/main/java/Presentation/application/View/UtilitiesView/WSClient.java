@@ -3,6 +3,7 @@ package Presentation.application.View.UtilitiesView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.HandshakeImpl1Server;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
@@ -10,11 +11,11 @@ import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
- public class WSClient extends WebSocketClient {
+public class WSClient extends WebSocketClient {
 
     private CompletableFuture<String> futureMessage;
-    String user;
-     private UI ui;
+    String user="";
+    private UI ui;
     public WSClient(UI ui,String user) throws URISyntaxException {
         super(new URI("ws://localhost:8080/websocket"));
         this.futureMessage = new CompletableFuture<>();
@@ -23,9 +24,16 @@ import java.util.concurrent.ExecutionException;
         this.ui=ui;
     }
 
+    public WSClient() throws URISyntaxException {
+        super(new URI("ws://localhost:8080/websocket"));
+        this.futureMessage = new CompletableFuture<>();
+        connect();
+
+    }
 
 
-     @Override
+
+    @Override
     public void onOpen(ServerHandshake handshakedata) {
         System.out.println("Opened connection");
     }
@@ -38,11 +46,11 @@ import java.util.concurrent.ExecutionException;
         System.out.println(m[1]);
         if(m[1].trim().equals(user.trim())) {
 
-          try {
+            try {
 
 
-              ui.access(() -> Notification.show(m[2]));
-          }catch (Exception e){}
+                ui.access(() -> Notification.show(m[2]));
+            }catch (Exception e){}
         }
     }
 

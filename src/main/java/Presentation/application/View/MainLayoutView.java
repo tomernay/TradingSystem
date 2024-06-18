@@ -249,7 +249,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         // This can be a call to your service layer
         return presenter.getStoreIdByName(storeName);
     }
-
+    WSClient wsClient;
     private void openNewStoreDialog() {
         Dialog dialog = new Dialog();
         dialog.setWidth("300px");
@@ -261,10 +261,28 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         TextField storeName = new TextField("Store Name");
         //place in the center
         storeName.getElement().getStyle().set("margin", "0 auto");
+          String user=CookiesHandler.getUsernameFromCookies(getRequest());
+
+        try {
+            UI ui=UI.getCurrent();
+            wsClient=new WSClient(ui,user);
+
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
 //        TextField storeDescription = new TextField("Store Description");
         Button openStore = new Button("Open Store", e -> {
             presenter.addStore(storeName.getValue(), storeName);
+
+            try {
+                wsClient.sendMessage(user+":open store");
+            } catch (InterruptedException eX) {
+                eX.printStackTrace();
+            } catch (ExecutionException eX) {
+                eX.printStackTrace();
+            }
         });
         openStore.getElement().getStyle().set("color", "black");
         //position save button at the center
