@@ -167,14 +167,14 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> ownerNominationResponse(String username, boolean answer, String token) {
+    public Response<String> ownerNominationResponse(String messageID, String username, boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a store owner nomination");
         if(isValidToken(token,username)) {
             if (adminService.isSuspended(username)) {
                 SystemLogger.error("[ERROR] User: " + username + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            nominateOwnerMessage nominationMessage = (nominateOwnerMessage)userFacade.ownerNominationResponse(username, answer).getData();
+            nominateOwnerMessage nominationMessage = (nominateOwnerMessage)userFacade.ownerNominationResponse(messageID, username, answer).getData();
             if (nominationMessage != null && answer) {
                 return storeService.nominateOwner(nominationMessage.getStoreID(), username, nominationMessage.getNominatorUsername());
             }
@@ -193,14 +193,14 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> managerNominationResponse(String username, boolean answer, String token) {
+    public Response<String> managerNominationResponse(String messageID, String username, boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a store manager nomination");
         if(isValidToken(token,username)) {
             if (adminService.isSuspended(username)) {
                 SystemLogger.error("[ERROR] User: " + username + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            nominateManagerMessage nominationMessage = (nominateManagerMessage)userFacade.managerNominationResponse(username, answer).getData();
+            nominateManagerMessage nominationMessage = (nominateManagerMessage)userFacade.managerNominationResponse(messageID, username, answer).getData();
             if (nominationMessage != null && answer) {
                 return storeService.nominateManager(nominationMessage.getStoreID(), username, nominationMessage.getPermissions(), nominationMessage.getNominatorUsername());
             }
@@ -563,18 +563,18 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> messageResponse(String username, boolean answer, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to respond to a message");
-        if(isValidToken(token,username)) {
-            if (adminService.isSuspended(username)) {
-                SystemLogger.error("[ERROR] User: " + username + " is suspended");
-                return Response.error("You're suspended", null);
-            }
-            return userFacade.messageResponse(username, answer);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to respond to a message but the token was invalid");
-        return Response.error("Invalid token",null);
-    }
+//    public Response<String> messageResponse(String username, boolean answer, String token) {
+//        SystemLogger.info("[START] User: " + username + " is trying to respond to a message");
+//        if(isValidToken(token,username)) {
+//            if (adminService.isSuspended(username)) {
+//                SystemLogger.error("[ERROR] User: " + username + " is suspended");
+//                return Response.error("You're suspended", null);
+//            }
+//            return userFacade.messageResponse(username, answer);
+//        }
+//        SystemLogger.error("[ERROR] User: " + username + " tried to respond to a message but the token was invalid");
+//        return Response.error("Invalid token",null);
+//    }
 
 
     /**
@@ -602,8 +602,8 @@ public class UserService {
      * @param username the user to get the messages for
      * @return If successful, returns a success message & the messages. <br> If not, returns an error message.
      */
-    public Response<Queue<Message>> getMessages(String username){
-        return  new Response<Queue<Message>>(true,"",userFacade.getUserRepository().getMessages(username));
+    public Response<List<Message>> getMessages(String username){
+        return  new Response<List<Message>>(true,"",userFacade.getUserRepository().getMessages(username));
     }
 
 
@@ -744,20 +744,12 @@ public class UserService {
     }
 
 
+    public Response<String> removeMessage(String username, String token, String messageID) {
+        return userFacade.removeMessage(username, token, messageID);
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public Response<Integer> getUnreadMessagesCount(String username, String token) {
+        return userFacade.getUnreadMessagesCount(username, token);
+    }
 }

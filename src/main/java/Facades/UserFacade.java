@@ -59,16 +59,16 @@ public class UserFacade {
         return userRepository.updateProductInShoppingCart(storeID, productID, userName, quantity);
     }
 
-    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
-        return userRepository.messageResponse(subscriberUsername, answer);
+//    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
+//        return userRepository.messageResponse(subscriberUsername, answer);
+//    }
+
+    public Response<Message> ownerNominationResponse(String messageID, String currentUsername, boolean answer) {
+        return userRepository.ownerNominationResponse(messageID, currentUsername, answer);
     }
 
-    public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
-        return userRepository.ownerNominationResponse(currentUsername, answer);
-    }
-
-    public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
-        return userRepository.managerNominationResponse(currentUsername, answer);
+    public Response<Message> managerNominationResponse(String messageID, String currentUsername, boolean answer) {
+        return userRepository.managerNominationResponse(messageID, currentUsername, answer);
     }
 
     public boolean userExist(String subscriberUsername) {
@@ -161,5 +161,13 @@ public class UserFacade {
 
     public boolean isInPurchaseProcess(String user) {
         return userRepository.isInPurchaseProcess(user);
+    }
+
+    public Response<String> removeMessage(String username, String token, String messageID) {
+        return userRepository.removeMessage(username, token, messageID);
+    }
+
+    public Response<Integer> getUnreadMessagesCount(String username, String token) {
+        return userRepository.getUnreadMessagesCount(username, token);
     }
 }

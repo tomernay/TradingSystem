@@ -53,8 +53,8 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
         // Create a list of threads
@@ -112,8 +112,8 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
         // Create a list of threads
@@ -164,12 +164,12 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
         List<Thread> threads = new ArrayList<>();
@@ -185,11 +185,11 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = storeService.addManagerPermissions(store.getId(), owner.getUsername(), subscriber2.getUsername(), "ADD_PRODUCT", owner.getToken());
+                    Response<String> response2 = storeService.addManagerPermissions(store.getId(), owner.getUsername(), subscriber2.getUsername(), "ADD_PRODUCT", owner.getToken());
                     if (permissionAdded.compareAndSet(false, true)) {
-                        Assert.assertTrue(response.isSuccess());
+                        Assert.assertTrue(response2.isSuccess());
                     } else {
-                        Assert.assertFalse(response.isSuccess());
+                        Assert.assertFalse(response2.isSuccess());
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -219,12 +219,12 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS"), subscriber.getToken());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
         List<Thread> threads = new ArrayList<>();
@@ -240,11 +240,11 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = storeService.removeManagerPermissions(store.getId(), owner.getUsername(), subscriber2.getUsername(), "REMOVE_PRODUCT", owner.getToken());
+                    Response<String> response2 = storeService.removeManagerPermissions(store.getId(), owner.getUsername(), subscriber2.getUsername(), "REMOVE_PRODUCT", owner.getToken());
                     if (permissionRemoved.compareAndSet(false, true)) {
-                        Assert.assertTrue(response.isSuccess());
+                        Assert.assertTrue(response2.isSuccess());
                     } else {
-                        Assert.assertFalse(response.isSuccess());
+                        Assert.assertFalse(response2.isSuccess());
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

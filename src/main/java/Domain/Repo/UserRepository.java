@@ -94,9 +94,9 @@ public class UserRepository {
         guests.put(user.getUsername(), user);
     }
 
-    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
-        return subscribers.get(subscriberUsername).messageResponse(answer);
-    }
+//    public Response<String> messageResponse(String subscriberUsername, boolean answer) {
+//        return subscribers.get(subscriberUsername).messageResponse(answer);
+//    }
 
     public Response<String> sendMessageToUser(String user,Message message){
         return subscribers.get(user).addMessage(message);
@@ -250,8 +250,8 @@ public class UserRepository {
         return Response.error("User does not exist", null);
     }
 
-    public Response<Message> ownerNominationResponse(String currentUsername, boolean answer) {
-        Response<Message> response = subscribers.get(currentUsername).ownerNominationResponse(answer);
+    public Response<Message> ownerNominationResponse(String messageID, String currentUsername, boolean answer) {
+        Response<Message> response = subscribers.get(currentUsername).ownerNominationResponse(messageID, answer);
         if (response.isSuccess()) {
             sendMessageToUser(((nominateOwnerMessage) response.getData()).getNominator(), new NormalMessage("Your request to nominate " + currentUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
             SystemLogger.info("[SUCCESS] message responded successfully");
@@ -260,8 +260,8 @@ public class UserRepository {
         return Response.error(response.getMessage(), null);
     }
 
-    public Response<Message> managerNominationResponse(String currentUsername, boolean answer) {
-        Response<Message> response = subscribers.get(currentUsername).managerNominationResponse(answer);
+    public Response<Message> managerNominationResponse(String messageID, String currentUsername, boolean answer) {
+        Response<Message> response = subscribers.get(currentUsername).managerNominationResponse(messageID, answer);
         if (response.isSuccess()) {
             sendMessageToUser(((nominateManagerMessage) response.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + currentUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
             SystemLogger.info("[SUCCESS] message responded successfully");
@@ -294,7 +294,7 @@ public class UserRepository {
         subscribers.get(subscriberUsername).removeStoreRole(storeID);
     }
 
-    public Queue<Message> getMessages(String user) {
+    public List<Message> getMessages(String user) {
         return subscribers.get(user).getMessages();
     }
 
@@ -504,5 +504,29 @@ public class UserRepository {
         }
         SystemLogger.error("[ERROR] User " + user + " does not exist");
         return false;
+    }
+
+    public Response<String> removeMessage(String username, String token, String messageID) {
+        if (subscribers.containsKey(username)) {
+            if (TokenHandler.isValidJWT(token,username)) {
+                return subscribers.get(username).removeMessage(messageID);
+            }
+            SystemLogger.error("[ERROR] Invalid token for user " + username);
+            return Response.error("Invalid token", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
+    }
+
+    public Response<Integer> getUnreadMessagesCount(String username, String token) {
+        if (subscribers.containsKey(username)) {
+            if (TokenHandler.isValidJWT(token,username)) {
+                return subscribers.get(username).getUnreadMessagesCount();
+            }
+            SystemLogger.error("[ERROR] Invalid token for user " + username);
+            return Response.error("Invalid token", null);
+        }
+        SystemLogger.error("[ERROR] User " + username + " does not exist");
+        return Response.error("User does not exist", null);
     }
 }

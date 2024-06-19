@@ -44,7 +44,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         Button confirmButton = new Button("Yes", e -> {
             presenter.reopenStore(storeId);
             confirmationDialog.close();
-            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store re-opened successfully");
         });
 
@@ -66,7 +66,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         Button confirmButton = new Button("Yes", e -> {
             presenter.closeStore(storeId);
             confirmationDialog.close();
-            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store closed successfully");
         });
 

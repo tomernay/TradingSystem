@@ -67,7 +67,7 @@ public class StoreRole {
 
         Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = userService.ownerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response1 = userService.ownerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
         Assert.assertTrue(response1.isSuccess());
     }
 
@@ -79,7 +79,7 @@ public class StoreRole {
 
         Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response1 = userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
         Assert.assertTrue(response1.isSuccess());
     }
 
@@ -91,7 +91,7 @@ public class StoreRole {
 
         Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = userService.ownerNominationResponse(subscriber2.getUsername(), false, subscriber2.getToken());
+        Response<String> response1 = userService.ownerNominationResponse(response.getData(), subscriber2.getUsername(), false, subscriber2.getToken());
         Assert.assertTrue(response1.isSuccess());
     }
 
@@ -103,7 +103,7 @@ public class StoreRole {
 
         Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = userService.managerNominationResponse(subscriber2.getUsername(), false, subscriber2.getToken());
+        Response<String> response1 = userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), false, subscriber2.getToken());
         Assert.assertTrue(response1.isSuccess());
     }
 
@@ -141,10 +141,10 @@ public class StoreRole {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
-        userService.ownerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
         Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
+        userService.ownerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response2 = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
+        Assert.assertFalse(response2.isSuccess());
     }
 
     @Test
@@ -153,10 +153,10 @@ public class StoreRole {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
         Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response2 = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        Assert.assertFalse(response2.isSuccess());
     }
 
     @Test
@@ -165,10 +165,10 @@ public class StoreRole {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
-        Response<String> response = storeService.addManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "VIEW_PRODUCTS", subscriber.getToken());
-        Assert.assertTrue(response.isSuccess());
+        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response2 = storeService.addManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "VIEW_PRODUCTS", subscriber.getToken());
+        Assert.assertTrue(response2.isSuccess());
     }
 
     @Test
@@ -177,10 +177,10 @@ public class StoreRole {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
-        Response<String> response = storeService.removeManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "MANAGE_PRODUCTS", subscriber.getToken());
-        Assert.assertTrue(response.isSuccess());
+        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response2 = storeService.removeManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "MANAGE_PRODUCTS", subscriber.getToken());
+        Assert.assertTrue(response2.isSuccess());
     }
 
     @Test
@@ -261,10 +261,10 @@ public class StoreRole {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber.getToken());
-        Response<String> response = storeService.addManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "NON_EXISTENT_PERMISSION", subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
+        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber.getToken());
+        Response<String> response2 = storeService.addManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "NON_EXISTENT_PERMISSION", subscriber.getToken());
+        Assert.assertFalse(response2.isSuccess());
     }
 
     @Test
@@ -273,10 +273,10 @@ public class StoreRole {
         userService.loginAsSubscriber("tomer1212","Password123!");
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
-        userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
-        userService.managerNominationResponse(subscriber2.getUsername(), true, subscriber.getToken());
-        Response<String> response = storeService.removeManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "NON_EXISTENT_PERMISSION", subscriber.getToken());
-        Assert.assertFalse(response.isSuccess());
+        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber.getToken());
+        Response<String> response2 = storeService.removeManagerPermissions(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), "NON_EXISTENT_PERMISSION", subscriber.getToken());
+        Assert.assertFalse(response2.isSuccess());
     }
 
     @Test
@@ -287,7 +287,7 @@ public class StoreRole {
 
         Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
-        Response<String> response1 = userService.ownerNominationResponse(subscriber2.getUsername(), true, subscriber2.getToken());
+        Response<String> response1 = userService.ownerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
         Assert.assertTrue(response1.isSuccess());
 
         // New owner waives their role
