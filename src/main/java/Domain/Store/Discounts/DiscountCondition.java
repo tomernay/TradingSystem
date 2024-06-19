@@ -21,7 +21,7 @@ public class DiscountCondition implements Discount{
         this.discountID = discountID;
         this.discountType = DiscountType.CONDITION;
     }
-    public Response<String> CalculatorDiscount(Map<ProductDTO,Integer> products) {
+    public Response<Double> CalculatorDiscount(Map<ProductDTO,Integer> products) {
         if(condition.isValid(products)){
             return discount.CalculatorDiscount(products);
         }

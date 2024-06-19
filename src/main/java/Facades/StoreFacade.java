@@ -231,7 +231,7 @@ public class StoreFacade {
         return storeRepository.CreateDiscount(productID, storeID, category, percent, username);
     }
 
-    public Response<Double> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
 

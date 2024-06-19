@@ -25,7 +25,9 @@ public class Store {
     private Map<String, String> reverseNominationMap;
     private Map<Integer, Discount> discounts = new HashMap<>();///
     private Map<Integer, Condition> policies = new HashMap<>();
-    private final AtomicInteger productIDGenerator = new AtomicInteger(1);
+    private final AtomicInteger productIDGeneratorPolicy = new AtomicInteger(1);
+    private final AtomicInteger productIDGeneratorDiscount = new AtomicInteger(1);
+
 
 
 
@@ -523,7 +525,7 @@ public class Store {
         }
         int IdDiscount;
         if (type.equals("simple")) {
-            IdDiscount = productIDGenerator.getAndIncrement();
+            IdDiscount = productIDGeneratorDiscount.getAndIncrement();
             discount = new SimpleDiscount(percent, storeID, productID, category, IdDiscount);
             discounts.put(IdDiscount, discount);
         } else {
@@ -543,11 +545,11 @@ public class Store {
             products.put(response.getData(),productsInStore.get(entry.getKey()));
         }
             for (Discount d : discounts.values()) {
-                Response<String> responseDiscount = d.CalculatorDiscount(products);
+                Response<Double> responseDiscount = d.CalculatorDiscount(products);
                 if (!responseDiscount.isSuccess()) {
                     return new Response<>(false, "Failed to calculate discount");
                 }
-                discount += Double.parseDouble(responseDiscount.getData());
+                discount += responseDiscount.getData();
             }
         return new Response<>(true,"calculate discounts successfull", discount);
     }
@@ -639,7 +641,7 @@ public class Store {
         Discount discount1 = discounts.get(discountId1);
         Discount discount2 = discounts.get(discountId2);
         Discount NewDiscount = null;
-        int id = productIDGenerator.getAndIncrement();
+        int id = productIDGeneratorDiscount.getAndIncrement();
         if (discountType.equals("MAX")) {
              NewDiscount = new MaxDiscount(discount1, discount2, id);
         }
@@ -665,7 +667,7 @@ public class Store {
         }
         Condition condition = policies.get(conditionId);
         Discount discount = discounts.get(discountId);
-        int id = productIDGenerator.getAndIncrement();
+        int id = productIDGeneratorDiscount.getAndIncrement();
         Discount NewDiscount = new DiscountCondition(discount, condition, id);
         discounts.put(id, NewDiscount);
         discounts.remove(discountId);
@@ -683,7 +685,7 @@ public class Store {
         if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
             return new Response<>(false, "minAmount can't be null");
         }
-        int id = productIDGenerator.getAndIncrement();
+        int id = productIDGeneratorPolicy.getAndIncrement();
         policies.put(id, new SimpleCondition(id,productID, category, amount, minAmount, maxAmount, price));
         return new Response<>(true, "Condition created successfully");
     }
@@ -708,7 +710,7 @@ public class Store {
         Condition policy2 = policies.get(policyId2);
         Condition NewPolicy = null;
         ConditionType type = ConditionType.valueOf(conditionType);
-        int id = productIDGenerator.getAndIncrement();
+        int id = productIDGeneratorPolicy.getAndIncrement();
         if (type.equals(ConditionType.AND)) {
             NewPolicy = new AndCondition(policy1, policy2, id);
         }
@@ -738,7 +740,7 @@ public class Store {
         }
         Condition condition = policies.get(conditionId);
         Condition policy = policies.get(policyId);
-        int Id = productIDGenerator.getAndIncrement();
+        int Id = productIDGeneratorPolicy.getAndIncrement();
         Condition NewPolicy = new PolicyCondition(policy, condition, Id);
         policies.put(Id, NewPolicy);
         policies.remove(policyId);

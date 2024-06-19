@@ -80,10 +80,10 @@ public class ShoppingCartPresenter {
 
         if (totalPriceResponse.isSuccess()) {
             double totalPrice = totalPriceResponse.getData();
-            Response<Double> discountResponse = userService.CalculateDiscounts(username, token);
+            Response<String> discountResponse = userService.CalculateDiscounts(username, token);
 
             if (discountResponse.isSuccess()) {
-                double discountAmount = discountResponse.getData();
+                double discountAmount = Double.parseDouble(discountResponse.getData()) ;
                 double discountPercentage = (discountAmount / totalPrice) * 100;
                 view.updateTotalPrice(totalPrice, discountPercentage);
                 this.totalPrice = totalPrice - discountAmount; // Store the discounted price
