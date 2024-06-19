@@ -24,16 +24,16 @@ public class SimpleDiscount implements Discount{
     }
 
 
-    public Response<String> CalculatorDiscount(Map<ProductDTO,Integer> products) {
+    public Response<Double> CalculatorDiscount(Map<ProductDTO,Integer> products) {
         double discount = 0;
         for (ProductDTO product : products.keySet()) {
             if (productID == null || String.valueOf(product.getProductID()).equals(productID)){
                 if (category == null || product.getCategories().contains(category)){
-                        discount += product.getPrice() * Double.parseDouble(percent) * products.get(product);
+                        discount += product.getPrice() * Double.parseDouble(percent) * products.get(product) / 100;
                     }
                 }
             }
-        return new Response<String>(true,String.valueOf(discount));
+        return new Response<Double>(true,"Calculator Discount",discount);
     }
     @Override
     public int getDiscountID() {

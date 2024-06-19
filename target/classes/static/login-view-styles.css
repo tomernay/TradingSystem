@@ -43,6 +43,16 @@
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
+.discounts-policies-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
+.payment-view {
+    background-image: url('background2.jpg');
+    background-size: cover; /* Adjust as needed */
+    background-position: center; /* Adjust as needed */
+}
 
 /* Styles for the Roles Management View */
 .roles-management-view {

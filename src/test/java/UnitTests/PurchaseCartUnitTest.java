@@ -107,7 +107,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
         userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
         userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), "1", null, null, null,10.0, null, 1.0);
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), "0", null, null, null,10.0, null, 1.0);
         userService.lockShoppingCart("yair12312", buyer.getToken());
 
         // Mock the handshake method to return true

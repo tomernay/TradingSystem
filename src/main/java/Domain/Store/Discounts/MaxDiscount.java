@@ -23,15 +23,15 @@ public class MaxDiscount implements Discount{
     }
 
     @Override
-    public Response<String> CalculatorDiscount(Map<ProductDTO,Integer> products) {
-        Response<String> response1 = discount1.CalculatorDiscount(products);
-        Response<String> response2 = discount2.CalculatorDiscount(products);
+    public Response<Double> CalculatorDiscount(Map<ProductDTO,Integer> products) {
+        Response<Double> response1 = discount1.CalculatorDiscount(products);
+        Response<Double> response2 = discount2.CalculatorDiscount(products);
         if(!response1.isSuccess() || !response2.isSuccess()){
             return new Response<>(false, "Failed to calculate discount");
         }
-        double discount1 = Double.parseDouble(response1.getData());
-        double discount2 = Double.parseDouble(response2.getData());
-        return new Response<>(true, String.valueOf(Math.max(discount1, discount2)));
+        double discount1 = response1.getData();
+        double discount2 = response2.getData();
+        return new Response<>(true, "Calculator Discount",Math.max(discount1, discount2));
     }
 
     @Override

@@ -93,7 +93,7 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart("1","1","yair12312",buyer.getToken(),1);
         Response<String> res = userService.lockShoppingCart("yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
-        Response<Double> res1 = userService.CalculateDiscounts("yair12312",buyer.getToken());
+        Response<String> res1 = userService.CalculateDiscounts("yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
         Response<String> res3 = orderService.CreateOrder("yair12312",buyer.getToken(),"Address");
         Assert.assertTrue(res3.isSuccess());
