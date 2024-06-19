@@ -50,8 +50,8 @@ public class InfoRequestsByOwnerAT {
         perms.add("MANAGE_PRODUCTS");
 //        perms.add("ADD_MANAGER");
         perms.add("MANAGE_PRODUCTS");
-        userService.SendManagerNominationRequest("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
-        userService.managerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
+        Response<String> res = userService.SendManagerNominationRequest("0", "mia", "ziv", perms, userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.managerNominationResponse(res.getData(), "ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
     }
 
@@ -59,14 +59,14 @@ public class InfoRequestsByOwnerAT {
         //subscribe ziv
         userService.register("ziv","Password123!");
         userService.loginAsSubscriber("ziv","Password123!");
-        userService.SendOwnerNominationRequest("0", "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
-        userService.ownerNominationResponse("ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
+        Response<String> res = userService.SendOwnerNominationRequest("0", "mia", "ziv", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.ownerNominationResponse(res.getData(), "ziv",true, userService.getUserFacade().getUserRepository().getUser("ziv").getToken());
 
         //subscribe dor
         userService.register("dor","Password123!");
         userService.loginAsSubscriber("dor","Password123!");
-        userService.SendOwnerNominationRequest("0", "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
-        userService.ownerNominationResponse("dor",true, userService.getUserFacade().getUserRepository().getUser("dor").getToken());
+        Response<String> res2 = userService.SendOwnerNominationRequest("0", "mia", "dor", userService.getUserFacade().getUserRepository().getUser("mia").getToken());
+        userService.ownerNominationResponse(res2.getData(),"dor",true, userService.getUserFacade().getUserRepository().getUser("dor").getToken());
 
         //subscribe niv
         userService.register("niv","Password123!");

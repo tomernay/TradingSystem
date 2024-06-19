@@ -36,15 +36,15 @@ public class TokenHandler {
             String subject = claimsJws.getBody().getSubject();
             return subject.equals(username);
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException(e);
+            return false;
         } catch (UnsupportedJwtException e) {
-            throw new RuntimeException(e);
+            return false;
         } catch (MalformedJwtException e) {
-            throw new RuntimeException(e);
+            return false;
         } catch (SecurityException e) {
-            throw new RuntimeException(e);
+            return false;
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 

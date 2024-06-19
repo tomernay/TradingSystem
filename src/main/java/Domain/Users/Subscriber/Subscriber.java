@@ -4,6 +4,7 @@ import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Messages.Message;
 
 import Domain.Users.User;
+import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
@@ -14,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Subscriber extends User {
     private final List<String> subscribedStores;
-    private final Queue<Message> messages;
+    private final List<Message> messages;
     private String password;
     private String credit;
     private final Map<String, String> storesRole;
@@ -22,7 +23,7 @@ public class Subscriber extends User {
     public Subscriber(String username,String password) {
         super(username);
         this.subscribedStores = new ArrayList<>();
-        this.messages = new LinkedBlockingQueue<>();
+        this.messages = new ArrayList<>();
         this.password = password;
         this.storesRole = new HashMap<>();
     }
@@ -32,15 +33,15 @@ public class Subscriber extends User {
     }
 
 
-    public Response<String> messageResponse(boolean answer) {
-        Message message = messages.poll();
-        if (message == null) {
-            SystemLogger.error("[ERROR] No messages to respond to.");
-            return Response.error("No messages to respond to.", null);
-        }
-        Response<Message> response = message.response(answer);
-        return Response.success(response.getMessage(), null);
-    }
+//    public Response<String> messageResponse(boolean answer) {
+//        Message message = messages.poll();
+//        if (message == null) {
+//            SystemLogger.error("[ERROR] No messages to respond to.");
+//            return Response.error("No messages to respond to.", null);
+//        }
+//        Response<Message> response = message.response(answer);
+//        return Response.success(response.getMessage(), null);
+//    }
 
     public String getToken() {
         return Token;
@@ -60,7 +61,7 @@ public class Subscriber extends User {
             else {
                 messages.add(m);
                 SystemLogger.info("[SUCCESS] Owner nomination message successfully sent to: " + username);
-                return Response.success("Owner nomination message successfully sent to: " + username, null);
+                return Response.success("Owner nomination message successfully sent to: " + username, m.getId());
             }
         }
         else if (m instanceof nominateManagerMessage) {
@@ -71,7 +72,7 @@ public class Subscriber extends User {
             else {
                 messages.add(m);
                 SystemLogger.info("[SUCCESS] Manager nomination message successfully sent to: " + username);
-                return Response.success("Manager nomination message successfully sent to: " + username, null);
+                return Response.success("Manager nomination message successfully sent to: " + username, m.getId());
             }
         }
         else {
@@ -89,7 +90,7 @@ public class Subscriber extends User {
         this.credit = credit;
     }
 
-    public Queue<Message> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
@@ -97,24 +98,34 @@ public class Subscriber extends User {
         return password;
     }
 
-    public Response<Message> ownerNominationResponse(boolean answer) {
-        Message message = messages.poll();
-        if (message == null) {
-            SystemLogger.error("[ERROR] No messages to respond to.");
-            return Response.error("No messages to respond to.", null);
+    public Response<Message> ownerNominationResponse(String messageID, boolean answer) {
+        if (messages.isEmpty())
+            return Response.error("[ERROR] Message not found.", null);
+        for (Message message : messages) {
+            if (message.getId().equals(messageID)) {
+                messages.remove(message);
+                messages.add(new NormalMessage("You have been nominated to store: " + ((nominateOwnerMessage)message).getStoreName() + " as an owner, by: " + ((nominateOwnerMessage)message).getNominatorUsername() + "."));
+                storesRole.put(((nominateOwnerMessage) message).getStoreID(), "Owner");
+                return message.response(answer);
+            }
         }
-        storesRole.put(((nominateOwnerMessage) message).getStoreID(), "Owner");
-        return message.response(answer);
+        SystemLogger.error("[ERROR] Message not found.");
+        return Response.error("[ERROR] Message not found.", null);
     }
 
-    public Response<Message> managerNominationResponse(boolean answer) {
-        Message message = messages.poll();
-        if (message == null) {
-            SystemLogger.error("[ERROR] No messages to respond to.");
-            return Response.error("No messages to respond to.", null);
+    public Response<Message> managerNominationResponse(String messageID, boolean answer) {
+        if (messages.isEmpty())
+            return Response.error("[ERROR] Message not found.", null);
+        for (Message message : messages) {
+            if (message.getId().equals(messageID)) {
+                messages.remove(message);
+                messages.add(new NormalMessage("You have been nominated to store: " + ((nominateManagerMessage)message).getStoreName() + " as a manager by: " + ((nominateManagerMessage)message).getNominatorUsername() + "."));
+                storesRole.put(((nominateManagerMessage) message).getStoreID(), "Manager");
+                return message.response(answer);
+            }
         }
-        storesRole.put(((nominateManagerMessage) message).getStoreID(), "Manager");
-        return message.response(answer);
+        SystemLogger.error("[ERROR] Message not found.");
+        return Response.error("[ERROR] Message not found.", null);
     }
 
     public void resetToken() {
@@ -167,4 +178,24 @@ public class Subscriber extends User {
     }
 
 
+    public Response<String> removeMessage(String messageID) {
+        for (Message message : messages) {
+            if (message.getId().equals(messageID)) {
+                messages.remove(message);
+                return Response.success("[SUCCESS] Message removed successfully.", null);
+            }
+        }
+        return Response.error("[ERROR] Message not found.", null);
+
+
+    }
+
+    public Response<Integer> getUnreadMessagesCount() {
+        int unread = 0;
+        for (Message message : messages) {
+            if (!message.isRead())
+                unread++;
+        }
+        return Response.success("[SUCCESS] Successfully retrieved the number of unread messages.", unread);
+    }
 }

@@ -5,13 +5,15 @@ import Utilities.SystemLogger;
 
 public class nominateOwnerMessage extends Message {
     public String storeID;
+    public String storeName;
     public String subscriberUsername;
     public boolean isSubscribed;
     public String nominatorUsername;
 
 
-    public nominateOwnerMessage(String storeID, String subscriberID, boolean isSubscribed, String nominatorUsername) {
-        super("Nominate owner message");
+    public nominateOwnerMessage(String storeID, String StoreName, String subscriberID, boolean isSubscribed, String nominatorUsername) {
+        super("Owner nomination request for store: " + StoreName + " from user: " + nominatorUsername + ". Accept or decline?");
+        this.storeName = StoreName;
         this.storeID = storeID;
         this.subscriberUsername = subscriberID;
         this.isSubscribed = isSubscribed;
@@ -44,5 +46,9 @@ public class nominateOwnerMessage extends Message {
 
     public boolean isSubscribed() {
         return isSubscribed;
+    }
+
+    public String getStoreName() {
+        return storeName;
     }
 }

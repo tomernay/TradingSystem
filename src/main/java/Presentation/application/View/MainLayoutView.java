@@ -68,6 +68,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     private H1 viewTitle;
     private Queue<Message> sub;
     private VerticalLayout mainContent;
+    private Span notificationCountSpan;
 
 
     public MainLayoutView(MainLayoutPresenter presenter) {
@@ -75,13 +76,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         this.presenter = presenter;
         this.presenter.attachView(this);
         mainContent = new VerticalLayout();
-        //display the main content
         setContent(mainContent);
-        sub=new LinkedBlockingQueue<>();
+        sub = new LinkedBlockingQueue<>();
         setPrimarySection(Section.DRAWER);
-        addDrawerContent();
         addHeaderContent();
-        addLogoutButton();
+         addDrawerContent();
         addUserButton();
         welcomeText();
         addSearchBar();
@@ -91,8 +90,56 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addMessageButton();
         UI currentUI = UI.getCurrent();
         navigateToStorePage();
-      //  RealTimeNotifications.start(currentUI,sub);
+        addHomeButtonToDrawer();
+
+        // Initialize the notification count
+        int unreadCount = presenter.getUnreadMessagesCount(); // Fetch this from the server or database
+        if (unreadCount > 0) {
+            notificationCountSpan.setText(String.valueOf(unreadCount));
+            notificationCountSpan.setVisible(true);
+        }
     }
+
+    private void addHomeButtonToDrawer() {
+        Button homeButton = new Button("Home", e -> {
+            UI.getCurrent().navigate(MainLayoutView.class);
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+        });
+        homeButton.getElement().getStyle().set("color", "black");
+        homeButton.setWidthFull();
+        addToDrawer(homeButton);
+    }
+
+    private void addDrawerContent() {
+ Span appName = new Span("My App");
+ // appName.addClassNames(Lumo.FontStyle.BOLD, Lumo.FontStyle.LARGE);
+ Header header = new Header(appName);
+
+ Scroller scroller = new Scroller(createNavigation());
+
+ addToDrawer(header, scroller, createFooter());
+ }
+
+
+ private SideNav createNavigation() {
+ SideNav nav = new SideNav();
+ SideNavItem paymentItem = new SideNavItem("Payment");
+ paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
+ @Override
+ public void onComponentEvent(AttachEvent event) {
+
+ }
+ });
+
+// nav.addItem(new SideNavItem("Payment", PaymentView.class));
+
+// nav.addItem(new SideNavItem("Messages", MessagesList.class));
+// nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
+// nav.addItem(new SideNavItem("My Shopping Cart", ShoppingCartView.class)); // New navigation item
+
+
+ return nav;
+ }
 
     private void navigateToStorePage() {
 //        UI.getCurrent().navigate(StorePageView.class);
@@ -387,25 +434,22 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
   WSClient webSocketClient;
-    private void addMessageButton()  {
+    private void addMessageButton() {
         Button addMessageButton = new Button("Add Message");
-        UI ui= UI.getCurrent();
-        String user=CookiesHandler.getUsernameFromCookies(getRequest());
-        // Add to the main content area
-        try {
+        UI ui = UI.getCurrent();
+        String user = CookiesHandler.getUsernameFromCookies(getRequest());
 
-            webSocketClient = new WSClient(ui,user);
+        try {
+            webSocketClient = new WSClient(ui, user);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Notification.show("Error initializing WebSocket client");
         }
 
-        // Set up button click listener to send a message
         addMessageButton.addClickListener(e -> {
-
             try {
                 webSocketClient.sendMessage("user:message");
-                webSocketClient.sendMessage(user+":message2");
+                webSocketClient.sendMessage(user + ":message2");
             } catch (InterruptedException | ExecutionException ex) {
                 ex.printStackTrace();
                 Notification.show("Error sending WebSocket message");
@@ -414,31 +458,45 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         // Listen for WebSocket messages and update the UI
         webSocketClient.setOnMessageListener(message -> {
-            String[] m=message.split(":");
+            String[] m = message.split(":");
 
-            if(m[0].equals(user)) {
-                ui.access(() -> Notification.show("New message: " + message));
+            if (m[0].equals(user)) {
+                ui.access(() -> {
+                    Notification.show("New message: " + message);
+                    incrementNotificationCount();
+                });
             }
         });
-
-
-
-
-
-//        Button storeButton = new Button("Manage Store");
-//        storeButton.addClickListener(e -> {
-//            UI.getCurrent().navigate(StoreManagementView.class);
-//        });
 
         Button purchaseHistoryByStoreButton = new Button("Purchase History By Store");
         purchaseHistoryByStoreButton.addClickListener(e -> {
             UI.getCurrent().navigate(StorePurchaseHistory.class);
         });
 
+        mainContent.add(addMessageButton, purchaseHistoryByStoreButton);
+    }
 
-        // Add to the main content area
-        mainContent.add(addMessageButton,purchaseHistoryByStoreButton);
+    private void incrementNotificationCount() {
+        int count = Integer.parseInt(notificationCountSpan.getText().isEmpty() ? "0" : notificationCountSpan.getText());
+        count++;
+        notificationCountSpan.setText(String.valueOf(count));
+        notificationCountSpan.setVisible(true);
+    }
 
+    public void decrementNotificationCount() {
+        int count = Integer.parseInt(notificationCountSpan.getText().isEmpty() ? "0" : notificationCountSpan.getText());
+        if (count > 0) {
+            count--;
+            notificationCountSpan.setText(String.valueOf(count));
+            if (count == 0) {
+                notificationCountSpan.setVisible(false);
+            }
+        }
+    }
+
+    private void clearNotificationCount() {
+        notificationCountSpan.setText("");
+        notificationCountSpan.setVisible(false);
     }
 
     private void addHeaderContent() {
@@ -451,36 +509,36 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addToNavbar(toggle, viewTitle);
     }
 
-    private void addDrawerContent() {
-        Span appName = new Span("My App");
-        //  appName.addClassNames(Lumo.FontStyle.BOLD, Lumo.FontStyle.LARGE);
-        Header header = new Header(appName);
-
-        Scroller scroller = new Scroller(createNavigation());
-
-        addToDrawer(header, scroller, createFooter());
-    }
-
-
-    private SideNav createNavigation() {
-        SideNav nav = new SideNav();
-        SideNavItem paymentItem = new SideNavItem("Payment");
-        paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
-            @Override
-            public void onComponentEvent(AttachEvent event) {
-
-            }
-        });
-
-//        nav.addItem(new SideNavItem("Payment", PaymentView.class));
-
-        nav.addItem(new SideNavItem("Messages", MessagesList.class));
-//        nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
-        nav.addItem(new SideNavItem("My Shopping Cart", ShoppingCartView.class)); // New navigation item
-
-
-        return nav;
-    }
+//    private void addDrawerContent() {
+//        Span appName = new Span("My App");
+//        //  appName.addClassNames(Lumo.FontStyle.BOLD, Lumo.FontStyle.LARGE);
+//        Header header = new Header(appName);
+//
+//        Scroller scroller = new Scroller(createNavigation());
+//
+//        addToDrawer(header, scroller, createFooter());
+//    }
+//
+//
+//    private SideNav createNavigation() {
+//        SideNav nav = new SideNav();
+//        SideNavItem paymentItem = new SideNavItem("Payment");
+//        paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
+//            @Override
+//            public void onComponentEvent(AttachEvent event) {
+//
+//            }
+//        });
+//
+////        nav.addItem(new SideNavItem("Payment", PaymentView.class));
+//
+//        nav.addItem(new SideNavItem("Messages", MessagesList.class));
+////        nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
+//        nav.addItem(new SideNavItem("My Shopping Cart", ShoppingCartView.class)); // New navigation item
+//
+//
+//        return nav;
+//    }
 
     public HttpServletRequest getRequest() {
         return ((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest();
@@ -898,20 +956,34 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
     private void addNotificationButton() {
-        // Add notification button to the header
+        // Create a button for notifications
         Button notification = new Button("", e -> {
+            getUI().ifPresent(ui -> ui.navigate("MessagesList"));
             // Navigate to the notification page
         });
         notification.setIcon(new Icon(VaadinIcon.BELL));
         notification.getElement().getStyle().setColor("black");
-        notification.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
-        addToNavbar(notification);
+        notification.getElement().getStyle().set("margin-right", "10px");
+
+        // Create a span for the notification count
+        notificationCountSpan = new Span();
+        notificationCountSpan.addClassName("notification-count");
+        notificationCountSpan.setVisible(false);
+
+        // Create a div to hold the notification icon and count
+        Div notificationContainer = new Div(notification, notificationCountSpan);
+        notificationContainer.addClassName("notification-container");
+
+        // Add the notification container to the navbar
+        addToNavbar(notificationContainer);
     }
+
+
 
     private void shoppingCart() {
         // Navigate to the shopping cart page
         Button cart = new Button("", e -> {
-            // Navigate to the shopping cart page
+            getUI().ifPresent(ui -> ui.navigate("shopping-cart"));
         });
         cart.setIcon(new Icon(VaadinIcon.CART));
         cart.getElement().getStyle().setColor("black");
@@ -964,11 +1036,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return token != null && !token.isEmpty();
     }
 
-    private void addLogoutButton() {
-        Button logoutButton = new Button("Logout", e -> logout());
-        logoutButton.getElement().getStyle().set("margin-top", "auto"); // This will push the button to the bottom
-        addToDrawer(logoutButton);
-    }
+//    private void addLogoutButton() {
+//        Button logoutButton = new Button("Logout", e -> logout());
+//        logoutButton.getElement().getStyle().set("margin-top", "auto"); // This will push the button to the bottom
+//        addToDrawer(logoutButton);
+//    }
 
     public void navigateToLogin() {
         getUI().ifPresent(ui -> ui.navigate("login"));

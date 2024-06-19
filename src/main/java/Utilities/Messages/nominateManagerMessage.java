@@ -7,13 +7,15 @@ import java.util.List;
 
 public class nominateManagerMessage extends Message {
     public String storeID;
+    public String storeName;
     List<String> permissions;
     public String subscriberUsername;
     boolean isSubscribed;
     public String nominatorUsername;
 
-    public nominateManagerMessage(String storeID, List<String> permissions, String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
-        super("Nominate manager message");
+    public nominateManagerMessage(String storeID, String StoreName, List<String> permissions, String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
+        super("Manager nomination request for store: " + StoreName + " from user: " + nominatorUsername + ". Accept or decline?");
+        this.storeName = StoreName;
         this.storeID = storeID;
         this.permissions = permissions;
         this.subscriberUsername = subscriberUsername;
@@ -47,5 +49,9 @@ public class nominateManagerMessage extends Message {
 
     public boolean isSubscribed() {
         return isSubscribed;
+    }
+
+    public String getStoreName() {
+        return storeName;
     }
 }

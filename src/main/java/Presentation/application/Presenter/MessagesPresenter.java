@@ -1,45 +1,61 @@
 package Presentation.application.Presenter;
 
+import Presentation.application.CookiesHandler;
 import Presentation.application.View.MessagesList;
 import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Messages.Message;
+import Utilities.Messages.nominateManagerMessage;
+import Utilities.Messages.nominateOwnerMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Queue;
 
 @Component
 public class MessagesPresenter {
-    MessagesList messagesList;
-    UserService service;
 
+    private MessagesList view;
+    UserService userService;
+    private HttpServletRequest request;
 
-    public MessagesPresenter(){
-        service= ServiceInitializer.getInstance().getUserService();
-
-
+    public MessagesPresenter(HttpServletRequest request){
+        userService = ServiceInitializer.getInstance().getUserService();
+        this.request = request;
     }
+
     public void attachView(MessagesList view) {
-        this.messagesList = view;
+        this.view = view;
     }
 
-    public void popMessage(){
-       MessagesList.getMessages().poll();
-
-
+    public List<Message> initMessages(String user) {
+        // Initialize messages based on the user
+        // This is a placeholder; replace with actual implementation
+        return userService.getMessages(user).getData();
     }
 
-    /**
-     * init all messages
-     * @param user
-     * @return
-     */
-    public Queue<Message> initMessages(String user){
-
-
-        return ServiceInitializer.getInstance().getUserService().getMessages(user).getData();
-
+    public void removeMessage(Message message) {
+        // Implement the logic to remove the message
     }
 
+    public void handleRequest(Message message, boolean answer) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        if (message instanceof nominateManagerMessage) {
+            userService.managerNominationResponse(message.getId(), username, answer, token);
+        }
+        else if (message instanceof nominateOwnerMessage) {
+            userService.ownerNominationResponse(message.getId(), username, answer, token);
+        }
+    }
 
+    public void removeMessageById(String messageId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        userService.removeMessage(username, token, messageId);
+        List<Message> messages = MessagesList.getMessages();
+        messages.removeIf(message -> message.getId().equals(messageId));
+        MessagesList.setMessages(messages);
+    }
 }

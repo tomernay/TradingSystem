@@ -69,8 +69,8 @@ public class InventoryRemoveProductTest {
             userService.register(userName, userName + "Pass123!");
             userService.loginAsSubscriber(userName, userName + "Pass123!");
             Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getUser(userName);
-            userService.SendOwnerNominationRequest(store.getId(), "itay", userName, subscriber.getToken());
-            userService.ownerNominationResponse(userName, true, newSubscriber.getToken());
+            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), "itay", userName, subscriber.getToken());
+            userService.ownerNominationResponse(response.getData(), userName, true, newSubscriber.getToken());
 
             userNames.add(userName);
             tokens.add(newSubscriber.getToken());

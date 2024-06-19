@@ -44,9 +44,9 @@ public class InventoryAddRemoveProductAsStoreOwnerTest {
 
         userService.register("mor", "MorPass123!");
         userService.loginAsSubscriber("mor", "MorPass123!");
-        userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
+        Response<String> res = userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
-        userService.ownerNominationResponse("mor", true, subscriber2.getToken());
+        userService.ownerNominationResponse(res.getData(), "mor", true, subscriber2.getToken());
 
     }
 

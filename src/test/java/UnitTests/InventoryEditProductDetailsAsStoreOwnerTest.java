@@ -35,9 +35,9 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
 
         userService.register("mor","MorPass123!");
         userService.loginAsSubscriber("mor","MorPass123!");
-        userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
+        Response<String> res = userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
-        userService.ownerNominationResponse("mor",true, subscriber2.getToken());
+        userService.ownerNominationResponse(res.getData(), "mor",true, subscriber2.getToken());
 
         //if a product added without category, it will be added to General category
         Response<String> addProductResponse = storeService.addProductToStore(store.getId(), "product1", "product1Dec", 10, 20, "mor", subscriber2.getToken());
