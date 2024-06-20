@@ -31,7 +31,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
     private Grid<ProductDTO> productGrid;
     private Button addProductButton;
     private Button backButton;
-    private String storeId;
+    private Integer storeId;
 
     public ProductManagementView(ProductManagementPresenter presenter) {
         this.presenter = presenter;
@@ -188,7 +188,11 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        storeId = event.getRouteParameters().get("storeId").orElse("");
+        String id = event.getRouteParameters().get("storeId").orElse("");
+        if (id.isEmpty()) {
+            event.rerouteTo("");
+        }
+        storeId = Integer.parseInt(id);
         // Creating the header layout with back button and add product button
         HorizontalLayout headerLayout = new HorizontalLayout();
         headerLayout.setWidthFull();
@@ -197,7 +201,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         headerLayout.setPadding(true);
 
         backButton = new Button("Back to Store Management", event1 -> {
-            RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+            RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
         headerLayout.add(backButton);
@@ -210,7 +214,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         // Setting up the product grid
         productGrid = new Grid<>(ProductDTO.class);
         productGrid.setSizeFull();
-        productGrid.setColumns("name", "description", "price", "quantity");
+        productGrid.setColumns("productName", "description", "price", "quantity");
         productGrid.addColumn(product -> {
             ArrayList<String> categories = product.getCategories();
             return categories != null ? String.join(", ", categories) : "";
@@ -230,7 +234,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         presenter.loadProducts(storeId);
     }
 
-    public String getStoreId() {
+    public Integer getStoreId() {
         return storeId;
     }
 

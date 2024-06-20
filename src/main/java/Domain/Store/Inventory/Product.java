@@ -8,13 +8,13 @@ import Utilities.SystemLogger;
  * Each product has a unique product ID and is associated with a store.
  */
 public class Product {
-    private String storeID;     // The ID of the store to which the product belongs,
+    private Integer storeID;     // The ID of the store to which the product belongs,
     private String storeName;   // The name of the store
-    private int productID;  // The unique ID of the product
+    private Integer productID;  // The unique ID of the product
     private String name;        // The name of the product
     private String desc;        // The description of the product
-    private double price;          // The price of the product
-    private int quantity;       // The quantity of the product available in the inventory
+    private Double price;          // The price of the product
+    private Integer quantity;       // The quantity of the product available in the inventory
     //private ArrayList<String> categories; // The category that a product is related to
 
     /**
@@ -39,57 +39,57 @@ public class Product {
      * Provides methods to set various attributes of the Product.
      */
     public static class Builder {
-        private String storeID;
+        private Integer storeID;
         private String storeName;
         private Integer productID;
         private String name;
         private String desc;
-        private double price;
-        private int quantity;
+        private Double price;
+        private Integer quantity;
     //    public ArrayList<String> categories;
 
-        public Builder(String storeID,String name, int productID) {
+        public Builder(Integer storeID, String name, Integer productID) {
             this.name = name;
             this.storeID = storeID;
             this.productID = productID;
         }
 
-        public Builder storeID(String _storeID) {
-            if (_storeID == null || _storeID.isEmpty()) {
+        public Builder storeID(Integer storeID) {
+            if (storeID == null) {
                 throw new IllegalArgumentException("Store ID cannot be null or empty");
             }
-            this.storeID = _storeID;
+            this.storeID = storeID;
             return this;
         }
 
-        public Builder storeName(String _storeName){
-            this.storeName = _storeName;
+        public Builder storeName(String storeName){
+            this.storeName = storeName;
             return this;
         }
 
-        public Builder productID(Integer _productID) {
-            if (_productID == null) {
+        public Builder productID(Integer productID) {
+            if (productID == null) {
                 throw new IllegalArgumentException("Product ID cannot be null");
             }
-            this.productID = _productID;
+            this.productID = productID;
             return this;
         }
 
-        public Builder name(String _name) {
-            this.name = _name;
+        public Builder name(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder desc(String _desc) {
-            this.desc = _desc;
+        public Builder desc(String desc) {
+            this.desc = desc;
             return this;
         }
 
-        public Builder price(double _price) {
-            if (_price <= 0) {
+        public Builder price(Double price) {
+            if (price <= 0) {
                 throw new IllegalArgumentException("Price must be greater than 0");
             }
-            this.price = _price;
+            this.price = price;
             return this;
         }
 
@@ -116,7 +116,7 @@ public class Product {
     }
 
     // Getters //
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 
@@ -150,8 +150,8 @@ public class Product {
 //    }
 
     // Setters
-    public void setStoreID(String _storeID) {
-        this.storeID = _storeID;
+    public void setStoreID(Integer storeID) {
+        this.storeID = storeID;
     }
 
     public void setStoreName(String storeName) {
@@ -171,9 +171,9 @@ public class Product {
         this.desc = desc;
     }
 
-    public boolean setPrice(double _price) {
-        if(_price > 0){
-            this.price = _price;
+    public boolean setPrice(double price) {
+        if(price > 0){
+            this.price = price;
             return true;
         }
         else {

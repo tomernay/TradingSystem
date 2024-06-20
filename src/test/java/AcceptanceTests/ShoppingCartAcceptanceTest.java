@@ -35,44 +35,44 @@ public class ShoppingCartAcceptanceTest {
 
     @Test
     public void AddProuducdToShoppingcart(){
-        storeService.addProductToStore("0","newProduct","tambal",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,1,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"newProduct","tambal",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"newProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        Response<String> res=userService.addProductToShoppingCart(0,ID,1,"yair12312",buyer.getToken());
         Assert.assertTrue(res.isSuccess());
     }
 
     @Test
     public void AddProuducdNotExistToShoppingcart(){
-        storeService.addProductToStore("0","1","DOG",10, 1,"newOwner",owner.getToken());
-        Response<String> res=userService.addProductToShoppingCart("0","0",1,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"1","DOG",10, 1,"newOwner",owner.getToken());
+        Response<String> res=userService.addProductToShoppingCart(0,0,1,"yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
     }
     @Test
     public void AddProuducdNotExistToShoppingcartAlready(){
-        storeService.addProductToStore("0","newProduct","DOG",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,1,"yair12312",buyer.getToken());
-        Response<String> res1=userService.addProductToShoppingCart("0",ID,1,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"newProduct","DOG",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"newProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        userService.addProductToShoppingCart(0,ID,1,"yair12312",buyer.getToken());
+        Response<String> res1=userService.addProductToShoppingCart(0,ID,1,"yair12312",buyer.getToken());
         Assert.assertFalse(res1.isSuccess());
     }
     @Test
     public void AddProuducdToShoppingcartQuantityZero(){
-        storeService.addProductToStore("0","newProduct","tambal",10, 10,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,0,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"newProduct","tambal",10, 10,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"newProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        Response<String> res=userService.addProductToShoppingCart(0,ID,0,"yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
 
     }
 
     @Test
     public void AddProuducdToShoppingcartQuantityMinos(){
-        storeService.addProductToStore("0","newProduct","tambal",10, 10,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,-1,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"newProduct","tambal",10, 10,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"newProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        Response<String> res=userService.addProductToShoppingCart(0,ID,-1,"yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
 
     }
@@ -80,28 +80,28 @@ public class ShoppingCartAcceptanceTest {
 
     @Test
     public void AddProuducdToShoppingcartShopNotExist(){
-        storeService.addProductToStore("0","newProduct","DOG",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","newProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("10","ID",1,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"newProduct","DOG",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"newProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        Response<String> res=userService.addProductToShoppingCart(10,ID,1,"yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
 
     }
 
     @Test
     public void RemoveProuducdFromShoppingcart(){
-        storeService.addProductToStore("0","ProuducdRemove","DOG",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","ProuducdRemove","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,1,"yair12312",buyer.getToken());
-        Response<String> res1 = userService.removeProductFromShoppingCart("0",ID,"yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"ProuducdRemove","DOG",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"ProuducdRemove","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        userService.addProductToShoppingCart(0,ID,1,"yair12312",buyer.getToken());
+        Response<String> res1 = userService.removeProductFromShoppingCart(0,ID,"yair12312",buyer.getToken());
         Assert.assertTrue(res1.isSuccess());
     }
 
     @Test
     public void RemoveProuducdNotExistromShoppingcart(){
-        storeService.addProductToStore("0","ProuducdNotExist","DOG",10, 1,"newOwner",owner.getToken());
-        Response<String> res = userService.removeProductFromShoppingCart("0","0","yair12312",buyer.getToken());
+        storeService.addProductToStore(0,"ProuducdNotExist","DOG",10, 1,"newOwner",owner.getToken());
+        Response<String> res = userService.removeProductFromShoppingCart(0,0,"yair12312",buyer.getToken());
         Assert.assertFalse(res.isSuccess());
     }
 
@@ -110,31 +110,30 @@ public class ShoppingCartAcceptanceTest {
 
     @Test
     public void EditProductAmountInShoppingcart(){
-        storeService.addProductToStore("0","EditProduct","EditProduct",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,1,"yair12312",buyer.getToken());
-        Response<String> res1 = userService.updateProductInShoppingCart("0",ID,"yair12312",buyer.getToken(),2);
+        storeService.addProductToStore(0,"EditProduct","EditProduct",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"EditProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        userService.addProductToShoppingCart(0,ID,1,"yair12312",buyer.getToken());
+        Response<String> res1 = userService.updateProductInShoppingCart(0,ID,"yair12312",buyer.getToken(),2);
         Assert.assertTrue(res1.isSuccess());
     }
 
     @Test
     public void EditProductNotExistAmountInShoppingcart(){
-        storeService.addProductToStore("0","EditProduct","DOG",10, 1,"newOwner",owner.getToken());
-        Response<String> res=userService.addProductToShoppingCart("0","1",1,"yair12312",buyer.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res1 = userService.updateProductInShoppingCart("0","0","yair12312",buyer.getToken(),2);
+        storeService.addProductToStore(0,"EditProduct","DOG",10, 1,"newOwner",owner.getToken());
+        userService.addProductToShoppingCart(0,1,1,"yair12312",buyer.getToken());
+        storeService.viewProductFromStoreByName(0,"EditProduct","newOwner",owner.getToken());
+        Response<String> res1 = userService.updateProductInShoppingCart(0,0,"yair12312",buyer.getToken(),2);
         Assert.assertFalse(res1.isSuccess());
     }
 
     @Test
     public void EditProductAmountInShoppingcartMinos(){
-        storeService.addProductToStore("0","EditProduct","EditProduct",10, 1,"newOwner",owner.getToken());
-        Response<ProductDTO> resID = storeService.viewProductFromStoreByName("0","EditProduct","newOwner",owner.getToken());
-        String ID = String.valueOf(resID.getData().getProductID());
-        Response<String> res=userService.addProductToShoppingCart("0",ID,1,"yair12312",buyer.getToken());
-        Response<String> res1 = userService.updateProductInShoppingCart("0",ID,"yair12312",buyer.getToken(),-2);
+        storeService.addProductToStore(0,"EditProduct","EditProduct",10, 1,"newOwner",owner.getToken());
+        Response<ProductDTO> resID = storeService.viewProductFromStoreByName(0,"EditProduct","newOwner",owner.getToken());
+        Integer ID = resID.getData().getProductID();
+        userService.addProductToShoppingCart(0,ID,1,"yair12312",buyer.getToken());
+        Response<String> res1 = userService.updateProductInShoppingCart(0,ID,"yair12312",buyer.getToken(),-2);
         Assert.assertFalse(res1.isSuccess());
     }
 

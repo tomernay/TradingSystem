@@ -10,13 +10,13 @@ import java.util.Map;
 
 public class SimpleDiscount implements Discount{
 
-    private String percent;
-    private String productID;
+    private Double percent;
+    private Integer productID;
     private String category;
-    private int discountID;
+    private Integer discountID;
 
 
-    public SimpleDiscount(String percent, String storeID, String productID, String category, int discountID) {
+    public SimpleDiscount(Double percent, Integer productID, String category, Integer discountID) {
         this.percent = percent;
         this.productID = productID;
         this.category = category;
@@ -24,37 +24,35 @@ public class SimpleDiscount implements Discount{
     }
 
 
-    public Response<Double> CalculatorDiscount(List<ProductDTO> products) {
+    public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
         double discount = 0;
-        for (ProductDTO product : products) {
-            if (productID == null || String.valueOf(product.getProductID()).equals(productID)){
+        for (ProductDTO product : products.keySet()) {
+            if (productID == null || product.getProductID().equals(productID)){
                 if (category == null || product.getCategories().contains(category)){
-                        discount += product.getPrice() * Double.parseDouble(percent) * product.getQuantity() / 100;
-                    }
+                    discount += product.getPrice() * percent * products.get(product) / 100;
                 }
             }
+        }
         return new Response<Double>(true,"Calculator Discount",discount);
     }
     @Override
-    public int getDiscountID() {
+    public Integer getDiscountID() {
         return discountID;
     }
     @Override
-    public String getStoreID() {
-        return String.valueOf(discountID);
+    public Integer getStoreID() {
+        return discountID;
     }
     @Override
     public DiscountType getDiscountType() {
         return DiscountType.SIMPLE;
     }
     @Override
-    public String getPercent() {
-        return String.valueOf(percent);
+    public Double getPercent() {
+        return percent;
     }
     @Override
-    public String getProductID() {
-        if (productID == null)
-            return null;
+    public Integer getProductID() {
         return productID;
     }
     @Override

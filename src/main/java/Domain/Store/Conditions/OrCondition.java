@@ -15,12 +15,12 @@ public class OrCondition implements Condition{
         this.condition2 = condition2;
     }
 
-    public boolean isValid(List<ProductDTO> products) {
+    public boolean isValid(Map<ProductDTO, Integer> products) {
         return condition1.isValid(products) || condition2.isValid(products);
     }
 
     @Override
-    public int getConditionID() {
+    public Integer getConditionID() {
         return conditionID;
     }
 
@@ -35,17 +35,17 @@ public class OrCondition implements Condition{
     }
 
     @Override
-    public String getMinAmount() {
+    public Double getMinAmount() {
         return null;
     }
 
     @Override
-    public String getMaxAmount() {
+    public Double getMaxAmount() {
         return null;
     }
 
     @Override
-    public String getAmount() {
+    public Double getAmount() {
         return null;
     }
 
@@ -60,7 +60,7 @@ public class OrCondition implements Condition{
     }
 
     @Override
-    public String getPrice() {
+    public Boolean getPriceIndicator() {
         return null;
     }
 }

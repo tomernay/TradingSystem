@@ -28,7 +28,7 @@ public class InventoryEditProductDetailsAsStoreCreatorTest {
         subscriber = userService.getUserFacade().getUserRepository().getUser("mormor");
 
         storeService.addStore("morStore", "mormor", subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
         //if a product added without category, it will be added to General category
         Response<String> addProductResponse = storeService.addProductToStore(store.getId(), "product1", "product1Dec", 10, 20, "mormor", subscriber.getToken());
     }

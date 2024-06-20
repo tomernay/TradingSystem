@@ -6,14 +6,14 @@ import Utilities.SystemLogger;
 import java.util.List;
 
 public class nominateManagerMessage extends Message {
-    public String storeID;
+    public Integer storeID;
     public String storeName;
     List<String> permissions;
     public String subscriberUsername;
     boolean isSubscribed;
     public String nominatorUsername;
 
-    public nominateManagerMessage(String storeID, String StoreName, List<String> permissions, String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
+    public nominateManagerMessage(Integer storeID, String StoreName, List<String> permissions, String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
         super("Manager nomination request for store: " + StoreName + " from user: " + nominatorUsername + ". Accept or decline?");
         this.storeName = StoreName;
         this.storeID = storeID;
@@ -39,7 +39,7 @@ public class nominateManagerMessage extends Message {
         }
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 

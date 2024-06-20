@@ -1,5 +1,6 @@
 package Presentation.application.View;
 
+import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.Presenter.PaymentPresenter;
 import com.vaadin.flow.component.*;
@@ -19,6 +20,7 @@ import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,8 +30,7 @@ import java.util.concurrent.TimeUnit;
 @PageTitle("Payment")
 @StyleSheet("context://login-view-styles.css")
 public class PaymentView extends VerticalLayout implements HasUrlParameter<String>, BeforeEnterObserver {
-    private static double fee = 10.0;
-    private double totalPrice = 0.0;
+    private Double totalPrice = 0.0;
     private final PaymentPresenter paymentPresenter;
     private TextField cardNumberField;
     private TextField expirationField;
@@ -46,6 +47,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
     private ScheduledExecutorService executor;
     private int timeLeft = 10 * 60; // 10 minutes in seconds
     private UI ui;
+    private List<ProductDTO> products;
 
     public PaymentView(PaymentPresenter paymentPresenter) {
         setClassName("payment-view");
@@ -128,7 +130,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         // Logic to handle payment cancellation
         String token = CookiesHandler.getTokenFromCookies(getRequest());
         String user = CookiesHandler.getUsernameFromCookies(getRequest());
-        paymentPresenter.pay(user, 0, null, "", "", "", "", token, ""); // Added empty string for payment ID
+        paymentPresenter.pay(user, 0.0, products, null, "", "", "", "", token, ""); // Added empty string for payment ID
     }
 
     public boolean hasTimerEnded() {
@@ -176,6 +178,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         if (parameter.isPresent()) {
             setParameter(event, parameter.get());
         }
+        products = paymentPresenter.getProducts();
     }
 
     private Div createCreditCardComponent() {
@@ -291,7 +294,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
                 String zipCode = zipCodeField.getValue();
                 String address = streetAddress + ", " + city + ", " + state + ", " + zipCode;
                 String paymentId = IdField.getValue(); // Get payment ID value
-                paymentPresenter.pay(user, totalPrice, cardNumber, expirationDate, cvv, fullName, address, token, paymentId);
+                paymentPresenter.pay(user, totalPrice, products, cardNumber, expirationDate, cvv, fullName, address, token, paymentId);
             }
         });
         submitButton.getStyle()
@@ -364,9 +367,6 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         Notification.show(message, 3000, Notification.Position.MIDDLE);
     }
 
-    public void setFee(double fee) {
-        this.fee = fee;
-    }
 
     public void navigateToShoppingCart() {
         getUI().ifPresent(ui -> ui.navigate("shopping-cart"));

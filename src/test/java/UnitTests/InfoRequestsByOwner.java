@@ -21,7 +21,7 @@ public class InfoRequestsByOwner {
     StoreService storeService;
     Store store;
     Subscriber subscriber;
-    Response<String> res;
+    Response<Integer> res;
 
 
     //use mock to test the following functions: getOrdersHistory, requestEmployeesStatus,requestManagersPermissions, addStore
@@ -62,12 +62,12 @@ public class InfoRequestsByOwner {
         //subscribe ziv
         userRepository.register("ziv","Password123!");
         userRepository.loginAsSubscriber("ziv","Password123!");
-        Response<String> response = serviceInitializer.getUserService().SendOwnerNominationRequest("0", "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response<Integer> response = serviceInitializer.getUserService().SendOwnerNominationRequest(0, "mia", "ziv", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         serviceInitializer.getUserService().ownerNominationResponse(response.getData(),"ziv",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("ziv").getToken());
         //subscribe dor
         userRepository.register("dor","Password123!");
         userRepository.loginAsSubscriber("dor","Password123!");
-        Response<String> response2 = serviceInitializer.getUserService().SendOwnerNominationRequest("0", "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response<Integer> response2 = serviceInitializer.getUserService().SendOwnerNominationRequest(0, "mia", "dor", serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         serviceInitializer.getUserService().ownerNominationResponse(response2.getData(),"dor",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("dor").getToken());
         //subscribe niv
         userRepository.register("niv","Password123!");
@@ -83,7 +83,7 @@ public class InfoRequestsByOwner {
         perms.add("MANAGE_PRODUCTS");
 
         //send nomination msg
-        Response<String> response = serviceInitializer.getUserService().SendManagerNominationRequest(res.getData(), "mia", "ziv", perms, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
+        Response<Integer> response = serviceInitializer.getUserService().SendManagerNominationRequest(res.getData(), "mia", "ziv", perms, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mia").getToken());
         //accept the msg
         serviceInitializer.getUserService().managerNominationResponse(response.getData(), "ziv",true, serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("ziv").getToken());
 

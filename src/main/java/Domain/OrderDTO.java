@@ -6,15 +6,15 @@ import java.util.Date;
 import java.util.List;
 
 public class OrderDTO {
-    private final int orderID;
-    private final String storeID;
+    private final Integer orderID;
+    private final Integer storeID;
     private final String username;
     private final String deliveryAddress;
     private final Date orderDate;
     private final List<ProductDTO> products;
     private final String status;
 
-    public OrderDTO(int orderID, String storeID, String username, String deliveryAddress, Date orderDate, List<ProductDTO> products, String status) {
+    public OrderDTO(Integer orderID, Integer storeID, String username, String deliveryAddress, Date orderDate, List<ProductDTO> products, String status) {
         this.orderID = orderID;
         this.storeID = storeID;
         this.username = username;
@@ -28,7 +28,7 @@ public class OrderDTO {
         return orderID;
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 

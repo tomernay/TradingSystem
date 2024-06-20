@@ -36,15 +36,15 @@ public class InventoryAddRemoveProductAsStoreOwnerTest {
         subscriber = userService.getUserFacade().getUserRepository().getUser("itay");
         storeService.addStore("itayStore", "itay", subscriber.getToken());
         storeService.addStore("itayStore2", "itay", subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
         inventory = store.getInventory();
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore("1");
+        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
         inventory2 = store2.getInventory();
 
 
         userService.register("mor", "MorPass123!");
         userService.loginAsSubscriber("mor", "MorPass123!");
-        Response<String> res = userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
+        Response<Integer> res = userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.ownerNominationResponse(res.getData(), "mor", true, subscriber2.getToken());
 

@@ -37,15 +37,15 @@ public class InventoryGETproductAtrributesTest {
         subscriber = userService.getUserFacade().getUserRepository().getUser("itay");
         storeService.addStore("itayStore", "itay", subscriber.getToken());
         storeService.addStore("itayStore2", "itay", subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore("1");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
 
         userService.register("mor", "MorPass123!");
         userService.loginAsSubscriber("mor", "MorPass123!");
-        Response<String> res = userService.SendManagerNominationRequest(store.getId(), "itay", "mor", List.of("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), "itay", "mor", List.of("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.managerNominationResponse(res.getData(), "mor", true, subscriber2.getToken());
-        Response<String> res2 = userService.SendManagerNominationRequest(store2.getId(), "itay", "mor", List.of("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        Response<Integer> res2 = userService.SendManagerNominationRequest(store2.getId(), "itay", "mor", List.of("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res2.getData(), "mor", true, subscriber2.getToken());
 
         storeService.addProductToStore(store.getId(), "product1", "product1Dec", 10, 30, "mor", subscriber2.getToken());
@@ -82,12 +82,12 @@ public class InventoryGETproductAtrributesTest {
     @Test
     public void getProductPrice() {
         System.out.println("-----------------------getProductPrice---------------------------------");
-        Response<String> response1 = storeService.getProductPrice(1, store.getId(), "mor", subscriber2.getToken());
-        Assert.assertEquals("10.0", response1.getData());
-        Response<String> response2 = storeService.getProductPrice(4, store.getId(), "mor", subscriber2.getToken());
-        Assert.assertEquals("30.0", response2.getData());
-        Response<String> response3 = storeService.getProductPrice(5, store.getId(), "mor", subscriber2.getToken());
-        Assert.assertEquals("40.0", response3.getData());
+        Response<Double> response1 = storeService.getProductPrice(1, store.getId(), "mor", subscriber2.getToken());
+        Assert.assertEquals(Double.valueOf(10.0), response1.getData());
+        Response<Double> response2 = storeService.getProductPrice(4, store.getId(), "mor", subscriber2.getToken());
+        Assert.assertEquals(Double.valueOf(30.0), response2.getData());
+        Response<Double> response3 = storeService.getProductPrice(5, store.getId(), "mor", subscriber2.getToken());
+        Assert.assertEquals(Double.valueOf(40.0), response3.getData());
     }
 
     @Test

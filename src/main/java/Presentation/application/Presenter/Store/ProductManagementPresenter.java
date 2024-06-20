@@ -28,14 +28,14 @@ public class ProductManagementPresenter {
         this.view = view;
     }
 
-    public void loadProducts(String storeID) {
+    public void loadProducts(Integer storeID) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         List<ProductDTO> products = storeService.getAllProductsFromStore(storeID, username, token).getData();
         view.setProducts(products);
     }
 
-    public void addProduct(String name, String description, double price, int quantity, Set<String> categories) {
+    public void addProduct(String name, String description, Double price, Integer quantity, Set<String> categories) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res;
@@ -55,49 +55,49 @@ public class ProductManagementPresenter {
         }
     }
 
-    public void updateProductName(int productId, String name) {
+    public void updateProductName(Integer productId, String name) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.setProductName(productId, name, view.getStoreId(), username, token);
         handleResponse(res);
     }
 
-    public void updateProductDescription(int productId, String description) {
+    public void updateProductDescription(Integer productId, String description) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.setProductDescription(productId, description, view.getStoreId(), username, token);
         handleResponse(res);
     }
 
-    public void updateProductPrice(int productId, double price) {
+    public void updateProductPrice(Integer productId, Double price) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.setProductPrice(productId, price, view.getStoreId(), username, token);
         handleResponse(res);
     }
 
-    public void updateProductQuantity(int productId, int quantity) {
+    public void updateProductQuantity(Integer productId, Integer quantity) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.setProductQuantity(productId, quantity, view.getStoreId(), username, token);
         handleResponse(res);
     }
 
-    public void addProductCategory(int productId, String category) {
+    public void addProductCategory(Integer productId, String category) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.assignProductToCategory(productId, category, view.getStoreId(), username, token);
         handleResponse(res);
     }
 
-    public void removeProductCategory(int productId, String category) {
+    public void removeProductCategory(Integer productId, String category) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.removeProductFromCategory(productId, category, view.getStoreId(), username, token);
         handleResponse(res);
     }
 
-    public void removeProduct(int id) {
+    public void removeProduct(Integer id) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> res = storeService.removeProductFromStore(id, view.getStoreId(), username, token);
@@ -112,12 +112,12 @@ public class ProductManagementPresenter {
         }
     }
 
-    public boolean hasPermission(String storeId, String permission) {
+    public boolean hasPermission(Integer storeId, String permission) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         return storeService.hasPermission(storeId, username, permission);
     }
 
-    public boolean isActiveStore(String storeId) {
+    public boolean isActiveStore(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.isStoreActive(storeId, username, token);

@@ -38,7 +38,7 @@ public class StoreRoleTests {
         subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
 
         storeService.addStore("yairStore","yair12312",subscriber.getToken());
-        store=storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store=storeService.getStoreFacade().getStoreRepository().getStore(0);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
@@ -71,7 +71,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendOwnerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), owner.getToken());
+                    Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), owner.getToken());
                     if (nominationSucceeded.get()) {
                         // If another thread has already succeeded, this thread should fail
                         Assert.assertFalse(response.isSuccess());
@@ -112,7 +112,7 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
@@ -130,7 +130,7 @@ public class StoreRoleTests {
             Runnable task = () -> {
                 try {
                     latch.await();
-                    Response<String> response = userService.SendManagerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), owner.getToken());
+                    Response<Integer> response = userService.SendManagerNominationRequest(store.getId(), owner.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), owner.getToken());
                     if (nominationSucceeded.compareAndSet(false, true)) {
                         Assert.assertTrue(response.isSuccess());
                     } else {
@@ -164,11 +164,11 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
+        Response<Integer> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads
@@ -219,11 +219,11 @@ public class StoreRoleTests {
             owners.add(userService.getUserFacade().getUserRepository().getUser(username));
 
             // Original owner nominates new owner
-            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
+            Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
             userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
         }
 
-        Response<String> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS"), subscriber.getToken());
+        Response<Integer> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS"), subscriber.getToken());
         userService.managerNominationResponse(response.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
 
         // Create a list of threads

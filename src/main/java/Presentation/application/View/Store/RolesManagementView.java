@@ -32,7 +32,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
     private final MultiSelectComboBox<String> roleFilter;
     private final TextField usernameFilter;
     private HorizontalLayout filterAndButtonLayout;  // Declare filterAndButtonLayout as a class member
-    private String storeId;
+    private Integer storeId;
 
     public RolesManagementView(RolesManagementPresenter presenter) {
         this.presenter = presenter;
@@ -80,7 +80,11 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        storeId = event.getRouteParameters().get("storeId").orElse("");
+        String id = event.getRouteParameters().get("storeId").orElse("");
+        if (id.isEmpty()) {
+            event.rerouteTo("");
+        }
+        storeId = Integer.parseInt(id);
         initButtonLayout();
         updateRoles();
     }
@@ -108,7 +112,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         }
         // Back to Store Management button
         Button backButton = new Button("Back to Store Management", event -> {
-            RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+            RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
         backButton.addClassName("back-button");  // Adding class for custom styling

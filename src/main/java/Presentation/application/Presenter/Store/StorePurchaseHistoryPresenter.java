@@ -26,7 +26,7 @@ public class StorePurchaseHistoryPresenter {
         this.storePurchaseHistory = view;
     }
 
-    public void getStoreHistory(String storeID, Grid<OrderDTO> ordersGrid) {
+    public void getStoreHistory(Integer storeID, Grid<OrderDTO> ordersGrid) {
         if (storeID == null) {
             Notification.show("Please enter a Store ID");
             return;
@@ -40,7 +40,7 @@ public class StorePurchaseHistoryPresenter {
         }
     }
 
-    public void fetchStoreHistory(String storeID, Grid<OrderDTO> ordersGrid) {
+    public void fetchStoreHistory(Integer storeID, Grid<OrderDTO> ordersGrid) {
         getStoreHistory(storeID, ordersGrid);
     }
 }

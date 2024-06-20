@@ -7,19 +7,19 @@ import java.util.Date;
 import java.util.UUID;
 
 public abstract class Message implements Serializable {
-    private final String id;
+    private final Integer id;
     protected String message;
     protected Date date;
     protected boolean read;
 
     public Message(String message) {
-        this.id = UUID.randomUUID().toString(); // Generate a unique ID
+        this.id = UUID.randomUUID().hashCode();
         this.message = message;
         this.date = new Date();
         this.read = false; // Default to unread
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 

@@ -8,72 +8,32 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.Objects;
 
 public class PolicyBox extends VerticalLayout {
-    private String ID;
+    private final Integer ID;
     private StoreManagementPresenter presenter;
     private CreateDiscountDialog parentDialog;
-    private String storeId;
-    private String type; // SIMPLE / COMPLEX / CONDITION
-    private String policyType; // Category / Product / Price
-    private String category;
-    private String productId;
-    private String quantityType;
-    private String quantity;
-    private String minQuantity;
-    private String maxQuantity;
-    private String price;
-    private String minPrice;
-    private String maxPrice;
+    private Integer storeId;
+    private final String type; // SIMPLE / COMPLEX / CONDITION
+    private final String policyType; // Category / Product / Price
+    private final String category;
+    private final Integer productId;
+    private final String quantityType;
+    private final Double quantity;
+    private final Double minQuantity;
+    private final Double maxQuantity;
+    private final Double price;
+    private final Double minPrice;
+    private final Double maxPrice;
     private PolicyBox policy1;
     private PolicyBox policy2;
     private String policyConditionType;
-    private String productName;
+    private final String productName;
     private boolean isExpanded = false;
-    private Div detailsDiv = new Div();
+    private final Div detailsDiv = new Div();
 
-    // Constructor for simple policy
-    public PolicyBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String ID, String storeId, String type, String policyType, String category, String productId, String quantityType, String quantity, String minQuantity, String maxQuantity, String price, String minPrice, String maxPrice, String productName) {
+    public PolicyBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, Integer storeId, ConditionDTO conditionDTO) {
         this.presenter = presenter;
         this.parentDialog = parentDialog;
-        this.ID = ID;
-        this.storeId = storeId;
-        this.type = type;
-        this.policyType = policyType;
-        this.category = category;
-        this.productId = productId;
-        this.quantityType = quantityType;
-        this.quantity = quantity;
-        this.minQuantity = minQuantity;
-        this.maxQuantity = maxQuantity;
-        this.price = price;
-        this.minPrice = minPrice;
-        this.maxPrice = maxPrice;
-        this.productName = productName;
-        setHeight("auto");
-        setWidthFull();
-        setStyle();
-        displayPolicyInfo();
-    }
-
-    // Constructor for complex policy
-    public PolicyBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String ID, String storeId, String type, PolicyBox policy1, PolicyBox policy2, String policyConditionType) {
-        this.presenter = presenter;
-        this.parentDialog = parentDialog;
-        this.ID = ID;
-        this.storeId = storeId;
-        this.type = type;
-        this.policy1 = policy1;
-        this.policy2 = policy2;
-        this.policyConditionType = policyConditionType;
-        setHeight("auto");
-        setWidthFull();
-        setStyle();
-        displayPolicyInfo();
-    }
-
-    public PolicyBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String storeId, ConditionDTO conditionDTO) {
-        this.presenter = presenter;
-        this.parentDialog = parentDialog;
-        this.ID = String.valueOf(conditionDTO.getConditionID());
+        this.ID = conditionDTO.getConditionID();
         this.storeId = storeId;
         this.type = conditionDTO.getDiscountType();
         this.policyType = determinePolicyType(conditionDTO);
@@ -275,13 +235,13 @@ public class PolicyBox extends VerticalLayout {
     // Method to convert to DTO (data transfer object)
     public ConditionDTO toDTO() {
         if (Objects.equals(policyType, "Category") || Objects.equals(policyType, "Product")) {
-            return new ConditionDTO(Integer.parseInt(ID), productId, productName, category, type, quantity, minQuantity, maxQuantity, null, null, null, null, null);
+            return new ConditionDTO(ID, productId, productName, category, type, quantity, minQuantity, maxQuantity, null, null, null, null, null);
         } else if (Objects.equals(policyType, "Price")) {
-            return new ConditionDTO(Integer.parseInt(ID), productId, productName, category, type, price, minPrice, maxPrice, "1.0", null, null, null, null);
+            return new ConditionDTO(ID, productId, productName, category, type, price, minPrice, maxPrice, true, null, null, null, null);
         } else if (Objects.equals(type, "Complex")) {
-            return new ConditionDTO(Integer.parseInt(ID), null, null, null, type, null, null, null, null, policy1.toDTO(), policy2.toDTO(), null, policyConditionType);
+            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), policy2.toDTO(), null, policyConditionType);
         } else {
-            return new ConditionDTO(Integer.parseInt(ID), null, null, null, type, null, null, null, null, policy1.toDTO(), null, policy2.toDTO(), null);
+            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), null, policy2.toDTO(), null);
         }
     }
 
@@ -290,7 +250,7 @@ public class PolicyBox extends VerticalLayout {
         return getDetailedInfo(); // or any other meaningful representation
     }
 
-    public String getID() {
+    public Integer getID() {
         return ID;
     }
 }

@@ -40,7 +40,7 @@ public class InventoryRemoveProductTest {
         userService.loginAsSubscriber("itay", "ItayPass123!");
         subscriber = userService.getUserFacade().getUserRepository().getUser("itay");
         storeService.addStore("itayStore", "itay", subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
 
         // Adding 5 products to the store
         for (int i = 1; i <= 5; i++) {
@@ -69,7 +69,7 @@ public class InventoryRemoveProductTest {
             userService.register(userName, userName + "Pass123!");
             userService.loginAsSubscriber(userName, userName + "Pass123!");
             Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getUser(userName);
-            Response<String> response = userService.SendOwnerNominationRequest(store.getId(), "itay", userName, subscriber.getToken());
+            Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), "itay", userName, subscriber.getToken());
             userService.ownerNominationResponse(response.getData(), userName, true, newSubscriber.getToken());
 
             userNames.add(userName);

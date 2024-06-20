@@ -2,7 +2,6 @@ package Presentation.application.View.Store;
 
 import Presentation.application.Presenter.Store.StoreManagementPresenter;
 import Presentation.application.View.MainLayoutView;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -20,9 +19,9 @@ import Domain.Store.Inventory.ProductDTO;
 @StyleSheet("context://login-view-styles.css")
 public class StoreManagementView extends VerticalLayout implements BeforeEnterObserver {
 
-    private Div content;
-    private String storeId;
-    private StoreManagementPresenter presenter;
+    private final Div content;
+    private Integer storeId;
+    private final StoreManagementPresenter presenter;
 
     public StoreManagementView(StoreManagementPresenter presenter) {
         content = new Div();
@@ -76,18 +75,13 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
     }
 
     private void navigateToRolesManagement() {
-        RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+        RouteParameters routeParameters = new RouteParameters("storeId", String.valueOf(storeId));
         UI.getCurrent().navigate(RolesManagementView.class, routeParameters);
     }
 
     private void navigateToProductManagement() {
-        RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+        RouteParameters routeParameters = new RouteParameters("storeId", String.valueOf(storeId));
         UI.getCurrent().navigate(ProductManagementView.class, routeParameters);
-    }
-
-    private void setContent(Component component) {
-        content.removeAll();
-        content.add(component);
     }
 
     private void openCreateDiscountDialog() {
@@ -98,7 +92,8 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        storeId = event.getRouteParameters().get("storeId").orElse("");
+        String id = event.getRouteParameters().get("storeId").orElse("");
+        storeId = Integer.parseInt(id);
         VerticalLayout buttonLayout = new VerticalLayout();
         if (presenter.hasPermission(storeId, "VIEW_PRODUCTS")) {
             Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
@@ -115,7 +110,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         if (presenter.hasPermission(storeId, "VIEW_PURCHASE_HISTORY")) {
             Button viewPurchaseHistoryButton = new Button("View Purchase History");
             viewPurchaseHistoryButton.addClickListener(event1 -> {
-                String storeId = this.storeId;
+                Integer storeId = this.storeId;
                         getUI().ifPresent(ui -> ui.navigate("orders/" + storeId));
             });
             buttonLayout.add(viewPurchaseHistoryButton);

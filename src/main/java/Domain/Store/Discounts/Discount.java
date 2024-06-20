@@ -13,13 +13,13 @@ public interface Discount {
 
 
 
-    public Response<Double> CalculatorDiscount(List<ProductDTO> products);
+    public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products);
 
-    public int getDiscountID();
-    public String getStoreID();
+    public Integer getDiscountID();
+    public Integer getStoreID();
     public DiscountType getDiscountType();
-    public String getPercent();
-    public String getProductID();
+    public Double getPercent();
+    public Integer getProductID();
     public String getCategory();
     public Discount getDiscount1();
     public Discount getDiscount2();

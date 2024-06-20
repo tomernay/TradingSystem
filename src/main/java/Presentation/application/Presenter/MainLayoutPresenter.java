@@ -110,7 +110,7 @@ public class MainLayoutPresenter {
         checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        Response<String> response = storeService.addStore(storeName, username, token);
+        Response<Integer> response = storeService.addStore(storeName, username, token);
         if(response.isSuccess()){
             view.addStoreSuccess();
         }
@@ -119,9 +119,9 @@ public class MainLayoutPresenter {
         }
     }
 
-    public List<String> getStoresIds(){
+    public List<Integer> getStoresIds(){
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<Map<String, String>> storesRole = userService.getStoresRole(username);
+        Response<Map<Integer, String>> storesRole = userService.getStoresRole(username);
         if (storesRole.isSuccess()) {
             return new ArrayList<>(storesRole.getData().keySet());
         }
@@ -129,11 +129,11 @@ public class MainLayoutPresenter {
     }
 
     //get store name by id
-    public List<String> getStores(List<String> storesIds){
+    public List<String> getStores(List<Integer> storesIds){
         List<String> stores = new ArrayList<>();
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        for(String storeID : storesIds){
+        for(Integer storeID : storesIds){
             Response<String> storeName = storeService.getStoreNameByID(storeID, username, token);
             if(storeName.isSuccess()){
                 stores.add(storeName.getData());
@@ -145,7 +145,7 @@ public class MainLayoutPresenter {
     }
 
     public List<String> getUsersStores(){
-        List<String> ids = getStoresIds();
+        List<Integer> ids = getStoresIds();
         return getStores(ids);
     }
 
@@ -207,18 +207,18 @@ public class MainLayoutPresenter {
         return storeService.viewProductFromAllStoresByName(searchTerm, username, token);
     }
 
-    public String getStoreIdByName(String storeName) {
+    public Integer getStoreIdByName(String storeName) {
         checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        Response<String> response = storeService.getStoreIDbyName(storeName, username, token);
+        Response<Integer> response = storeService.getStoreIDbyName(storeName, username, token);
         if (response.isSuccess()) {
             return response.getData();
         }
         return null;
     }
 
-    public boolean isStoreActive(String storeID) {
+    public boolean isStoreActive(Integer storeID) {
         checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);

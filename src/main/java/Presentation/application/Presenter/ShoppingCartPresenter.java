@@ -35,7 +35,7 @@ public class ShoppingCartPresenter {
         this.view = view;
     }
 
-    public void removeProductFromCart(String productId, String storeId, String username) {
+    public void removeProductFromCart(Integer productId, Integer storeId, String username) {
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<String> response = userService.removeProductFromShoppingCart(storeId, productId, username, token);
         if (response.isSuccess()) {
@@ -50,21 +50,20 @@ public class ShoppingCartPresenter {
     public void getShoppingCartContents() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<Map<String, List<ProductDTO>>> response = userService.getShoppingCartContents(username, token);
+        Response<Map<Integer, Map<Integer, Integer>>> response = userService.getShoppingCartContents(username, token);
         if (response.isSuccess()) {
-            Map<String, List<ProductDTO>> products = response.getData();
+            Map<Integer, Map<Integer, Integer>> products = response.getData();
             productList.clear(); // Clear existing items
             products.forEach((storeID, storeProducts) -> {
-                storeProducts.forEach(product -> {
-//                    Response<ProductDTO> productResponse = storeService.viewProductFromStoreByID(Integer.parseInt(productID), storeID, username, token);
-//                    if (productResponse.isSuccess()) {
-//                        ProductDTO product = product;
-                        product.setQuantity(product.getQuantity()); // Set quantity in the DTO
-                        productList.add(product);
-//                    }
-//                    else {
-//                        view.showError("Error fetching product details: " + productResponse.getMessage());
-//                    }
+                storeProducts.forEach((product, quantity) -> {
+                    Response<ProductDTO> productResponse = storeService.viewProductFromStoreByID(product, storeID, username, token);
+                    if (productResponse.isSuccess()) {
+                        ProductDTO productDTO = productResponse.getData();
+                        productDTO.setQuantity(quantity); // Set quantity in the DTO
+                        productList.add(productDTO);
+                    } else {
+                        view.showError("Error fetching product details: " + productResponse.getMessage());
+                    }
                 });
             });
             view.updateCartGrid(productList); // Update the view with grouped grids
@@ -101,7 +100,7 @@ public class ShoppingCartPresenter {
     public void checkout() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<String> response = userService.lockShoppingCart(username, token);
+        Response<List<ProductDTO>> response = userService.lockShoppingCart(username, token);
         if (response.isSuccess()) {
             view.navigateToPayment(this.totalPrice);
         } else {
@@ -123,8 +122,8 @@ public class ShoppingCartPresenter {
         updateTotalPriceInCart();
     }
 
-    public void removeCartItem(String productId) {
-        productList.removeIf(item -> item.getProductID().toString().equals(productId));
+    public void removeCartItem(Integer productId) {
+        productList.removeIf(item -> item.getProductID().equals(productId));
         view.updateCartGrid(productList); // Update the view with grouped grids
     }
 
@@ -132,14 +131,14 @@ public class ShoppingCartPresenter {
         return CookiesHandler.getUsernameFromCookies(request);
     }
 
-    public void updateProductQuantityInCart(String productId, String storeId, int quantity, String username) {
+    public void updateProductQuantityInCart(Integer productId, Integer storeId, Integer quantity, String username) {
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<String> response = userService.updateProductQuantityInCart(storeId, productId, quantity, username, token);
         if (response.isSuccess()) {
             view.showSuccess(response.getData());
             // Update the local quantity in the productList
             productList.stream()
-                    .filter(item -> item.getProductID().toString().equals(productId) && item.getStoreID().equals(storeId))
+                    .filter(item -> item.getProductID().equals(productId) && item.getStoreID().equals(storeId))
                     .findFirst()
                     .ifPresent(item -> item.setQuantity(quantity));
             view.updateCartGrid(productList); // Update the view with grouped grids

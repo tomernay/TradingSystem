@@ -37,14 +37,14 @@ public class StoreService {
      * @param token the token of the creator
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addStore(String storeName, String creatorUsername, String token) {
+    public Response<Integer> addStore(String storeName, String creatorUsername, String token) {
         SystemLogger.info("[START] User: " + creatorUsername + " is trying to create a store with name: " + storeName);
         if (userService.isValidToken(token, creatorUsername)) {
             if (adminService.isSuspended(creatorUsername)) {
                 SystemLogger.error("[ERROR] User: " + creatorUsername + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            Response<String> response =  storeFacade.openStore(storeName, creatorUsername);
+            Response<Integer> response =  storeFacade.openStore(storeName, creatorUsername);
             if (response.isSuccess()) {
                 userService.addCreatorRole(creatorUsername, response.getData());
                 return response;
@@ -61,7 +61,7 @@ public class StoreService {
      * @param username the username of the user
      * @return If the user is the owner of the store, returns true. <br> If not, returns false.
      */
-    public boolean isStoreOwner(String storeID, String username) {
+    public boolean isStoreOwner(Integer storeID, String username) {
         return storeFacade.isStoreOwner(storeID, username);
     }
 
@@ -71,7 +71,7 @@ public class StoreService {
      * @param username the username of the user
      * @return If the user is a manager of the store, returns true. <br> If not, returns false.
      */
-    public boolean isStoreManager(String storeID, String username) {
+    public boolean isStoreManager(Integer storeID, String username) {
         return storeFacade.isStoreManager(storeID, username);
     }
 
@@ -81,7 +81,7 @@ public class StoreService {
      * @param username the username of the user
      * @return If the user is the creator of the store, returns true. <br> If not, returns false.
      */
-    public boolean isStoreCreator(String storeID, String username) {
+    public boolean isStoreCreator(Integer storeID, String username) {
         return storeFacade.isStoreCreator(storeID, username);
     }
 
@@ -92,7 +92,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> closeStore(String storeID, String username, String token) {
+    public Response<String> closeStore(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to close store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -118,7 +118,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addManagerPermissions(String storeID, String username, String managerUsername, String permission, String token) {
+    public Response<String> addManagerPermissions(Integer storeID, String username, String managerUsername, String permission, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add permissions: " + permission + " to " + managerUsername);
         if (userService.isValidToken(token, username)) {
             if (!userService.userExists(managerUsername)) {
@@ -144,7 +144,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> removeManagerPermissions(String storeID, String username, String managerUsername, String permission, String token) {
+    public Response<String> removeManagerPermissions(Integer storeID, String username, String managerUsername, String permission, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to remove permissions: " + permission + " from " + managerUsername);
         if (userService.isValidToken(token, username)) {
             if (!userService.userExists(managerUsername)) {
@@ -168,7 +168,7 @@ public class StoreService {
      * @param nominator the username of the nominator
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> nominateOwner(String storeID, String nominee, String nominator) {
+    public Response<String> nominateOwner(Integer storeID, String nominee, String nominator) {
         return storeFacade.nominateOwner(storeID, nominee, nominator);
     }
 
@@ -180,7 +180,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> removeStoreSubscription(String storeID, String currentUsername, String subscriberUsername, String token) {
+    public Response<String> removeStoreSubscription(Integer storeID, String currentUsername, String subscriberUsername, String token) {
         SystemLogger.info("[START] User: " + currentUsername + " is trying to remove " + subscriberUsername + " subscription from store: " + storeID);
         if (userService.isValidToken(token, currentUsername)) {
             if (!userService.userExists(subscriberUsername)) {
@@ -205,7 +205,7 @@ public class StoreService {
      * @param nominator the username of the nominator
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> nominateManager(String storeID, String nominee, List<String> permissions, String nominator) {
+    public Response<String> nominateManager(Integer storeID, String nominee, List<String> permissions, String nominator) {
         return storeFacade.nominateManager(storeID, nominee, permissions, nominator);
     }
 
@@ -214,7 +214,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If successful, returns a map of the employees and their status. <br> If not, returns an error message.
      */
-    public synchronized Response<Map<String, String>> requestEmployeesStatus(String storeID) {
+    public synchronized Response<Map<String, String>> requestEmployeesStatus(Integer storeID) {
         return storeFacade.requestEmployeesStatus(storeID);
     }
 
@@ -223,7 +223,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If successful, returns a map of the managers and their permissions. <br> If not, returns an error message.
      */
-    public synchronized Response<Map<String, List<String>>> requestManagersPermissions(String storeID) {
+    public synchronized Response<Map<String, List<String>>> requestManagersPermissions(Integer storeID) {
         return storeFacade.requestManagersPermissions(storeID);
     }
 
@@ -233,7 +233,7 @@ public class StoreService {
      * @param username the username of the user (store's owner)
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<Set<String>> waiveOwnership(String storeID, String username) {
+    public Response<Set<String>> waiveOwnership(Integer storeID, String username) {
         return storeFacade.waiveOwnership(storeID, username);
     }
 
@@ -244,7 +244,7 @@ public class StoreService {
      * @param nominee the username of the nominee
      * @return If successful, returns an owner nomination message. <br> If not, returns an error message.
      */
-    public Response<Message> makeNominateOwnerMessage(String storeID, String nominator, String nominee) {
+    public Response<Message> makeNominateOwnerMessage(Integer storeID, String nominator, String nominee) {
         return storeFacade.makeNominateOwnerMessage(storeID, nominator, nominee);
     }
 
@@ -256,11 +256,11 @@ public class StoreService {
      * @param permissions the permissions of the new manager
      * @return If successful, returns a manager nomination message. <br> If not, returns an error message.
      */
-    public Response<Message> makeNominateManagerMessage(String storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
+    public Response<Message> makeNominateManagerMessage(Integer storeID, String currentUsername, String subscriberUsername, List<String> permissions) {
         return storeFacade.makeNominateManagerMessage(storeID, currentUsername, subscriberUsername, permissions);
     }
 
-    public boolean storeExists(String storeID) {
+    public boolean storeExists(Integer storeID) {
         return storeFacade.storeExists(storeID);
     }
 
@@ -277,7 +277,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> setProductQuantity(int productID, int quantity, String storeID, String username, String token) {
+    public Response<String> setProductQuantity(int productID, int quantity, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set quantity of product: " + productID + " to: " + quantity);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -299,7 +299,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addProductQuantity(int productID, int amountToAdd, String storeID, String username, String token) {
+    public Response<String> addProductQuantity(int productID, int amountToAdd, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add quantity of product: " + productID + " by: " + amountToAdd);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -320,7 +320,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the quantity of the product. <br> If not, returns an error message.
      */
-    public Response<String> getProductQuantity(int productID, String storeID, String username, String token) {
+    public Response<String> getProductQuantity(int productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get quantity of product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getProductQuantity(productID, storeID, username);
@@ -337,7 +337,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the name of the product. <br> If not, returns an error message.
      */
-    public Response<String> getProductName(int productID, String storeID, String username, String token) {
+    public Response<String> getProductName(int productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product name of product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getProductName(productID, storeID, username);
@@ -355,7 +355,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> setProductName(int productID, String newName, String storeID, String username, String token) {
+    public Response<String> setProductName(int productID, String newName, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product name of product: " + productID + " to: " + newName);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -376,7 +376,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the price of the product. <br> If not, returns an error message.
      */
-    public Response<String> getProductPrice(int productID, String storeID, String username, String token) {
+    public Response<Double> getProductPrice(Integer productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product price of product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getProductPrice(productID, storeID, username);
@@ -394,7 +394,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> setProductPrice(int productID, double newPrice, String storeID, String username, String token) {
+    public Response<String> setProductPrice(int productID, double newPrice, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product price of product: " + productID + " to: " + newPrice);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -415,7 +415,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the description of the product. <br> If not, returns an error message.
      */
-    public Response<String> getProductDescription(int productID, String storeID, String username, String token) {
+    public Response<String> getProductDescription(int productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product description of product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getProductDescription(productID, storeID, username);
@@ -433,7 +433,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> setProductDescription(int productID, String newDescription, String storeID, String username, String token) {
+    public Response<String> setProductDescription(int productID, String newDescription, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to set product description of product: " + productID + " to: " + newDescription);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -454,7 +454,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of products. <br> If not, returns an error message.
      */
-    public Response<ArrayList<ProductDTO>> retrieveProductsByCategoryFrom_OneStore(String storeID, String category, String username, String token) {
+    public Response<ArrayList<ProductDTO>> retrieveProductsByCategoryFrom_OneStore(Integer storeID, String category, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to retrieve products by category: " + category);
         if (userService.isValidToken(token, username)) {
             return storeFacade.retrieveProductsByCategoryFrom_OneStore(storeID, category, username);
@@ -471,7 +471,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the categories of the product. <br> If not, returns an error message.
      */
-    public Response<String> retrieveProductCategories(int productID, String storeID, String username, String token) {
+    public Response<String> retrieveProductCategories(int productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to retrieve categories of product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.retrieveProductCategories(productID, storeID, username);
@@ -489,7 +489,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> assignProductToCategory(int productID, String category, String storeID, String username, String token) {
+    public Response<String> assignProductToCategory(int productID, String category, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to assign product: " + productID + " to category: " + category);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -510,7 +510,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> removeCategoryFromStore(String storeID, String category, String username, String token) {
+    public Response<String> removeCategoryFromStore(Integer storeID, String category, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to remove category: " + category);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -531,7 +531,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the product. <br> If not, returns an error message.
      */
-    public Response<ProductDTO> viewProductFromStoreByID(int productID, String storeID, String username, String token) {
+    public Response<ProductDTO> viewProductFromStoreByID(int productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product: " + productID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getProductFromStore(productID, storeID, username);
@@ -547,7 +547,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of products. <br> If not, returns an error message.
      */
-    public Response<ArrayList<ProductDTO>> getAllProductsFromStore(String storeID, String username, String token) {
+    public Response<ArrayList<ProductDTO>> getAllProductsFromStore(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get all products from store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getAllProductsFromStore(storeID, username);
@@ -563,7 +563,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of categories. <br> If not, returns an error message.
      */
-    public Response<String> getStoreIDbyName(String storeName, String username, String token) {
+    public Response<Integer> getStoreIDbyName(String storeName, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get storeID by storeName: " + storeName);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getStoreIDbyName(storeName, username);
@@ -584,7 +584,7 @@ public class StoreService {
      * @return If successful, returns a success message. <br> If not, returns an error message.
      * category = "General", by default
      */
-    public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, String username, String token) {
+    public Response<String> addProductToStore(Integer storeID, String name, String desc, double price, int quantity, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -609,7 +609,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addProductToStore(String storeID, String name, String desc, double price, int quantity, ArrayList<String> categories, String username, String token) {
+    public Response<String> addProductToStore(Integer storeID, String name, String desc, double price, int quantity, ArrayList<String> categories, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add product: " + name + " to store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -630,7 +630,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> removeProductFromStore(int productID, String storeID, String username, String token) {
+    public Response<String> removeProductFromStore(int productID, Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to remove product: " + productID + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -651,7 +651,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the product. <br> If not, returns an error message.
      */
-    public Response<ProductDTO> viewProductFromStoreByName(String storeID, String productName, String username, String token) {
+    public Response<ProductDTO> viewProductFromStoreByName(Integer storeID, String productName, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get product: " + productName + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.viewProductFromStoreByName(storeID, productName, username);
@@ -668,7 +668,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the name of the store. <br> If not, returns an error message.
      */
-    public Response<String> getStoreNameByID(String storeID, String username, String token) {
+    public Response<String> getStoreNameByID(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get storeName by storeID: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getStoreNameByID(storeID, username);
@@ -684,7 +684,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the store. <br> If not, returns an error message.
      */
-    public Response<StoreDTO> getStoreByID(String storeID, String username, String token) {
+    public Response<StoreDTO> getStoreByID(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to search store by storeID: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getStoreByID(storeID, username);
@@ -699,7 +699,7 @@ public class StoreService {
      * @param username the username of the user
      * @return If the user is a subscriber of the store, returns true. <br> If not, returns false.
      */
-    public boolean isStoreSubscriber(String storeID, String username) {
+    public boolean isStoreSubscriber(Integer storeID, String username) {
         return storeFacade.isStoreSubscriber(storeID, username);
     }
 
@@ -708,7 +708,7 @@ public class StoreService {
      * @param storeID the ID of the store
      * @return If the manager has that permission, returns true. <br> If not, returns false.
      */
-    public boolean hasPermission(String storeID, String username, String permission) {
+    public boolean hasPermission(Integer storeID, String username, String permission) {
         return storeFacade.hasPermission(storeID, username, permission);
     }
 
@@ -720,7 +720,7 @@ public class StoreService {
         return storeFacade.getPermissionsList();
     }
 
-    public Response<String> isProductExist(String storeID, String productID) {
+    public Response<String> isProductExist(Integer storeID, Integer productID) {
         return storeFacade.isProductExist(storeID, productID);
     }
 
@@ -744,7 +744,7 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> isCategoryExist(String storeID, String category, String UserName, String token) {
+    public Response<String> isCategoryExist(Integer storeID, String category, String UserName, String token) {
         SystemLogger.info("[START] User: " + UserName + " is trying to check if category: " + category + " exists in store: " + storeID);
         if (userService.isValidToken(token, UserName)) {
             return storeFacade.isCategoryExist(storeID, category);
@@ -783,7 +783,7 @@ public class StoreService {
      * @param percent the percent of the discount
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> CreateDiscountSimple(String username, String token, String productID, String storeID, String category, String percent) {
+    public Response<String> CreateDiscountSimple(String username, String token, Integer productID, Integer storeID, String category, Double percent) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -799,16 +799,16 @@ public class StoreService {
 
 
 
-    public Response<String> LockProducts(Map<String, List<ProductDTO>> shoppingCart) {
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         return storeFacade.LockProducts(shoppingCart);
     }
 
 
-    public Response<String> CalculateDiscounts(Map<String, List<ProductDTO>> shoppingCart) {
+    public Response<String> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         return storeFacade.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> unlockProductsBackToStore(Map<String, List<ProductDTO>> shoppingCart) {
+    public Response<String> unlockProductsBackToStore(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         return storeFacade.unlockProductsBackToStore(shoppingCart);
     }
 
@@ -819,7 +819,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of discounts. <br> If not, returns an error message.
      */
-    public Response<List<DiscountDTO>> getDiscountsFromStore(String storeID, String username, String token) {
+    public Response<List<DiscountDTO>> getDiscountsFromStore(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get discounts from store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.getDiscountsFromStore(storeID, username);
@@ -835,10 +835,10 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of discounts. <br> If not, returns an error message.
      */
-    public Response<List<ConditionDTO>> getPoliciesFromStore(String storeID, String username, String token) {
+    public Response<List<ConditionDTO>> getPoliciesFromStore(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get policies from store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.getPoliciesFromStore(storeID, username);
+            return storeFacade.getPoliciesFromStore(storeID);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to get policies from store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
@@ -852,7 +852,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns the discount of the product. <br> If not, returns an error message.
      */
-    public Response<String> removeDiscount(String storeID, String username, String token, String discountID) {
+    public Response<String> removeDiscount(Integer storeID, String username, String token, Integer discountID) {
         SystemLogger.info("[START] User: " + username + " is trying to remove discount: " + discountID + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -865,11 +865,11 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, List<ProductDTO>> data) {
+    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<Integer, Map<Integer, Integer>> data) {
         return storeFacade.RemoveOrderFromStoreAfterSuccessfulPurchase(data);
     }
 
-    public Response<Double> calculateShoppingCartPrice(Map<String, List<ProductDTO>> shoppingCartContents) {
+    public Response<Double> calculateShoppingCartPrice(Map<Integer, Map<Integer, Integer>> shoppingCartContents) {
         return storeFacade.calculateShoppingCartPrice(shoppingCartContents);
     }
     /**
@@ -879,7 +879,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of discounts. <br> If not, returns an error message.
      */
-    public Response<String> makeComplexDiscount(String username, String token, String storeID ,int discountId1, int discountId2, String discountType) {
+    public Response<String> makeComplexDiscount(String username, String token, Integer storeID ,Integer discountId1, Integer discountId2, String discountType) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex discount for store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.makeComplexDiscount( username,storeID ,discountId1,discountId2,discountType);
@@ -894,7 +894,7 @@ public class StoreService {
      * @param token the token of the user
      * @return If successful, returns a list of discounts. <br> If not, returns an error message.
      */
-    public Response<String> makeConditionDiscount(String username, String token, String storeID , int discountId, int conditionId) {
+    public Response<String> makeConditionDiscount(String username, String token, Integer storeID , Integer discountId, Integer conditionId) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex discount for store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.makeConditionDiscount(username, storeID , discountId,conditionId);
@@ -915,7 +915,7 @@ public class StoreService {
      * @param price the price
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addSimplePolicyToStore(String username, String token, String storeID, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
+    public Response<String> addSimplePolicyToStore(String username, String token, Integer storeID, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Boolean price) {
         SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.addSimplePolicyToStore(username,category, storeID, productID, amount, minAmount, maxAmount,price);
@@ -924,7 +924,7 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> makeComplexCondition(String username, String token, String storeID, int policyId1, int policyId2, String ConditionType) {
+    public Response<String> makeComplexCondition(String username, String token, Integer storeID, Integer policyId1, Integer policyId2, String ConditionType) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, ConditionType);
@@ -933,7 +933,7 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> makeConditionPolicy(String username, String token, String storeID, int policyId, int conditionId) {
+    public Response<String> makeConditionPolicy(String username, String token, Integer storeID, Integer policyId, Integer conditionId) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.makeConditionPolicy(username, storeID, policyId, conditionId);
@@ -943,47 +943,47 @@ public class StoreService {
     }
 
 
-    public Response<String> removeProductFromCategory(int productId, String category, String storeId, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to remove product: " + productId + " from category: " + category + " in store: " + storeId);
+    public Response<String> removeProductFromCategory(int productId, String category, Integer storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to remove product: " + productId + " from category: " + category + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.removeProductFromCategory(productId, category, storeId, username);
+            return storeFacade.removeProductFromCategory(productId, category, storeID, username);
         }
-        SystemLogger.error("[ERROR] User: " + username + " tried to remove product: " + productId + " from category: " + category + " in store: " + storeId + " but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to remove product: " + productId + " from category: " + category + " in store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> removePolicy(String storeId, String username, String token, String policyId) {
-        SystemLogger.info("[START] User: " + username + " is trying to remove policy: " + policyId + " from store: " + storeId);
+    public Response<String> removePolicy(Integer storeID, String username, String token, Integer policyId) {
+        SystemLogger.info("[START] User: " + username + " is trying to remove policy: " + policyId + " from store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.removePolicy(storeId, username, policyId);
+            return storeFacade.removePolicy(storeID, username, policyId);
         }
-        SystemLogger.error("[ERROR] User: " + username + " tried to remove policy: " + policyId + " from store: " + storeId + " but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to remove policy: " + policyId + " from store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
-    public boolean isNominatorOf(String storeId, String username, String manager) {
-        return storeFacade.isNominatorOf(storeId, username, manager);
+    public boolean isNominatorOf(Integer storeID, String username, String manager) {
+        return storeFacade.isNominatorOf(storeID, username, manager);
     }
 
-    public Response<String> reopenStore(String storeId, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to reopen store: " + storeId);
+    public Response<String> reopenStore(Integer storeID, String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to reopen store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
                 SystemLogger.error("[ERROR] User: " + username + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            Response<List<String>> storeReopenResponse = storeFacade.reopenStore(storeId, username);
+            Response<List<String>> storeReopenResponse = storeFacade.reopenStore(storeID, username);
             if (!storeReopenResponse.isSuccess()) {
                 return Response.error(storeReopenResponse.getMessage(), null);
             }
-            return userService.sendReopenStoreNotification(storeReopenResponse.getData(), getStoreNameByID(storeId, username, token).getData());
+            return userService.sendReopenStoreNotification(storeReopenResponse.getData(), getStoreNameByID(storeID, username, token).getData());
         }
-        SystemLogger.error("[ERROR] User: " + username + " tried to reopen store: " + storeId + " but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to reopen store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 
-    public boolean isStoreActive(String storeID, String username, String token) {
-        return storeFacade.isStoreActive(storeID, username, token);
+    public boolean isStoreActive(Integer storeID, String username, String token) {
+        return storeFacade.isStoreActive(storeID);
     }
 }
 

@@ -4,14 +4,14 @@ import Utilities.Response;
 import Utilities.SystemLogger;
 
 public class nominateOwnerMessage extends Message {
-    public String storeID;
+    public Integer storeID;
     public String storeName;
     public String subscriberUsername;
     public boolean isSubscribed;
     public String nominatorUsername;
 
 
-    public nominateOwnerMessage(String storeID, String StoreName, String subscriberID, boolean isSubscribed, String nominatorUsername) {
+    public nominateOwnerMessage(Integer storeID, String StoreName, String subscriberID, boolean isSubscribed, String nominatorUsername) {
         super("Owner nomination request for store: " + StoreName + " from user: " + nominatorUsername + ". Accept or decline?");
         this.storeName = StoreName;
         this.storeID = storeID;
@@ -36,7 +36,7 @@ public class nominateOwnerMessage extends Message {
         return nominatorUsername;
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 

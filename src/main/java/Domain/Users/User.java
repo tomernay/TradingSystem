@@ -42,19 +42,19 @@ public class User {
     }
 
 
-    public Response<String> addProductToShoppingCart(String storeID, ProductDTO product) {
-        if(product.getQuantity() <= 0){
+    public Response<String> addProductToShoppingCart(Integer storeID, Integer productID, Integer quantity) {
+        if(quantity <= 0){
             SystemLogger.error("[ERROR] User " + username + " tried to add product with quantity 0 or less");
             return Response.error("Error - can't add product with quantity 0 or less", null);
         }
         if(shoppingCart != null){
-            return shoppingCart.addProductToCart(storeID, product);
+            return shoppingCart.addProductToCart(storeID, productID, quantity);
         }
         SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't add product to cart", null);
     }
 
-    public Response<String> removeProductFromShoppingCart(String storeID, String productID) {
+    public Response<String> removeProductFromShoppingCart(Integer storeID, Integer productID) {
         if(shoppingCart != null){
             return shoppingCart.removeProductFromCart(storeID, productID);
         }
@@ -62,7 +62,7 @@ public class User {
         return Response.error("Error - can't remove product from cart", null);
     }
 
-    public Response<String> updateProductInShoppingCart(String storeID, String productID, int quantity) {
+    public Response<String> updateProductInShoppingCart(Integer storeID, Integer productID, Integer quantity) {
         if(shoppingCart != null){
             return shoppingCart.updateProductInCart(storeID, productID, quantity);
         }
@@ -70,7 +70,7 @@ public class User {
         return Response.error("Error - can't update product in cart", null);
     }
 
-    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents() {
+    public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents() {
         return shoppingCart.getShoppingCartContents();
     }
     public String getUsername() {
@@ -112,7 +112,7 @@ public class User {
         return Response.error("Error - can't checkout", null);
     }
 
-    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity) {
+    public Response<String> updateProductQuantityInCart(Integer storeId, Integer productId, Integer quantity) {
         if(shoppingCart != null){
             return shoppingCart.updateProductQuantityInCart(storeId, productId, quantity);
         }
@@ -126,10 +126,6 @@ public class User {
 
     public void interruptPurchaseTimer() {
         shoppingCart.cancelPurchaseProcess();
-    }
-
-    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents() {
-        return shoppingCart.lockAndGetShoppingCartContents();
     }
 
     public boolean isInPurchaseProcess() {

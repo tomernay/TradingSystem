@@ -4,6 +4,7 @@ import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Repo.OrderRepository;
 import Domain.Store.Inventory.Inventory;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.OrderService;
@@ -18,6 +19,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class PurchaseCartTests {
@@ -53,21 +56,21 @@ public class PurchaseCartTests {
         buyer = userService.getUserFacade().getUserRepository().getUser("yair12312");
         owner = userService.getUserFacade().getUserRepository().getUser("newOwner");
         storeService.addStore("newStore0", "newOwner", owner.getToken());
-        store1 = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store1 = storeService.getStoreFacade().getStoreRepository().getStore(0);
         storeService.addStore("newStore1", "newOwner", owner.getToken());
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore("1");
-        storeService.addProductToStore("0", "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
-        storeService.addProductToStore("0", "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
-        storeService.addProductToStore("1", "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
+        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
+        storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
+        storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
+        storeService.addProductToStore(1, "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
     }
 
     @Test
     public void purchaseCartSuccessfully() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -78,10 +81,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment and supply were successful
@@ -91,11 +94,11 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartSuccessfullyWithPolicy() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), "0", null, null, null,10.0, null, 1.0);
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, null,10.0, null, true);
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -106,10 +109,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment and supply were successful
@@ -120,10 +123,10 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartFailHandshakePay() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(false);
@@ -134,10 +137,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment and supply were successful
@@ -147,10 +150,10 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartFailHandshakeSupply() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -161,10 +164,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment and supply were successful
@@ -174,10 +177,10 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartFailSupply() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -188,10 +191,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(-1); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment and supply were successful
@@ -201,10 +204,10 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartFailPay() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -215,9 +218,9 @@ public class PurchaseCartTests {
                 .thenReturn(-1); // Simulate payment failure
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment failed
@@ -227,11 +230,11 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartFailPolicy() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 4, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), "0", null, 1, null, null, 3.0, null);
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 4, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, 1, null, null, 3.0, null);
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertFalse(response1.isSuccess());
 
         // Mock the handshake method to return true
@@ -243,10 +246,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate payment failure
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment failed
@@ -256,7 +259,7 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartEmptyCart() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertFalse(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -267,10 +270,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(0.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),0.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment failed because cart is empty
@@ -280,12 +283,12 @@ public class PurchaseCartTests {
     @Test
     public void TryToPurchaseTwice() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response2 =  userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response2 =  userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertTrue(response2.isSuccess());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertFalse(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -296,11 +299,11 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response2.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment and supply were successful
@@ -310,11 +313,11 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartRemoveProductFromStore() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        storeService.removeProductFromStore(1, "0", "newOwner", owner.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        storeService.removeProductFromStore(1, 0, "newOwner", owner.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertFalse(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -325,10 +328,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment failed because product was removed from store
@@ -338,10 +341,10 @@ public class PurchaseCartTests {
     @Test
     public void notEnoughQuantity() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 100, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 100, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertFalse(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -352,10 +355,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment failed because not enough quantity
@@ -365,11 +368,11 @@ public class PurchaseCartTests {
     @Test
     public void purchaseCartFailRemoveShop() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        userService.addProductToShoppingCart("0", "1", 1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1,"yair12312", buyer.getToken());
-        storeService.closeStore("0", "newOwner", owner.getToken());
-        Response<String> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
+        storeService.closeStore(0, "newOwner", owner.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
         Assert.assertFalse(response1.isSuccess());
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -380,10 +383,10 @@ public class PurchaseCartTests {
                 .thenReturn(10000); // Simulate successful payment with transaction ID
 
         // Stub the supply process to simulate successful supply
-        Mockito.when(supplySystem.orderSupply(Mockito.anyList(), Mockito.anyString(), Mockito.anyString()))
+        Mockito.when(supplySystem.orderSupply(Mockito.anyMap(), Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(20000); // Simulate successful supply with transaction ID
 
-        Response<String> response = orderService.payAndSupply(108.0, "yair12312", buyer.getToken(),
+        Response<String> response = orderService.payAndSupply(response1.getData(),108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
         // Assert the payment failed because shop was removed

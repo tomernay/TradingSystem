@@ -1,5 +1,6 @@
 package ParallelTests;
 
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Users.Subscriber.Subscriber;
 import Service.OrderService;
 import Service.ServiceInitializer;
@@ -35,15 +36,15 @@ public class purchaseCart {
         owner = userService.getUserFacade().getUserRepository().getUser("yair12312");
         storeService.addStore("newStore0", "yair12312", owner.getToken());
         storeService.addStore("newStore1", "yair12312", owner.getToken());
-        storeService.addProductToStore("0", "newOProduct1", "DOG", 5, 3, "yair12312", owner.getToken());
-        storeService.addProductToStore("0", "newOProduct2", "DOG", 10, 3, "yair12312", owner.getToken());
-        storeService.addProductToStore("1", "newOProduct3", "DOG", 3, 3, "yair12312", owner.getToken());
+        storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 3, "yair12312", owner.getToken());
+        storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 3, "yair12312", owner.getToken());
+        storeService.addProductToStore(0, "newOProduct3", "DOG", 3, 3, "yair12312", owner.getToken());
     }
 
     @Test
     public void purchaseCartTest() throws ExecutionException, InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(3);
-        List<Future<Response<String>>> futures = new ArrayList<>();
+        List<Future<Response <List<ProductDTO>>>> futures = new ArrayList<>();
         List<String> userNames = new ArrayList<>();
         List<String> tokens = new ArrayList<>();
 
@@ -54,9 +55,9 @@ public class purchaseCart {
             userService.register(userName, userName + "Pass123!");
             userService.loginAsSubscriber(userName, userName + "Pass123!");
             Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getUser(userName);
-            userService.addProductToShoppingCart("0", "1", 3, "user" + i, newSubscriber.getToken());
-            userService.addProductToShoppingCart("0", "2", 3, "user" + i, newSubscriber.getToken());
-            userService.addProductToShoppingCart("1", "1", 3, "user" + i, newSubscriber.getToken());
+            userService.addProductToShoppingCart(0, 1, 3, "user" + i, newSubscriber.getToken());
+            userService.addProductToShoppingCart(0, 2, 3, "user" + i, newSubscriber.getToken());
+            userService.addProductToShoppingCart(1, 1, 3, "user" + i, newSubscriber.getToken());
 
             userNames.add(userName);
             tokens.add(newSubscriber.getToken());
@@ -66,12 +67,12 @@ public class purchaseCart {
             final String userName = userNames.get(i % userNames.size());
             final String token = tokens.get(i % tokens.size());
             int finalI = i;
-            Callable<Response<String>> task = () -> {
+            Callable<Response <List<ProductDTO>>> task = () -> {
                 // Log the thread name and action
                 System.out.println("Thread " + Thread.currentThread().getName() + " locked cart and calculated price for user: " + userName);
 
                 // Lock the cart and calculate the price
-                Response<String> response = userService.lockShoppingCart("user" + finalI, token);
+                Response <List<ProductDTO>> response = userService.lockShoppingCart("user" + finalI, token);
 
 
                 // Log the response
@@ -86,8 +87,8 @@ public class purchaseCart {
         int counter = 0;
 
         // Retrieve and verify the results
-        for (Future<Response<String>> future : futures) {
-            Response<String> response = future.get();
+        for (Future<Response <List<ProductDTO>>> future : futures) {
+            Response <List<ProductDTO>> response = future.get();
             if (response.isSuccess()){
                 counter++;
             };

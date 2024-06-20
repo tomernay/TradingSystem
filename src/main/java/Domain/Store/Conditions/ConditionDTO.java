@@ -1,13 +1,13 @@
 package Domain.Store.Conditions;
 
 public class ConditionDTO {
-    private int conditionID;
-    private String productID;
+    private Integer conditionID;
+    private Integer productID;
     private String category;
-    private String minAmount;
-    private String maxAmount;
-    private String amount;
-    private String price;
+    private Double minAmount;
+    private Double maxAmount;
+    private Double amount;
+    private Boolean price;
     private String discountType;
     private ConditionDTO conditionDTO1;
     private ConditionDTO conditionDTO2;
@@ -15,7 +15,7 @@ public class ConditionDTO {
     private String productName;
     private String relationType; // AND, OR, XOR
 
-    public ConditionDTO(int conditionID, String productID, String productName, String category, String discountType, String amount, String minAmount, String maxAmount,String price, ConditionDTO conditionDTO1, ConditionDTO conditionDTO2, ConditionDTO policyConditionDTO, String relationType) {
+    public ConditionDTO(Integer conditionID, Integer productID, String productName, String category, String discountType, Double amount, Double minAmount, Double maxAmount,Boolean price, ConditionDTO conditionDTO1, ConditionDTO conditionDTO2, ConditionDTO policyConditionDTO, String relationType) {
         this.conditionID = conditionID;
         this.productID = productID;
         this.productName = productName;
@@ -39,7 +39,7 @@ public class ConditionDTO {
         return conditionID;
     }
 
-    public String getProductID() {
+    public Integer getProductID() {
         return productID;
     }
 
@@ -47,19 +47,19 @@ public class ConditionDTO {
         return category;
     }
 
-    public String getMinAmount() {
+    public Double getMinAmount() {
         return minAmount;
     }
 
-    public String getMaxAmount() {
+    public Double getMaxAmount() {
         return maxAmount;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public String getPrice() {
+    public Boolean getPrice() {
         return price;
     }
 

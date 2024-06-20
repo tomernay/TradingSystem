@@ -12,9 +12,9 @@ public class PlusDiscount implements Discount {
 
     private Discount discount1;
     private Discount discount2;
-    private int discountID;
+    private Integer discountID;
 
-    public PlusDiscount(Discount discount1, Discount discount2, int discountID) {
+    public PlusDiscount(Discount discount1, Discount discount2, Integer discountID) {
         this.discount1 = discount1;
         this.discount2 = discount2;
         this.discountID = discountID;
@@ -22,7 +22,7 @@ public class PlusDiscount implements Discount {
 
 
     @Override
-    public Response<Double> CalculatorDiscount(List<ProductDTO> products) {
+    public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
         Response<Double> response1 = discount1.CalculatorDiscount(products);
         Response<Double> response2 = discount2.CalculatorDiscount(products);
         if(!response1.isSuccess() || !response2.isSuccess()){
@@ -33,23 +33,23 @@ public class PlusDiscount implements Discount {
         return new Response<>(true," Calculator Discount", discount1 + discount2);
     }
     @Override
-    public int getDiscountID() {
+    public Integer getDiscountID() {
       return discountID;
      }
     @Override
-    public String getStoreID() {
-        return String.valueOf(discount1.getStoreID());
+    public Integer getStoreID() {
+        return discount1.getStoreID();
     }
     @Override
     public DiscountType getDiscountType() {
         return DiscountType.SIMPLE;
     }
     @Override
-    public String getPercent() {
+    public Double getPercent() {
         return null;
     }
     @Override
-    public String getProductID() {
+    public Integer getProductID() {
         return null;
     }
     @Override

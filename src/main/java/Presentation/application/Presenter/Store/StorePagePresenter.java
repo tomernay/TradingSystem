@@ -30,14 +30,14 @@ public class StorePagePresenter {
     public void search(String search) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        String storeID = "0";
+        Integer storeID = 0;
         storeService.viewProductFromStoreByName(storeID, search, username, token);
     }
 
     public void displayProducts() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        String storeID = "0";
+        Integer storeID = 0;
         storeService.getAllProductsFromStore(storeID, username, token);
     }
 }

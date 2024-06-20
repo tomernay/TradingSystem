@@ -23,7 +23,7 @@ public class StoreManagementPresenter {
     private StoreManagementView view;
     private final UserService userService; // Assuming you have a UserService
     private final StoreService storeService; // Assuming you have a StoreService
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     public StoreManagementPresenter(HttpServletRequest request) {
         this.userService = ServiceInitializer.getInstance().getUserService();
@@ -35,7 +35,7 @@ public class StoreManagementPresenter {
         this.view = view;
     }
 
-    public List<ProductDTO> getProducts(String storeId) {
+    public List<ProductDTO> getProducts(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<ArrayList<ProductDTO>> response = storeService.getAllProductsFromStore(storeId, username, token);
@@ -47,128 +47,122 @@ public class StoreManagementPresenter {
         }
     }
 
-    public List<DiscountDTO> loadDiscounts(String storeId) {
+    public List<DiscountDTO> loadDiscounts(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<List<DiscountDTO>> response = storeService.getDiscountsFromStore(storeId, username, token);
         return response.getData();
     }
 
-    public List<ConditionDTO> loadPolicies(String storeId) {
+    public List<ConditionDTO> loadPolicies(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<List<ConditionDTO>> response = storeService.getPoliciesFromStore(storeId, username, token);
         return response.getData();
     }
 
-    public void saveDiscount(String storeId, String type, String productId, String category, Double discountPercent, String productName, DiscountBox discount1, DiscountBox discount2, String discountType, PolicyBox condition) {
+    public void saveDiscount(Integer storeId, String type, Integer productId, String category, Double discountPercent, DiscountBox discount1, DiscountBox discount2, String discountType, PolicyBox condition) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         if (Objects.equals(type, "Simple")) {
-            Response<String> res = storeService.CreateDiscountSimple(username, token, productId, storeId, category, String.valueOf(discountPercent));
+            storeService.CreateDiscountSimple(username, token, productId, storeId, category, discountPercent);
         }
         else if (Objects.equals(type, "Complex")) {
-            Response<String> res =  storeService.makeComplexDiscount(username, token, storeId, Integer.parseInt(discount1.getID()), Integer.parseInt(discount2.getID()), discountType);
+            storeService.makeComplexDiscount(username, token, storeId, discount1.getID(), discount2.getID(), discountType);
         }
         else if (Objects.equals(type, "Condition")) {
-            Response<String> res =  storeService.makeConditionDiscount(username, token, storeId, Integer.parseInt(discount1.getID()), Integer.parseInt(condition.getID()));
+            storeService.makeConditionDiscount(username, token, storeId, discount1.getID(), condition.getID());
         }
     }
 
-    public void removeDiscount(String storeId, DiscountDTO discountDTO) {
+    public void removeDiscount(Integer storeId, DiscountDTO discountDTO) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        storeService.removeDiscount(storeId, username, token, String.valueOf(discountDTO.getDiscountID()));
+        storeService.removeDiscount(storeId, username, token, discountDTO.getDiscountID());
     }
 
-    public void savePolicy(String storeId, String type, String policyType, String category, String productId, String quantityType, String quantity, String minQuantity, String maxQuantity, String price, String minPrice, String maxPrice, PolicyBox policy1, PolicyBox policy2, String policyConditionType) {
+    public void savePolicy(Integer storeId, String type, String policyType, String category, Integer productId, String quantityType, Double quantity, Double minQuantity, Double maxQuantity, Double price, Double minPrice, Double maxPrice, PolicyBox policy1, PolicyBox policy2, String policyConditionType) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
 
         if ("Simple".equals(type)) {
             if ("Category".equals(policyType)) {
-                if (quantityType.equals("At most")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, category, null, null, null, Double.parseDouble(quantity), null);
-                }
-                else if (quantityType.equals("At least")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, category, null, null, Double.parseDouble(quantity), null, null);
-                }
-                else if (quantityType.equals("Exactly")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, category, null, Double.parseDouble(quantity), null, null, null);
-                }
-                else if (quantityType.equals("Between")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, category, null, null, Double.parseDouble(minQuantity), Double.parseDouble(maxQuantity), null);
+                switch (quantityType) {
+                    case "At most" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, category, null, null, null, quantity, null);
+                    case "At least" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, category, null, null, quantity, null, null);
+                    case "Exactly" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, category, null, quantity, null, null, null);
+                    case "Between" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, category, null, null, minQuantity, maxQuantity, null);
                 }
             } else if ("Product".equals(policyType)) {
-                if (quantityType.equals("At most")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, Integer.parseInt(productId), null, null, Double.parseDouble(quantity), null);
-                }
-                else if (quantityType.equals("At least")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, Integer.parseInt(productId), null, Double.parseDouble(quantity), null, null);
-                }
-                else if (quantityType.equals("Exactly")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, Integer.parseInt(productId), Double.parseDouble(quantity), null, null, null);
-                }
-                else if (quantityType.equals("Between")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, Integer.parseInt(productId), null, Double.parseDouble(minQuantity), Double.parseDouble(maxQuantity), null);
+                switch (quantityType) {
+                    case "At most" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, productId, null, null, quantity, null);
+                    case "At least" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, productId, null, quantity, null, null);
+                    case "Exactly" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, productId, quantity, null, null, null);
+                    case "Between" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, productId, null, minQuantity, maxQuantity, null);
                 }
             } else if ("Price".equals(policyType)) {
-                if (quantityType.equals("At most")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, null, null, null, Double.parseDouble(price), 1.0);
-                }
-                else if (quantityType.equals("At least")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, null, null, Double.parseDouble(price), null, 1.0);
-                }
-                else if (quantityType.equals("Exactly")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, null, Double.parseDouble(price), null, null, 1.0);
-                }
-                else if (quantityType.equals("Between")) {
-                    Response<String> res = storeService.addSimplePolicyToStore(username, token, storeId, null, null, null, Double.parseDouble(minPrice), Double.parseDouble(maxPrice), 1.0);
+                switch (quantityType) {
+                    case "At most" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, null, null, null, price, true);
+                    case "At least" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, null, null, price, null, true);
+                    case "Exactly" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, null, price, null, null, true);
+                    case "Between" ->
+                            storeService.addSimplePolicyToStore(username, token, storeId, null, null, null, minPrice, maxPrice, true);
                 }
             }
         } else if ("Complex".equals(type)) {
-            Response<String> res = storeService.makeComplexCondition(username, token, storeId, Integer.parseInt(policy1.getID()), Integer.parseInt(policy2.getID()), policyConditionType);
+            storeService.makeComplexCondition(username, token, storeId, policy1.getID(), policy2.getID(), policyConditionType);
         } else if ("Condition".equals(type)) {
-            Response<String> res = storeService.makeConditionPolicy(username, token, storeId, Integer.parseInt(policy1.getID()), Integer.parseInt(policy2.getID()));
+            storeService.makeConditionPolicy(username, token, storeId, policy1.getID(), policy2.getID());
         }
     }
 
 
-    public void removePolicy(String storeId, ConditionDTO conditionDTO) {
+    public void removePolicy(Integer storeId, ConditionDTO conditionDTO) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        storeService.removePolicy(storeId, username, token, String.valueOf(conditionDTO.getConditionID()));
+        storeService.removePolicy(storeId, username, token, conditionDTO.getConditionID());
     }
 
-    public String getProductName(String storeId, String productId) {
+    public String getProductName(Integer storeId, Integer productId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        return storeService.getProductName(Integer.parseInt(productId), storeId, username, token).getData();
+        return storeService.getProductName(productId, storeId, username, token).getData();
     }
 
-    public boolean hasPermission(String storeID, String permission) {
+    public boolean hasPermission(Integer storeID, String permission) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         return storeService.hasPermission(storeID, username, permission);
     }
 
-    public boolean isCreator(String storeId) {
+    public boolean isCreator(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         return storeService.isStoreCreator(storeId, username);
     }
 
-    public void closeStore(String storeId) {
+    public void closeStore(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         storeService.closeStore(storeId, username, token);
     }
 
-    public void reopenStore(String storeId) {
+    public void reopenStore(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         storeService.reopenStore(storeId, username, token);
     }
 
-    public boolean isActiveStore(String storeId) {
+    public boolean isActiveStore(Integer storeId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.isStoreActive(storeId, username, token);

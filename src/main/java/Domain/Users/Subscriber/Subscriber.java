@@ -14,11 +14,11 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Subscriber extends User {
-    private final List<String> subscribedStores;
+    private final List<Integer> subscribedStores;
     private final List<Message> messages;
     private String password;
     private String credit;
-    private final Map<String, String> storesRole;
+    private final Map<Integer, String> storesRole;
 
     public Subscriber(String username,String password) {
         super(username);
@@ -28,7 +28,7 @@ public class Subscriber extends User {
         this.storesRole = new HashMap<>();
     }
 
-    public void addStore(String storeID) {
+    public void addStore(Integer storeID) {
         subscribedStores.add(storeID);
     }
 
@@ -52,7 +52,7 @@ public class Subscriber extends User {
     }
 
     //yair added
-    public synchronized Response<String> addMessage(Message m){
+    public synchronized Response<Integer> addMessage(Message m){
         if (m instanceof nominateOwnerMessage) {
             if (messages.stream().anyMatch(a -> a instanceof nominateOwnerMessage && ((nominateOwnerMessage) a).getStoreID().equals(((nominateOwnerMessage) m).getStoreID()))) {
                 SystemLogger.error("[ERROR] User already has a pending owner nomination message.");
@@ -82,14 +82,6 @@ public class Subscriber extends User {
         }
     }
 
-    public String getCredit() {
-        return credit;
-    }
-
-    public void setCredit(String credit) {
-        this.credit = credit;
-    }
-
     public List<Message> getMessages() {
         return messages;
     }
@@ -98,7 +90,7 @@ public class Subscriber extends User {
         return password;
     }
 
-    public Response<Message> ownerNominationResponse(String messageID, boolean answer) {
+    public Response<Message> ownerNominationResponse(Integer messageID, boolean answer) {
         if (messages.isEmpty())
             return Response.error("[ERROR] Message not found.", null);
         for (Message message : messages) {
@@ -113,7 +105,7 @@ public class Subscriber extends User {
         return Response.error("[ERROR] Message not found.", null);
     }
 
-    public Response<Message> managerNominationResponse(String messageID, boolean answer) {
+    public Response<Message> managerNominationResponse(Integer messageID, boolean answer) {
         if (messages.isEmpty())
             return Response.error("[ERROR] Message not found.", null);
         for (Message message : messages) {
@@ -132,15 +124,15 @@ public class Subscriber extends User {
         Token = null;
     }
 
-    public void addCreatorRole(String storeID) {
+    public void addCreatorRole(Integer storeID) {
         storesRole.put(storeID, "Creator");
     }
 
-    public Response<Map<String, String>> getStoresRole() {
+    public Response<Map<Integer, String>> getStoresRole() {
         return Response.success("[SUCCESS] Successfully retrieved the user's stores roles.", storesRole);
     }
 
-    public void removeStoreRole(String storeID) {
+    public void removeStoreRole(Integer storeID) {
         storesRole.remove(storeID);
     }
 
@@ -173,12 +165,8 @@ public class Subscriber extends User {
         return Response.error("User is not a creator",null);
     }
 
-    public Response<String> checkout() {
-        return Response.success("[SUCCESS] Checkout successful.", null);
-    }
 
-
-    public Response<String> removeMessage(String messageID) {
+    public Response<String> removeMessage(Integer messageID) {
         for (Message message : messages) {
             if (message.getId().equals(messageID)) {
                 messages.remove(message);

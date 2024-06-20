@@ -25,7 +25,7 @@ public class UserRepository {
     private final Map<String, Subscriber> subscribers;
     private final Map<String, Subscriber> subscribersLoggedIn;
     private final Map<String, User> guests;
-    private int userIDS;
+    private Integer userIDS;
 
     public UserRepository() {
         subscribers = new HashMap<>();
@@ -99,7 +99,7 @@ public class UserRepository {
 //        return subscribers.get(subscriberUsername).messageResponse(answer);
 //    }
 
-    public Response<String> sendMessageToUser(String user,Message message){
+    public Response<Integer> sendMessageToUser(String user,Message message){
         return subscribers.get(user).addMessage(message);
     }
 
@@ -115,19 +115,19 @@ public class UserRepository {
         return subscribers.get(username);
     }
 
-    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
+    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
-            subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+            subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeName + " has been closed"));
         }
-        SystemLogger.info("[SUCCESS] Store " + storeID + " has been closed. Notifications sent to all related subscribers.");
+        SystemLogger.info("[SUCCESS] Store " + storeName + " has been closed. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
     }
 
-    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeID) {
+    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
-            subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeID + " has been closed"));
+            subscribers.get(subscriberName).addMessage(new NormalMessage("Store " + storeName + " has been re-opened"));
         }
-        SystemLogger.info("[SUCCESS] Store " + storeID + " has been reopened. Notifications sent to all related subscribers.");
+        SystemLogger.info("[SUCCESS] Store " + storeName + " has been reopened. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
     }
 
@@ -204,19 +204,19 @@ public class UserRepository {
 
 
 
-    public Response<String> addProductToShoppingCart(String storeID,ProductDTO product, String userName) {
+    public Response<String> addProductToShoppingCart(Integer storeID, Integer productID, Integer quantity, String userName) {
         if (subscribers.containsKey(userName)) {
-            return subscribers.get(userName).addProductToShoppingCart(storeID, product);
+            return subscribers.get(userName).addProductToShoppingCart(storeID, productID, quantity);
         }
         else if (guests.containsKey(userName)) {
-            return guests.get(userName).addProductToShoppingCart(storeID, product);
+            return guests.get(userName).addProductToShoppingCart(storeID, productID, quantity);
         }
         SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
     }
 
 
-    public Response<String> removeProductFromShoppingCart(String userName, String storeID, String productID) {
+    public Response<String> removeProductFromShoppingCart(String userName, Integer storeID, Integer productID) {
         if (subscribers.containsKey(userName)) {
             return subscribers.get(userName).removeProductFromShoppingCart(storeID, productID);
         }
@@ -227,7 +227,7 @@ public class UserRepository {
         return Response.error("User does not exist", null);
     }
 
-    public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, int quantity) {
+    public Response<String> updateProductInShoppingCart(Integer storeID, Integer productID, String userName, Integer quantity) {
         if (subscribers.containsKey(userName)) {
             return subscribers.get(userName).updateProductInShoppingCart(storeID, productID, quantity);
         }
@@ -240,7 +240,7 @@ public class UserRepository {
 
 
 
-    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents(String userName) {
+    public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents(String userName) {
         if (subscribers.containsKey(userName)) {
             return subscribers.get(userName).getShoppingCartContents();
         }
@@ -251,7 +251,7 @@ public class UserRepository {
         return Response.error("User does not exist", null);
     }
 
-    public Response<Message> ownerNominationResponse(String messageID, String currentUsername, boolean answer) {
+    public Response<Message> ownerNominationResponse(Integer messageID, String currentUsername, Boolean answer) {
         Response<Message> response = subscribers.get(currentUsername).ownerNominationResponse(messageID, answer);
         if (response.isSuccess()) {
             sendMessageToUser(((nominateOwnerMessage) response.getData()).getNominator(), new NormalMessage("Your request to nominate " + currentUsername + " as a store owner has been " + (answer ? "accepted" : "declined")));
@@ -261,7 +261,7 @@ public class UserRepository {
         return Response.error(response.getMessage(), null);
     }
 
-    public Response<Message> managerNominationResponse(String messageID, String currentUsername, boolean answer) {
+    public Response<Message> managerNominationResponse(Integer messageID, String currentUsername, Boolean answer) {
         Response<Message> response = subscribers.get(currentUsername).managerNominationResponse(messageID, answer);
         if (response.isSuccess()) {
             sendMessageToUser(((nominateManagerMessage) response.getData()).getNominatorUsername(), new NormalMessage("Your request to nominate " + currentUsername + " as a store manager has been " + (answer ? "accepted" : "declined")));
@@ -275,11 +275,11 @@ public class UserRepository {
         return TokenHandler.isValidJWT(token,currentUsername);
     }
 
-    public void addCreatorRole(String creatorUsername, String storeID) {
+    public void addCreatorRole(String creatorUsername, Integer storeID) {
         subscribers.get(creatorUsername).addCreatorRole(storeID);
     }
 
-    public Response<Map<String, String>> getStoresRole(String username) {
+    public Response<Map<Integer, String>> getStoresRole(String username) {
         if (!subscribers.containsKey(username)) {
             SystemLogger.error("[ERROR] User " + username + " does not exist");
             return Response.error("User does not exist", null);
@@ -287,7 +287,7 @@ public class UserRepository {
         return subscribers.get(username).getStoresRole();
     }
 
-    public void removeStoreRole(String subscriberUsername, String storeID) {
+    public void removeStoreRole(String subscriberUsername, Integer storeID) {
         if (!subscribers.containsKey(subscriberUsername)) {
             SystemLogger.error("[ERROR] User " + subscriberUsername + " does not exist");
             return;
@@ -436,18 +436,7 @@ public class UserRepository {
         return Response.error("User does not exist", null);
     }
 
-    public Response<String> checkout(String usernameFromCookies) {
-        if (subscribers.containsKey(usernameFromCookies)) {
-            return subscribers.get(usernameFromCookies).checkout();
-        }
-        else if (guests.containsKey(usernameFromCookies)) {
-            return guests.get(usernameFromCookies).checkout();
-        }
-        SystemLogger.error("[ERROR] User " + usernameFromCookies + " does not exist");
-        return Response.error("User does not exist", null);
-    }
-
-    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username) {
+    public Response<String> updateProductQuantityInCart(Integer storeId, Integer productId, Integer quantity, String username) {
         if (subscribers.containsKey(username)) {
             return subscribers.get(username).updateProductQuantityInCart(storeId, productId, quantity);
         }
@@ -485,17 +474,6 @@ public class UserRepository {
         }
     }
 
-    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents(String username) {
-        if (subscribers.containsKey(username)) {
-            return subscribers.get(username).lockAndGetShoppingCartContents();
-        }
-        else if (guests.containsKey(username)) {
-            return guests.get(username).lockAndGetShoppingCartContents();
-        }
-        SystemLogger.error("[ERROR] User " + username + " does not exist");
-        return Response.error("User does not exist", null);
-    }
-
     public boolean isInPurchaseProcess(String user) {
         if (subscribers.containsKey(user)) {
             return subscribers.get(user).isInPurchaseProcess();
@@ -507,7 +485,7 @@ public class UserRepository {
         return false;
     }
 
-    public Response<String> removeMessage(String username, String token, String messageID) {
+    public Response<String> removeMessage(String username, String token, Integer messageID) {
         if (subscribers.containsKey(username)) {
             if (TokenHandler.isValidJWT(token,username)) {
                 return subscribers.get(username).removeMessage(messageID);
