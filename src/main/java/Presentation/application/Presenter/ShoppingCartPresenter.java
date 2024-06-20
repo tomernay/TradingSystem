@@ -50,20 +50,21 @@ public class ShoppingCartPresenter {
     public void getShoppingCartContents() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<Map<String, Map<String, Integer>>> response = userService.getShoppingCartContents(username, token);
+        Response<Map<String, List<ProductDTO>>> response = userService.getShoppingCartContents(username, token);
         if (response.isSuccess()) {
-            Map<String, Map<String, Integer>> products = response.getData();
+            Map<String, List<ProductDTO>> products = response.getData();
             productList.clear(); // Clear existing items
             products.forEach((storeID, storeProducts) -> {
-                storeProducts.forEach((productID, quantity) -> {
-                    Response<ProductDTO> productResponse = storeService.viewProductFromStoreByID(Integer.parseInt(productID), storeID, username, token);
-                    if (productResponse.isSuccess()) {
-                        ProductDTO product = productResponse.getData();
-                        product.setQuantity(quantity); // Set quantity in the DTO
+                storeProducts.forEach(product -> {
+//                    Response<ProductDTO> productResponse = storeService.viewProductFromStoreByID(Integer.parseInt(productID), storeID, username, token);
+//                    if (productResponse.isSuccess()) {
+//                        ProductDTO product = product;
+                        product.setQuantity(product.getQuantity()); // Set quantity in the DTO
                         productList.add(product);
-                    } else {
-                        view.showError("Error fetching product details: " + productResponse.getMessage());
-                    }
+//                    }
+//                    else {
+//                        view.showError("Error fetching product details: " + productResponse.getMessage());
+//                    }
                 });
             });
             view.updateCartGrid(productList); // Update the view with grouped grids

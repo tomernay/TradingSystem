@@ -1,10 +1,12 @@
 package Domain.Users;
 
 import Domain.Externals.Security.TokenHandler;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -40,13 +42,13 @@ public class User {
     }
 
 
-    public Response<String> addProductToShoppingCart(String storeID,String productName,int quantity) {
-        if(quantity <= 0){
+    public Response<String> addProductToShoppingCart(String storeID, ProductDTO product) {
+        if(product.getQuantity() <= 0){
             SystemLogger.error("[ERROR] User " + username + " tried to add product with quantity 0 or less");
             return Response.error("Error - can't add product with quantity 0 or less", null);
         }
         if(shoppingCart != null){
-            return shoppingCart.addProductToCart(storeID, productName, quantity);
+            return shoppingCart.addProductToCart(storeID, product);
         }
         SystemLogger.error("[ERROR] User " + username + " does not have a shopping cart");
         return Response.error("Error - can't add product to cart", null);
@@ -68,7 +70,7 @@ public class User {
         return Response.error("Error - can't update product in cart", null);
     }
 
-    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents() {
+    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents() {
         return shoppingCart.getShoppingCartContents();
     }
     public String getUsername() {
@@ -126,7 +128,7 @@ public class User {
         shoppingCart.cancelPurchaseProcess();
     }
 
-    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents() {
+    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents() {
         return shoppingCart.lockAndGetShoppingCartContents();
     }
 

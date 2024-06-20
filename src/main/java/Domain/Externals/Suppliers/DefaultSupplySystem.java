@@ -1,8 +1,10 @@
 package Domain.Externals.Suppliers;
 
 import Domain.Externals.HttpUtils;
+import Domain.Store.Inventory.ProductDTO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultSupplySystem implements SupplySystem {
@@ -10,7 +12,7 @@ public class DefaultSupplySystem implements SupplySystem {
     private static final String EXTERNAL_API_URL = "https://damp-lynna-wsep-1984852e.koyeb.app/";
 
     @Override
-    public int orderSupply(Map<String, Integer> items, String deliveryAddress, String name) {
+    public int orderSupply(List<ProductDTO> items, String deliveryAddress, String name) {
         try {
             String[] addressParts = deliveryAddress.split(", ");
             String address = addressParts[0];

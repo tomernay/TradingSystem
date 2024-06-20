@@ -24,12 +24,12 @@ public class SimpleDiscount implements Discount{
     }
 
 
-    public Response<Double> CalculatorDiscount(Map<ProductDTO,Integer> products) {
+    public Response<Double> CalculatorDiscount(List<ProductDTO> products) {
         double discount = 0;
-        for (ProductDTO product : products.keySet()) {
+        for (ProductDTO product : products) {
             if (productID == null || String.valueOf(product.getProductID()).equals(productID)){
                 if (category == null || product.getCategories().contains(category)){
-                        discount += product.getPrice() * Double.parseDouble(percent) * products.get(product) / 100;
+                        discount += product.getPrice() * Double.parseDouble(percent) * product.getQuantity() / 100;
                     }
                 }
             }

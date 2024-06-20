@@ -1,6 +1,6 @@
 package Presentation.application.View.Store;
 
-import Presentation.application.Presenter.StorePagePresenter;
+import Presentation.application.Presenter.Store.StorePagePresenter;
 import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

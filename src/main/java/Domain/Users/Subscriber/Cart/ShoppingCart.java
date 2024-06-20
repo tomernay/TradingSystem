@@ -1,4 +1,5 @@
 package Domain.Users.Subscriber.Cart;
+import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
@@ -24,7 +25,7 @@ public class ShoppingCart {
         return baskets;
     }
 
-    public Response<String> addProductToCart(String storeID, String productID, int quantity) {
+    public Response<String> addProductToCart(String storeID, ProductDTO product) {
         if (inPurchaseProcess){
             SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
             return Response.error("Error - can't add product to cart - purchase process started", null);
@@ -33,12 +34,12 @@ public class ShoppingCart {
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
 
-                return basket.addProductToBasket(productID, quantity);
+                return basket.addProductToBasket(product);
             }
         }
         Basket newBasket = new Basket(storeID);
         baskets.add(newBasket);
-        return newBasket.addProductToBasket(productID, quantity);
+        return newBasket.addProductToBasket(product);
     }
 
     public Response<String> removeProductFromCart(String storeID, String productID) {
@@ -71,13 +72,17 @@ public class ShoppingCart {
         return Response.error("Error - can't update product in cart", null);
     }
 
-    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents() {
-        Map<String,Map<String, Integer>> userProducts = new HashMap<>();
+    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents() {
+        Map<String, List<ProductDTO>> products = new HashMap<>(); //<storeID, List<ProductDTO>>
+//        Map<String,Map<String, Integer>> userProducts = new HashMap<>();
+//        for (Basket basket : baskets) {
+//            userProducts.put(basket.getStoreID(), basket.getProductsQuantityMap());
+//        }
         for (Basket basket : baskets) {
-            userProducts.put(basket.getStoreID(), basket.getProductsQuantityMap());
+            products.put(basket.getStoreID(), basket.getProducts());
         }
         SystemLogger.info("[SUCCESS] Retrieved shopping cart contents successfully.");
-        return Response.success("Retrieved shopping cart contents successfully", userProducts);
+        return Response.success("Retrieved shopping cart contents successfully", products);
     }
 
     public Response<String> setInPurchaseProcess(boolean b) {
@@ -144,7 +149,7 @@ public class ShoppingCart {
         return Response.error("Error - can't update product quantity in cart", null);
     }
 
-    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents() {
+    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents() {
         if (inPurchaseProcess) {
             SystemLogger.error("[ERROR] Can't lock and get shopping cart contents - purchase process started");
             return Response.error("Error - can't lock and get shopping cart contents - purchase process started", null);

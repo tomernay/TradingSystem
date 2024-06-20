@@ -2,6 +2,7 @@ package Domain.Store.Conditions;
 
 import Domain.Store.Inventory.ProductDTO;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -79,21 +80,21 @@ public class SimpleCondition implements Condition{
     }
 
     @Override
-    public boolean isValid(Map<ProductDTO,Integer> products) {
+    public boolean isValid(List<ProductDTO> products) {
         double amount = 0;
-        for(ProductDTO product : products.keySet()){
+        for(ProductDTO product : products){
             if(category != null){
                 if(product.getCategories().contains(category)){
-                    amount = amount + products.get(product);
+                    amount = amount + product.getQuantity();
                 }
             }
             if (productID != null){
                 if (Objects.equals(product.getProductID(), productID)){
-                    amount = amount + products.get(product);
+                    amount = amount + product.getQuantity();
                 }
             }
             if(price != null){
-                amount = amount + product.getPrice()*products.get(product);
+                amount = amount + product.getPrice()*product.getQuantity();
             }
         }
         return (minAmount == null || !(minAmount > amount)) && (maxAmount == null || !(maxAmount < amount));

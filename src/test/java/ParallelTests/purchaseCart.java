@@ -54,9 +54,9 @@ public class purchaseCart {
             userService.register(userName, userName + "Pass123!");
             userService.loginAsSubscriber(userName, userName + "Pass123!");
             Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getUser(userName);
-            userService.addProductToShoppingCart("0", "1", "user" + i, newSubscriber.getToken(), 3);
-            userService.addProductToShoppingCart("0", "2", "user" + i, newSubscriber.getToken(), 3);
-            userService.addProductToShoppingCart("1", "1", "user" + i, newSubscriber.getToken(), 3);
+            userService.addProductToShoppingCart("0", "1", 3, "user" + i, newSubscriber.getToken());
+            userService.addProductToShoppingCart("0", "2", 3, "user" + i, newSubscriber.getToken());
+            userService.addProductToShoppingCart("1", "1", 3, "user" + i, newSubscriber.getToken());
 
             userNames.add(userName);
             tokens.add(newSubscriber.getToken());

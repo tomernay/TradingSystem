@@ -799,16 +799,16 @@ public class StoreService {
 
 
 
-    public Response<String> LockProducts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> LockProducts(Map<String, List<ProductDTO>> shoppingCart) {
         return storeFacade.LockProducts(shoppingCart);
     }
 
 
-    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> CalculateDiscounts(Map<String, List<ProductDTO>> shoppingCart) {
         return storeFacade.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> unlockProductsBackToStore(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> unlockProductsBackToStore(Map<String, List<ProductDTO>> shoppingCart) {
         return storeFacade.unlockProductsBackToStore(shoppingCart);
     }
 
@@ -865,11 +865,11 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Map<String, Integer>> data) {
+    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, List<ProductDTO>> data) {
         return storeFacade.RemoveOrderFromStoreAfterSuccessfulPurchase(data);
     }
 
-    public Response<Double> calculateShoppingCartPrice(Map<String, Map<String, Integer>> shoppingCartContents) {
+    public Response<Double> calculateShoppingCartPrice(Map<String, List<ProductDTO>> shoppingCartContents) {
         return storeFacade.calculateShoppingCartPrice(shoppingCartContents);
     }
     /**

@@ -1,9 +1,12 @@
 package Facades;
 
 import Domain.Order;
+import Domain.OrderDTO;
 import Domain.Repo.OrderRepository;
+import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 
+import java.util.List;
 import java.util.Map;
 
 public class OrderFacade {
@@ -33,7 +36,11 @@ public class OrderFacade {
         return orderRepository.getPurchaseHistoryBySubscriber(subscriberID);
     }
 
-    public Response<String> CreatOrder(String username, String deliveryAddress, Map<String, Map<String, Integer>> shoppingCartContents) {
-        return orderRepository.CreatOrder(username, deliveryAddress, shoppingCartContents);
+    public Response<String> CreatOrder(String username, String deliveryAddress, Map<String, List<ProductDTO>> shoppingCartContents) {
+        return orderRepository.createOrder(username, deliveryAddress, shoppingCartContents);
+    }
+
+    public Response<List<OrderDTO>> getOrdersHistoryDTO(String storeID) {
+        return orderRepository.getOrdersHistoryDTO(storeID);
     }
 }

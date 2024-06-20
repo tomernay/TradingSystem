@@ -2,6 +2,7 @@ package Domain.Repo;
 
 import Domain.Externals.Security.PasswordEncoderUtil;
 import Domain.Externals.Security.TokenHandler;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Messages.Message;
 
@@ -203,12 +204,12 @@ public class UserRepository {
 
 
 
-    public Response<String> addProductToShoppingCart(String storeID,String productName,String userName,int quantity) {
+    public Response<String> addProductToShoppingCart(String storeID,ProductDTO product, String userName) {
         if (subscribers.containsKey(userName)) {
-            return subscribers.get(userName).addProductToShoppingCart(storeID, productName, quantity);
+            return subscribers.get(userName).addProductToShoppingCart(storeID, product);
         }
         else if (guests.containsKey(userName)) {
-            return guests.get(userName).addProductToShoppingCart(storeID, productName, quantity);
+            return guests.get(userName).addProductToShoppingCart(storeID, product);
         }
         SystemLogger.error("[ERROR] User " + userName + " does not exist");
         return Response.error("User does not exist", null);
@@ -239,7 +240,7 @@ public class UserRepository {
 
 
 
-    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
+    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents(String userName) {
         if (subscribers.containsKey(userName)) {
             return subscribers.get(userName).getShoppingCartContents();
         }
@@ -484,7 +485,7 @@ public class UserRepository {
         }
     }
 
-    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents(String username) {
+    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents(String username) {
         if (subscribers.containsKey(username)) {
             return subscribers.get(username).lockAndGetShoppingCartContents();
         }

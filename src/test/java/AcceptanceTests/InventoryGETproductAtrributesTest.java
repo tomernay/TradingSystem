@@ -174,16 +174,16 @@ public class InventoryGETproductAtrributesTest {
     public void viewProductFromStoreByID(){
         System.out.println("-----------------------viewProductFromStoreByID---------------------------------");
         Response<ProductDTO> response = storeService.viewProductFromStoreByID(1, store.getId(), "mor", subscriber2.getToken());
-        Assert.assertEquals("ProductINFO{storeID='0', productID=1, name='product1', desc='product1Dec', price=10.0, quantity=30, categories=[General]}", response.getData().toString());
+        Assert.assertEquals("ProductDTO{storeID='0', productID=1, name='product1', desc='product1Dec', price=10.0, quantity=30, storeName='itayStore', categories=[General]}", response.getData().toString());
     }
 
     @Test
     public void viewProductFromStoreByName(){
         System.out.println("-----------------------viewProductFromStoreByName---------------------------------");
         Response<ProductDTO> response = storeService.viewProductFromStoreByName(store.getId(), "product1", "mor", subscriber2.getToken());
-        Assert.assertEquals("ProductINFO{storeID='0', productID=1, name='product1', desc='product1Dec', price=10.0, quantity=30, categories=[General]}", response.getData().toString());
+        Assert.assertEquals("ProductDTO{storeID='0', productID=1, name='product1', desc='product1Dec', price=10.0, quantity=30, storeName='itayStore', categories=[General]}", response.getData().toString());
         Response<ProductDTO> response2 = storeService.viewProductFromStoreByName(store.getId(), "product5", "mor", subscriber2.getToken());
-        Assert.assertEquals("ProductINFO{storeID='0', productID=5, name='product5', desc='product5Dec', price=40.0, quantity=10, categories=[Electronic, Food]}", response2.getData().toString());
+        Assert.assertEquals("ProductDTO{storeID='0', productID=5, name='product5', desc='product5Dec', price=40.0, quantity=10, storeName='itayStore', categories=[Electronic, Food]}", response2.getData().toString());
     }
 
     @Test

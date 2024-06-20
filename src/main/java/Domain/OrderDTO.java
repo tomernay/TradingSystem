@@ -4,25 +4,24 @@ import Domain.Store.Inventory.ProductDTO;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-public class Order {
+public class OrderDTO {
     private final int orderID;
     private final String storeID;
     private final String username;
     private final String deliveryAddress;
     private final Date orderDate;
-    private final List<ProductDTO> products; // <productID, <PARAMETER, VALUE>>
-    private String status;
+    private final List<ProductDTO> products;
+    private final String status;
 
-    public Order(int orderID, String storeID, String username, String deliveryAddress, List<ProductDTO> products) {
+    public OrderDTO(int orderID, String storeID, String username, String deliveryAddress, Date orderDate, List<ProductDTO> products, String status) {
         this.orderID = orderID;
         this.storeID = storeID;
         this.username = username;
         this.deliveryAddress = deliveryAddress;
-        this.orderDate = new Date(); // Set to current date/time
+        this.orderDate = orderDate;
         this.products = products;
-        this.status = "Pending";
+        this.status = status;
     }
 
     public int getOrderID() {
@@ -52,14 +51,9 @@ public class Order {
     public String getStatus() {
         return status;
     }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     @Override
     public String toString() {
-        return "Order{" +
+        return "OrderDTO{" +
                 "orderID=" + orderID +
                 ", storeID='" + storeID + '\'' +
                 ", username='" + username + '\'' +

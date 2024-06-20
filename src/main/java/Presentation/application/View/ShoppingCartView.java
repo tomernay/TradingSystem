@@ -146,7 +146,7 @@ public class ShoppingCartView extends VerticalLayout {
         grid.removeColumnByKey("categories");
 
         grid.setItems(products);
-        grid.addColumn(ProductDTO::getName).setHeader("Name");
+        grid.addColumn(ProductDTO::getProductName).setHeader("Name");
         grid.addColumn(ProductDTO::getDescription).setHeader("Description");
         grid.addColumn(ProductDTO::getPrice).setHeader("Price");
 

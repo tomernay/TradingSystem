@@ -23,7 +23,7 @@ public class MaxDiscount implements Discount{
     }
 
     @Override
-    public Response<Double> CalculatorDiscount(Map<ProductDTO,Integer> products) {
+    public Response<Double> CalculatorDiscount(List<ProductDTO> products) {
         Response<Double> response1 = discount1.CalculatorDiscount(products);
         Response<Double> response2 = discount2.CalculatorDiscount(products);
         if(!response1.isSuccess() || !response2.isSuccess()){

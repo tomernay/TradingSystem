@@ -4,6 +4,7 @@ import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
@@ -49,9 +50,9 @@ public class DiscountAndCalculationPriceTest {
         storeService.addProductToStore("0", "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
         storeService.addProductToStore("0", "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
         storeService.addProductToStore("1", "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
-        userService.addProductToShoppingCart("0", "1", "yair12312", buyer.getToken(), 1);
-        userService.addProductToShoppingCart("0", "2", "yair12312", buyer.getToken(), 10);
-        userService.addProductToShoppingCart("1", "1", "yair12312", buyer.getToken(), 1);
+        userService.addProductToShoppingCart("0", "1",1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart("1", "1", 1, "yair12312", buyer.getToken());
     }
 
     @Test

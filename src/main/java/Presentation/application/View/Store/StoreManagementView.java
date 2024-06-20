@@ -1,9 +1,7 @@
 package Presentation.application.View.Store;
 
-import Presentation.application.Presenter.StoreManagementPresenter;
+import Presentation.application.Presenter.Store.StoreManagementPresenter;
 import Presentation.application.View.MainLayoutView;
-import Presentation.application.View.RolesManagementView;
-import Service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -114,6 +112,15 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
             buttonLayout.add(rolesManagementButton);
         }
+        if (presenter.hasPermission(storeId, "VIEW_PURCHASE_HISTORY")) {
+            Button viewPurchaseHistoryButton = new Button("View Purchase History");
+            viewPurchaseHistoryButton.addClickListener(event1 -> {
+                String storeId = this.storeId;
+                        getUI().ifPresent(ui -> ui.navigate("orders/" + storeId));
+            });
+            buttonLayout.add(viewPurchaseHistoryButton);
+        }
+
         if (presenter.isCreator(storeId)) {
             if (presenter.isActiveStore(storeId)) {
                 Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());

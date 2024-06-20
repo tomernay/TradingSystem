@@ -5,20 +5,29 @@ import java.util.ArrayList;
 public class ProductDTO {
     private String storeID;     // The ID of the store to which the product belongs
     private Integer productID;  // The unique ID of the product
-    private String name;        // The name of the product
+    private String productName;        // The name of the product
     private String desc;        // The description of the product
-    private double price;          // The price of the product
+    private double price;       // The price of the product
     private int quantity;       // The quantity of the product available in the inventory
     private String storeName;
-
     public ArrayList<String> categories; // The category that a product is related to
 
-
-    public ProductDTO(String storeID, Integer productID, String name, double price, int quantity) {
+    // Existing full constructor
+    public ProductDTO(String storeID, Integer productID, String productName, String desc, double price, int quantity, String storeName, ArrayList<String> categories) {
         this.storeID = storeID;
         this.productID = productID;
-        this.name = name;
+        this.productName = productName;
+        this.desc = desc;
         this.price = price;
+        this.quantity = quantity;
+        this.storeName = storeName;
+        this.categories = categories != null ? categories : new ArrayList<>();
+    }
+
+    // New minimal constructor
+    public ProductDTO(String storeID, Integer productID, int quantity) {
+        this.storeID = storeID;
+        this.productID = productID;
         this.quantity = quantity;
         this.categories = new ArrayList<>();
     }
@@ -26,7 +35,7 @@ public class ProductDTO {
     public ProductDTO(Product product) {
         this.storeID = product.getStoreID();
         this.productID = product.getProductID();
-        this.name = product.getName();
+        this.productName = product.getName();
         this.desc = product.getDescription();
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
@@ -37,7 +46,7 @@ public class ProductDTO {
     public ProductDTO(Product product, ArrayList<String> categories) {
         this.storeID = product.getStoreID();
         this.productID = product.getProductID();
-        this.name = product.getName();
+        this.productName = product.getName();
         this.desc = product.getDescription();
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
@@ -45,44 +54,53 @@ public class ProductDTO {
         this.storeName = product.getStoreName();
     }
 
-    public String getStoreID() {return storeID;}
-    public String getName() {
-        return name;
-    }
     public Integer getProductID() {
         return productID;
     }
+
+    public String getStoreID() {
+        return storeID;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
     public double getPrice() {
         return price;
     }
-    public String getDescription() {return desc;}
-    public int getQuantity() {return quantity;}
+
+    public String getDescription() {
+        return desc;
+    }
+
     public String getStoreName() {
         return storeName;
     }
-    public ArrayList<String> getCategories() {return categories;}
 
-    public void setQuantity(Integer integer) {
-        this.quantity = integer;
+    public ArrayList<String> getCategories() {
+        return categories;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-
-
+    @Override
     public String toString() {
-        return "ProductINFO{" +
+        return "ProductDTO{" +
                 "storeID='" + storeID + '\'' +
                 ", productID=" + productID +
-                ", name='" + name + '\'' +
-                ", desc='" + desc + '\'' +
-                ", price=" + price +
+                ", name='" + (productName != null ? productName : "N/A") + '\'' +
+                ", desc='" + (desc != null ? desc : "N/A") + '\'' +
+                ", price=" + (price != 0 ? price : "N/A") +
                 ", quantity=" + quantity +
+                ", storeName='" + (storeName != null ? storeName : "N/A") + '\'' +
                 ", categories=" + categories +
                 '}';
     }
-
 }
-
-
-
-

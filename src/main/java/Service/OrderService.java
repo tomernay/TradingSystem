@@ -2,6 +2,8 @@ package Service;
 
 import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
+import Domain.OrderDTO;
+import Domain.Store.Inventory.ProductDTO;
 import Facades.OrderFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -74,10 +76,10 @@ public class OrderService {
             return Response.error("Payment failed", null);
         }
 
-        Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
+        Response<Map<String, List<ProductDTO>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
         List<Integer> supplyTransactionIds = new ArrayList<>();
-        for (Map.Entry<String, Map<String, Integer>> entry : resShoppingCartContents.getData().entrySet()) {
-            Map<String, Integer> products = entry.getValue();
+        for (Map.Entry<String, List<ProductDTO>> entry : resShoppingCartContents.getData().entrySet()) {
+            List<ProductDTO> products = entry.getValue();
             int supplyTransactionId = processSupply(products, deliveryAddress, fullName);
             if (supplyTransactionId == -1) {
                 paymentGateway.cancelPayment(paymentTransactionId); // Cancel the payment
@@ -100,7 +102,7 @@ public class OrderService {
         return paymentGateway.processPayment(purchasePrice, creditCardNumber, expirationDate, cvv, fullName, id);
     }
 
-    private int processSupply(Map<String, Integer> shoppingCartContents, String deliveryAddress, String name) {
+    private int processSupply(List<ProductDTO> shoppingCartContents, String deliveryAddress, String name) {
         // Call the supply system and get the transaction ID
         return supplySystem.orderSupply(shoppingCartContents, deliveryAddress, name);
     }
@@ -119,7 +121,7 @@ public class OrderService {
 
     public Response<String> CreateOrder(String username, String token, String deliveryAddress) {
         SystemLogger.info("[START] User: " + username + " is trying to purchase the shopping cart");
-        Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
+        Response<Map<String, List<ProductDTO>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
 
         if (!userService.isValidToken(token, username)) {
             SystemLogger.error("[ERROR] User: " + username + " tried to purchase the shopping cart but the token was invalid");
@@ -134,5 +136,9 @@ public class OrderService {
 
     public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
         return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
+    }
+
+    public Response<List<OrderDTO>> getOrdersHistory(String storeID) {
+        return orderFacade.getOrdersHistoryDTO(storeID);
     }
 }

@@ -629,49 +629,60 @@ public class Inventory {
 
 
 
-    public synchronized Response<Map<ProductDTO,Integer>> LockProducts(Map<String, Integer> MapShoppingCart) {
-        ArrayList<Product> LockedProducts = new ArrayList<>();
-        Map<ProductDTO,Integer> productDTOList = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : MapShoppingCart.entrySet()) {
-            Integer productQuantity = entry.getValue();
-            int productID = Integer.parseInt(entry.getKey());
+    public synchronized Response<List<ProductDTO>> LockProducts(List<ProductDTO> productDTOList) {
+        ArrayList<Product> lockedProductsList = new ArrayList<>();
+
+        for (ProductDTO productDTO : productDTOList) {
+            int productID = productDTO.getProductID();
+            int productQuantity = productDTO.getQuantity();
+
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
             }
+
             Product product = getProduct(productID);
             if (product == null) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
                 return Response.error("Product with ID: " + productID + " not found.", null);
             }
+
             if (product.getQuantity() - productQuantity < 0) { // check if product is out of stock
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " is out of stock.");
-                for (Product LockedProduct : LockedProducts) { // unlock all locked products
-                    int LockedQuantity = MapShoppingCart.get(String.valueOf(LockedProduct.getProductID()));
-                    int oldLockedQuantity =  lockedProducts.get(LockedProduct);
-                    lockedProducts.put(LockedProduct, oldLockedQuantity - LockedQuantity);
-                    LockedProduct.addQuantity( LockedQuantity);
-
+                for (Product lockedProduct : lockedProductsList) {
+                    // unlock all locked products
+                    int lockedQuantity = 0;
+                    for (ProductDTO productDTO1 : productDTOList) {
+                        if (productDTO1.getProductID() == lockedProduct.getProductID()) {
+                            lockedQuantity = productDTO1.getQuantity();
+                        }
+                    }
+                    int oldLockedQuantity = lockedProducts.get(lockedProduct);
+                    lockedProducts.put(lockedProduct, oldLockedQuantity - lockedQuantity);
+                    lockedProduct.addQuantity(lockedQuantity);
                 }
                 return Response.error("Product with ID: " + product.getName() + " in store: " + product.getStoreName() + " has only: " + product.getQuantity() + " units left in stock!", null);
             }
+
             product.addQuantity(-productQuantity);
-            if(lockedProducts.containsKey(product)) {
+            if (lockedProducts.containsKey(product)) {
                 lockedProducts.put(product, lockedProducts.get(product) + productQuantity);
             } else {
                 lockedProducts.put(product, productQuantity);
             }
-            LockedProducts.add(product);
-            productDTOList.put(new ProductDTO(product),productQuantity);
+
+            lockedProductsList.add(product);
         }
+
         SystemLogger.info("[SUCCESS] Shopping cart locked successfully");
-        return Response.success("Shopping cart locked successfully",productDTOList);
+        return Response.success("Shopping cart locked successfully", productDTOList);
     }
 
-    public synchronized Response<String> unlockProductsBackToStore(Map<String, Integer> stringIntegerMap) {
-        for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
-            Integer productID = Integer.parseInt(entry.getKey());
-            int quantity = entry.getValue();
+
+    public synchronized Response<String> unlockProductsBackToStore(List<ProductDTO> stringIntegerMap) {
+        for (ProductDTO productDTO : stringIntegerMap) {
+            Integer productID = productDTO.getProductID();
+            int quantity = productDTO.getQuantity();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
@@ -688,10 +699,10 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Integer> productsInStore) {
-        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
-            Integer productID = Integer.parseInt(entry.getKey());
-            int quantity = entry.getValue();
+    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(List<ProductDTO> productsInStore) {
+        for (ProductDTO productDTO : productsInStore) {
+            Integer productID = productDTO.getProductID();
+            int quantity = productDTO.getQuantity();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
@@ -707,11 +718,11 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public Response<String> calculateShoppingCartPrice(Map<String, Integer> productsInStore) {
+    public Response<String> calculateShoppingCartPrice(List<ProductDTO> productsInStore) {
         double totalPrice = 0;
-        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
-            Integer productID = Integer.parseInt(entry.getKey());
-            int quantity = entry.getValue();
+        for (ProductDTO productDTO : productsInStore) {
+            Integer productID = productDTO.getProductID();
+            int quantity = productDTO.getQuantity();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);

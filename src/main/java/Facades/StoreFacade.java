@@ -223,7 +223,7 @@ public class StoreFacade {
         return storeRepository.viewProductFromAllStoresByCategory(category);
     }
 
-    public Response<String> LockProducts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> LockProducts(Map<String, List<ProductDTO>> shoppingCart) {
         return storeRepository.LockProducts(shoppingCart);
     }
 
@@ -231,11 +231,11 @@ public class StoreFacade {
         return storeRepository.CreateDiscount(productID, storeID, category, percent, username);
     }
 
-    public Response<String> CalculateDiscounts(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> CalculateDiscounts(Map<String, List<ProductDTO>> shoppingCart) {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
 
-    public Response<String> unlockProductsBackToStore(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> unlockProductsBackToStore(Map<String, List<ProductDTO>> shoppingCart) {
         return storeRepository.unlockProductsBackToStore(shoppingCart);
     }
 
@@ -247,11 +247,11 @@ public class StoreFacade {
         return storeRepository.removeDiscount(storeID, username, discountID);
     }
 
-    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Map<String, Integer>> shoppingCart) {
+    public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, List<ProductDTO>> shoppingCart) {
         return storeRepository.RemoveOrderFromStoreAfterSuccessfulPurchase(shoppingCart);
     }
 
-    public Response<Double> calculateShoppingCartPrice(Map<String, Map<String, Integer>> shoppingCartContents) {
+    public Response<Double> calculateShoppingCartPrice(Map<String, List<ProductDTO>> shoppingCartContents) {
         return storeRepository.calculateShoppingCartPrice(shoppingCartContents);
     }
 

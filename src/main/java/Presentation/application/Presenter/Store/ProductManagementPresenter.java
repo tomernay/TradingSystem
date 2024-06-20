@@ -1,4 +1,4 @@
-package Presentation.application.Presenter;
+package Presentation.application.Presenter.Store;
 
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class ProductManagementPresenter {
