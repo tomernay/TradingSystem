@@ -3,17 +3,17 @@ package Domain.Store.Inventory;
 import java.util.ArrayList;
 
 public class ProductDTO {
-    private String storeID;     // The ID of the store to which the product belongs
+    private Integer storeID;     // The ID of the store to which the product belongs
     private Integer productID;  // The unique ID of the product
     private String productName;        // The name of the product
     private String desc;        // The description of the product
-    private double price;       // The price of the product
-    private int quantity;       // The quantity of the product available in the inventory
+    private Double price;       // The price of the product
+    private Integer quantity;       // The quantity of the product available in the inventory
     private String storeName;
     public ArrayList<String> categories; // The category that a product is related to
 
     // Existing full constructor
-    public ProductDTO(String storeID, Integer productID, String productName, String desc, double price, int quantity, String storeName, ArrayList<String> categories) {
+    public ProductDTO(Integer storeID, Integer productID, String productName, String desc, Double price, Integer quantity, String storeName, ArrayList<String> categories) {
         this.storeID = storeID;
         this.productID = productID;
         this.productName = productName;
@@ -25,7 +25,7 @@ public class ProductDTO {
     }
 
     // New minimal constructor
-    public ProductDTO(String storeID, Integer productID, int quantity) {
+    public ProductDTO(Integer storeID, Integer productID, int quantity) {
         this.storeID = storeID;
         this.productID = productID;
         this.quantity = quantity;
@@ -58,7 +58,7 @@ public class ProductDTO {
         return productID;
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 

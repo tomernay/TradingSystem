@@ -12,7 +12,7 @@ public class DefaultSupplySystem implements SupplySystem {
     private static final String EXTERNAL_API_URL = "https://damp-lynna-wsep-1984852e.koyeb.app/";
 
     @Override
-    public int orderSupply(List<ProductDTO> items, String deliveryAddress, String name) {
+    public int orderSupply(Map<Integer, Integer> items, String deliveryAddress, String name) {
         try {
             String[] addressParts = deliveryAddress.split(", ");
             String address = addressParts[0];

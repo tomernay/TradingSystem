@@ -22,7 +22,7 @@ import com.vaadin.flow.router.Route;
 public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterObserver {
 
     StorePurchaseHistoryPresenter presenter;
-    private String storeId;
+    private Integer storeId;
     private Grid<OrderDTO> ordersGrid;
 
     public StorePurchaseHistory(StorePurchaseHistoryPresenter presenter) {
@@ -72,9 +72,11 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        storeId = event.getRouteParameters().get("storeId").orElse("");
-        if (!storeId.isEmpty()) {
-            presenter.fetchStoreHistory(storeId, ordersGrid);
+        String id = event.getRouteParameters().get("storeId").orElse("");
+        if (id.isEmpty()) {
+            event.rerouteTo("");
         }
+        storeId = Integer.parseInt(id);
+        presenter.fetchStoreHistory(storeId, ordersGrid);
     }
 }

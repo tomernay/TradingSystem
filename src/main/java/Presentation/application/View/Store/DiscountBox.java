@@ -6,80 +6,32 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class DiscountBox extends VerticalLayout {
-    private String ID;
+    private final Integer ID;
     private StoreManagementPresenter presenter;
     private CreateDiscountDialog parentDialog;
-    private String storeId;
-    private String type; // SIMPLE, COMPLEX, CONDITION
-    private String productId;
-    private String category;
-    private double discountPercent;
+    private final Integer storeId;
+    private final String type; // SIMPLE, COMPLEX, CONDITION
+    private final Integer productId;
+    private final String category;
+    private final Double discountPercent;
     private DiscountBox discount1;
     private DiscountBox discount2;
-    private String discountType; // MAX or PLUS
-    private String productName;
+    private final String discountType; // MAX or PLUS
+    private final String productName;
     private PolicyBox condition;
     private boolean isExpanded = false;
     private Div detailsDiv = new Div();
 
-    // Constructor for simple discount
-    public DiscountBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String ID, String storeId, String type, String productId, String category, double discountPercent, String productName) {
+    public DiscountBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, Integer storeId, DiscountDTO discountDTO) {
         this.presenter = presenter;
         this.parentDialog = parentDialog;
-        this.ID = ID;
-        this.storeId = storeId;
-        this.type = type;
-        this.productId = productId;
-        this.category = category;
-        this.discountPercent = discountPercent;
-        this.productName = productName != null ? productName : category;
-        setHeight("auto");
-        setWidthFull();
-        setStyle();
-        displayDiscountInfo();
-    }
-
-    // Constructor for complex discount
-    public DiscountBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String ID, String storeId, String type, DiscountBox discount1, DiscountBox discount2, String discountType) {
-        this.presenter = presenter;
-        this.parentDialog = parentDialog;
-        this.ID = ID;
-        this.storeId = storeId;
-        this.type = type;
-        this.discount1 = discount1;
-        this.discount2 = discount2;
-        this.discountType = discountType;
-        setHeight("auto");
-        setWidthFull();
-        setStyle();
-        displayDiscountInfo();
-    }
-
-    // Constructor for condition discount
-    public DiscountBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String ID, String storeId, String type, DiscountBox discount, PolicyBox condition) {
-        this.presenter = presenter;
-        this.parentDialog = parentDialog;
-        this.ID = ID;
-        this.storeId = storeId;
-        this.type = type;
-        this.discount1 = discount;
-        this.condition = condition;
-        setHeight("auto");
-        setWidthFull();
-        setStyle();
-        displayDiscountInfo();
-    }
-
-    public DiscountBox(StoreManagementPresenter presenter, CreateDiscountDialog parentDialog, String storeId, DiscountDTO discountDTO) {
-        this.presenter = presenter;
-        this.parentDialog = parentDialog;
-        this.ID = String.valueOf(discountDTO.getDiscountID());
+        this.ID = discountDTO.getDiscountID();
         this.storeId = storeId;
         this.type = discountDTO.getType();
-        this.discountPercent = discountDTO.getPercent() != null ? Double.parseDouble(discountDTO.getPercent()) : 0.0;
+        this.discountPercent = discountDTO.getPercent() != null ? discountDTO.getPercent() : 0.0;
         this.productId = discountDTO.getProductID();
         this.category = discountDTO.getCategory();
-        this.discountType = discountDTO.getDiscountType() != null ? discountDTO.getDiscountType().toString() : null;
+        this.discountType = discountDTO.getDiscountType() != null ? discountDTO.getDiscountType() : null;
         this.productName = discountDTO.getProductName();
 
         if (discountDTO.getDiscountDTO1() != null) {
@@ -187,7 +139,7 @@ public class DiscountBox extends VerticalLayout {
 
     // Method to convert to DTO (data transfer object)
     public DiscountDTO toDTO() {
-        return new DiscountDTO(Integer.parseInt(ID), productId, productName, storeId, discountType, category, String.valueOf(discountPercent), discount1 != null ? discount1.toDTO() : null, discount2 != null ? discount2.toDTO() : null, condition != null ? condition.toDTO() : null);
+        return new DiscountDTO(ID, productId, productName, storeId, discountType, category, discountPercent, discount1 != null ? discount1.toDTO() : null, discount2 != null ? discount2.toDTO() : null, condition != null ? condition.toDTO() : null);
     }
 
     @Override
@@ -195,7 +147,7 @@ public class DiscountBox extends VerticalLayout {
         return getDetailedInfo(); // or any other meaningful representation
     }
 
-    public String getID() {
+    public Integer getID() {
         return ID;
     }
 }

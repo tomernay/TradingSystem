@@ -37,8 +37,8 @@ public class InventoryAddRemoveProductAsStoreCreatorTest {
 
         storeService.addStore("morStore", "mor", subscriber.getToken());
         storeService.addStore("morStore2", "mor", subscriber2.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore("1");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
         inventory = store.getInventory();
         inventory2 = store2.getInventory();
     }

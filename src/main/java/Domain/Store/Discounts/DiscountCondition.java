@@ -10,19 +10,19 @@ import java.util.Map;
 public class DiscountCondition implements Discount{
     private Discount discount;
     private Condition condition;
-    private int discountID;
+    private Integer discountID;
     private DiscountType discountType;
 
 
 
 
-    public DiscountCondition(Discount discount, Condition condition, int discountID) {
+    public DiscountCondition(Discount discount, Condition condition, Integer discountID) {
         this.discount = discount;
         this.condition = condition;
         this.discountID = discountID;
         this.discountType = DiscountType.CONDITION;
     }
-    public Response<Double> CalculatorDiscount(List<ProductDTO> products) {
+    public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
         if(condition.isValid(products)){
             return discount.CalculatorDiscount(products);
         }
@@ -30,13 +30,13 @@ public class DiscountCondition implements Discount{
     }
 
     @Override
-    public int getDiscountID() {
+    public Integer getDiscountID() {
         return discountID;
     }
 
 
     @Override
-    public String getStoreID() {
+    public Integer getStoreID() {
         return discount.getStoreID();
     }
 
@@ -46,12 +46,12 @@ public class DiscountCondition implements Discount{
     }
 
     @Override
-    public String getPercent() {
+    public Double getPercent() {
         return discount.getPercent();
     }
 
     @Override
-    public String getProductID() {
+    public Integer getProductID() {
         return discount.getProductID();
     }
 

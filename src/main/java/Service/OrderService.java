@@ -32,7 +32,7 @@ public class OrderService {
         this.userService = userService;
     }
 
-    public Response<Map<String, String>> getOrderHistory(String storeID) {
+    public Response<Map<String, String>> getOrderHistory(Integer storeID) {
         return orderFacade.getOrdersHistory(storeID);
     }
 
@@ -44,7 +44,7 @@ public class OrderService {
         this.supplySystem = supplySystem;
     }
 
-    public Response<String> payAndSupply(double purchasePrice, String username, String token, String deliveryAddress, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
+    public Response<String> payAndSupply(List<ProductDTO> products, Double purchasePrice, String username, String token, String deliveryAddress, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
         if (creditCardNumber == null) {
             handlePaymentFailure(username, token);
             SystemLogger.error("[ERROR] User: " + username + " has cancelled payment");
@@ -75,12 +75,10 @@ public class OrderService {
             SystemLogger.error("[ERROR] User: " + username + " payment failed");
             return Response.error("Payment failed", null);
         }
-
-        Response<Map<String, List<ProductDTO>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
         List<Integer> supplyTransactionIds = new ArrayList<>();
-        for (Map.Entry<String, List<ProductDTO>> entry : resShoppingCartContents.getData().entrySet()) {
-            List<ProductDTO> products = entry.getValue();
-            int supplyTransactionId = processSupply(products, deliveryAddress, fullName);
+        for (ProductDTO product : products) {
+            Map<Integer, Integer> productsMap = Map.of(product.getProductID(), product.getQuantity());
+            int supplyTransactionId = processSupply(productsMap, deliveryAddress, fullName);
             if (supplyTransactionId == -1) {
                 paymentGateway.cancelPayment(paymentTransactionId); // Cancel the payment
                 for (int transactionId : supplyTransactionIds) {
@@ -93,16 +91,16 @@ public class OrderService {
             supplyTransactionIds.add(supplyTransactionId);
         }
 
-        finalizeOrder(username, token, deliveryAddress);
+        finalizeOrder(username, token, deliveryAddress, products);
         return Response.success("Payment and supply successful", null);
     }
 
-    private int processPayment(double purchasePrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
+    private int processPayment(Double purchasePrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
         // Call the payment gateway and get the transaction ID
         return paymentGateway.processPayment(purchasePrice, creditCardNumber, expirationDate, cvv, fullName, id);
     }
 
-    private int processSupply(List<ProductDTO> shoppingCartContents, String deliveryAddress, String name) {
+    private int processSupply(Map<Integer, Integer> shoppingCartContents, String deliveryAddress, String name) {
         // Call the supply system and get the transaction ID
         return supplySystem.orderSupply(shoppingCartContents, deliveryAddress, name);
     }
@@ -112,25 +110,23 @@ public class OrderService {
         userService.purchaseProcessInterrupt(username);
     }
 
-    private void finalizeOrder(String username, String token, String deliveryAddress) {
+    private void finalizeOrder(String username, String token, String deliveryAddress, List<ProductDTO> products) {
         userService.RemoveOrderFromStoreAfterSuccessfulPurchase(username, token);
-        CreateOrder(username, token, deliveryAddress);
+        CreateOrder(username, token, deliveryAddress, products);
         userService.ResetCartAfterPurchase(username, token);
         userService.purchaseProcessInterrupt(username);
     }
 
-    public Response<String> CreateOrder(String username, String token, String deliveryAddress) {
+    public Response<String> CreateOrder(String username, String token, String deliveryAddress, List<ProductDTO> products) {
         SystemLogger.info("[START] User: " + username + " is trying to purchase the shopping cart");
-        Response<Map<String, List<ProductDTO>>> resShoppingCartContents = userService.getShoppingCartContents(username, token);
-
         if (!userService.isValidToken(token, username)) {
             SystemLogger.error("[ERROR] User: " + username + " tried to purchase the shopping cart but the token was invalid");
             return Response.error("Invalid token", null);
         }
-        return orderFacade.CreatOrder(username, deliveryAddress, resShoppingCartContents.getData());
+        return orderFacade.CreateOrder(username, deliveryAddress, products);
     }
 
-    public Response<String> getPurchaseHistoryByStore(String storeID) {
+    public Response<String> getPurchaseHistoryByStore(Integer storeID) {
         return orderFacade.getPurchaseHistoryByStore(storeID);
     }
 
@@ -138,7 +134,7 @@ public class OrderService {
         return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
     }
 
-    public Response<List<OrderDTO>> getOrdersHistory(String storeID) {
+    public Response<List<OrderDTO>> getOrdersHistory(Integer storeID) {
         return orderFacade.getOrdersHistoryDTO(storeID);
     }
 }

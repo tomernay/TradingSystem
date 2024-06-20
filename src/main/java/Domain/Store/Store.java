@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Store {
 
-    private String storeID;
+    private Integer storeID;
     private String storeName;
     private Inventory inventory;
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
@@ -32,7 +32,7 @@ public class Store {
 
 
     // Constructor
-    public Store(String storeID, String name, String creator) {
+    public Store(Integer storeID, String name, String creator) {
 
         this.storeID = storeID;
         this.storeName = name;
@@ -50,12 +50,11 @@ public class Store {
     }
 
     // Getter and setter for id
-    public String getId() {
+    public Integer getId() {
         return storeID;
     }
 
-    public void setId(String storeID) {
-
+    public void setId(Integer storeID) {
         this.storeID = storeID;
     }
 
@@ -286,7 +285,7 @@ public class Store {
     }
 
 
-    public Response<String> setProductQuantity(int productID, int newQuantity, String userName) {
+    public Response<String> setProductQuantity(Integer productID, Integer newQuantity, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the quantity of product: " + productID + " to: " + newQuantity + " but he doesn't have the permission");
@@ -297,7 +296,7 @@ public class Store {
 
 
 
-    public Response<String> addProductQuantity(int productID, int amountToAdd, String userName) {
+    public Response<String> addProductQuantity(Integer productID, Integer amountToAdd, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add " + amountToAdd + " to the quantity of product: " + productID + " but he doesn't have the permission");
@@ -307,11 +306,11 @@ public class Store {
     }
 
 
-    public Response<String> getProductName(int productID) {
+    public Response<String> getProductName(Integer productID) {
         return inventory.getProductName(productID);
     }
 
-    public Response<String> setProductName(int productID, String newName, String userName) {
+    public Response<String> setProductName(Integer productID, String newName, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the name of product: " + productID + " to: " + newName + " but he doesn't have the permission");
@@ -320,11 +319,11 @@ public class Store {
         return inventory.setProductName(productID, newName);
     }
 
-    public Response<String> getProductPrice(int productID) {
+    public Response<Double> getProductPrice(Integer productID) {
         return inventory.getProductPrice(productID);
     }
 
-    public Response<String> setProductPrice(int productID, double newPrice, String userName) {
+    public Response<String> setProductPrice(Integer productID, Double newPrice, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the price of product: " + productID + " to: " + newPrice + " but he doesn't have the permission");
@@ -333,11 +332,11 @@ public class Store {
         return inventory.setProductPrice(productID, newPrice);
     }
 
-    public Response<String> getProductDescription(int productID) {
+    public Response<String> getProductDescription(Integer productID) {
         return inventory.getProductDescription(productID);
     }
 
-    public Response<String> setProductDescription(int productID, String newDescription, String userName) {
+    public Response<String> setProductDescription(Integer productID, String newDescription, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to set the description of product: " + productID + " to: " + newDescription + " but he doesn't have the permission");
@@ -346,7 +345,7 @@ public class Store {
         return inventory.setProductDescription(productID, newDescription);
     }
 
-    public Response<String> getProductQuantity(int productID) {
+    public Response<String> getProductQuantity(Integer productID) {
         return inventory.getProductQuantity(productID);
     }
 
@@ -354,11 +353,11 @@ public class Store {
         return inventory.retrieveProductsByCategoryFrom_OneStore(category);
     }
 
-    public Response<String> retrieveProductCategories(int productID) {
+    public Response<String> retrieveProductCategories(Integer productID) {
         return inventory.retrieveProductCategories(productID);
     }
 
-    public Response<String> assignProductToCategory(int productID, String category, String userName) {
+    public Response<String> assignProductToCategory(Integer productID, String category, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to assign the product: " + productID + " to the category: " + category + " but he doesn't have the permission");
@@ -385,7 +384,7 @@ public class Store {
         return inventory.getAllProductsFromStore();
     }
 
-    public synchronized Response<String> addProductToStore(String name, String desc, double price, int quantity, String userName) {
+    public synchronized Response<String> addProductToStore(String name, String desc, Double price, Integer quantity, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
@@ -394,7 +393,7 @@ public class Store {
         return inventory.addProductToStore(storeID, storeName,name, desc, price, quantity);
     }
 
-    public Response<String> addProductToStore(String name, String desc, double price, int quantity, ArrayList<String> categories, String userName) {
+    public Response<String> addProductToStore(String name, String desc, Double price, Integer quantity, ArrayList<String> categories, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
@@ -403,7 +402,7 @@ public class Store {
         return inventory.addProductToStore(storeID, storeName, name, desc, price, quantity, categories);
     }
 
-    public synchronized Response<String> removeProductFromStore(int productID, String userName) {
+    public synchronized Response<String> removeProductFromStore(Integer productID, String userName) {
         Response<String> permissionCheck = checkUserPermission(userName, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + userName + " tried to remove the product: " + productID + " from the store but he doesn't have the permission");
@@ -459,8 +458,8 @@ public class Store {
         return permissions;
     }
 
-    public Response<String> isProductExist(String productID) {
-        if (inventory.isProductExist(Integer.valueOf(productID))){
+    public Response<String> isProductExist(Integer productID) {
+        if (inventory.isProductExist(productID)){
             return Response.success("The product exists in the store", null);
         }
         return Response.error("The product doesn't exist in the store", null);
@@ -478,7 +477,7 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
-    public Response<Boolean> checkPolicy(List<ProductDTO> productsInShoppingCart) {
+    public Response<Boolean> checkPolicy(Map<ProductDTO, Integer> productsInShoppingCart) {
         for (Condition c : policies.values()) {
             if (!c.isValid(productsInShoppingCart)) {
                 return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
@@ -489,30 +488,33 @@ public class Store {
 
 
 
-    public Response<List<ProductDTO>> LockProducts(List<ProductDTO> productsShoppingCart) {
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Integer> productsShoppingCart) {
         Response<List<ProductDTO>> productDTOList = inventory.LockProducts(productsShoppingCart);
         if (!productDTOList.isSuccess()) {
             return productDTOList;
         }
-        else {
-            if(checkPolicy(productDTOList.getData()).getData()){
-                return productDTOList;
-            }
-            else {
-                inventory.unlockProductsBackToStore(productsShoppingCart);
-                return new Response<>(false, "The conditions are not valid", null);
-            }
+        Map<ProductDTO, Integer> products = new HashMap<>();
+        for (ProductDTO productDTO : productDTOList.getData()) {
+            products.put(productDTO, productsShoppingCart.get(productDTO.getProductID()));
         }
+        if(checkPolicy(products).getData()){
+            return productDTOList;
+        }
+        else {
+            inventory.unlockProductsBackToStore(productsShoppingCart);
+            return new Response<>(false, "The conditions are not valid", null);
+        }
+
     }
 
 
-    public void unlockShoppingCart(List<ProductDTO> stringIntegerMap) {
+    public void unlockShoppingCart(Map<Integer, Integer> stringIntegerMap) {
         inventory.unlockProductsBackToStore(stringIntegerMap);
     }
 
-    public Response<String> CreateDiscount(String productID, String category, String percent, String type, String username) {
+    public Response<String> CreateDiscount(Integer productID, String category, Double percent, String type, String username) {
         Discount discount;
-        if (Double.parseDouble(percent) <= 0 ||Double.parseDouble(percent) > 100) {
+        if (percent <= 0 || percent > 100) {
             return new Response<>(false, "Discount percent must be between 0 and 1");
         }
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
@@ -524,7 +526,7 @@ public class Store {
         int IdDiscount;
         if (type.equals("simple")) {
             IdDiscount = productIDGeneratorDiscount.getAndIncrement();
-            discount = new SimpleDiscount(percent, storeID, productID, category, IdDiscount);
+            discount = new SimpleDiscount(percent, productID, category, IdDiscount);
             discounts.put(IdDiscount, discount);
         } else {
             return new Response<>(false, "Failed to create discount");
@@ -532,40 +534,33 @@ public class Store {
         return Response.success("Discount created successfully", String.valueOf(IdDiscount));
     }
 
-    public Response<Double> CalculateDiscounts(List<ProductDTO> productsInStore) {
+    public Response<Double> CalculateDiscounts(Map<Integer, Integer> productsInStore) {
         double discount = 0;
+        Map<ProductDTO,Integer> products = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : productsInStore.entrySet()) {
+            Response<ProductDTO> response = inventory.getProductFromStore(entry.getKey());
+            if (!response.isSuccess()) {
+                return new Response<>(false, "Failed to calculate discount");
+            }
+            products.put(response.getData(),productsInStore.get(entry.getKey()));
+        }
         for (Discount d : discounts.values()) {
-            Response<Double> responseDiscount = d.CalculatorDiscount(productsInStore);
+            Response<Double> responseDiscount = d.CalculatorDiscount(products);
             if (!responseDiscount.isSuccess()) {
                 return new Response<>(false, "Failed to calculate discount");
             }
             discount += responseDiscount.getData();
         }
-//        List<ProductDTO> products = new ArrayList<>();
-//        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
-//            Response<ProductDTO> response = inventory.getProductFromStore(Integer.parseInt(entry.getKey()));
-//            if (!response.isSuccess()) {
-//                return new Response<>(false, "Failed to calculate discount");
-//            }
-//            products.add(response.getData());
-//        }
-//            for (Discount d : discounts.values()) {
-//                Response<Double> responseDiscount = d.CalculatorDiscount(products);
-//                if (!responseDiscount.isSuccess()) {
-//                    return new Response<>(false, "Failed to calculate discount");
-//                }
-//                discount += responseDiscount.getData();
-//            }
         return new Response<>(true,"calculate discounts successfull", discount);
     }
 
-    public synchronized Response<String> unlockProductsBackToStore(List<ProductDTO> productsInStore) {
+    public synchronized Response<String> unlockProductsBackToStore(Map<Integer, Integer> productsInStore) {
         return inventory.unlockProductsBackToStore(productsInStore);
     }
 
-    public Response<String> removeDiscount(String discountID) {
-        if (discounts.containsKey(Integer.parseInt(discountID))) {
-            discounts.remove(Integer.parseInt(discountID));
+    public Response<String> removeDiscount(Integer discountID) {
+        if (discounts.containsKey(discountID)) {
+            discounts.remove(discountID);
             SystemLogger.info("[SUCCESS] Discount removed successfully");
             return new Response<>(true, "Discount removed successfully");
         }
@@ -573,70 +568,70 @@ public class Store {
         return new Response<>(false, "Failed to remove discount");
     }
 
-    public Response<List<DiscountDTO>> getDiscounts(String username) {
+    public Response<List<DiscountDTO>> getDiscounts() {
         List<DiscountDTO> discounts = new ArrayList<>();
         for (Discount d : this.discounts.values()) {
-            discounts.add(buildDiscountDTO(d, username));
+            discounts.add(buildDiscountDTO(d));
         }
         return Response.success("Successfully fetched the discounts", discounts);
     }
 
-    public Response<List<ConditionDTO>> getPolicies(String username) {
+    public Response<List<ConditionDTO>> getPolicies() {
         List<ConditionDTO> policies = new ArrayList<>();
         for (Condition c : this.policies.values()) {
-            policies.add(buildConditionDTO(c, username));
+            policies.add(buildConditionDTO(c));
         }
         return Response.success("Successfully fetched the policies", policies);
     }
 
-    public DiscountDTO buildDiscountDTO(Discount d, String username) {
+    public DiscountDTO buildDiscountDTO(Discount d) {
         if (d instanceof SimpleDiscount) {
             if (d.getProductID() == null) {
                 return new DiscountDTO(d.getDiscountID(), null, null,storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
             }
-            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(Integer.parseInt(d.getProductID())).getData(),storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
+            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(d.getProductID()).getData(),storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
         }
         else if (d instanceof MaxDiscount) {
-            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "MAX", null, null, buildDiscountDTO(d.getDiscount1(), username), buildDiscountDTO(d.getDiscount2(), username), null);
+            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "MAX", null, null, buildDiscountDTO(d.getDiscount1()), buildDiscountDTO(d.getDiscount2()), null);
         }
         else if (d instanceof PlusDiscount) {
-            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "PLUS", null, null, buildDiscountDTO(d.getDiscount1(), username), buildDiscountDTO(d.getDiscount2(), username), null);
+            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "PLUS", null, null, buildDiscountDTO(d.getDiscount1()), buildDiscountDTO(d.getDiscount2()), null);
         }
         else {
-            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "CONDITION", null, null, buildDiscountDTO(d.getDiscount1(), username), null, buildConditionDTO(d.getCondition(), username));
+            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "CONDITION", null, null, buildDiscountDTO(d.getDiscount1()), null, buildConditionDTO(d.getCondition()));
         }
     }
 
-    private ConditionDTO buildConditionDTO(Condition condition, String username) {
+    private ConditionDTO buildConditionDTO(Condition condition) {
         if (condition instanceof SimpleCondition) {
             if (condition.getProductID() == null) {
-                return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
+                return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
             }
-            return new ConditionDTO(condition.getConditionID(),  String.valueOf(condition.getProductID()),String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(),"Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPrice(), null, null, null, null);
+            return new ConditionDTO(condition.getConditionID(),  condition.getProductID(),String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(),"Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
         }
         else if (condition instanceof AndCondition) {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "AND");
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "AND");
         }
         else if (condition instanceof OrCondition) {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "OR");
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "OR");
         }
         else if (condition instanceof XorCondition) {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, "XOR");
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "XOR");
         }
         else {
-            return new ConditionDTO(condition.getConditionID(), null,null, null, "Condition", null, null, null, null, buildConditionDTO(condition.getCondition1(), username), buildConditionDTO(condition.getCondition2(), username), null, null);
+            return new ConditionDTO(condition.getConditionID(), null,null, null, "Condition", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, null);
         }
     }
 
-    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(List<ProductDTO> productsInStore) {
+    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<Integer, Integer> productsInStore) {
         return inventory.RemoveOrderFromStoreAfterSuccessfulPurchase(productsInStore);
     }
 
-    public Response<String> calculateShoppingCartPrice(List<ProductDTO> productsInStore) {
+    public Response<String> calculateShoppingCartPrice(Map<Integer, Integer> productsInStore) {
         return inventory.calculateShoppingCartPrice(productsInStore);
     }
 
-    public Response<String> makeComplexDiscount(String username, int discountId1, int discountId2, String discountType) {
+    public Response<String> makeComplexDiscount(String username, Integer discountId1, Integer discountId2, String discountType) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
@@ -659,7 +654,7 @@ public class Store {
         return Response.success("Discount created successfully", String.valueOf(id - 1));
         }
 
-    public Response<String> makeConditionDiscount(String username, int discountId, int conditionId) {
+    public Response<String> makeConditionDiscount(String username, Integer discountId, Integer conditionId) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
@@ -680,11 +675,11 @@ public class Store {
         return new Response<>(true, "Discount created successfully");
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Double price) {
+    public Response<String> addSimplePolicyToStore(String username, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Boolean price) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if ((productID == null && category == null && price == null) || (productID != null && !isProductExist(String.valueOf(productID)).isSuccess())){
+        if ((productID == null && category == null && price == null) || (productID != null && !isProductExist(productID).isSuccess())){
             return new Response<>(false, "productID,price and category can't be null");
         }
         if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
@@ -695,7 +690,7 @@ public class Store {
         return new Response<>(true, "Condition created successfully");
     }
 
-    public Response<String> removeProductFromCategory(int productId, String category, String username) {
+    public Response<String> removeProductFromCategory(Integer productId, String category, String username) {
         Response<String> permissionCheck = checkUserPermission(username, Permissions.MANAGE_PRODUCTS);
         if (!permissionCheck.isSuccess()) {
             SystemLogger.error("[ERROR] " + username + " tried to assign the product: " + productId + " to the category: " + category + " but he doesn't have the permission");
@@ -704,7 +699,7 @@ public class Store {
         return inventory.removeProductFromCategory(productId, category);
     }
 
-    public Response<String> makeComplexPolicy(String username, int policyId1, int policyId2, String conditionType) {
+    public Response<String> makeComplexPolicy(String username, Integer policyId1, Integer policyId2, String conditionType) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
@@ -732,7 +727,7 @@ public class Store {
     }
 
 
-    public Response<String> makeConditionPolicy(String username, int policyId, int conditionId) {
+    public Response<String> makeConditionPolicy(String username, Integer policyId, Integer conditionId) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
@@ -753,9 +748,9 @@ public class Store {
         return Response.success("Discount created successfully", String.valueOf(Id));
     }
 
-    public Response<String> removePolicy(String policyId) {
-        if (policies.containsKey(Integer.parseInt(policyId))) {
-            policies.remove(Integer.parseInt(policyId));
+    public Response<String> removePolicy(Integer policyId) {
+        if (policies.containsKey(policyId)) {
+            policies.remove(policyId);
             SystemLogger.info("[SUCCESS] Policy removed successfully");
             return new Response<>(true, "Discount removed successfully");
         }

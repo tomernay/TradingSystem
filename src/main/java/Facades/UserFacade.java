@@ -37,26 +37,26 @@ public class UserFacade {
         return userRepository;
     }
 
-    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeID) {
-        return userRepository.sendCloseStoreNotification(subscriberNames, storeID);
+    public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeName) {
+        return userRepository.sendCloseStoreNotification(subscriberNames, storeName);
     }
-    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeID) {
-        return userRepository.sendReopenStoreNotification(subscriberNames, storeID);
+    public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeName) {
+        return userRepository.sendReopenStoreNotification(subscriberNames, storeName);
     }
 
     public Response<String> register(String username, String password) {
         return userRepository.register(username, password);
     }
 
-    public Response<String> addProductToShoppingCart(String storeID,ProductDTO product,String userName){
-        return userRepository.addProductToShoppingCart(storeID, product, userName);
+    public Response<String> addProductToShoppingCart(Integer storeID,Integer productID, Integer quantity,String userName){
+        return userRepository.addProductToShoppingCart(storeID, productID, quantity, userName);
     }
 
-    public Response<String> removeProductFromShoppingCart(String userName,String storeID, String productID) {
+    public Response<String> removeProductFromShoppingCart(String userName,Integer storeID, Integer productID) {
         return userRepository.removeProductFromShoppingCart(userName,storeID, productID);
     }
 
-    public Response<String> updateProductInShoppingCart(String storeID, String productID, String userName, int quantity) {
+    public Response<String> updateProductInShoppingCart(Integer storeID, Integer productID, String userName, Integer quantity) {
         return userRepository.updateProductInShoppingCart(storeID, productID, userName, quantity);
     }
 
@@ -64,11 +64,11 @@ public class UserFacade {
 //        return userRepository.messageResponse(subscriberUsername, answer);
 //    }
 
-    public Response<Message> ownerNominationResponse(String messageID, String currentUsername, boolean answer) {
+    public Response<Message> ownerNominationResponse(Integer messageID, String currentUsername, Boolean answer) {
         return userRepository.ownerNominationResponse(messageID, currentUsername, answer);
     }
 
-    public Response<Message> managerNominationResponse(String messageID, String currentUsername, boolean answer) {
+    public Response<Message> managerNominationResponse(Integer messageID, String currentUsername, Boolean answer) {
         return userRepository.managerNominationResponse(messageID, currentUsername, answer);
     }
 
@@ -76,11 +76,11 @@ public class UserFacade {
         return userRepository.isUserExist(subscriberUsername);
     }
 
-    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents(String userName) {
+    public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents(String userName) {
         return userRepository.getShoppingCartContents(userName);
     }
 
-    public Response<String> sendMessageToUser(String username, Message Message) {
+    public Response<Integer> sendMessageToUser(String username, Message Message) {
         return userRepository.sendMessageToUser(username, Message);
     }
 
@@ -88,15 +88,15 @@ public class UserFacade {
         return userRepository.isValidToken(token, currentUsername);
     }
 
-    public void addCreatorRole(String creatorUsername, String storeID) {
+    public void addCreatorRole(String creatorUsername, Integer storeID) {
         userRepository.addCreatorRole(creatorUsername, storeID);
     }
 
-    public Response<Map<String, String>> getStoresRole(String username) {
+    public Response<Map<Integer, String>> getStoresRole(String username) {
         return userRepository.getStoresRole(username);
     }
 
-    public void removeStoreRole(String subscriberUsername, String storeID) {
+    public void removeStoreRole(String subscriberUsername, Integer storeID) {
         userRepository.removeStoreRole(subscriberUsername, storeID);
     }
 
@@ -140,11 +140,7 @@ public class UserFacade {
         return userRepository.clearCart(usernameFromCookies);
     }
 
-    public Response<String> checkout(String usernameFromCookies) {
-        return userRepository.checkout(usernameFromCookies);
-    }
-
-    public Response<String> updateProductQuantityInCart(String storeId, String productId, Integer quantity, String username) {
+    public Response<String> updateProductQuantityInCart(Integer storeId, Integer productId, Integer quantity, String username) {
         return userRepository.updateProductQuantityInCart(storeId, productId, quantity, username);
     }
 
@@ -156,15 +152,12 @@ public class UserFacade {
         userRepository.interruptPurchaseTimer(username);
     }
 
-    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents(String username) {
-        return userRepository.lockAndGetShoppingCartContents(username);
-    }
 
     public boolean isInPurchaseProcess(String user) {
         return userRepository.isInPurchaseProcess(user);
     }
 
-    public Response<String> removeMessage(String username, String token, String messageID) {
+    public Response<String> removeMessage(String username, String token, Integer messageID) {
         return userRepository.removeMessage(username, token, messageID);
     }
 

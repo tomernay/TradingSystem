@@ -20,7 +20,7 @@ public class OrderFacade {
         return orderRepository.getOrders();
     }
 
-    public Response<Map<String, String>> getOrdersHistory(String storeID) {
+    public Response<Map<String, String>> getOrdersHistory(Integer storeID) {
         return orderRepository.getOrdersHistory(storeID);
     }
 
@@ -28,19 +28,19 @@ public class OrderFacade {
         return orderRepository;
     }
 
-    public Response<String> getPurchaseHistoryByStore(String storeID) {
+    public Response<String> getPurchaseHistoryByStore(Integer storeID) {
         return orderRepository.getPurchaseHistoryByStore(storeID);
     }
 
-    public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
-        return orderRepository.getPurchaseHistoryBySubscriber(subscriberID);
+    public Response<String> getPurchaseHistoryBySubscriber(String subscriberUsername) {
+        return orderRepository.getPurchaseHistoryBySubscriber(subscriberUsername);
     }
 
-    public Response<String> CreatOrder(String username, String deliveryAddress, Map<String, List<ProductDTO>> shoppingCartContents) {
+    public Response<String> CreateOrder(String username, String deliveryAddress, List<ProductDTO> shoppingCartContents) {
         return orderRepository.createOrder(username, deliveryAddress, shoppingCartContents);
     }
 
-    public Response<List<OrderDTO>> getOrdersHistoryDTO(String storeID) {
+    public Response<List<OrderDTO>> getOrdersHistoryDTO(Integer storeID) {
         return orderRepository.getOrdersHistoryDTO(storeID);
     }
 }

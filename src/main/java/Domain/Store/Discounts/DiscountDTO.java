@@ -3,11 +3,11 @@ package Domain.Store.Discounts;
 import Domain.Store.Conditions.ConditionDTO;
 
 public class DiscountDTO {
-    private int discountID;
-    private String storeID;
+    private Integer discountID;
+    private Integer storeID;
     private String discountType;
-    private String percent;
-    private String productID;
+    private Double percent;
+    private Integer productID;
     private String productName;
     private String category;
     private DiscountDTO discountDTO1;
@@ -15,7 +15,7 @@ public class DiscountDTO {
     private ConditionDTO condition;
 
 
-    public DiscountDTO(int discountID, String productID, String productName, String storeID, String discountType, String discountCategory, String discountPercentage, DiscountDTO discountDTO1, DiscountDTO discountDTO2, ConditionDTO condition) {
+    public DiscountDTO(Integer discountID, Integer productID, String productName, Integer storeID, String discountType, String discountCategory, Double discountPercentage, DiscountDTO discountDTO1, DiscountDTO discountDTO2, ConditionDTO condition) {
         this.discountID = discountID;
         this.productID = productID;
         this.productName = productName;
@@ -32,7 +32,7 @@ public class DiscountDTO {
         return discountID;
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 
@@ -40,11 +40,11 @@ public class DiscountDTO {
         return discountType;
     }
 
-    public String getPercent() {
+    public Double getPercent() {
         return percent;
     }
 
-    public String getProductID() {
+    public Integer getProductID() {
         return productID;
     }
 

@@ -24,15 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateDiscountDialog extends Dialog {
-    private StoreManagementPresenter presenter;
-    private String storeId;
-    private List<DiscountBox> discountBoxes = new ArrayList<>();
-    private List<PolicyBox> policyBoxes = new ArrayList<>();
-    private VerticalLayout discountCanvas = new VerticalLayout();
-    private VerticalLayout policyCanvas = new VerticalLayout();
-    private List<ProductDTO> products;
+    private final StoreManagementPresenter presenter;
+    private final Integer storeId;
+    private final List<DiscountBox> discountBoxes = new ArrayList<>();
+    private final List<PolicyBox> policyBoxes = new ArrayList<>();
+    private final VerticalLayout discountCanvas = new VerticalLayout();
+    private final VerticalLayout policyCanvas = new VerticalLayout();
+    private final List<ProductDTO> products;
 
-    public CreateDiscountDialog(StoreManagementPresenter presenter, String storeId, List<ProductDTO> products) {
+    public CreateDiscountDialog(StoreManagementPresenter presenter, Integer storeId, List<ProductDTO> products) {
         this.presenter = presenter;
         this.storeId = storeId;
         this.products = products;
@@ -171,32 +171,24 @@ public class CreateDiscountDialog extends Dialog {
         TextField categoryField = new TextField("Category");
 
         productComboBox.addValueChangeListener(event -> {
-            if (event.getValue() != null) {
-                categoryField.setEnabled(false);
-            } else {
-                categoryField.setEnabled(true);
-            }
+            categoryField.setEnabled(event.getValue() == null);
         });
 
         categoryField.addValueChangeListener(event -> {
-            if (!event.getValue().isEmpty()) {
-                productComboBox.setEnabled(false);
-            } else {
-                productComboBox.setEnabled(true);
-            }
+            productComboBox.setEnabled(event.getValue().isEmpty());
         });
 
         NumberField discountPercentField = new NumberField("Discount Percent");
 
         Button saveButton = new Button("Create", e -> {
             ProductDTO selectedProduct = productComboBox.getValue();
-            String productId = selectedProduct != null ? Integer.toString(selectedProduct.getProductID()) : null;
+            Integer productId = selectedProduct != null ? selectedProduct.getProductID() : null;
             String category = categoryField.getValue();
             if (category.isEmpty()) {
                 category = null;
             }
             double discountPercent = discountPercentField.getValue();
-            presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, selectedProduct != null ? selectedProduct.getProductName() : null, null, null, null, null); // Save discount
+            presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, null, null, null, null); // Save discount
             loadAllBoxes(); // Reload all boxes
             simpleDiscountDialog.close();
         });
@@ -277,13 +269,13 @@ public class CreateDiscountDialog extends Dialog {
             String quantityType = quantityTypeComboBox.getValue();
             String category = categoryField.getValue();
             ProductDTO selectedProduct = productComboBox.getValue();
-            String productId = selectedProduct != null ? Integer.toString(selectedProduct.getProductID()) : null;
-            String quantity = quantityField.getValue() != null ? quantityField.getValue().toString() : null;
-            String minQuantity = minQuantityField.getValue() != null ? minQuantityField.getValue().toString() : null;
-            String maxQuantity = maxQuantityField.getValue() != null ? maxQuantityField.getValue().toString() : null;
-            String price = priceField.getValue() != null ? priceField.getValue().toString() : null;
-            String minPrice = minPriceField.getValue() != null ? minPriceField.getValue().toString() : null;
-            String maxPrice = maxPriceField.getValue() != null ? maxPriceField.getValue().toString() : null;
+            Integer productId = selectedProduct != null ? selectedProduct.getProductID() : null;
+            Double quantity = quantityField.getValue() != null ? quantityField.getValue() : null;
+            Double minQuantity = minQuantityField.getValue() != null ? minQuantityField.getValue() : null;
+            Double maxQuantity = maxQuantityField.getValue() != null ? maxQuantityField.getValue() : null;
+            Double price = priceField.getValue() != null ? priceField.getValue() : null;
+            Double minPrice = minPriceField.getValue() != null ? minPriceField.getValue() : null;
+            Double maxPrice = maxPriceField.getValue() != null ? maxPriceField.getValue() : null;
             presenter.savePolicy(storeId, "Simple", policyType, category, productId, quantityType, quantity, minQuantity, maxQuantity, price, minPrice, maxPrice, null, null, null); // Save policy
             loadAllBoxes();
             simplePolicyDialog.close();
@@ -376,7 +368,7 @@ public class CreateDiscountDialog extends Dialog {
         policyTypeComboBox.setItems("Condition");
 
         Button saveButton = new Button("Connect", e -> {
-            presenter.saveDiscount(storeId, "Condition", null, null, null, null, source, null, null, target); // Save discount with policy condition
+            presenter.saveDiscount(storeId, "Condition", null, null, null, source, null, null, target); // Save discount with policy condition
             loadAllBoxes();
             connectionTypeDialog.close();
         });
@@ -399,7 +391,7 @@ public class CreateDiscountDialog extends Dialog {
 
         Button saveButton = new Button("Connect", e -> {
             String discountType = discountTypeComboBox.getValue();
-            presenter.saveDiscount(storeId, "Complex", null, null, null, null, source, target, discountType, null); // Save discount
+            presenter.saveDiscount(storeId, "Complex", null, null, null, source, target, discountType, null); // Save discount
             loadAllBoxes();
             connectionTypeDialog.close();
         });
@@ -494,7 +486,7 @@ public class CreateDiscountDialog extends Dialog {
         discountTypeComboBox.setItems("Condition");
 
         Button saveButton = new Button("Connect", e -> {
-            presenter.saveDiscount(storeId, "Condition", null, null, null, null, target, null, null, source); // Save discount with policy condition
+            presenter.saveDiscount(storeId, "Condition", null, null, null, target, null, null, source); // Save discount with policy condition
             loadAllBoxes();
             connectionTypeDialog.close();
         });
@@ -506,13 +498,9 @@ public class CreateDiscountDialog extends Dialog {
         connectionTypeDialog.open();
     }
 
-    private void saveAll() {
-        // Implement logic to save all discounts and policies to the store
-    }
-
     public PolicyBox getPolicyBox(int conditionID) {
         for (PolicyBox policyBox : policyBoxes) {
-            if (Integer.parseInt(policyBox.getID()) == conditionID) {
+            if (policyBox.getID() == conditionID) {
                 return policyBox;
             }
         }
@@ -521,7 +509,7 @@ public class CreateDiscountDialog extends Dialog {
 
     public DiscountBox getDiscountBox(int discountID) {
         for (DiscountBox discountBox : discountBoxes) {
-            if (Integer.parseInt(discountBox.getID()) == discountID) {
+            if (discountBox.getID() == discountID) {
                 return discountBox;
             }
         }

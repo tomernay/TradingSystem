@@ -29,11 +29,11 @@ public class InventoryEditProductDetailsAsStoreOwnerTest {
         userService.loginAsSubscriber("itay", "ItayPass123!");
         subscriber = userService.getUserFacade().getUserRepository().getUser("itay");
         storeService.addStore("itayStore", "itay", subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
 
         userService.register("mor","MorPass123!");
         userService.loginAsSubscriber("mor","MorPass123!");
-        Response<String> res = userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
+        Response<Integer> res = userService.SendOwnerNominationRequest(store.getId(), "itay", "mor", subscriber.getToken());
         subscriber2 = serviceInitializer.getUserService().getUserFacade().getUserRepository().getUser("mor");
         userService.ownerNominationResponse(res.getData(), "mor",true, subscriber2.getToken());
 

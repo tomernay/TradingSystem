@@ -41,10 +41,10 @@ public class AdminService {
         return null;
     }
 
-    public Response<String> getPurchaseHistoryByStore(String storeID) {
+    public Response<String> getPurchaseHistoryByStore(Integer storeID) {
         SystemLogger.info("[START] Admin is trying to get purchase history by store");
         try{
-            if (storeService.storeExists(storeID) == false){
+            if (!storeService.storeExists(storeID)){
                 SystemLogger.error("[ERROR] The Store Does Not Exist");
                 return Response.error("The Store Does Not Exist", null);
             }
@@ -56,13 +56,13 @@ public class AdminService {
         }
     }
 
-    public Response<String> getPurchaseHistoryBySubscriber(String subscriberID){
+    public Response<String> getPurchaseHistoryBySubscriber(String subscriberUsername){
         try{
-            if (userService.userExists(subscriberID) == false){
+            if (!userService.userExists(subscriberUsername)){
                 SystemLogger.error("[ERROR] The User Does Not Exist");
                 return Response.error("The User Does Not Exist", null);
             }
-            return orderService.getPurchaseHistoryBySubscriber(subscriberID);
+            return orderService.getPurchaseHistoryBySubscriber(subscriberUsername);
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");
@@ -74,15 +74,15 @@ public class AdminService {
         return null;
     }
 
-    public Response<String> suspendUser(String subscriberID, Date endOfSuspensionDate){
+    public Response<String> suspendUser(String subscriberUsername, Date endOfSuspensionDate){
         try {
-            if (userService.userExists(subscriberID) == false) {
+            if (!userService.userExists(subscriberUsername)) {
                 SystemLogger.error("[ERROR] The User Does Not Exist");
                 return Response.error("The User Does Not Exist", null);
             }
 
             //TO DO - implementation of SUSPENDING a user
-            return adminFacade.getAdminRepository().suspendUser(subscriberID,endOfSuspensionDate);
+            return adminFacade.getAdminRepository().suspendUser(subscriberUsername,endOfSuspensionDate);
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");
@@ -90,14 +90,14 @@ public class AdminService {
         }
     }
 
-    public Response<String> reactivateUser(String subscriberID){
+    public Response<String> reactivateUser(String subscriberUsername){
         try {
-            if (userService.userExists(subscriberID) == false) {
+            if (!userService.userExists(subscriberUsername)) {
                 SystemLogger.error("[ERROR] The User Does Not Exist");
                 return Response.error("The User Does Not Exist", null);
             }
 
-            return adminFacade.getAdminRepository().reactivateUser(subscriberID);
+            return adminFacade.getAdminRepository().reactivateUser(subscriberUsername);
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");

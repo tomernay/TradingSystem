@@ -28,7 +28,7 @@ public class StoreManagerPermissionsTests {
         userService.register("yair2","Password123!");
         buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
-        store=storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store=storeService.getStoreFacade().getStoreRepository().getStore(0);
 
         //add manager
 

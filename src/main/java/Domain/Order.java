@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Order {
-    private final int orderID;
-    private final String storeID;
+    private final Integer orderID;
+    private final Integer storeID;
     private final String username;
     private final String deliveryAddress;
     private final Date orderDate;
     private final List<ProductDTO> products; // <productID, <PARAMETER, VALUE>>
     private String status;
 
-    public Order(int orderID, String storeID, String username, String deliveryAddress, List<ProductDTO> products) {
+    public Order(Integer orderID, Integer storeID, String username, String deliveryAddress, List<ProductDTO> products) {
         this.orderID = orderID;
         this.storeID = storeID;
         this.username = username;
@@ -29,7 +29,7 @@ public class Order {
         return orderID;
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 

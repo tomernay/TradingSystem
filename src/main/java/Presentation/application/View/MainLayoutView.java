@@ -271,10 +271,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         deactivatedStoresLayout.add(new H3("Deactivated Stores:"));
 
         for (String store : stores) {
-            final String storeId = getStoreIdByName(store);  // Get the store ID once per iteration
+            final Integer storeId = getStoreIdByName(store);  // Get the store ID once per iteration
 
             Button storeButton = new Button(store, e -> {
-                RouteParameters routeParameters = new RouteParameters("storeId", storeId);
+                RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
                 UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
                 dialog.close();
             });
@@ -301,17 +301,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
     // Assume these methods are part of your presenter or some utility class
-    private boolean isStoreActive(String storeName) {
+    private boolean isStoreActive(Integer storeId) {
         // Implement logic to determine if the store is active
-        return presenter.isStoreActive(storeName);
+        return presenter.isStoreActive(storeId);
     }
 
-    private boolean isStoreDeactivated(String storeName) {
-        // Implement logic to determine if the store is deactivated
-        return !presenter.isStoreActive(storeName);
-    }
-
-    private String getStoreIdByName(String storeName) {
+    private Integer getStoreIdByName(String storeName) {
         // Implement this method to fetch the storeId based on the store name
         // This can be a call to your service layer
         return presenter.getStoreIdByName(storeName);

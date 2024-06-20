@@ -18,7 +18,7 @@ public class MessagesPresenter {
 
     private MessagesList view;
     UserService userService;
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     public MessagesPresenter(HttpServletRequest request){
         userService = ServiceInitializer.getInstance().getUserService();
@@ -35,11 +35,7 @@ public class MessagesPresenter {
         return userService.getMessages(user).getData();
     }
 
-    public void removeMessage(Message message) {
-        // Implement the logic to remove the message
-    }
-
-    public void handleRequest(Message message, boolean answer) {
+    public void handleRequest(Message message, Boolean answer) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         if (message instanceof nominateManagerMessage) {
@@ -50,7 +46,7 @@ public class MessagesPresenter {
         }
     }
 
-    public void removeMessageById(String messageId) {
+    public void removeMessageById(Integer messageId) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         userService.removeMessage(username, token, messageId);

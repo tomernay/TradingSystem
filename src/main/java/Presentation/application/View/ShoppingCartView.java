@@ -140,7 +140,7 @@ public class ShoppingCartView extends VerticalLayout {
         grid.removeColumnByKey("storeName");
         grid.removeColumnByKey("productID");
         grid.removeColumnByKey("quantity");
-        grid.removeColumnByKey("name");
+        grid.removeColumnByKey("productName");
         grid.removeColumnByKey("description");
         grid.removeColumnByKey("price");
         grid.removeColumnByKey("categories");
@@ -189,7 +189,7 @@ public class ShoppingCartView extends VerticalLayout {
         })).setHeader("Quantity");
 
         grid.addComponentColumn(item -> new Button("Remove", e -> {
-            presenter.removeProductFromCart(item.getProductID().toString(), item.getStoreID(), presenter.getUsername());
+            presenter.removeProductFromCart(item.getProductID(), item.getStoreID(), presenter.getUsername());
             presenter.getShoppingCartContents(); // Refresh cart after removal
         })).setHeader("Actions");
 
@@ -202,7 +202,7 @@ public class ShoppingCartView extends VerticalLayout {
     private void updateQuantity(ProductDTO item, int newQuantity) {
         item.setQuantity(newQuantity);
         presenter.updateProductQuantityInCart(
-                item.getProductID().toString(), item.getStoreID(), newQuantity, presenter.getUsername());
+                item.getProductID(), item.getStoreID(), newQuantity, presenter.getUsername());
     }
 
     private void showEmptyCartMessage() {

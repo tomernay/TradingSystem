@@ -44,15 +44,15 @@ public class DiscountAndCalculationPriceTest {
         buyer = userService.getUserFacade().getUserRepository().getUser("yair12312");
         owner = userService.getUserFacade().getUserRepository().getUser("newOwner");
         storeService.addStore("newStore0", "newOwner", owner.getToken());
-        store1 = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store1 = storeService.getStoreFacade().getStoreRepository().getStore(0);
         storeService.addStore("newStore1", "newOwner", owner.getToken());
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore("1");
-        storeService.addProductToStore("0", "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
-        storeService.addProductToStore("0", "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
-        storeService.addProductToStore("1", "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
-        userService.addProductToShoppingCart("0", "1",1, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("0", "2", 10, "yair12312", buyer.getToken());
-        userService.addProductToShoppingCart("1", "1", 1, "yair12312", buyer.getToken());
+        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
+        storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
+        storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
+        storeService.addProductToStore(1, "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
+        userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
+        userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
     }
 
     @Test
@@ -63,8 +63,8 @@ public class DiscountAndCalculationPriceTest {
 
     @Test
     public void creatSimpleDiscountAndCalculation() {
-        storeService.CreateDiscountSimple("newOwner", owner.getToken(), "1", "0", null, "20");
-        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore("0", "newOwner", owner.getToken());
+        storeService.CreateDiscountSimple("newOwner", owner.getToken(), 1, 0, null, 20.0);
+        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
         Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         System.out.println(discount.getData());
@@ -73,10 +73,10 @@ public class DiscountAndCalculationPriceTest {
 
     @Test
     public void creatPlusDiscountAndCalculation() {
-        storeService.CreateDiscountSimple("newOwner", owner.getToken(), "1", "0", null, "20");
-        storeService.CreateDiscountSimple("newOwner", owner.getToken(), "2", "0", null, "20");
-        storeService.makeComplexDiscount("newOwner", owner.getToken(), "0", 1, 2, "PLUS");
-        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore("0", "newOwner", owner.getToken());
+        storeService.CreateDiscountSimple("newOwner", owner.getToken(), 1, 0, null, 20.0);
+        storeService.CreateDiscountSimple("newOwner", owner.getToken(), 2, 0, null, 20.0);
+        storeService.makeComplexDiscount("newOwner", owner.getToken(), 0, 1, 2, "PLUS");
+        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
         Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertTrue(discount.getData().equals("21.0"));
@@ -84,10 +84,10 @@ public class DiscountAndCalculationPriceTest {
 
     @Test
     public void creatMaxDiscountAndCalculation() {
-        storeService.CreateDiscountSimple("newOwner", owner.getToken(), "1", "0", null, "20");
-        storeService.CreateDiscountSimple("newOwner", owner.getToken(), "2", "0", null, "20");
-        storeService.makeComplexDiscount("newOwner", owner.getToken(), "0", 1, 2, "MAX");
-        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore("0", "newOwner", owner.getToken());
+        storeService.CreateDiscountSimple("newOwner", owner.getToken(), 1, 0, null, 20.0);
+        storeService.CreateDiscountSimple("newOwner", owner.getToken(), 2, 0, null, 20.0);
+        storeService.makeComplexDiscount("newOwner", owner.getToken(), 0, 1, 2, "MAX");
+        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
         Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertTrue(discount.getData().equals("20.0"));
@@ -95,12 +95,12 @@ public class DiscountAndCalculationPriceTest {
 
     @Test
     public void creatConditionDiscountAndCalculation() {
-        storeService.CreateDiscountSimple("newOwner", owner.getToken(), "2", "0", null, "20");
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), "0", null,null,null,10.0,null,1.0);
-        storeService.makeConditionDiscount("newOwner", owner.getToken(), "0", 1,1);
-        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore("0", "newOwner", owner.getToken());
+        storeService.CreateDiscountSimple("newOwner", owner.getToken(), 2, 0, null, 20.0);
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null,null,null,10.0,null,true);
+        storeService.makeConditionDiscount("newOwner", owner.getToken(), 0, 1,1);
+        Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
-        Response<List<ConditionDTO>> policies = storeService.getPoliciesFromStore("0", "newOwner", owner.getToken());
+        Response<List<ConditionDTO>> policies = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
         System.out.println(policies.getData().size());
         Assert.assertTrue(policies.getData().size() == 0);
         Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());

@@ -30,12 +30,12 @@ public class StoreCreation {
         userService.loginAsSubscriber("notOwner","Password123!");
         notOwner=userService.getUserFacade().getUserRepository().getUser("notOwner");
         storeService.addStore("newStore", "miaa",subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore("0");
+        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
     }
 
     @Test
     public void testStoreCreation(){
-        Response<String> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
+        Response<Integer> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
         Assert.assertTrue(response.isSuccess());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
         Assert.assertNotNull(store);
@@ -44,7 +44,7 @@ public class StoreCreation {
     @Test
     public void testStoreOwner(){
         init();
-        Response<String> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
+        Response<Integer> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
         Assert.assertFalse(storeService.isStoreOwner(store.getId(), "miaa"));
     }
@@ -52,7 +52,7 @@ public class StoreCreation {
     @Test
     public void testStoreManager(){
         init();
-        Response<String> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
+        Response<Integer> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
         Assert.assertFalse(storeService.isStoreManager(store.getId(), "miaa"));
     }
@@ -60,7 +60,7 @@ public class StoreCreation {
     @Test
     public void testStoreCreator(){
         init();
-        Response<String> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
+        Response<Integer> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
         Assert.assertTrue(storeService.isStoreCreator(store.getId(), "miaa"));
     }
@@ -69,9 +69,9 @@ public class StoreCreation {
     @Test
     public void testStoreID(){
         init();
-        Response<String> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
+        Response<Integer> response = storeService.addStore("zivv", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response.getData());
-        Response<String> response2 = storeService.addStore("Dorr", "miaa",subscriber.getToken());
+        Response<Integer> response2 = storeService.addStore("Dorr", "miaa",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(response2.getData());
         Assert.assertNotEquals(response.getData(), response2.getData());
     }
@@ -90,7 +90,7 @@ public class StoreCreation {
 
     @Test
     public void closeNonExistentStoreTest(){
-        Response<String> response = storeService.closeStore("nonExistentStoreId", subscriber.getUsername(), subscriber.getToken());
+        Response<String> response = storeService.closeStore(10, subscriber.getUsername(), subscriber.getToken());
         Assert.assertFalse(response.isSuccess());
     }
 

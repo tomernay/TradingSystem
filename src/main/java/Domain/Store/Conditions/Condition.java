@@ -6,14 +6,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface Condition {
-    boolean isValid(List<ProductDTO> products);
-    public int getConditionID();
+    boolean isValid(Map<ProductDTO, Integer> products);
+    public Integer getConditionID();
     public Integer getProductID();
     public String getCategory();
-    public String getMinAmount();
-    public String getMaxAmount();
-    public String getAmount();
+    public Double getMinAmount();
+    public Double getMaxAmount();
+    public Double getAmount();
     public Condition getCondition1();
     public Condition getCondition2();
-    public String getPrice();
+    public Boolean getPriceIndicator();
 }
+

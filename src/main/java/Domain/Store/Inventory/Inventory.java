@@ -11,20 +11,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Inventory {
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
-    private final String storeID; //Inventory for specific store
+    private final Integer storeID; //Inventory for specific store
     public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
     public final ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
     private final ConcurrentHashMap<Product, Integer> lockedProducts; // <Product, Quantity>
 
     // Constructor
-    public Inventory(String _storeID) {
-        this.storeID = _storeID;
+    public Inventory(Integer storeID) {
+        this.storeID = storeID;
         this.productsList = new ConcurrentHashMap<>();
         this.categories = new ConcurrentHashMap<>();
         this.lockedProducts = new ConcurrentHashMap<>();
     }
 
-    public String getStoreID() {
+    public Integer getStoreID() {
         return storeID;
     }
 
@@ -38,7 +38,7 @@ public class Inventory {
         return productsList.get(productID);
     }
 
-    public synchronized Response<String> setProductQuantity(int productID, int newQuantity) {
+    public synchronized Response<String> setProductQuantity(Integer productID, Integer newQuantity) {
         if (productID <= 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -56,7 +56,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> addProductQuantity(int productID, int valueToAdd) {
+    public synchronized Response<String> addProductQuantity(Integer productID, Integer valueToAdd) {
         if (productID <= 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -74,7 +74,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> getProductQuantity(int productID) {
+    public synchronized Response<String> getProductQuantity(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -95,10 +95,10 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> getStoreID(int productID) {
+    public synchronized Response<Integer> getStoreID(Integer productID) {
         try {
             if (isProductExist(productID)) {
-                String storeID = getProduct(productID).getStoreID();
+                Integer storeID = getProduct(productID).getStoreID();
                 SystemLogger.info("[SUCCESS] Store ID retrieved successfully");
                 return Response.success("Store ID retrieved successfully", storeID);
             } else {
@@ -112,7 +112,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> getStoreName(int productID) {
+    public synchronized Response<String> getStoreName(Integer productID) {
         try {
             if (isProductExist(productID)) {
                 String storeName = getProduct(productID).getStoreName();
@@ -128,7 +128,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> getProductDescription(int productID) {
+    public synchronized Response<String> getProductDescription(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -147,7 +147,7 @@ public class Inventory {
         return Response.success("Product with ID: " + productID + " description retrieved successfully", description);
     }
 
-    public synchronized Response<String> setProductDescription(int productID, String newDescription) {
+    public synchronized Response<String> setProductDescription(Integer productID, String newDescription) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -172,7 +172,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<Integer> setStoreIDToProduct(int productID, String storeID) {
+    public synchronized Response<Integer> setStoreIDToProduct(Integer productID, Integer storeID) {
         try {
             if (isProductExist(productID)) {
                 getProduct(productID).setStoreID(storeID);
@@ -188,7 +188,7 @@ public class Inventory {
         }
     }
 
-    public synchronized Response<String> getProductName(int productID) {
+    public synchronized Response<String> getProductName(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -208,7 +208,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> setProductName(int productID, String productName) {
+    public synchronized Response<String> setProductName(Integer productID, String productName) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -232,7 +232,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<Integer> setStoreNameToProduct(int productID, String storeName) {
+    public synchronized Response<Integer> setStoreNameToProduct(Integer productID, String storeName) {
         try {
             if (isProductExist(productID)) {
                 getProduct(productID).setStoreName(storeName);
@@ -248,7 +248,7 @@ public class Inventory {
         }
     }
 
-    public Response<String> getProductPrice(int productID) {
+    public Response<Double> getProductPrice(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -262,12 +262,12 @@ public class Inventory {
             SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
             return Response.error("Product with ID: " + productID + " not found.", null);
         }
-        double price = product.getPrice();
+        Double price = product.getPrice();
         SystemLogger.info("[SUCCESS] Product with ID: " + productID + " price retrieved successfully");
-        return Response.success("Product with ID: " + productID + " price retrieved successfully", String.valueOf(price));
+        return Response.success("Product with ID: " + productID + " price retrieved successfully", price);
     }
 
-    public synchronized Response<String> setProductPrice(int productID, double newPrice) {
+    public synchronized Response<String> setProductPrice(Integer productID, Double newPrice) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -287,7 +287,7 @@ public class Inventory {
             return Response.error("Invalid price: Price cannot be negative", null);
         }
         SystemLogger.info("[SUCCESS] Product with ID: " + productID + " price updated successfully to: " + newPrice);
-        return Response.success("Product with ID: " + productID + " price updated successfully", String.valueOf(newPrice));
+        return Response.success("Product with ID: " + productID + " price updated successfully", null);
     }
 
     public Response<ArrayList<ProductDTO>> retrieveProductsByCategoryFrom_OneStore(String category) {
@@ -316,7 +316,7 @@ public class Inventory {
     }
 
 
-    public synchronized Response<String> retrieveProductCategories(int productID) {
+    public synchronized Response<String> retrieveProductCategories(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -342,7 +342,7 @@ public class Inventory {
         }
     }
 
-    public List<String> getProductsCategoriesAsList(int productID) {
+    public List<String> getProductsCategoriesAsList(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return null;
@@ -360,7 +360,7 @@ public class Inventory {
         return relatedCategories;
     }
 
-    public Response<String> assignProductToCategory(int productID, String category) {
+    public Response<String> assignProductToCategory(Integer productID, String category) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -406,7 +406,7 @@ public class Inventory {
     }
 
 
-    public Response<ProductDTO> getProductFromStore(int productID) {
+    public Response<ProductDTO> getProductFromStore(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -446,8 +446,8 @@ public class Inventory {
     }
 
     //product with no category will be added to General category
-    public synchronized Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity) {
-        if (storeID == null || storeID.isEmpty()) {
+    public synchronized Response<String> addProductToStore(Integer storeID, String storeName, String name, String desc, Double price, Integer quantity) {
+        if (storeID == null) {
             SystemLogger.error("[ERROR] Store ID cannot be null or empty");
             return Response.error("Store ID cannot be null or empty", null);
         }
@@ -488,8 +488,8 @@ public class Inventory {
     }
 
     //product with categories will be added to the categories he is associated with
-    public synchronized Response<String> addProductToStore(String storeID, String storeName, String name, String desc, double price, int quantity, ArrayList<String> categories) {
-        if (storeID == null || storeID.isEmpty()) {
+    public synchronized Response<String> addProductToStore(Integer storeID, String storeName, String name, String desc, double price, int quantity, ArrayList<String> categories) {
+        if (storeID == null) {
             SystemLogger.error("[ERROR] Store ID cannot be null or empty");
             return Response.error("Store ID cannot be null or empty", null);
         }
@@ -534,7 +534,7 @@ public class Inventory {
         return Response.success("Product with ID: " + product.getProductID() + " added successfully", name);
     }
 
-    public synchronized Response<String> removeProductFromStore(int productID) {
+    public synchronized Response<String> removeProductFromStore(Integer productID) {
         if (productID < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productID);
             return Response.error("Invalid product ID: " + productID, null);
@@ -551,7 +551,7 @@ public class Inventory {
         productsList.remove(productID);
         for (Map.Entry<String, ArrayList<Integer>> entry : categories.entrySet()) {
             // Convert productID to an Integer object before removing
-            entry.getValue().remove(Integer.valueOf(productID));
+            entry.getValue().remove(productID);
         }
 
         SystemLogger.info("[SUCCESS] Product with ID: " + productID + " removed successfully");
@@ -629,60 +629,52 @@ public class Inventory {
 
 
 
-    public synchronized Response<List<ProductDTO>> LockProducts(List<ProductDTO> productDTOList) {
-        ArrayList<Product> lockedProductsList = new ArrayList<>();
-
-        for (ProductDTO productDTO : productDTOList) {
-            int productID = productDTO.getProductID();
-            int productQuantity = productDTO.getQuantity();
-
+    public synchronized Response<List<ProductDTO>> LockProducts(Map<Integer, Integer> MapShoppingCart) {
+        ArrayList<Product> LockedProducts = new ArrayList<>();
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : MapShoppingCart.entrySet()) {
+            Integer productQuantity = entry.getValue();
+            Integer productID = entry.getKey();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
             }
-
             Product product = getProduct(productID);
             if (product == null) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
                 return Response.error("Product with ID: " + productID + " not found.", null);
             }
-
             if (product.getQuantity() - productQuantity < 0) { // check if product is out of stock
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " is out of stock.");
-                for (Product lockedProduct : lockedProductsList) {
-                    // unlock all locked products
-                    int lockedQuantity = 0;
-                    for (ProductDTO productDTO1 : productDTOList) {
-                        if (productDTO1.getProductID() == lockedProduct.getProductID()) {
-                            lockedQuantity = productDTO1.getQuantity();
-                        }
-                    }
-                    int oldLockedQuantity = lockedProducts.get(lockedProduct);
-                    lockedProducts.put(lockedProduct, oldLockedQuantity - lockedQuantity);
-                    lockedProduct.addQuantity(lockedQuantity);
+                for (Product LockedProduct : LockedProducts) { // unlock all locked products
+                    Integer LockedQuantity = MapShoppingCart.get(LockedProduct.getProductID());
+                    Integer oldLockedQuantity =  lockedProducts.get(LockedProduct);
+                    lockedProducts.put(LockedProduct, oldLockedQuantity - LockedQuantity);
+                    LockedProduct.addQuantity( LockedQuantity);
+
                 }
                 return Response.error("Product with ID: " + product.getName() + " in store: " + product.getStoreName() + " has only: " + product.getQuantity() + " units left in stock!", null);
             }
-
             product.addQuantity(-productQuantity);
-            if (lockedProducts.containsKey(product)) {
+            if(lockedProducts.containsKey(product)) {
                 lockedProducts.put(product, lockedProducts.get(product) + productQuantity);
             } else {
                 lockedProducts.put(product, productQuantity);
             }
-
-            lockedProductsList.add(product);
+            LockedProducts.add(product);
+            ProductDTO productDTO = new ProductDTO(product);
+            productDTO.setQuantity(productQuantity);
+            productDTOList.add(productDTO);
         }
-
         SystemLogger.info("[SUCCESS] Shopping cart locked successfully");
-        return Response.success("Shopping cart locked successfully", productDTOList);
+        return Response.success("Shopping cart locked successfully",productDTOList);
     }
 
 
-    public synchronized Response<String> unlockProductsBackToStore(List<ProductDTO> stringIntegerMap) {
-        for (ProductDTO productDTO : stringIntegerMap) {
-            Integer productID = productDTO.getProductID();
-            int quantity = productDTO.getQuantity();
+    public synchronized Response<String> unlockProductsBackToStore(Map<Integer, Integer> stringIntegerMap) {
+        for (Map.Entry<Integer, Integer> entry : stringIntegerMap.entrySet()) {
+            Integer productID = entry.getKey();
+            Integer quantity = entry.getValue();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
@@ -699,10 +691,10 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(List<ProductDTO> productsInStore) {
-        for (ProductDTO productDTO : productsInStore) {
-            Integer productID = productDTO.getProductID();
-            int quantity = productDTO.getQuantity();
+    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<Integer, Integer> productsInStore) {
+        for (Map.Entry<Integer, Integer> entry : productsInStore.entrySet()) {
+            Integer productID = entry.getKey();
+            int quantity = entry.getValue();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
@@ -718,11 +710,11 @@ public class Inventory {
         return Response.success("Shopping cart unlocked successfully", null);
     }
 
-    public Response<String> calculateShoppingCartPrice(List<ProductDTO> productsInStore) {
+    public Response<String> calculateShoppingCartPrice(Map<Integer, Integer> productsInStore) {
         double totalPrice = 0;
-        for (ProductDTO productDTO : productsInStore) {
-            Integer productID = productDTO.getProductID();
-            int quantity = productDTO.getQuantity();
+        for (Map.Entry<Integer, Integer> entry : productsInStore.entrySet()) {
+            Integer productID = entry.getKey();
+            int quantity = entry.getValue();
             if (!isProductExist(productID)) {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
                 return Response.error("Product with ID: " + productID + " does not exist.", null);
@@ -738,7 +730,7 @@ public class Inventory {
         return Response.success("Total price calculated successfully", String.valueOf(totalPrice));
     }
 
-    public Response<String> removeProductFromCategory(int productId, String category) {
+    public Response<String> removeProductFromCategory(Integer productId, String category) {
         if (productId < 0) {
             SystemLogger.error("[ERROR] Invalid product ID: " + productId);
             return Response.error("Invalid product ID: " + productId, null);
@@ -760,7 +752,7 @@ public class Inventory {
             SystemLogger.error("[ERROR] Product with ID: " + productId + " does not exist in category: " + category);
             return Response.error("Product with ID: " + productId + " does not exist in category: " + category, null);
         }
-        productIDs.remove(Integer.valueOf(productId));
+        productIDs.remove(productId);
         SystemLogger.info("[SUCCESS] Product with ID: " + productId + " removed from category: " + category);
         return Response.success("Product with ID: " + productId + " removed from category: " + category, category);
     }

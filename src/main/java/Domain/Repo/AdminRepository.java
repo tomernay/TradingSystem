@@ -16,11 +16,11 @@ public class AdminRepository {
         admin = new Admin();
     }
 
-    public Response<String> suspendUser(String subscriberID, Date endOfSuspensionDate){
+    public Response<String> suspendUser(String subscriberUsername, Date endOfSuspensionDate){
         try {
-            if (!(admin.getSuspensionList().containsKey(subscriberID))) {
-                admin.getSuspensionList().put(subscriberID, endOfSuspensionDate);
-                SystemLogger.error("[SUCCESS] The User " +subscriberID+ " Has Been Suspended");
+            if (!(admin.getSuspensionList().containsKey(subscriberUsername))) {
+                admin.getSuspensionList().put(subscriberUsername, endOfSuspensionDate);
+                SystemLogger.error("[SUCCESS] The User " +subscriberUsername+ " Has Been Suspended");
                 return new Response<>(true,"The user has been successfully suspended");
             }
             else{
