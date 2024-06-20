@@ -3,7 +3,7 @@ package Presentation.application.View.Store;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
-import Presentation.application.Presenter.StoreManagementPresenter;
+import Presentation.application.Presenter.Store.StoreManagementPresenter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -166,7 +166,7 @@ public class CreateDiscountDialog extends Dialog {
 
         ComboBox<ProductDTO> productComboBox = new ComboBox<>("Product");
         productComboBox.setItems(products);
-        productComboBox.setItemLabelGenerator(ProductDTO::getName);
+        productComboBox.setItemLabelGenerator(ProductDTO::getProductName);
 
         TextField categoryField = new TextField("Category");
 
@@ -196,7 +196,7 @@ public class CreateDiscountDialog extends Dialog {
                 category = null;
             }
             double discountPercent = discountPercentField.getValue();
-            presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, selectedProduct != null ? selectedProduct.getName() : null, null, null, null, null); // Save discount
+            presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, selectedProduct != null ? selectedProduct.getProductName() : null, null, null, null, null); // Save discount
             loadAllBoxes(); // Reload all boxes
             simpleDiscountDialog.close();
         });
@@ -223,7 +223,7 @@ public class CreateDiscountDialog extends Dialog {
         TextField categoryField = new TextField("Category");
         ComboBox<ProductDTO> productComboBox = new ComboBox<>("Product");
         productComboBox.setItems(products);
-        productComboBox.setItemLabelGenerator(ProductDTO::getName);
+        productComboBox.setItemLabelGenerator(ProductDTO::getProductName);
 
         NumberField quantityField = new NumberField("Quantity");
         NumberField minQuantityField = new NumberField("Min Quantity");

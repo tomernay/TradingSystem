@@ -1,5 +1,6 @@
 package Service;
 
+import Domain.Store.Inventory.ProductDTO;
 import Facades.UserFacade;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
@@ -248,21 +249,22 @@ public class UserService {
     /**
      * This method adds a product to the shopping cart.
      * @param storeID The store ID of the store.
-     * @param productID The product ID of the product.
+//     * @param product The product of the product.
      * @param username The username of the subscriber.
      * @param token The token of the subscriber.
-     * @param quantity The quantity of the product.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addProductToShoppingCart(String storeID, String productID, String username, String token, int quantity) {
+    public Response<String> addProductToShoppingCart(String storeID, String productID, Integer quantity, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add a product to the shopping cart");
         if (isValidToken(token, username)) {
-            Response<String> response = storeService.isProductExist(storeID, productID);
+            Response<String> response = storeService.isProductExist(storeID, String.valueOf(productID));
             if(response.isSuccess()) {
                 if(adminService.isSuspended(username)){
                     return Response.error("User is suspended", null);
                 }
-                return userFacade.addProductToShoppingCart(storeID, productID, username, quantity);
+                ProductDTO product = storeService.viewProductFromStoreByID(Integer.parseInt(productID), storeID, username, token).getData();
+                product.setQuantity(quantity);
+                return userFacade.addProductToShoppingCart(storeID, product, username);
             }
             SystemLogger.error("[ERROR] User: " + username + " tried to add a product to the shopping cart but the product does not exist");
             return response;
@@ -358,7 +360,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message & map of {storeID, {productID, quantity}}. <br> If not, returns an error message.
      */
-    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String username, String token) {
+    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get the shopping cart contents");
         if (isValidToken(token, username)) {
             return userFacade.getShoppingCartContents(username);
@@ -378,7 +380,7 @@ public class UserService {
         SystemLogger.info("[START] User: " + username + " is trying calculated  shopping cart contents");
         if (isValidToken(token, username)) {
             // Get the shopping cart contents
-            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.getShoppingCartContents(username);
+            Response<Map<String, List<ProductDTO>>> resShoppingCartContents = userFacade.getShoppingCartContents(username);
             if (!resShoppingCartContents.isSuccess()) { // If the shopping cart contents retrieval failed
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
@@ -403,7 +405,7 @@ public class UserService {
                 return Response.error("User is suspended", null);
             }
             // Get the shopping cart contents
-            Response<Map<String, Map<String, Integer>>> resShoppingCartContents = userFacade.getShoppingCartContents(username);
+            Response<Map<String, List<ProductDTO>>> resShoppingCartContents = userFacade.getShoppingCartContents(username);
             if (!resShoppingCartContents.isSuccess()) { // If the shopping cart contents retrieval failed
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
@@ -429,7 +431,7 @@ public class UserService {
     public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> ShoppingCartContents = userFacade.getShoppingCartContents(username);
+            Response<Map<String, List<ProductDTO>>> ShoppingCartContents = userFacade.getShoppingCartContents(username);
             return storeService.RemoveOrderFromStoreAfterSuccessfulPurchase(ShoppingCartContents.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to release the shopping cart but the token was invalid");
@@ -460,7 +462,7 @@ public class UserService {
     public Response<String> unlockProductsBackToStore(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> ShoppingCartContents = userFacade.getShoppingCartContents(username);
+            Response<Map<String, List<ProductDTO>>> ShoppingCartContents = userFacade.getShoppingCartContents(username);
             unlockFlagShoppingCart(username);
             return storeService.unlockProductsBackToStore(ShoppingCartContents.getData());
         }
@@ -500,7 +502,7 @@ public class UserService {
     public Response<String> CalculateDiscounts(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
         if (isValidToken(token, username)) {
-            Response<Map<String, Map<String, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
+            Response<Map<String, List<ProductDTO>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);
             return storeService.CalculateDiscounts(resShoppSingCartContents.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to calculate the discounts but the token was invalid");

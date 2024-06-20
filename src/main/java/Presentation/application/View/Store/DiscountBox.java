@@ -1,8 +1,7 @@
 package Presentation.application.View.Store;
 
 import Domain.Store.Discounts.DiscountDTO;
-import Presentation.application.Presenter.StoreManagementPresenter;
-import com.vaadin.flow.component.button.Button;
+import Presentation.application.Presenter.Store.StoreManagementPresenter;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 

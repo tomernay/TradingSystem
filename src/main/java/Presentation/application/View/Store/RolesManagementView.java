@@ -1,7 +1,7 @@
-package Presentation.application.View;
+package Presentation.application.View.Store;
 
-import Presentation.application.Presenter.RolesManagementPresenter;
-import Presentation.application.View.Store.StoreManagementView;
+import Presentation.application.Presenter.Store.RolesManagementPresenter;
+import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;

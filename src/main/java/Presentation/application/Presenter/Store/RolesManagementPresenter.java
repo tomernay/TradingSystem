@@ -1,7 +1,7 @@
-package Presentation.application.Presenter;
+package Presentation.application.Presenter.Store;
 
 import Presentation.application.CookiesHandler;
-import Presentation.application.View.RolesManagementView;
+import Presentation.application.View.Store.RolesManagementView;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;

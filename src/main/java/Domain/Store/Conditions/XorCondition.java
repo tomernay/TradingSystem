@@ -2,6 +2,7 @@ package Domain.Store.Conditions;
 
 import Domain.Store.Inventory.ProductDTO;
 
+import java.util.List;
 import java.util.Map;
 
 public class XorCondition implements  Condition{
@@ -16,7 +17,7 @@ public class XorCondition implements  Condition{
     }
 
     @Override
-    public boolean isValid(Map<ProductDTO,Integer> products) {
+    public boolean isValid(List<ProductDTO> products) {
         return condition1.isValid(products) ^ condition2.isValid(products);
     }
 

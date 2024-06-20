@@ -1,6 +1,7 @@
 package Facades;
 
 import Domain.Repo.UserRepository;
+import Domain.Store.Inventory.ProductDTO;
 import Utilities.Messages.Message;
 import Utilities.Response;
 
@@ -47,8 +48,8 @@ public class UserFacade {
         return userRepository.register(username, password);
     }
 
-    public Response<String> addProductToShoppingCart(String storeID,String productID,String userName,int quantity){
-        return userRepository.addProductToShoppingCart(storeID, productID, userName, quantity);
+    public Response<String> addProductToShoppingCart(String storeID,ProductDTO product,String userName){
+        return userRepository.addProductToShoppingCart(storeID, product, userName);
     }
 
     public Response<String> removeProductFromShoppingCart(String userName,String storeID, String productID) {
@@ -75,7 +76,7 @@ public class UserFacade {
         return userRepository.isUserExist(subscriberUsername);
     }
 
-    public Response<Map<String, Map<String, Integer>>> getShoppingCartContents(String userName) {
+    public Response<Map<String, List<ProductDTO>>> getShoppingCartContents(String userName) {
         return userRepository.getShoppingCartContents(userName);
     }
 
@@ -155,7 +156,7 @@ public class UserFacade {
         userRepository.interruptPurchaseTimer(username);
     }
 
-    public Response<Map<String, Map<String, Integer>>> lockAndGetShoppingCartContents(String username) {
+    public Response<Map<String, List<ProductDTO>>> lockAndGetShoppingCartContents(String username) {
         return userRepository.lockAndGetShoppingCartContents(username);
     }
 

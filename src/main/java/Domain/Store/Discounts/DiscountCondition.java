@@ -4,6 +4,7 @@ import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Conditions.Condition;
 import Utilities.Response;
 
+import java.util.List;
 import java.util.Map;
 
 public class DiscountCondition implements Discount{
@@ -21,7 +22,7 @@ public class DiscountCondition implements Discount{
         this.discountID = discountID;
         this.discountType = DiscountType.CONDITION;
     }
-    public Response<Double> CalculatorDiscount(Map<ProductDTO,Integer> products) {
+    public Response<Double> CalculatorDiscount(List<ProductDTO> products) {
         if(condition.isValid(products)){
             return discount.CalculatorDiscount(products);
         }

@@ -1,13 +1,12 @@
 package Presentation.application.View.Store;
 
 import Domain.Store.Inventory.ProductDTO;
-import Presentation.application.Presenter.ProductManagementPresenter;
+import Presentation.application.Presenter.Store.ProductManagementPresenter;
 import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -63,14 +62,14 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         FormLayout form = new FormLayout();
 
         // Local variables to hold the updated values
-        final String[] updatedName = {product.getName()};
+        final String[] updatedName = {product.getProductName()};
         final String[] updatedDescription = {product.getDescription()};
         final double[] updatedPrice = {product.getPrice()};
         final int[] updatedQuantity = {product.getQuantity()};
         Wrapper<Set<String>> updatedCategories = new Wrapper<>(new HashSet<>(product.getCategories()));
 
         TextField nameField = new TextField("Name");
-        nameField.setValue(product.getName());
+        nameField.setValue(product.getProductName());
         nameField.addValueChangeListener(event -> updatedName[0] = event.getValue());
 
         TextArea descriptionField = new TextArea("Description");

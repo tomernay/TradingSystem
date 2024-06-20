@@ -1,4 +1,4 @@
-package Presentation.application.Presenter;
+package Presentation.application.Presenter.Store;
 
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;

@@ -107,7 +107,7 @@ public class InventoryGetAndSetTest {
         Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(store.getId(), "mor", subscriber2.getToken());
         Assertions.assertNotNull(res.getData());
         Assertions.assertEquals(1, res.getData().size());
-        System.out.println("Final Name: " + res.getData().get(0).getName());
+        System.out.println("Final Name: " + res.getData().get(0).getProductName());
     }
 
     @Test

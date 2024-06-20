@@ -38,6 +38,8 @@ public class AdminTests {
         buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
         store=storeService.getStoreFacade().getStoreRepository().getStore("0");
+        storeService.addProductToStore("0","bamba","product",10.0,10,"yair",subscriber.getToken());
+        userService.addProductToShoppingCart("0", "1", 5, "yair2", buyer.getToken());
 
     }
     @Test
@@ -57,7 +59,7 @@ public class AdminTests {
 
     @Test
     public void getPurchasesHistoryByStore(){
-        orderService.getOrderFacade().getOrderRepository().addOrder("0","yair2","Address",new HashMap<>());
+        orderService.CreateOrder("yair2",buyer.getToken(),"test");
         Response<String> response = adminService.getPurchaseHistoryByStore("0");
         Assert.assertTrue(response.isSuccess());
 
@@ -67,7 +69,7 @@ public class AdminTests {
 
     @Test
     public void getPurchasesHistoryBySubscriber(){
-        orderService.getOrderFacade().getOrderRepository().addOrder("yairStore","yair2", "Address",new HashMap<>());
+        orderService.CreateOrder("yair2",buyer.getToken(),"test");
         Response<String> response = adminService.getPurchaseHistoryBySubscriber("yair2");
         Assert.assertTrue(response.isSuccess());
 

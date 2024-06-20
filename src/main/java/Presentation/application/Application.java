@@ -1,7 +1,9 @@
 package Presentation.application;
 
+import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
+import Service.OrderService;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
@@ -15,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The entry point of the Spring Boot application.
@@ -36,6 +39,7 @@ public class Application implements AppShellConfigurator {
     static ServiceInitializer serviceInitializer;
     static StoreService storeService;
     static UserService userService;
+    static OrderService orderService;
     static Subscriber subscriber, owner, manager;
     static Store store, store2;
     public static void init(){
@@ -47,6 +51,7 @@ public class Application implements AppShellConfigurator {
        String token=resLogin.getData();
         subscriber=userService.getUserFacade().getUserRepository().getUser("miaa");
         storeService = serviceInitializer.getStoreService();
+        orderService = serviceInitializer.getOrderService();
         userService.register("manager","Password123!");
         userService.loginAsSubscriber("manager","Password123!");
         userService.register("owner","Password123!");
@@ -62,16 +67,14 @@ public class Application implements AppShellConfigurator {
         userService.managerNominationResponse(res.getData(), "manager", true, manager.getToken());
         Response<String> res2 = userService.SendOwnerNominationRequest("0", "miaa", "owner", token);
         userService.ownerNominationResponse(res2.getData(),"owner", true, owner.getToken());
-        System.out.println(store.getInventory().productsList);
-        ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrderRepository().addOrder("0","miaa","Address",new HashMap<>());
-        System.out.println( ServiceInitializer.getInstance().getOrderService().getOrderFacade().getOrdersHistory("0").getData());
         storeService.addProductToStore("0","Bamba","Bamba",200.0,1, new ArrayList<>(List.of("test")),"miaa",subscriber.getToken());
         storeService.addProductToStore("0","Bisli","Bisli",100.0,1,"miaa",subscriber.getToken());
         storeService.addProductToStore("1","CHIPS","CHIPS",200.0,1,"miaa",subscriber.getToken());
         storeService.addProductToStore("1","DORITOS","DORITOS",100.0,1,"miaa",subscriber.getToken());
-        userService.addProductToShoppingCart("0","1","miaa",subscriber.getToken(), 1);
-        userService.addProductToShoppingCart("0","2","miaa",subscriber.getToken(), 1);
-        userService.addProductToShoppingCart("1","1","miaa",subscriber.getToken(), 1);
+        userService.addProductToShoppingCart("0", "1", 1, "miaa", subscriber.getToken());
+        userService.addProductToShoppingCart("0", "2", 1, "miaa", subscriber.getToken());
+        userService.addProductToShoppingCart("1", "1", 1,"miaa", subscriber.getToken());
+        orderService.CreateOrder("miaa", subscriber.getToken(), "test");
         userService.logoutAsSubscriber("miaa");
     }
 }

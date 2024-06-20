@@ -44,8 +44,6 @@ public class Store {
         reverseNominationMap = new HashMap<>();
         discounts = new HashMap<>();
         policies = new HashMap<>();
-
-
     }
 
     public Store() {
@@ -480,7 +478,7 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
-    public Response<Boolean> checkPolicy(Map<ProductDTO,Integer>productsInShoppingCart) {
+    public Response<Boolean> checkPolicy(List<ProductDTO> productsInShoppingCart) {
         for (Condition c : policies.values()) {
             if (!c.isValid(productsInShoppingCart)) {
                 return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
@@ -491,8 +489,8 @@ public class Store {
 
 
 
-    public Response<Map<ProductDTO,Integer>> LockProducts(Map<String, Integer> productsShoppingCart) {
-        Response<Map<ProductDTO,Integer>> productDTOList = inventory.LockProducts(productsShoppingCart);
+    public Response<List<ProductDTO>> LockProducts(List<ProductDTO> productsShoppingCart) {
+        Response<List<ProductDTO>> productDTOList = inventory.LockProducts(productsShoppingCart);
         if (!productDTOList.isSuccess()) {
             return productDTOList;
         }
@@ -508,7 +506,7 @@ public class Store {
     }
 
 
-    public void unlockShoppingCart(Map<String, Integer> stringIntegerMap) {
+    public void unlockShoppingCart(List<ProductDTO> stringIntegerMap) {
         inventory.unlockProductsBackToStore(stringIntegerMap);
     }
 
@@ -534,27 +532,34 @@ public class Store {
         return Response.success("Discount created successfully", String.valueOf(IdDiscount));
     }
 
-    public Response<Double> CalculateDiscounts(Map<String, Integer> productsInStore) {
+    public Response<Double> CalculateDiscounts(List<ProductDTO> productsInStore) {
         double discount = 0;
-        Map<ProductDTO,Integer> products = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
-            Response<ProductDTO> response = inventory.getProductFromStore(Integer.parseInt(entry.getKey()));
-            if (!response.isSuccess()) {
+        for (Discount d : discounts.values()) {
+            Response<Double> responseDiscount = d.CalculatorDiscount(productsInStore);
+            if (!responseDiscount.isSuccess()) {
                 return new Response<>(false, "Failed to calculate discount");
             }
-            products.put(response.getData(),productsInStore.get(entry.getKey()));
+            discount += responseDiscount.getData();
         }
-            for (Discount d : discounts.values()) {
-                Response<Double> responseDiscount = d.CalculatorDiscount(products);
-                if (!responseDiscount.isSuccess()) {
-                    return new Response<>(false, "Failed to calculate discount");
-                }
-                discount += responseDiscount.getData();
-            }
+//        List<ProductDTO> products = new ArrayList<>();
+//        for (Map.Entry<String, Integer> entry : productsInStore.entrySet()) {
+//            Response<ProductDTO> response = inventory.getProductFromStore(Integer.parseInt(entry.getKey()));
+//            if (!response.isSuccess()) {
+//                return new Response<>(false, "Failed to calculate discount");
+//            }
+//            products.add(response.getData());
+//        }
+//            for (Discount d : discounts.values()) {
+//                Response<Double> responseDiscount = d.CalculatorDiscount(products);
+//                if (!responseDiscount.isSuccess()) {
+//                    return new Response<>(false, "Failed to calculate discount");
+//                }
+//                discount += responseDiscount.getData();
+//            }
         return new Response<>(true,"calculate discounts successfull", discount);
     }
 
-    public synchronized Response<String> unlockProductsBackToStore(Map<String, Integer> productsInStore) {
+    public synchronized Response<String> unlockProductsBackToStore(List<ProductDTO> productsInStore) {
         return inventory.unlockProductsBackToStore(productsInStore);
     }
 
@@ -623,11 +628,11 @@ public class Store {
         }
     }
 
-    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<String, Integer> productsInStore) {
+    public synchronized Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(List<ProductDTO> productsInStore) {
         return inventory.RemoveOrderFromStoreAfterSuccessfulPurchase(productsInStore);
     }
 
-    public Response<String> calculateShoppingCartPrice(Map<String, Integer> productsInStore) {
+    public Response<String> calculateShoppingCartPrice(List<ProductDTO> productsInStore) {
         return inventory.calculateShoppingCartPrice(productsInStore);
     }
 

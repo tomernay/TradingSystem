@@ -8,6 +8,7 @@ import Presentation.application.View.Store.StoreManagementView;
 import Presentation.application.View.Store.StorePageView;
 
 
+import Presentation.application.View.Store.StorePurchaseHistory;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
@@ -468,12 +469,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             }
         });
 
-        Button purchaseHistoryByStoreButton = new Button("Purchase History By Store");
-        purchaseHistoryByStoreButton.addClickListener(e -> {
-            UI.getCurrent().navigate(StorePurchaseHistory.class);
-        });
+//        Button purchaseHistoryByStoreButton = new Button("Purchase History By Store");
+//        purchaseHistoryByStoreButton.addClickListener(e -> {
+//            UI.getCurrent().navigate(StorePurchaseHistory.class);
+//        });
 
-        mainContent.add(addMessageButton, purchaseHistoryByStoreButton);
+        mainContent.add(addMessageButton);
     }
 
     private void incrementNotificationCount() {
@@ -724,7 +725,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         }
         for (ProductDTO product : results) {
             Div productDiv = new Div();
-            productDiv.setText(product.getName());
+            productDiv.setText(product.getProductName());
             Button addToCartButton = new Button("Add to Cart", e -> addToCart(product));
             productDiv.add(addToCartButton);
             dialogLayout.add(productDiv);
