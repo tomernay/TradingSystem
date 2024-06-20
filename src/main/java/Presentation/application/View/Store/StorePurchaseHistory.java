@@ -4,6 +4,7 @@ import Presentation.application.Presenter.Store.StorePurchaseHistoryPresenter;
 import Presentation.application.View.MainLayoutView;
 import Domain.OrderDTO;
 import Domain.Store.Inventory.ProductDTO;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -11,10 +12,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 
 @PageTitle("Order Management")
 @Route(value = "orders/:storeId", layout = MainLayoutView.class)
@@ -28,6 +26,12 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
     public StorePurchaseHistory(StorePurchaseHistoryPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
+
+        Button backButton = new Button("Back to Store Management", event1 -> {
+            RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
+            UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+        });
+        add(backButton);
 
         ordersGrid = new Grid<>(OrderDTO.class);
         ordersGrid.removeColumnByKey("storeID");
