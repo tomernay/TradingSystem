@@ -543,8 +543,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         // Check if the user is already logged in
-        if (!isLoggedIn()) {
-            // If not logged in, reroute to the login page
+//        if (!isLoggedIn()) {
+//            // If not logged in, reroute to the login page
+//            event.rerouteTo(LoginView.class);
+//        }
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
             event.rerouteTo(LoginView.class);
         }
     }

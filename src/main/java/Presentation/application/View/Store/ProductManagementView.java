@@ -2,6 +2,7 @@ package Presentation.application.View.Store;
 
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.Presenter.Store.ProductManagementPresenter;
+import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -16,6 +17,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -188,6 +192,9 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            event.rerouteTo(LoginView.class);
+        }
         String id = event.getRouteParameters().get("storeId").orElse("");
         if (id.isEmpty()) {
             event.rerouteTo("");
@@ -232,6 +239,31 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         add(headerLayout, productGrid);
         expand(productGrid); // Allow the grid to expand and take available space
         presenter.loadProducts(storeId);
+    }
+
+    private boolean isLoggedIn() {
+        // Retrieve the current HTTP request
+        HttpServletRequest request = (HttpServletRequest) VaadinService.getCurrentRequest();
+
+        if (request != null) {
+            // Retrieve cookies from the request
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        // Assuming a valid token indicates a logged-in user
+                        return isValidToken(cookie.getValue());
+                    }
+                }
+            }
+        }
+
+        // If no valid token is found, the user is not logged in
+        return false;
+    }
+
+    private boolean isValidToken(String token) {
+        return token != null && !token.isEmpty();
     }
 
     public Integer getStoreId() {

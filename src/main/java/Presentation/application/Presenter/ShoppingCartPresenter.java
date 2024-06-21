@@ -147,4 +147,10 @@ public class ShoppingCartPresenter {
         }
         updateTotalPriceInCart();
     }
+
+    public boolean isLoggedIn() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return userService.isValidToken(token, username);
+    }
 }

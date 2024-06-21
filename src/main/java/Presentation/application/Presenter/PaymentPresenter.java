@@ -70,4 +70,10 @@ public class PaymentPresenter {
         }
         return productList;
     }
+
+    public boolean isLoggedIn() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isValidToken(token, username);
+    }
 }

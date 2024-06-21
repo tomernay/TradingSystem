@@ -54,4 +54,10 @@ public class MessagesPresenter {
         messages.removeIf(message -> message.getId().equals(messageId));
         MessagesList.setMessages(messages);
     }
+
+    public boolean isLoggedIn() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isValidToken(token, username);
+    }
 }
