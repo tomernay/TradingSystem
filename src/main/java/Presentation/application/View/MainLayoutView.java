@@ -82,19 +82,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         mainContent = new VerticalLayout();
         setContent(mainContent);
         sub = new LinkedBlockingQueue<>();
-        setPrimarySection(Section.DRAWER);
+//        setPrimarySection(Section.DRAWER);
         addHeaderContent();
-         addDrawerContent();
+//         addDrawerContent();
+        addHomeButton();
         addUserButton();
         welcomeText();
         addSearchBar();
         addNotificationButton();
         shoppingCart();
+        discountsText();
         addCategoriesButton();
         addMessageButton();
         UI currentUI = UI.getCurrent();
         navigateToStorePage();
-        addHomeButtonToDrawer();
+//        addHomeButtonToDrawer();
 
         // Initialize the notification count
         int unreadCount = presenter.getUnreadMessagesCount(); // Fetch this from the server or database
@@ -105,7 +107,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
     private void addHomeButtonToDrawer() {
-        Button homeButton = new Button("Home", e -> {
+        Button homeButton = new Button("", e -> {
             UI.getCurrent().navigate(MainLayoutView.class);
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
         });
@@ -302,6 +304,17 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
+    public void discountsText() {
+        Span discounts = new Span("Discounts");
+        discounts.getElement().getStyle().set("font-size", "20px");
+        discounts.getElement().getStyle().set("margin-left", "10px");
+        discounts.getElement().getStyle().set("margin-top", "10px");
+        discounts.getElement().getStyle().set("margin-bottom", "10px");
+        //add the text to the main content area
+
+        mainContent.add(discounts);
+    }
+
     // Assume these methods are part of your presenter or some utility class
     private boolean isStoreActive(Integer storeId) {
         // Implement logic to determine if the store is active
@@ -365,6 +378,20 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
+    public void addHomeButton() {
+        // Navigate to the shopping cart page
+        Button homeButton = new Button("", e -> {
+            UI.getCurrent().navigate(MainLayoutView.class);
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+        });
+        homeButton.getElement().getStyle().set("color", "black");
+        homeButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+        //icon
+        homeButton.setIcon(new Icon(VaadinIcon.HOME));
+        homeButton.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the right side of the search button
+
+        addToNavbar(homeButton);
+    }
 
     private void addCategoriesButton() {
         //add a button for each category
@@ -380,7 +407,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Button category2 = new Button("Electronics", e -> {
             // Navigate to the shopping cart page
         });
-        Button category3 = new Button("Clothing", e -> {
+        Button category3 = new Button("General", e -> {
             // Navigate to the shopping cart page
         });
         Image books = new Image("static/books.jpg", "books");
