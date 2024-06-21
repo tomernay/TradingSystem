@@ -985,5 +985,14 @@ public class StoreService {
     public boolean isStoreActive(Integer storeID, String username, String token) {
         return storeFacade.isStoreActive(storeID);
     }
+
+    public Response<String> retrieveCategoriesFromAllStore(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to retrieve all categories");
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.retrieveAllCategoriesFromAllStore(username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to retrieve all categories  but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
 }
 

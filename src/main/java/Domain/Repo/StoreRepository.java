@@ -10,6 +10,7 @@ import Domain.Store.StoreData.Permissions;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import java.util.*;
@@ -912,5 +913,27 @@ public class StoreRepository {
 
     public boolean isStoreActive(Integer storeID) {
         return stores.containsKey(storeID);
+    }
+
+    public Response<String> retrieveAllCategoriesFromAllStore(String username) {
+        ArrayList<String> categories = new ArrayList<>();
+        for (Store store : stores.values()) {
+            Response<ArrayList<String>> response = store.retrieveAllCategoriesFromAllStore();
+            if (response.isSuccess()) {
+                for(String category : response.getData()){
+                    if(!categories.contains(category)){
+                        categories.add(category);
+                    }
+                }
+            }
+            return Response.error("Couldn't retrieve all categories from all stores", null);
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return Response.success("All categories were retrieved successfully", objectMapper.convertValue(categories, String.class));
+        } catch (Exception e) {
+            SystemLogger.error("[ERROR] Couldn't retrieve all categories from all stores");
+        }
+        return Response.error("Couldn't retrieve all categories from all stores", null);
     }
 }

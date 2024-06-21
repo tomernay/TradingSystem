@@ -5,10 +5,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Utilities.Response;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Represents a store's inventory.
+ * Each store has an inventory that contains a list of products.
+ */
 public class Inventory {
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
     private final Integer storeID; //Inventory for specific store
@@ -755,6 +761,12 @@ public class Inventory {
         productIDs.remove(productId);
         SystemLogger.info("[SUCCESS] Product with ID: " + productId + " removed from category: " + category);
         return Response.success("Product with ID: " + productId + " removed from category: " + category, category);
+    }
+
+    public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
+        ArrayList<String> categoriesList = new ArrayList<>(categories.keySet());
+        SystemLogger.info("[SUCCESS] Categories retrieved successfully");
+        return Response.success("Categories retrieved successfully", categoriesList);
     }
 }
 
