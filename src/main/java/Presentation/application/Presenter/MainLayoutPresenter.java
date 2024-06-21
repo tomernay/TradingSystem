@@ -260,7 +260,7 @@ public class MainLayoutPresenter {
     }
 
     public ArrayList<String> getAllCategories() {
-        storeService.retrieveAllStoreCategories( CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
+//        storeService.retrieveAllStoreCategories( CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
         return new ArrayList<>();
     }
 }
