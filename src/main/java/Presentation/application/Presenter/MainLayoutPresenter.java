@@ -252,4 +252,8 @@ public class MainLayoutPresenter {
             view.navigateToLogin();
         }
     }
+
+    public void addToCart(ProductDTO product, int quantity) {
+        userService.addProductToShoppingCart(product.getStoreID(), product.getProductID(), quantity, CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
+    }
 }
