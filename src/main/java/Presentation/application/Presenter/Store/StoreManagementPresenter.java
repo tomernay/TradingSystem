@@ -173,4 +173,10 @@ public class StoreManagementPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         return userService.isValidToken(token, username);
     }
+
+    public String getStoreName(Integer storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.getStoreNameByID(storeId, username, token).getData();
+    }
 }

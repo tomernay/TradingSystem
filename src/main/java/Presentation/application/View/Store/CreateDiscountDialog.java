@@ -51,7 +51,10 @@ public class CreateDiscountDialog extends Dialog {
             Button simplePolicyButton = new Button("Create Simple Policy", e -> openSimplePolicyForm());
             Button removeDiscountButton = new Button("Remove Discount", e -> openRemoveDiscountDialog());
             Button removePolicyButton = new Button("Remove Policy", e -> openRemovePolicyDialog());
-
+            simpleDiscountButton.addClassName("custom-regular-button");
+            simplePolicyButton.addClassName("custom-regular-button");
+            removeDiscountButton.addClassName("custom-regular-button");
+            removePolicyButton.addClassName("custom-regular-button");
             VerticalLayout createButtonsLayout = new VerticalLayout(simpleDiscountButton, simplePolicyButton);
             VerticalLayout removeButtonsLayout = new VerticalLayout(removeDiscountButton, removePolicyButton);
 
@@ -106,8 +109,10 @@ public class CreateDiscountDialog extends Dialog {
                 removeDiscountDialog.close();
             }
         });
+        removeButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> removeDiscountDialog.close());
+        cancelButton.addClassName("waive-button");
 
         formLayout.add(discountComboBox, removeButton, cancelButton);
         removeDiscountDialog.add(formLayout);
@@ -137,8 +142,11 @@ public class CreateDiscountDialog extends Dialog {
                 removePolicyDialog.close();
             }
         });
+        removeButton.addClassName("add-button");
+
 
         Button cancelButton = new Button("Cancel", e -> removePolicyDialog.close());
+        cancelButton.addClassName("waive-button");
 
         formLayout.add(policyComboBox, removeButton, cancelButton);
         removePolicyDialog.add(formLayout);
@@ -197,9 +205,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes(); // Reload all boxes
             simpleDiscountDialog.close();
         });
+        saveButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> simpleDiscountDialog.close());
-
+        cancelButton.addClassName("waive-button");
         formLayout.add(productComboBox, categoryField, discountPercentField, saveButton, cancelButton);
         simpleDiscountDialog.add(formLayout);
         simpleDiscountDialog.open();
@@ -285,8 +294,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             simplePolicyDialog.close();
         });
+        saveButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> simplePolicyDialog.close());
+        cancelButton.addClassName("waive-button");
 
         formLayout.add(policyTypeComboBox, quantityTypeComboBox, categoryField, productComboBox, quantityField, minQuantityField, maxQuantityField, priceField, minPriceField, maxPriceField, saveButton, cancelButton);
         simplePolicyDialog.add(formLayout);
@@ -377,8 +388,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             connectionTypeDialog.close();
         });
+        saveButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
+        cancelButton.addClassName("waive-button");
 
         formLayout.add(policyTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);
@@ -400,8 +413,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             connectionTypeDialog.close();
         });
+        saveButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
+        saveButton.addClassName("waive-button");
 
         formLayout.add(discountTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);
@@ -461,8 +476,10 @@ public class CreateDiscountDialog extends Dialog {
                         connectionTypeDialog.close();
                     }
                 });
+                conditionSaveButton.addClassName("add-button");
 
                 Button conditionCancelButton = new Button("Cancel", ce -> conditionDialog.close());
+                conditionCancelButton.addClassName("waive-button");
 
                 conditionForm.add(basePolicyComboBox, conditionComboBox, conditionSaveButton, conditionCancelButton);
                 conditionDialog.add(conditionForm);
@@ -473,8 +490,10 @@ public class CreateDiscountDialog extends Dialog {
                 connectionTypeDialog.close();
             }
         });
+        saveButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
+        cancelButton.addClassName("waive-button");
 
         formLayout.add(policyTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);
@@ -495,8 +514,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             connectionTypeDialog.close();
         });
+        saveButton.addClassName("add-button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
+        cancelButton.addClassName("waive-button");
 
         formLayout.add(discountTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);

@@ -12,6 +12,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.html.H1;
@@ -101,6 +102,7 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
 
         // Create a refresh button
         Button refreshButton = new Button("Refresh", e -> reloadMessages());
+        refreshButton.addClassName("custom-regular-button");
         refreshButton.getStyle().set("margin", "10px");
 
         // Create a layout for header and refresh button
@@ -185,11 +187,36 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
     }
 
     private HorizontalLayout createRemoveButton(Message message) {
-        Button removeButton = new Button("Remove", e -> {
-            presenter.removeMessageById(message.getId());
-            reloadMessages();
-        });
+        Button removeButton = new Button("Remove", e -> navigateToMessageRemoving(message.getId()));
+        removeButton.addClassName("custom-regular-button");
         return new HorizontalLayout(removeButton);
+    }
+
+    private void navigateToMessageRemoving(Integer messageID) {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add("Are you sure you want to remove this message?");
+
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.removeMessageById(messageID);
+            reloadMessages();
+            confirmationDialog.close();
+            showSuccess("Product removed successfully");
+        });
+        confirmButton.addClassName("add-button");
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("waive-button");
+
+        dialogLayout.add(confirmButton, cancelButton);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
+    public void showSuccess(String message) {
+        Notification.show(message, 3000, Notification.Position.MIDDLE);
     }
 
     private HorizontalLayout createRequestButtons(Message message) {
@@ -197,10 +224,12 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
             presenter.handleRequest(message, true);
             reloadMessages();
         });
+        acceptButton.addClassName("add-button");
         Button rejectButton = new Button("Reject", e -> {
             presenter.handleRequest(message, false);
             reloadMessages();
         });
+        rejectButton.addClassName("waive-button");
         return new HorizontalLayout(acceptButton, rejectButton);
     }
 

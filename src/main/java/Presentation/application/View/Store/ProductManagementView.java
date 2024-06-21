@@ -29,7 +29,7 @@ import java.util.Set;
 
 @Route(value = "products-management/:storeId", layout = MainLayoutView.class)
 @PageTitle("Product Management")
-@StyleSheet("context://styles.css")
+@StyleSheet("context://login-view-styles.css")
 public class ProductManagementView extends VerticalLayout implements BeforeEnterObserver {
 
     private final ProductManagementPresenter presenter;
@@ -119,6 +119,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
                 newCategoryField.clear();
             }
         });
+        addCategoryButton.addClassName("custom-regular-button");
 
         categoriesCheckboxGroup.addValueChangeListener(event -> {
             updatedCategories.setValue(event.getValue());
@@ -156,6 +157,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         dialog.open();
     }
 
+
     private void showAddProductDialog() {
         Dialog dialog = new Dialog();
         dialog.setWidth("600px"); // Adjusting dialog width for better appearance
@@ -182,6 +184,8 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
                 newCategoryField.clear();
             }
         });
+
+        addCategoryButton.addClassName("custom-regular-button");
 
         form.add(nameField, descriptionField, priceField, quantityField, categoriesCheckboxGroup);
         form.add(new HorizontalLayout(newCategoryField, addCategoryButton));
@@ -225,10 +229,12 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
+
+        backButton.addClassName("custom-regular-button");
         headerLayout.add(backButton);
         if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS") && presenter.isActiveStore(storeId)) {
             addProductButton = new Button("+ Add Product", event1 -> showAddProductDialog());
-            addProductButton.addClassName("add-product-button");
+            addProductButton.addClassName("custom-regular-button");
             headerLayout.add(addProductButton);
         }
 
@@ -242,9 +248,9 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         }).setHeader("Categories");
         if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS") && presenter.isActiveStore(storeId)) {
             productGrid.addComponentColumn(product -> {
-                Button removeButton = new Button("Remove", event1 -> {
-                    presenter.removeProduct(product.getProductID());
-                });
+
+                Button removeButton = new Button("Remove", e -> navigateToProductRemoving(product.getProductID()));
+                removeButton.addClassName("custom-regular-button");
                 return removeButton;
             }).setHeader("Actions");
             productGrid.addItemClickListener(event1 -> showEditProductDialog(event1.getItem()));
@@ -253,6 +259,32 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         add(headerLayout, productGrid);
         expand(productGrid); // Allow the grid to expand and take available space
         presenter.loadProducts(storeId);
+    }
+
+    private void navigateToProductRemoving(Integer productID) {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add("Are you sure you want to remove this product?");
+
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.removeProduct(productID);
+            confirmationDialog.close();
+            showSuccess("Product removed successfully");
+        });
+        confirmButton.addClassName("add-button");
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("waive-button");
+
+        dialogLayout.add(confirmButton, cancelButton);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
+    public void showSuccess(String message) {
+        Notification.show(message, 3000, Notification.Position.MIDDLE);
     }
 
     private boolean isLoggedIn() {

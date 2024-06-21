@@ -163,7 +163,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
-        backButton.addClassName("back-button");  // Adding class for custom styling
+        backButton.addClassName("custom-regular-button");
         buttonLayout.add(backButton);
 
         return buttonLayout;
@@ -228,7 +228,8 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
         Button nominateOwnerButton = new Button("Nominate Owner", e -> showOwnerNominationDialog());
         Button nominateManagerButton = new Button("Nominate Manager", e -> showManagerNominationDialog());
-
+        nominateOwnerButton.addClassName("custom-regular-button");
+        nominateManagerButton.addClassName("custom-regular-button");
         VerticalLayout dialogLayout = new VerticalLayout(nominateOwnerButton, nominateManagerButton);
         dialogLayout.setPadding(true);
         dialogLayout.setSpacing(true);
@@ -247,6 +248,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.nominateOwner(storeId, usernameField.getValue());
             dialog.close();
         });
+        nominateButton.addClassName("add-button");
 
         VerticalLayout dialogLayout = new VerticalLayout(usernameField, nominateButton);
         dialogLayout.setPadding(true);
@@ -271,6 +273,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.nominateManager(storeId, nominatedUsername, selectedPermissions);
             dialog.close();
         });
+        nominateButton.addClassName("add-button");
 
         VerticalLayout dialogLayout = new VerticalLayout(usernameField, permissionSelect, nominateButton);
         dialogLayout.setPadding(true);
@@ -305,6 +308,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.updateManagerPermissions(storeId, managerUsername, selectedPermissions);
             dialog.close();
         });
+        saveButton.addClassName("add-button");
 
         VerticalLayout dialogLayout = new VerticalLayout(titleLayout, permissionSelect, saveButton);
         dialogLayout.setPadding(true);

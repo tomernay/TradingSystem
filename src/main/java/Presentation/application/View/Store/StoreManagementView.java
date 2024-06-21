@@ -3,12 +3,13 @@ package Presentation.application.View.Store;
 import Presentation.application.Presenter.Store.StoreManagementPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
-import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
@@ -26,6 +27,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
 
     private final Div content;
     private Integer storeId;
+    private String storeName;
     private final StoreManagementPresenter presenter;
 
     public StoreManagementView(StoreManagementPresenter presenter) {
@@ -35,20 +37,8 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         presenter.attachView(this);
         addClassName("store-management-view");
 
-        UI.getCurrent().getPage().executeJs(
-                "document.body.addEventListener('click', function() {" +
-                        "    $0.$server.handleUserAction();" +
-                        "});",
-                getElement()
-        );
-    }
-
-    @ClientCallable
-    public void handleUserAction() {
-        if (!presenter.isLoggedIn() || !isLoggedIn()) {
-            Notification.show("Token has timed out! Navigating you to login page...");
-            UI.getCurrent().navigate(LoginView.class);
-        }
+        // Set full size
+        setSizeFull();
     }
 
     private void navigateToStoreReopening() {
@@ -64,14 +54,15 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store re-opened successfully");
         });
+        confirmButton.addClassName("add-button");
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("waive-button");
 
         dialogLayout.add(confirmButton, cancelButton);
         confirmationDialog.add(dialogLayout);
         confirmationDialog.open();
     }
-
 
     private void navigateToStoreClosing() {
         Dialog confirmationDialog = new Dialog();
@@ -86,8 +77,10 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store closed successfully");
         });
+        confirmButton.addClassName("add-button");
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("waive-button");
 
         dialogLayout.add(confirmButton, cancelButton);
         confirmationDialog.add(dialogLayout);
@@ -117,24 +110,38 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         }
         String id = event.getRouteParameters().get("storeId").orElse("");
         storeId = Integer.parseInt(id);
+        storeId = Integer.parseInt(id);
+        storeName = presenter.getStoreName(storeId);
+        VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+        H1 storeTitle = new H1("Store Management: Store " + storeName);
+        storeTitle.addClassName("store-title");
+
         VerticalLayout buttonLayout = new VerticalLayout();
+        buttonLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
         if (presenter.hasPermission(storeId, "VIEW_PRODUCTS")) {
             Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
+            productManagementButton.addClassName("custom-button");
             buttonLayout.add(productManagementButton);
         }
-        if (presenter.hasPermission(storeId,"VIEW_DISCOUNTS_POLICIES")) {
+        if (presenter.hasPermission(storeId, "VIEW_DISCOUNTS_POLICIES")) {
             Button createDiscountButton = new Button("Discounts / Policies", e -> openCreateDiscountDialog());
+            createDiscountButton.addClassName("custom-button");
             buttonLayout.add(createDiscountButton);
         }
-        if (presenter.hasPermission(storeId,"VIEW_STORE_STAFF_INFO")) {
+        if (presenter.hasPermission(storeId, "VIEW_STORE_STAFF_INFO")) {
             Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
+            rolesManagementButton.addClassName("custom-button");
             buttonLayout.add(rolesManagementButton);
         }
         if (presenter.hasPermission(storeId, "VIEW_PURCHASE_HISTORY")) {
             Button viewPurchaseHistoryButton = new Button("View Purchase History");
+            viewPurchaseHistoryButton.addClassName("custom-button");
             viewPurchaseHistoryButton.addClickListener(event1 -> {
                 Integer storeId = this.storeId;
-                        getUI().ifPresent(ui -> ui.navigate("orders/" + storeId));
+                getUI().ifPresent(ui -> ui.navigate("orders/" + storeId));
             });
             buttonLayout.add(viewPurchaseHistoryButton);
         }
@@ -142,16 +149,20 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         if (presenter.isCreator(storeId)) {
             if (presenter.isActiveStore(storeId)) {
                 Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());
+                storeClosingButton.addClassName("custom-button");
                 buttonLayout.add(storeClosingButton);
-            }
-            else {
+            } else {
                 Button storeReopeningButton = new Button("Reopen Store", e -> navigateToStoreReopening());
+                storeReopeningButton.addClassName("custom-button");
                 buttonLayout.add(storeReopeningButton);
             }
         }
+
         buttonLayout.setSpacing(true);
 
-        add(buttonLayout, content);
+        add(storeTitle);
+        add(mainLayout);
+        mainLayout.add(buttonLayout, content);
     }
 
     private boolean isLoggedIn() {

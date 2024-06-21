@@ -37,6 +37,7 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
             RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
+        backButton.addClassName("custom-regular-button");
         add(backButton);
 
         ordersGrid = new Grid<>(OrderDTO.class);
