@@ -294,4 +294,8 @@ public class StoreFacade {
     public boolean isStoreActive(Integer storeID) {
         return storeRepository.isStoreActive(storeID);
     }
+
+    public Response<String> retrieveAllCategoriesFromStore(String username) {
+        return storeRepository.retrieveAllCategoriesFromStore(username);
+    }
 }

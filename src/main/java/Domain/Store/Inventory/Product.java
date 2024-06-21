@@ -2,12 +2,19 @@ package Domain.Store.Inventory;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 
 /**
  * Represents a product in the store inventory.
  * Each product has a unique product ID and is associated with a store.
  */
+@Entity
+@Table(name = "products")
 public class Product {
+    @Id
     private Integer storeID;     // The ID of the store to which the product belongs,
     private String storeName;   // The name of the store
     private Integer productID;  // The unique ID of the product
@@ -17,12 +24,19 @@ public class Product {
     private Integer quantity;       // The quantity of the product available in the inventory
     //private ArrayList<String> categories; // The category that a product is related to
 
+    // Default constructor for JPA
+        protected Product() {
+            // for JPA / hibernate
+        }
+
+
     /**
      * Constructs a Product object using a Builder.
      * This constructor is private and should only be accessed through the Builder.
      *
      * @param builder the Builder object containing product attributes
      */
+
     private Product(Builder builder) {
         this.storeID = builder.storeID;
         this.storeName = builder.storeName;
@@ -101,14 +115,6 @@ public class Product {
             return this;
         }
 
-//        public Builder categories(ArrayList<String> _categories){
-//            if(_categories.size() <= 0){
-//                throw new IllegalArgumentException("A product must be associated with at least one category");
-//            }
-//            this.categories = _categories;
-//            return this;
-//        }
-
         // call the product constructor //
         public Product build() {
             return new Product(this);
@@ -145,9 +151,6 @@ public class Product {
         return quantity;
     }
 
-//    public ArrayList<String> getCategories() {
-//        return categories;
-//    }
 
     // Setters
     public void setStoreID(Integer storeID) {
@@ -180,14 +183,6 @@ public class Product {
             return false;
         }
     }
-
-//    /**
-//     * Sets the categories for the product.
-//     * @param _categories The list of categories to be set for the product.
-//     */
-//    public void setCategories(ArrayList<String> _categories) {
-//        this.categories = _categories;
-//    }
 
 
     public synchronized Response<String> setQuantity(int newQuantity) {
