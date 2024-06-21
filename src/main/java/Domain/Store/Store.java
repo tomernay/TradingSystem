@@ -11,18 +11,18 @@ import Utilities.Response;
 import Utilities.SystemLogger;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+//import javax.persistence.Entity;
+//import javax.persistence.Id;
+//import javax.persistence.Table;
+//import javax.persistence.Transient;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Entity
-@Table(name = "stores")
+//@Entity
+//@Table(name = "stores")
 public class Store {
 
-    @Id
+//    @Id
     private Integer storeID;
     private String storeName;
     private Inventory inventory;

@@ -33,7 +33,6 @@ public class MainLayoutPresenter {
 
     public void attachView(MainLayoutView view) {
         this.view = view;
-        checkTokenAndRedirect(); // Check token validity when attaching the view
     }
 
     public void search(String search) {
@@ -42,7 +41,6 @@ public class MainLayoutPresenter {
     }
 
     public void changeUsername(String username, String newUsername, TextField usernameField) {
-        checkTokenAndRedirect(); // Check token validity before changing password
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<String> response = userService.changeUsername(username, newUsername, token);
         if (!response.isSuccess()) {
@@ -56,7 +54,6 @@ public class MainLayoutPresenter {
     }
 
     public void changePassword(String password, String confirmPassword, PasswordField passwordField) {
-        checkTokenAndRedirect(); // Check token validity before changing username
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         if (password.equals(confirmPassword)) {
@@ -95,7 +92,6 @@ public class MainLayoutPresenter {
 
     public String getUserName() {
         String username = CookiesHandler.getUsernameFromCookies(request);
-        ;
         if (username == null) {
             username = "Guest";
         } else if (username.contains("Guest")) {
@@ -106,7 +102,6 @@ public class MainLayoutPresenter {
 
     //add a store
     public void addStore(String storeName, TextField field) {
-        checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<Integer> response = storeService.addStore(storeName, username, token);
@@ -172,7 +167,6 @@ public class MainLayoutPresenter {
     }
 
     public ArrayList<ProductDTO> searchProducts(String search) {
-        checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         ArrayList<ProductDTO> products = combineSearchResults(search, username, token);
@@ -210,7 +204,6 @@ public class MainLayoutPresenter {
     }
 
     public Integer getStoreIdByName(String storeName) {
-        checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<Integer> response = storeService.getStoreIDbyName(storeName, username, token);
@@ -221,14 +214,12 @@ public class MainLayoutPresenter {
     }
 
     public boolean isStoreActive(Integer storeID) {
-        checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.isStoreActive(storeID, username, token);
     }
 
     public int getUnreadMessagesCount() {
-        checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<Integer> response = userService.getUnreadMessagesCount(username, token);
@@ -241,18 +232,6 @@ public class MainLayoutPresenter {
     private boolean isTokenValid(String token, String username) {
         // Implement the logic to check if the token is valid
         return userService.isValidToken(token, username);
-    }
-
-    private void checkTokenAndRedirect() {
-        String token = CookiesHandler.getTokenFromCookies(request);
-        String username = CookiesHandler.getUsernameFromCookies(request);
-        try {
-            if (token == null || !isTokenValid(token, username)) {
-                view.navigateToLogin();
-            }
-        } catch (RuntimeException e) {
-            view.navigateToLogin();
-        }
     }
     public void addToCart(ProductDTO product, int quantity) {
         userService.addProductToShoppingCart(product.getStoreID(), product.getProductID(), quantity, CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));

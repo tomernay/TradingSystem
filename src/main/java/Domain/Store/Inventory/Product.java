@@ -2,19 +2,19 @@ package Domain.Store.Inventory;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+//import javax.persistence.Entity;
+//import javax.persistence.Id;
+//import javax.persistence.Table;
 
 
 /**
  * Represents a product in the store inventory.
  * Each product has a unique product ID and is associated with a store.
  */
-@Entity
-@Table(name = "products")
+//@Entity
+//@Table(name = "products")
 public class Product {
-    @Id
+//    @Id
     private Integer storeID;     // The ID of the store to which the product belongs,
     private String storeName;   // The name of the store
     private Integer productID;  // The unique ID of the product

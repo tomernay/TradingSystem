@@ -4,7 +4,10 @@ import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.Presenter.Store.StoreManagementPresenter;
+import Presentation.application.View.LoginView;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -14,6 +17,7 @@ import com.vaadin.flow.component.dnd.DropTarget;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -76,6 +80,7 @@ public class CreateDiscountDialog extends Dialog {
         add(layout);
 
         loadAllBoxes(); // Load all existing boxes when entering the page
+
     }
 
     private void openRemoveDiscountDialog() {

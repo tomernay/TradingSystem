@@ -2,7 +2,9 @@ package Presentation.application.View;
 
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.Presenter.ShoppingCartPresenter;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
@@ -84,6 +86,22 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
 
         // Load cart items grouped by store initially
         loadCartItems();
+
+
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+    }
+
+    @ClientCallable
+    public void handleUserAction() {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 
     @Override

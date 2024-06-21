@@ -3,6 +3,7 @@ package Presentation.application.View.Store;
 import Presentation.application.Presenter.Store.RolesManagementPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
@@ -80,6 +81,21 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         // The buttonLayout will be initialized and added in the beforeEnter method
         add(grid);
         expand(grid);
+
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+    }
+
+    @ClientCallable
+    public void handleUserAction() {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.Presenter.Store.ProductManagementPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
@@ -48,7 +49,20 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         setPadding(false);
         setSpacing(false);
 
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+    }
 
+    @ClientCallable
+    public void handleUserAction() {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 
     public void setProducts(List<ProductDTO> products) {

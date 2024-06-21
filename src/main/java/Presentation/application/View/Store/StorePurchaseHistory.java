@@ -5,12 +5,14 @@ import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
 import Domain.OrderDTO;
 import Domain.Store.Inventory.ProductDTO;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.*;
@@ -76,6 +78,22 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
         }));
 
         add(ordersGrid);
+
+
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+    }
+
+    @ClientCallable
+    public void handleUserAction() {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 
     @Override

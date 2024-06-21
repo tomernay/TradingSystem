@@ -102,6 +102,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             notificationCountSpan.setText(String.valueOf(unreadCount));
             notificationCountSpan.setVisible(true);
         }
+
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+    }
+
+    @ClientCallable
+    public void handleUserAction() {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 //    private void createCategorySearchButton() {
 //        // Create the button to open the category list
@@ -1325,15 +1340,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
     public void pwdSuccess() {
-        CookiesHandler.setCookie("password", "password", 5 * 60); // 5 minutes
+//        CookiesHandler.setCookie("password", "password", 5 * 60); // 5 minutes
     }
 
     public void UnSuccess() {
-        CookiesHandler.setCookie("username", "username", 5 * 60); // 5 minutes
+//        CookiesHandler.setCookie("username", "username", 5 * 60); // 5 minutes
     }
 
     public void addStoreSuccess() {
-        CookiesHandler.setCookie("store", "store", 5 * 60); // 5 minutes
+//        CookiesHandler.setCookie("store", "store", 5 * 60); // 5 minutes
 
     }
 

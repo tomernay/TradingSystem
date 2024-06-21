@@ -111,6 +111,21 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Add the title and timer to the layout
         add(timerTitle, timerLabel);
+
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+    }
+
+    @ClientCallable
+    public void handleUserAction() {
+        if (!paymentPresenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 
     @Override

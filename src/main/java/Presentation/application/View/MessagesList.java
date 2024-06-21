@@ -6,6 +6,7 @@ import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -116,6 +117,22 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
         grid.getElement().executeJs("this.shadowRoot.querySelectorAll('vaadin-grid-cell-content')[0].classList.add('big-header');");
         grid.getElement().executeJs("this.shadowRoot.querySelectorAll('vaadin-grid-cell-content')[1].classList.add('small-header');");
         grid.getElement().executeJs("this.shadowRoot.querySelectorAll('vaadin-grid-cell-content')[2].classList.add('small-header');");
+
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
+
+    }
+
+    @ClientCallable
+    public void handleUserAction() {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            Notification.show("Token has timed out! Navigating you to login page...");
+            UI.getCurrent().navigate(LoginView.class);
+        }
     }
 
     @Override
