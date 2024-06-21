@@ -1,6 +1,7 @@
 package Presentation.application.View.Store;
 
 import Presentation.application.Presenter.Store.RolesManagementPresenter;
+import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -17,6 +18,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collection;
 import java.util.Map;
@@ -80,6 +84,9 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            event.rerouteTo(LoginView.class);
+        }
         String id = event.getRouteParameters().get("storeId").orElse("");
         if (id.isEmpty()) {
             event.rerouteTo("");
@@ -87,6 +94,31 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         storeId = Integer.parseInt(id);
         initButtonLayout();
         updateRoles();
+    }
+
+    private boolean isLoggedIn() {
+        // Retrieve the current HTTP request
+        HttpServletRequest request = (HttpServletRequest) VaadinService.getCurrentRequest();
+
+        if (request != null) {
+            // Retrieve cookies from the request
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        // Assuming a valid token indicates a logged-in user
+                        return isValidToken(cookie.getValue());
+                    }
+                }
+            }
+        }
+
+        // If no valid token is found, the user is not logged in
+        return false;
+    }
+
+    private boolean isValidToken(String token) {
+        return token != null && !token.isEmpty();
     }
 
     private void initButtonLayout() {

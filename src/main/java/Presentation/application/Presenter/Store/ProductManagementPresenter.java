@@ -5,6 +5,7 @@ import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.ProductManagementView;
 import Service.ServiceInitializer;
 import Service.StoreService;
+import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
@@ -17,10 +18,12 @@ import java.util.Set;
 public class ProductManagementPresenter {
     private ProductManagementView view;
     private final StoreService storeService;
+    private final UserService userService;
     private HttpServletRequest request;
 
     public ProductManagementPresenter(HttpServletRequest request) {
         this.storeService = ServiceInitializer.getInstance().getStoreService(); // Assume this service is implemented
+        this.userService = ServiceInitializer.getInstance().getUserService(); // Assume this service is implemented
         this.request = request;
     }
 
@@ -121,5 +124,11 @@ public class ProductManagementPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.isStoreActive(storeId, username, token);
+    }
+
+    public boolean isLoggedIn() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return userService.isValidToken(token, username);
     }
 }

@@ -17,18 +17,23 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServletRequest;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Route(value = "MessagesList", layout = MainLayoutView.class)
 @StyleSheet("context://login-view-styles.css")
-public class MessagesList extends VerticalLayout {
+public class MessagesList extends VerticalLayout implements BeforeEnterObserver {
 
     static private List<Message> messages = new ArrayList<>();
     String user;
@@ -111,6 +116,38 @@ public class MessagesList extends VerticalLayout {
         grid.getElement().executeJs("this.shadowRoot.querySelectorAll('vaadin-grid-cell-content')[0].classList.add('big-header');");
         grid.getElement().executeJs("this.shadowRoot.querySelectorAll('vaadin-grid-cell-content')[1].classList.add('small-header');");
         grid.getElement().executeJs("this.shadowRoot.querySelectorAll('vaadin-grid-cell-content')[2].classList.add('small-header');");
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            event.rerouteTo(LoginView.class);
+        }
+    }
+
+    private boolean isLoggedIn() {
+        // Retrieve the current HTTP request
+        HttpServletRequest request = (HttpServletRequest) VaadinService.getCurrentRequest();
+
+        if (request != null) {
+            // Retrieve cookies from the request
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        // Assuming a valid token indicates a logged-in user
+                        return isValidToken(cookie.getValue());
+                    }
+                }
+            }
+        }
+
+        // If no valid token is found, the user is not logged in
+        return false;
+    }
+
+    private boolean isValidToken(String token) {
+        return token != null && !token.isEmpty();
     }
 
     private void decrementNotificationCount() {

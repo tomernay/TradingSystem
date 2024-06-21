@@ -254,7 +254,6 @@ public class MainLayoutPresenter {
             view.navigateToLogin();
         }
     }
-
     public void addToCart(ProductDTO product, int quantity) {
         userService.addProductToShoppingCart(product.getStoreID(), product.getProductID(), quantity, CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
     }
@@ -263,5 +262,10 @@ public class MainLayoutPresenter {
 //        storeService.retrieveAllStoreCategories( CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
         return new ArrayList<>();
     }
+  
+    public boolean isLoggedIn() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isValidToken(token, username);
+    }
 }
-
