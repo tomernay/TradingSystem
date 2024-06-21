@@ -12,6 +12,7 @@ import Presentation.application.View.Store.StorePurchaseHistory;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
+import Utilities.Response;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -19,6 +20,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -29,6 +31,7 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
@@ -38,8 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -53,8 +55,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-
-import java.util.ArrayList;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -79,19 +79,22 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         mainContent = new VerticalLayout();
         setContent(mainContent);
         sub = new LinkedBlockingQueue<>();
-        setPrimarySection(Section.DRAWER);
+//        setPrimarySection(Section.DRAWER);
         addHeaderContent();
-         addDrawerContent();
+//         addDrawerContent();
+        addHomeButton();
         addUserButton();
         welcomeText();
         addSearchBar();
+        searchByCategory();
         addNotificationButton();
         shoppingCart();
+        discountsText();
         addCategoriesButton();
         addMessageButton();
         UI currentUI = UI.getCurrent();
         navigateToStorePage();
-        addHomeButtonToDrawer();
+//        addHomeButtonToDrawer();
 
         // Initialize the notification count
         int unreadCount = presenter.getUnreadMessagesCount(); // Fetch this from the server or database
@@ -100,9 +103,99 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             notificationCountSpan.setVisible(true);
         }
     }
+//    private void createCategorySearchButton() {
+//        // Create the button to open the category list
+//        Button categorySearchButton = new Button("Search by Category");
+//        categorySearchButton.addClickListener(event -> openCategoryDialog());
+//
+//        // Add the button to your layout, for example, in the navbar
+//        addToNavbar(categorySearchButton);
+//    }
+//
+//    private void openCategoryDialog() {
+//        Dialog categoryDialog = new Dialog();
+//        categoryDialog.setWidth("400px");
+//        categoryDialog.setHeight("300px");
+//
+//        // Create and configure the close button for the dialog
+//        Button closeButton = new Button("Close");
+//        closeButton.addClickListener(event -> categoryDialog.close());
+//
+//        // Layout for the dialog content
+//        VerticalLayout dialogLayout = new VerticalLayout();
+//        dialogLayout.setPadding(false);
+//        dialogLayout.setSpacing(false);
+//
+//        // Add the close button to the dialog layout
+//        dialogLayout.add(closeButton);
+//
+//        // Fetch all categories from the presenter
+//        ArrayList<String> categories = presenter.getAllCategories();
+//
+//        for (String category : categories) {
+//            Button categoryButton = new Button(category);
+//            categoryButton.getElement().getStyle().set("margin", "5px"); // Add some margin for better spacing
+//            categoryButton.getElement().getStyle().set("background-color", "#4CAF50"); // Set button color
+//            categoryButton.getElement().getStyle().set("color", "white"); // Set text color
+//            categoryButton.addClickListener(event -> {
+//                categoryDialog.close();
+//                searchByCategory(category);
+//            });
+//            dialogLayout.add(categoryButton);
+//        }
+//
+//        // Add the layout to the dialog
+//        categoryDialog.add(dialogLayout);
+//
+//        // Open the dialog
+//        categoryDialog.open();
+//    }
+
+    public ArrayList<String> getAllCategories() {
+        // Fetch all categories from the server or database
+        return presenter.getAllCategories();
+    }
+
+
+    public void searchByCategory() {
+        //create a button that opens a list of all existing categories that are clickable and will display the products of that category
+        //add a button to the navbar
+        //when clicked open a dialog with the categories
+
+        //use context menu to display the categories
+        Button categoryButton = new Button("search by category");
+        //minimize the text size
+        categoryButton.getElement().getStyle().set("font-size", "15px");
+        //allow texr to be displayed in multiple lines
+        categoryButton.addClassName("multiline-button");
+
+        ContextMenu categoryMenu = new ContextMenu(categoryButton);
+        categoryMenu.setOpenOnClick(true);
+        //set icon to an arrow facing down
+        categoryButton.setIcon(new Icon(VaadinIcon.ANGLE_DOWN));
+        categoryButton.getElement().getStyle().set("color", "black");
+        categoryButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+        //fetch all categories from the server
+        ArrayList<String> categories = presenter.getAllCategories();
+        //add a button for each category
+
+        for (String cat : categories) {
+            MenuItem categoryItem = categoryMenu.addItem(cat, e -> {
+                //search for products by category
+                Response<ArrayList<ProductDTO>> productsRes = presenter.searchProductsByCategory(cat);
+                ArrayList<ProductDTO> products = productsRes.getData();
+                //display the products
+                displaySearchResults(products);
+            });
+        }
+
+        addToNavbar(categoryButton);
+
+
+    }
 
     private void addHomeButtonToDrawer() {
-        Button homeButton = new Button("Home", e -> {
+        Button homeButton = new Button("", e -> {
             UI.getCurrent().navigate(MainLayoutView.class);
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
         });
@@ -187,12 +280,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //        }
 
         //check if a user is a guest or subscribed user
-//TODO: check if the user is a guest or a subscribed user
-//        String username = presenter.getUserName();
+
         if(!presenter.getUserName().contains("Guest")) {
+            MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
+            MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         }
-        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
-        MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
 
         //if user is guest add register button
         if(presenter.getUserName().contains("Guest")) {
@@ -300,6 +392,20 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
+    public void discountsText() {
+        Span discounts = new Span("Discounts");
+        //center the text
+        discounts.getElement().getStyle().set("margin", "0 auto");
+
+        discounts.getElement().getStyle().set("font-size", "20px");
+        discounts.getElement().getStyle().set("margin-left", "10px");
+        discounts.getElement().getStyle().set("margin-top", "10px");
+        discounts.getElement().getStyle().set("margin-bottom", "10px");
+        //add the text to the main content area
+
+        mainContent.add(discounts);
+    }
+
     // Assume these methods are part of your presenter or some utility class
     private boolean isStoreActive(Integer storeId) {
         // Implement logic to determine if the store is active
@@ -363,6 +469,20 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
+    public void addHomeButton() {
+        // Navigate to the shopping cart page
+        Button homeButton = new Button("", e -> {
+            UI.getCurrent().navigate(MainLayoutView.class);
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+        });
+        homeButton.getElement().getStyle().set("color", "black");
+        homeButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+        //icon
+        homeButton.setIcon(new Icon(VaadinIcon.HOME));
+        homeButton.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the right side of the search button
+
+        addToNavbar(homeButton);
+    }
 
     private void addCategoriesButton() {
         //add a button for each category
@@ -378,7 +498,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Button category2 = new Button("Electronics", e -> {
             // Navigate to the shopping cart page
         });
-        Button category3 = new Button("Clothing", e -> {
+        Button category3 = new Button("General", e -> {
             // Navigate to the shopping cart page
         });
         Image books = new Image("static/books.jpg", "books");
@@ -399,11 +519,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         category4.addClassName("round-button");
         category5.addClassName("round-button");
 
-        category1.getElement().getStyle().set("color", "black");
-        category2.getElement().getStyle().set("color", "black");
-        category3.getElement().getStyle().set("color", "black");
-        category4.getElement().getStyle().set("color", "black");
-        category5.getElement().getStyle().set("color", "black");
+        category1.getElement().getStyle().set("color","#293139");
+        category2.getElement().getStyle().set("color", "#293139");
+        category3.getElement().getStyle().set("color", "#293139");
+        category4.getElement().getStyle().set("color", "#293139");
+        category5.getElement().getStyle().set("color", "#293139");
 
 
         //the text of the button at the bottom
@@ -423,6 +543,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         // Add the main layout to the main content area
 //        setContent(mainLayout);
         mainContent.add(mainLayout);
+        //center the buttons
+        categoriesLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
 //        categoriesLayout.add(category1, category2, category3, category4, category6);
 
@@ -573,6 +695,168 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return false;
     }
 
+//    private void displaySearchResults(ArrayList<ProductDTO> results) {
+//        Dialog dialog = new Dialog();
+//        dialog.setWidth("800px");
+//        dialog.setHeight("700px");
+//
+//        // Create and configure the filter button
+//        Button filterButton = new Button("");
+//        //set icon
+//        filterButton.setIcon(new Icon(VaadinIcon.FILTER));
+//        filterButton.getElement().getStyle().set("color", "black");
+//        filterButton.getElement().getStyle().set("background-color", "transparent");
+//        filterButton.addClickListener(event -> openFilterDialog(results));
+//        filterButton.getElement().getStyle().set("margin-left", "auto"); // Align the filter button to the right
+//
+//        // Create a horizontal layout for the title and filter button
+//        HorizontalLayout titleAndFilterLayout = new HorizontalLayout();
+//        titleAndFilterLayout.setWidthFull();
+//        titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+//
+//        // Create the "Search Results" span title
+//        Span searchResultsSpan = new Span("Search Results");
+//        searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
+//
+//        // Add the title and filter button to the titleAndFilterLayout
+//        titleAndFilterLayout.add(searchResultsSpan, filterButton);
+//
+//        VerticalLayout dialogLayout = new VerticalLayout();
+//        dialogLayout.add(titleAndFilterLayout);
+//
+//        if(results.isEmpty()){
+//            dialogLayout.add(new Span("No results found"));
+//        }
+//        for (ProductDTO product : results) {
+//            Div productDiv = new Div();
+//            productDiv.setText(product.getProductName());
+//            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product));
+//            productDiv.add(addToCartButton);
+//            dialogLayout.add(productDiv);
+//        }
+//
+//        Button closeDialogButton = addCloseButton(dialog);
+//        dialogLayout.add(closeDialogButton);
+//
+//        // Add the dialog layout to the dialog
+//        dialog.add(dialogLayout);
+//        dialog.open();
+//    }
+
+    private void displaySearchResults(ArrayList<ProductDTO> results) {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("800px");
+        dialog.setHeight("700px");
+
+        // Create and configure the filter button
+        Button filterButton = new Button("");
+        filterButton.setIcon(new Icon(VaadinIcon.FILTER));
+        filterButton.getElement().getStyle().set("color", "black");
+        filterButton.getElement().getStyle().set("background-color", "transparent");
+        filterButton.addClickListener(event -> openFilterDialog(results));
+        filterButton.getElement().getStyle().set("margin-left", "auto"); // Align the filter button to the right
+
+        // Create a horizontal layout for the title and filter button
+        HorizontalLayout titleAndFilterLayout = new HorizontalLayout();
+        titleAndFilterLayout.setWidthFull();
+        titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        // Create the "Search Results" span title
+        Span searchResultsSpan = new Span("Search Results");
+        searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
+
+        // Add the title and filter button to the titleAndFilterLayout
+        titleAndFilterLayout.add(searchResultsSpan, filterButton);
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.add(titleAndFilterLayout);
+
+        if(results.isEmpty()){
+            dialogLayout.add(new Span("No results found"));
+        }
+
+        for (ProductDTO product : results) {
+            Div productDiv = new Div();
+
+            // Create a horizontal layout for product details (name, price, quantity, buttons)
+            HorizontalLayout productDetailsLayout = new HorizontalLayout();
+            productDetailsLayout.setWidthFull();
+            productDetailsLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+
+            // Product name span
+            Span productNameSpan = new Span(product.getProductName());
+            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+
+            // Product price span
+            Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
+            productPriceSpan.getElement().getStyle().set("color", "gray");
+
+            // Quantity input field
+            IntegerField quantityField = new IntegerField();
+            quantityField.setMin(1); // Minimum quantity allowed
+            quantityField.setWidth("2em"); // Set a fixed width for better alignment
+            quantityField.setValue(1); // Default quantity
+
+            // Create buttons for increasing and decreasing quantity
+            Button increaseButton = new Button("+");
+            increaseButton.getElement().getStyle().set("color", "black");
+            increaseButton.getElement().getStyle().set("background-color", "transparent");
+            increaseButton.addClickListener(e -> {
+                int currentValue = quantityField.getValue();
+                quantityField.setValue(currentValue + 1);
+            });
+
+            Button decreaseButton = new Button("-");
+            decreaseButton.getElement().getStyle().set("color", "black");
+            decreaseButton.getElement().getStyle().set("background-color", "transparent");
+            decreaseButton.addClickListener(e -> {
+                int currentValue = quantityField.getValue();
+                if (currentValue > 1) {
+                    quantityField.setValue(currentValue - 1);
+                }
+            });
+
+            // Create the add to cart button with a + icon and transparent background
+            Button addToCartButton = new Button("Add to Cart");
+            addToCartButton.getElement().getStyle().set("background-color", "lightgray");
+            addToCartButton.addClickListener(e -> addToCart(product, quantityField.getValue()));
+            addToCartButton.getElement().getStyle().set("color", "black");
+            addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
+
+            // Add components to productDetailsLayout
+            productDetailsLayout.add(productNameSpan, productPriceSpan, createQuantityLayout(quantityField, decreaseButton, increaseButton, addToCartButton));
+
+            // Add productDetailsLayout to productDiv
+            productDiv.add(productDetailsLayout);
+
+            // Add productDiv to dialogLayout
+            dialogLayout.add(productDiv);
+        }
+
+        // Add close button to dialogLayout
+        Button closeDialogButton = addCloseButton(dialog);
+        dialogLayout.add(closeDialogButton);
+
+        // Add dialogLayout to dialog
+        dialog.add(dialogLayout);
+
+        // Open the dialog
+        dialog.open();
+
+    }
+
+    // Method to create a horizontal layout for quantity controls and add to cart button
+    private HorizontalLayout createQuantityLayout(IntegerField quantityField, Button decreaseButton, Button increaseButton, Button addToCartButton) {
+        HorizontalLayout quantityLayout = new HorizontalLayout();
+        quantityLayout.setWidthFull();
+        quantityLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        quantityLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        quantityLayout.add(decreaseButton, quantityField, increaseButton, addToCartButton);
+        return quantityLayout;
+    }
+
+
+
     public void addSearchBar() {
         // Add search bar to the header
         ComboBox<String> searchBar = new ComboBox<>();
@@ -585,7 +869,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         searchBar.setClearButtonVisible(true);
         searchBar.setAllowCustomValue(true);
 
-        // Fetch and display search results as user types
+        // Fetch and display search results as user types in a list opening beneath the search bar
+
         searchBar.addCustomValueSetListener(event -> {
             String searchTerm = event.getDetail();
             if (searchTerm != null && !searchTerm.trim().isEmpty()) {
@@ -598,6 +883,13 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         addToNavbar(searchBar);
     }
+
+    public ArrayList<ProductDTO> search(String search) {
+        return presenter.searchProducts(search);
+    }
+
+
+
 
     private void openFilterDialog(ArrayList<ProductDTO> results) {
         Dialog dialog = new Dialog();
@@ -689,53 +981,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return filteredProducts;
     }
 
-    private void displaySearchResults(ArrayList<ProductDTO> results) {
-        Dialog dialog = new Dialog();
-        dialog.setWidth("800px");
-        dialog.setHeight("700px");
 
-        // Create and configure the filter button
-        Button filterButton = new Button("");
-        //set icon
-        filterButton.setIcon(new Icon(VaadinIcon.FILTER));
-        filterButton.getElement().getStyle().set("color", "black");
-        filterButton.getElement().getStyle().set("background-color", "transparent");
-        filterButton.addClickListener(event -> openFilterDialog(results));
-        filterButton.getElement().getStyle().set("margin-left", "auto"); // Align the filter button to the right
-
-        // Create a horizontal layout for the title and filter button
-        HorizontalLayout titleAndFilterLayout = new HorizontalLayout();
-        titleAndFilterLayout.setWidthFull();
-        titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-
-        // Create the "Search Results" span title
-        Span searchResultsSpan = new Span("Search Results");
-        searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
-
-        // Add the title and filter button to the titleAndFilterLayout
-        titleAndFilterLayout.add(searchResultsSpan, filterButton);
-
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(titleAndFilterLayout);
-
-        if(results.isEmpty()){
-            dialogLayout.add(new Span("No results found"));
-        }
-        for (ProductDTO product : results) {
-            Div productDiv = new Div();
-            productDiv.setText(product.getProductName());
-            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product));
-            productDiv.add(addToCartButton);
-            dialogLayout.add(productDiv);
-        }
-
-        Button closeDialogButton = addCloseButton(dialog);
-        dialogLayout.add(closeDialogButton);
-
-        // Add the dialog layout to the dialog
-        dialog.add(dialogLayout);
-        dialog.open();
-    }
 
 
 //    private void displaySearchResults(ArrayList<ProductDTO> results) {
@@ -779,11 +1025,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //    }
 
 
-    public ArrayList<ProductDTO> search(String search) {
-        return presenter.searchProducts(search);
-    }
-    private void addToCart(ProductDTO product) {
-        // Add logic to add the product to the cart
+
+    private void addToCart(ProductDTO product, Integer quantity) {
+        presenter.addToCart(product, quantity);
     }
 
 
@@ -922,7 +1166,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //            welcomeText();
             //if there is an error, keep the dialog open
 
-//            dialog.close();
+            dialog.close();
         });
         save.getElement().getStyle().set("color", "black");
         //position save button at the bottom right corner

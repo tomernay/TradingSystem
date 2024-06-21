@@ -724,8 +724,8 @@ public class UserService {
 
     public Response<String> changeUsername(String username, String newUsername, String token) {
         if(isValidToken(token,username)){
-            userFacade.changeUsername(username, newUsername);
-            return Response.success("Username changed successfully", null);
+            Response<String> res = userFacade.changeUsername(username, newUsername);
+            return Response.success("Username changed successfully", res.getData());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to change his username but the token was invalid");
         return Response.error("Invalid token",null);

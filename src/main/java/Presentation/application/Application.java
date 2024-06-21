@@ -46,10 +46,11 @@ public class Application implements AppShellConfigurator {
         ServiceInitializer.reset();
         serviceInitializer = ServiceInitializer.getInstance();
         userService = serviceInitializer.getUserService();
-        userService.register("miaa","Password123!");
-        Response<String> resLogin=userService.loginAsSubscriber("miaa","Password123!");
-       String token=resLogin.getData();
-        subscriber=userService.getUserFacade().getUserRepository().getUser("miaa");
+        //admin
+        userService.register("mia","Password123!");
+        Response<String> resLogin = userService.loginAsSubscriber("mia","Password123!");
+        String token = resLogin.getData();
+        subscriber = userService.getUserFacade().getUserRepository().getUser("mia");
         storeService = serviceInitializer.getStoreService();
         orderService = serviceInitializer.getOrderService();
         userService.register("manager","Password123!");
@@ -58,22 +59,22 @@ public class Application implements AppShellConfigurator {
         userService.loginAsSubscriber("owner","Password123!");
         owner=userService.getUserFacade().getUserRepository().getUser("owner");
         manager = userService.getUserFacade().getUserRepository().getUser("manager");
-        storeService.addStore("newStore", "miaa",subscriber.getToken());
+        storeService.addStore("newStore", "mia",subscriber.getToken());
         store = storeService.getStoreFacade().getStoreRepository().getStore(0);
-        storeService.addStore("newStore2", "miaa",subscriber.getToken());
+        storeService.addStore("newStore2", "mia",subscriber.getToken());
         store2 = storeService.getStoreFacade().getStoreRepository().getStore(0);
-        storeService.addProductToStore(0,"yair","d",20,30,"miaa",subscriber.getToken());
-        Response<Integer> res = userService.SendManagerNominationRequest(0, "miaa", "manager", List.of("VIEW_PRODUCTS","MANAGE_PRODUCTS", "VIEW_DISCOUNTS_POLICIES"), token);
+        storeService.addProductToStore(0,"yair","d",20,30,"mia",subscriber.getToken());
+        Response<Integer> res = userService.SendManagerNominationRequest(0, "mia", "manager", List.of("VIEW_PRODUCTS","MANAGE_PRODUCTS", "VIEW_DISCOUNTS_POLICIES"), token);
         userService.managerNominationResponse(res.getData(), "manager", true, manager.getToken());
-        Response<Integer> res2 = userService.SendOwnerNominationRequest(0, "miaa", "owner", token);
+        Response<Integer> res2 = userService.SendOwnerNominationRequest(0, "mia", "owner", token);
         userService.ownerNominationResponse(res2.getData(),"owner", true, owner.getToken());
-        storeService.addProductToStore(0,"Bamba","Bamba",200.0,1, new ArrayList<>(List.of("test")),"miaa",subscriber.getToken());
-        storeService.addProductToStore(0,"Bisli","Bisli",100.0,1,"miaa",subscriber.getToken());
-        storeService.addProductToStore(1,"CHIPS","CHIPS",200.0,1,"miaa",subscriber.getToken());
-        storeService.addProductToStore(1,"DORITOS","DORITOS",100.0,1,"miaa",subscriber.getToken());
-        userService.addProductToShoppingCart(0, 1, 1, "miaa", subscriber.getToken());
-        userService.addProductToShoppingCart(0, 2, 1, "miaa", subscriber.getToken());
-        userService.addProductToShoppingCart(1, 1, 1,"miaa", subscriber.getToken());
-        userService.logoutAsSubscriber("miaa");
+        storeService.addProductToStore(0,"Bamba","Bamba",200.0,1, new ArrayList<>(List.of("test")),"mia",subscriber.getToken());
+        storeService.addProductToStore(0,"Bisli","Bisli",100.0,1,"mia",subscriber.getToken());
+        storeService.addProductToStore(1,"CHIPS","CHIPS",200.0,1,"mia",subscriber.getToken());
+        storeService.addProductToStore(1,"DORITOS","DORITOS",100.0,1,"mia",subscriber.getToken());
+        userService.addProductToShoppingCart(0, 1, 1, "mia", subscriber.getToken());
+        userService.addProductToShoppingCart(0, 2, 1, "mia", subscriber.getToken());
+        userService.addProductToShoppingCart(1, 1, 1,"mia", subscriber.getToken());
+        userService.logoutAsSubscriber("mia");
     }
 }

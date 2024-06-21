@@ -105,3 +105,54 @@
     font-weight: bold;
     color: #007BFF;
 }
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-count {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    line-height: 1;
+    /*display: none; !* Initially hidden *!*/
+}
+
+.notification-count.visible {
+    display: inline-block; /* Show when there are notifications */
+}
+
+.round-button {
+    background-color: lightsteelblue;
+
+    color: white;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    padding: 10px;
+    margin-right: 10px;
+    text-align: center;
+    line-height: 100px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.center-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.multiline-button {
+    white-space: normal;
+    text-align: center;
+}
