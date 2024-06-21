@@ -763,7 +763,7 @@ public class Inventory {
         return Response.success("Product with ID: " + productId + " removed from category: " + category, category);
     }
 
-    public Response<ArrayList<String>> retrieveAllCategoriesFromStore() {
+    public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
         ArrayList<String> categoriesList = new ArrayList<>(categories.keySet());
         SystemLogger.info("[SUCCESS] Categories retrieved successfully");
         return Response.success("Categories retrieved successfully", categoriesList);

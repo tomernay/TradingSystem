@@ -915,10 +915,10 @@ public class StoreRepository {
         return stores.containsKey(storeID);
     }
 
-    public Response<String> retrieveAllCategoriesFromStore(String username) {
+    public Response<String> retrieveAllCategoriesFromAllStore(String username) {
         ArrayList<String> categories = new ArrayList<>();
         for (Store store : stores.values()) {
-            Response<ArrayList<String>> response = store.retrieveAllCategoriesFromStore();
+            Response<ArrayList<String>> response = store.retrieveAllCategoriesFromAllStore();
             if (response.isSuccess()) {
                 for(String category : response.getData()){
                     if(!categories.contains(category)){

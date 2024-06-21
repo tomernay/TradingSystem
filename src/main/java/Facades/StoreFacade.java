@@ -295,7 +295,7 @@ public class StoreFacade {
         return storeRepository.isStoreActive(storeID);
     }
 
-    public Response<String> retrieveAllCategoriesFromStore(String username) {
-        return storeRepository.retrieveAllCategoriesFromStore(username);
+    public Response<String> retrieveAllCategoriesFromAllStore(String username) {
+        return storeRepository.retrieveAllCategoriesFromAllStore(username);
     }
 }

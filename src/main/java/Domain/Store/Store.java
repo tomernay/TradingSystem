@@ -769,8 +769,8 @@ public class Store {
         return nominationGraph.containsKey(username) && nominationGraph.get(username).contains(manager);
     }
 
-    public Response<ArrayList<String>> retrieveAllCategoriesFromStore() {
-        return inventory.retrieveAllCategoriesFromStore();
+    public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
+        return inventory.retrieveAllCategoriesFromAllStore();
     }
 }
 
