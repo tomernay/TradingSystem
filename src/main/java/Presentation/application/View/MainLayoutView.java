@@ -12,6 +12,7 @@ import Presentation.application.View.Store.StorePurchaseHistory;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
+import Utilities.Response;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -40,9 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -56,8 +55,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-
-import java.util.ArrayList;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -89,6 +86,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addUserButton();
         welcomeText();
         addSearchBar();
+        searchByCategory();
         addNotificationButton();
         shoppingCart();
         discountsText();
@@ -104,6 +102,96 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             notificationCountSpan.setText(String.valueOf(unreadCount));
             notificationCountSpan.setVisible(true);
         }
+    }
+//    private void createCategorySearchButton() {
+//        // Create the button to open the category list
+//        Button categorySearchButton = new Button("Search by Category");
+//        categorySearchButton.addClickListener(event -> openCategoryDialog());
+//
+//        // Add the button to your layout, for example, in the navbar
+//        addToNavbar(categorySearchButton);
+//    }
+//
+//    private void openCategoryDialog() {
+//        Dialog categoryDialog = new Dialog();
+//        categoryDialog.setWidth("400px");
+//        categoryDialog.setHeight("300px");
+//
+//        // Create and configure the close button for the dialog
+//        Button closeButton = new Button("Close");
+//        closeButton.addClickListener(event -> categoryDialog.close());
+//
+//        // Layout for the dialog content
+//        VerticalLayout dialogLayout = new VerticalLayout();
+//        dialogLayout.setPadding(false);
+//        dialogLayout.setSpacing(false);
+//
+//        // Add the close button to the dialog layout
+//        dialogLayout.add(closeButton);
+//
+//        // Fetch all categories from the presenter
+//        ArrayList<String> categories = presenter.getAllCategories();
+//
+//        for (String category : categories) {
+//            Button categoryButton = new Button(category);
+//            categoryButton.getElement().getStyle().set("margin", "5px"); // Add some margin for better spacing
+//            categoryButton.getElement().getStyle().set("background-color", "#4CAF50"); // Set button color
+//            categoryButton.getElement().getStyle().set("color", "white"); // Set text color
+//            categoryButton.addClickListener(event -> {
+//                categoryDialog.close();
+//                searchByCategory(category);
+//            });
+//            dialogLayout.add(categoryButton);
+//        }
+//
+//        // Add the layout to the dialog
+//        categoryDialog.add(dialogLayout);
+//
+//        // Open the dialog
+//        categoryDialog.open();
+//    }
+
+    public ArrayList<String> getAllCategories() {
+        // Fetch all categories from the server or database
+        return presenter.getAllCategories();
+    }
+
+
+    public void searchByCategory() {
+        //create a button that opens a list of all existing categories that are clickable and will display the products of that category
+        //add a button to the navbar
+        //when clicked open a dialog with the categories
+
+        //use context menu to display the categories
+        Button categoryButton = new Button("search by category");
+        //minimize the text size
+        categoryButton.getElement().getStyle().set("font-size", "15px");
+        //allow texr to be displayed in multiple lines
+        categoryButton.addClassName("multiline-button");
+
+        ContextMenu categoryMenu = new ContextMenu(categoryButton);
+        categoryMenu.setOpenOnClick(true);
+        //set icon to an arrow facing down
+        categoryButton.setIcon(new Icon(VaadinIcon.ANGLE_DOWN));
+        categoryButton.getElement().getStyle().set("color", "black");
+        categoryButton.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
+        //fetch all categories from the server
+        ArrayList<String> categories = presenter.getAllCategories();
+        //add a button for each category
+
+        for (String cat : categories) {
+            MenuItem categoryItem = categoryMenu.addItem(cat, e -> {
+                //search for products by category
+                Response<ArrayList<ProductDTO>> productsRes = presenter.searchProductsByCategory(cat);
+                ArrayList<ProductDTO> products = productsRes.getData();
+                //display the products
+                displaySearchResults(products);
+            });
+        }
+
+        addToNavbar(categoryButton);
+
+
     }
 
     private void addHomeButtonToDrawer() {
@@ -306,6 +394,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     public void discountsText() {
         Span discounts = new Span("Discounts");
+        //center the text
+        discounts.getElement().getStyle().set("margin", "0 auto");
+
         discounts.getElement().getStyle().set("font-size", "20px");
         discounts.getElement().getStyle().set("margin-left", "10px");
         discounts.getElement().getStyle().set("margin-top", "10px");

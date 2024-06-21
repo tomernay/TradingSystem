@@ -47,8 +47,7 @@ public class MainLayoutPresenter {
         Response<String> response = userService.changeUsername(username, newUsername, token);
         if (!response.isSuccess()) {
             view.showUNError(response.getMessage(), usernameField);
-        }
-        else {
+        } else {
             CookiesHandler.setCookie("username", newUsername, 3600);
             CookiesHandler.setCookie("token", response.getData(), 3600);
             view.UnSuccess();
@@ -64,12 +63,10 @@ public class MainLayoutPresenter {
             Response<String> response = userService.changePassword(username, password, confirmPassword, token);
             if (!response.isSuccess()) {
                 view.showPwdError(response.getMessage(), passwordField);
-            }
-            else {
+            } else {
                 view.pwdSuccess();
             }
-        }
-        else {
+        } else {
             view.showPwdError("Passwords do not match", passwordField);
         }
 
@@ -96,32 +93,31 @@ public class MainLayoutPresenter {
         view.navigateToLogin();
     }
 
-    public String getUserName(){
-        String username = CookiesHandler.getUsernameFromCookies(request);;
-        if (username == null){
+    public String getUserName() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        ;
+        if (username == null) {
             username = "Guest";
-        }
-        else if(username.contains("Guest")){
-            username = username.substring(0,5);
+        } else if (username.contains("Guest")) {
+            username = username.substring(0, 5);
         }
         return username;
     }
 
     //add a store
-    public void addStore(String storeName, TextField field){
+    public void addStore(String storeName, TextField field) {
         checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<Integer> response = storeService.addStore(storeName, username, token);
-        if(response.isSuccess()){
+        if (response.isSuccess()) {
             view.addStoreSuccess();
-        }
-        else{
+        } else {
             view.addStoreError(response.getMessage(), field);
         }
     }
 
-    public List<Integer> getStoresIds(){
+    public List<Integer> getStoresIds() {
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<Map<Integer, String>> storesRole = userService.getStoresRole(username);
         if (storesRole.isSuccess()) {
@@ -131,13 +127,13 @@ public class MainLayoutPresenter {
     }
 
     //get store name by id
-    public List<String> getStores(List<Integer> storesIds){
+    public List<String> getStores(List<Integer> storesIds) {
         List<String> stores = new ArrayList<>();
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        for(Integer storeID : storesIds){
+        for (Integer storeID : storesIds) {
             Response<String> storeName = storeService.getStoreNameByID(storeID, username, token);
-            if(storeName.isSuccess()){
+            if (storeName.isSuccess()) {
                 stores.add(storeName.getData());
             }
 
@@ -146,36 +142,36 @@ public class MainLayoutPresenter {
 
     }
 
-    public List<String> getUsersStores(){
+    public List<String> getUsersStores() {
         List<Integer> ids = getStoresIds();
         return getStores(ids);
     }
 
-    public boolean isManager(String username){
+    public boolean isManager(String username) {
         Response<String> res = userService.isManager(username);
-        if(!res.isSuccess()){
+        if (!res.isSuccess()) {
             return false;
         }
         return res.getData().equals("true");
     }
 
-    public boolean isOwner(String username){
+    public boolean isOwner(String username) {
         Response<String> res = userService.isOwner(username);
-        if(!res.isSuccess()){
+        if (!res.isSuccess()) {
             return false;
         }
         return res.getData().equals("true");
     }
 
-    public boolean isCreator(String username){
+    public boolean isCreator(String username) {
         Response<String> res = userService.isCreator(username);
-        if(!res.isSuccess()){
+        if (!res.isSuccess()) {
             return false;
         }
         return res.getData().equals("true");
     }
 
-    public ArrayList<ProductDTO> searchProducts(String search){
+    public ArrayList<ProductDTO> searchProducts(String search) {
         checkTokenAndRedirect(); // Check token validity before adding store
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
@@ -184,8 +180,8 @@ public class MainLayoutPresenter {
     }
 
     private ArrayList<ProductDTO> combineSearchResults(String searchTerm, String username, String token) {
-        Response<ArrayList<ProductDTO>> resultsByName = searchProductsByName(searchTerm, username, token);
-        Response<ArrayList<ProductDTO>> resultsByCategory = searchProductsByCategory(searchTerm, username, token);
+        Response<ArrayList<ProductDTO>> resultsByName = searchProductsByName(searchTerm);
+        Response<ArrayList<ProductDTO>> resultsByCategory = searchProductsByCategory(searchTerm);
 
         if (!resultsByName.isSuccess() && !resultsByCategory.isSuccess()) {
             return new ArrayList<>();
@@ -201,11 +197,15 @@ public class MainLayoutPresenter {
         return combinedResults;
     }
 
-    private Response<ArrayList<ProductDTO>> searchProductsByCategory(String searchTerm, String username, String token) {
+    public Response<ArrayList<ProductDTO>> searchProductsByCategory(String searchTerm) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.getProductsFromAllStoresByCategory(searchTerm, username, token);
     }
 
-    private Response<ArrayList<ProductDTO>> searchProductsByName(String searchTerm, String username, String token) {
+    private Response<ArrayList<ProductDTO>> searchProductsByName(String searchTerm) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.viewProductFromAllStoresByName(searchTerm, username, token);
     }
 
@@ -258,4 +258,10 @@ public class MainLayoutPresenter {
     public void addToCart(ProductDTO product, int quantity) {
         userService.addProductToShoppingCart(product.getStoreID(), product.getProductID(), quantity, CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
     }
+
+    public ArrayList<String> getAllCategories() {
+        storeService.retrieveAllStoreCategories( CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
+        return new ArrayList<>();
+    }
 }
+

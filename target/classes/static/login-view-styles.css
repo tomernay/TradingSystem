@@ -151,3 +151,8 @@
     align-items: center;
     height: 80vh;
 }
+
+.multiline-button {
+    white-space: normal;
+    text-align: center;
+}
