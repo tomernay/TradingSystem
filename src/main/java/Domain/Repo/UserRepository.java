@@ -356,9 +356,19 @@ public class UserRepository {
                 Subscriber subscriber = getUser(username);
                 subscriber.setUsername(newUsername);
                 subscribers.put(newUsername, subscriber);
+                SystemLogger.info("subscribers new user " + subscribers.get(newUsername));
+                SystemLogger.info("subscribers og user" + subscribers.get(username));
+                SystemLogger.info("subscriber curr " + subscriber.getUsername());
+                SystemLogger.info("username" + username);
+                SystemLogger.info("newUsername" + newUsername);
                 subscribers.remove(username);
-                SystemLogger.info("[SUCCESS] Username for user " + username + " changed successfully");
-                return Response.success("Username changed successfully", null);
+                SystemLogger.info("username" + username);
+                SystemLogger.info("newUsername" + newUsername);
+                //generate the new token
+                String token = subscriber.generateToken();
+
+                SystemLogger.info("[SUCCESS] Username for user " + username + " changed successfully to " + newUsername);
+                return Response.success("Username changed successfully", token);
             } else {
                 SystemLogger.error("[ERROR] New username does not meet the requirements");
                 return Response.error("New username does not meet the requirements", null);

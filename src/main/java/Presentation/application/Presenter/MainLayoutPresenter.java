@@ -49,6 +49,8 @@ public class MainLayoutPresenter {
             view.showUNError(response.getMessage(), usernameField);
         }
         else {
+            CookiesHandler.setCookie("username", newUsername, 3600);
+            CookiesHandler.setCookie("token", response.getData(), 3600);
             view.UnSuccess();
         }
 

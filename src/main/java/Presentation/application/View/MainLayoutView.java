@@ -190,12 +190,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //        }
 
         //check if a user is a guest or subscribed user
-//TODO: check if the user is a guest or a subscribed user
-//        String username = presenter.getUserName();
+
         if(!presenter.getUserName().contains("Guest")) {
+            MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
+            MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         }
-        MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
-        MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
 
         //if user is guest add register button
         if(presenter.getUserName().contains("Guest")) {
@@ -402,11 +401,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         category4.addClassName("round-button");
         category5.addClassName("round-button");
 
-        category1.getElement().getStyle().set("color", "black");
-        category2.getElement().getStyle().set("color", "black");
-        category3.getElement().getStyle().set("color", "black");
-        category4.getElement().getStyle().set("color", "black");
-        category5.getElement().getStyle().set("color", "black");
+        category1.getElement().getStyle().set("color","#293139");
+        category2.getElement().getStyle().set("color", "#293139");
+        category3.getElement().getStyle().set("color", "#293139");
+        category4.getElement().getStyle().set("color", "#293139");
+        category5.getElement().getStyle().set("color", "#293139");
 
 
         //the text of the button at the bottom
@@ -426,6 +425,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         // Add the main layout to the main content area
 //        setContent(mainLayout);
         mainContent.add(mainLayout);
+        //center the buttons
+        categoriesLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
 //        categoriesLayout.add(category1, category2, category3, category4, category6);
 
@@ -732,6 +733,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         quantityLayout.add(decreaseButton, quantityField, increaseButton, addToCartButton);
         return quantityLayout;
     }
+
+
 
     public void addSearchBar() {
         // Add search bar to the header
@@ -1042,7 +1045,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //            welcomeText();
             //if there is an error, keep the dialog open
 
-//            dialog.close();
+            dialog.close();
         });
         save.getElement().getStyle().set("color", "black");
         //position save button at the bottom right corner
