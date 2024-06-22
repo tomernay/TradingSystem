@@ -1,7 +1,10 @@
 package Domain.Users.Subscriber.Cart;
-import Domain.Store.Inventory.ProductDTO;
+
 import Utilities.Response;
 import Utilities.SystemLogger;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,17 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+@Embeddable
 public class ShoppingCart {
-    private final List<Basket> baskets;
+
+    @OneToMany
+    private final List<Basket> baskets = new ArrayList<>();
     boolean inPurchaseProcess = false;
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private ScheduledFuture<?> future;
-    private CompletableFuture<String> purchaseFuture;
-
-
-    public ShoppingCart() {
-        this.baskets = new ArrayList<>();
-    }
+    private transient ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private transient ScheduledFuture<?> future;
+    private transient CompletableFuture<String> purchaseFuture;
 
     public List<Basket> getBaskets() {
         return baskets;
@@ -29,11 +30,9 @@ public class ShoppingCart {
         if (inPurchaseProcess){
             SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
             return Response.error("Error - can't add product to cart - purchase process started", null);
-
         }
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
-
                 return basket.addProductToBasket(productID, quantity);
             }
         }
@@ -44,9 +43,8 @@ public class ShoppingCart {
 
     public Response<String> removeProductFromCart(Integer storeID, Integer productID) {
         if (inPurchaseProcess){
-            SystemLogger.error("[ERROR] Can't add product to cart - purchase process  started");
-            return Response.error("Error - can't add product to cart - purchase process  started", null);
-
+            SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
+            return Response.error("Error - can't add product to cart - purchase process started", null);
         }
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
@@ -61,7 +59,6 @@ public class ShoppingCart {
         if (inPurchaseProcess){
             SystemLogger.error("[ERROR] Can't add product to cart - purchase process started");
             return Response.error("Error - can't add product to cart - purchase process started", null);
-
         }
         for (Basket basket : baskets) {
             if (basket.getStoreID().equals(storeID)) {
@@ -73,11 +70,7 @@ public class ShoppingCart {
     }
 
     public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents() {
-        Map<Integer, Map<Integer, Integer>> products = new HashMap<>(); //<storeID, List<ProductDTO>>
-//        Map<String,Map<String, Integer>> userProducts = new HashMap<>();
-//        for (Basket basket : baskets) {
-//            userProducts.put(basket.getStoreID(), basket.getProductsQuantityMap());
-//        }
+        Map<Integer, Map<Integer, Integer>> products = new HashMap<>();
         for (Basket basket : baskets) {
             products.put(basket.getStoreID(), basket.getProducts());
         }
@@ -104,7 +97,6 @@ public class ShoppingCart {
 
         if (!inPurchaseProcess) {
             inPurchaseProcess = true;
-            // Schedule a task to cancel the purchase after 10 minutes
             future = scheduler.schedule(() -> {
                 synchronized (this) {
                     if (this.inPurchaseProcess) {
@@ -115,7 +107,6 @@ public class ShoppingCart {
                 }
             }, 60, TimeUnit.MINUTES);
         } else {
-            // If set to false, cancel any existing scheduled task
             cancelPurchaseProcess();
             purchaseFuture.complete("Purchase process stopped.");
         }
