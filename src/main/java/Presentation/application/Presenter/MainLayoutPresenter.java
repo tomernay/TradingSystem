@@ -167,13 +167,11 @@ public class MainLayoutPresenter {
     }
 
     public ArrayList<ProductDTO> searchProducts(String search) {
-        String username = CookiesHandler.getUsernameFromCookies(request);
-        String token = CookiesHandler.getTokenFromCookies(request);
-        ArrayList<ProductDTO> products = combineSearchResults(search, username, token);
+        ArrayList<ProductDTO> products = combineSearchResults(search);
         return products;
     }
 
-    private ArrayList<ProductDTO> combineSearchResults(String searchTerm, String username, String token) {
+    private ArrayList<ProductDTO> combineSearchResults(String searchTerm) {
         Response<ArrayList<ProductDTO>> resultsByName = searchProductsByName(searchTerm);
         Response<ArrayList<ProductDTO>> resultsByCategory = searchProductsByCategory(searchTerm);
 
@@ -194,7 +192,7 @@ public class MainLayoutPresenter {
     public Response<ArrayList<ProductDTO>> searchProductsByCategory(String searchTerm) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        return storeService.getProductsFromAllStoresByCategory(searchTerm, username, token);
+        return storeService.viewProductFromAllStoresByCategory(searchTerm, username, token);
     }
 
     private Response<ArrayList<ProductDTO>> searchProductsByName(String searchTerm) {
@@ -238,7 +236,12 @@ public class MainLayoutPresenter {
     }
 
     public ArrayList<String> getAllCategories() {
-//        storeService.retrieveAllStoreCategories( CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<ArrayList<String>> response = storeService.retrieveCategoriesFromAllStore(username, token);
+        if (response.isSuccess()) {
+            return response.getData();
+        }
         return new ArrayList<>();
     }
   
