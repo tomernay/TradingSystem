@@ -1,23 +1,37 @@
 package Domain.Users;
 
 import Domain.Externals.Security.TokenHandler;
-import Domain.Store.Inventory.ProductDTO;
 import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false, unique = true)
     protected String username;
+
+    @Embedded
     protected ShoppingCart shoppingCart;
+
+    @Column(name = "token")
     protected String Token;
 
     public User(String username) {
         this.username = username;
         shoppingCart = new ShoppingCart();
+    }
+
+    public User() {
     }
 
     public String generateToken() {
@@ -40,7 +54,6 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public Response<String> addProductToShoppingCart(Integer storeID, Integer productID, Integer quantity) {
         if(quantity <= 0){
@@ -73,6 +86,7 @@ public class User {
     public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents() {
         return shoppingCart.getShoppingCartContents();
     }
+
     public String getUsername() {
         return username;
     }

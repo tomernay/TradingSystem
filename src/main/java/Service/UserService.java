@@ -8,6 +8,11 @@ import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import Domain.Repo.UserRepository;
+import Domain.Users.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 import java.util.List;
@@ -16,11 +21,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+@Service
 public class UserService {
     private final UserFacade userFacade;
     private StoreService storeService;
     private AdminService adminService;
-
 
     public UserService() {
         userFacade = new UserFacade();
