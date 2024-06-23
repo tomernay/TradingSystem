@@ -38,17 +38,22 @@ public class StorePagePresenter {
         storeService.viewProductFromStoreByName(storeId, search, username, token);
     }
 
-    public ArrayList<String> getStoresProducts(int storeID) {
+    public ArrayList<ProductDTO> getStoresProducts(int storeID) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        ArrayList<String> products = new ArrayList<>();
         Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(storeID, username, token);
+        ArrayList<ProductDTO> products = res.getData();
         //if response is successful add products to products list
-        if(res.isSuccess()) {
-            for (ProductDTO product : res.getData()) {
-                products.add(product.getProductName());
-            }
-        }
         return products;
+    }
+
+    public void addToCart(ProductDTO product, int quantity) {
+        userService.addProductToShoppingCart(product.getStoreID(), product.getProductID(), quantity, CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
+    }
+
+    public String getStoreName(Integer storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.getStoreNameByID(storeId, username, token).getData();
     }
 }
