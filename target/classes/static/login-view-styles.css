@@ -18,6 +18,82 @@
     color: black !important;
 }
 
+.store-management-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5; /* Light gray background */
+}
+
+.store-title {
+    font-size: 85px; /* ALOT bigger title */
+    color: #333; /* Dark gray color */
+    margin-bottom: 80px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -20px; /* Add space from the top */
+}
+
+.custom-button {
+    width: 300px; /* Wider buttons */
+    height: 60px; /* Adjusted height */
+    font-size: 20px; /* Increased font size */
+    color: white;
+    background-color: #444; /* Dark gray background */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.custom-button:hover {
+    background-color: #666; /* Slightly lighter gray for hover effect */
+}
+
+.custom-button:focus {
+    outline: none;
+    background-color: #555; /* Medium gray for focus */
+}
+
+.dialog-button {
+    font-size: 18px;
+    color: white;
+    background-color: #444;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 5px;
+}
+
+.dialog-button:hover {
+    background-color: #666;
+}
+
+.dialog-button:focus {
+    outline: none;
+    background-color: #555;
+}
+
+.custom-regular-button {
+    color: white;
+    background-color: #444; /* Dark gray background */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    border-radius: 4px;
+    padding: 10px 20px;
+}
+
+
+
+
 .register-view {
     background-image: url('background2.jpg');
     background-size: cover; /* Adjust as needed */
@@ -70,21 +146,24 @@
 
 /* Button Styles */
 .add-button {
-    background-color: #007BFF;
+    background-color: #218838;
     color: white;
     border-radius: 5px;
     margin-right: 10px;
+    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
+}
+.add-button:hover {
+    background-color: #125721; /* Darker shade of green for hover effect */
 }
 
 .waive-button {
-    background-color: #DC3545;
+    background-color: #dc3545;
     color: white;
     border-radius: 5px;
+    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
 }
-
-.add-button:hover, .waive-button:hover {
-    background-color: #0056b3;  /* Adjust hover color */
-    color: white;
+.waive-button:hover {
+    background-color: #811d28; /* Darker shade of green for hover effect */
 }
 
 /* Dialog Styles */
@@ -129,7 +208,7 @@
 }
 
 .round-button {
-    background-color: lightsteelblue;
+    background-color: #333;
 
     color: white;
     width: 200px;
@@ -152,7 +231,67 @@
     height: 80vh;
 }
 
-.multiline-button {
-    white-space: normal;
-    text-align: center;
+
+.product-management-view {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.header {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.add-product-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-product-button:hover {
+    background-color: #0056b3;
+}
+
+.dialog-form {
+    width: 100%;
+}
+
+.dialog-form .form-item {
+    margin-bottom: 15px;
+}
+
+.save-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
+}
+
+.save-button:hover {
+    background-color: #1c7030;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
+}
+
+.cancel-button:hover {
+    background-color: #951b27;
+}
+

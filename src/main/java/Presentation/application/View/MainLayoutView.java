@@ -14,6 +14,7 @@ import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Response;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -24,6 +25,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
@@ -40,8 +42,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 
+import java.awt.*;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -90,10 +94,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addNotificationButton();
         shoppingCart();
         discountsText();
-        addCategoriesButton();
-        addMessageButton();
+//        addCategoriesButton();
+        addStoresToMain();
+//        addMessageButton();
         UI currentUI = UI.getCurrent();
-        navigateToStorePage();
+//        navigateToStorePage();
 //        addHomeButtonToDrawer();
 
         // Initialize the notification count
@@ -179,9 +184,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         //use context menu to display the categories
         Button categoryButton = new Button("search by category");
-        //minimize the text size
+//        //minimize the text size
         categoryButton.getElement().getStyle().set("font-size", "15px");
-        //allow texr to be displayed in multiple lines
+//        //allow texr to be displayed in multiple lines
         categoryButton.addClassName("multiline-button");
 
         ContextMenu categoryMenu = new ContextMenu(categoryButton);
@@ -193,15 +198,17 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //fetch all categories from the server
         ArrayList<String> categories = presenter.getAllCategories();
         //add a button for each category
-
+        categoryMenu.addItem("all");
         for (String cat : categories) {
             MenuItem categoryItem = categoryMenu.addItem(cat, e -> {
-                //search for products by category
-                Response<ArrayList<ProductDTO>> productsRes = presenter.searchProductsByCategory(cat);
-                ArrayList<ProductDTO> products = productsRes.getData();
-                //display the products
-                displaySearchResults(products);
+//                //search for products by category
+//                Response<ArrayList<ProductDTO>> productsRes = presenter.searchProductsByCategory(cat);
+//                ArrayList<ProductDTO> products = productsRes.getData();
+//                //display the products
+//                displaySearchResults(products);
             });
+            //add the category item to the menu
+            categoryMenu.addItem(categoryItem);
         }
 
         addToNavbar(categoryButton);
@@ -324,6 +331,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return presenter.getUsersStores();
     }
 
+    private List<String> getAllStores(){
+        return presenter.getAllStores();
+    }
+
+
+
     private void navigateToRegister() {
         getUI().ifPresent(ui -> ui.navigate("register"));
     }
@@ -372,10 +385,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         List<String> stores = getUsersStores(presenter.getUserName());
 
         VerticalLayout activeStoresLayout = new VerticalLayout();
-        activeStoresLayout.add(new H3("Active Stores:"));
+        activeStoresLayout.add(new H4("Active Stores:"));
 
         VerticalLayout deactivatedStoresLayout = new VerticalLayout();
-        deactivatedStoresLayout.add(new H3("Deactivated Stores:"));
+        deactivatedStoresLayout.add(new H4("Deactivated Stores:"));
 
         for (String store : stores) {
             final Integer storeId = getStoreIdByName(store);  // Get the store ID once per iteration
@@ -385,6 +398,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                 UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
                 dialog.close();
             });
+            storeButton.getElement().getStyle().set("color", "black");
 
             if (isStoreActive(storeId)) {
                 activeStoresLayout.add(storeButton);
@@ -432,7 +446,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         // This can be a call to your service layer
         return presenter.getStoreIdByName(storeName);
     }
+
     WSClient wsClient;
+
     private void openNewStoreDialog() {
         Dialog dialog = new Dialog();
         dialog.setWidth("300px");
@@ -444,7 +460,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         TextField storeName = new TextField("Store Name");
         //place in the center
         storeName.getElement().getStyle().set("margin", "0 auto");
-          String user=CookiesHandler.getUsernameFromCookies(getRequest());
+        String user=CookiesHandler.getUsernameFromCookies(getRequest());
 
         try {
             UI ui=UI.getCurrent();
@@ -466,6 +482,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             } catch (ExecutionException eX) {
                 eX.printStackTrace();
             }
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+
+            dialog.close();
         });
         openStore.getElement().getStyle().set("color", "black");
         //position save button at the center
@@ -479,7 +498,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialogLayout.add(closeDialogButton);
 
         dialogLayout.add(storeName, openStore);
-
         dialog.add(dialogLayout);
         dialog.open();
     }
@@ -497,6 +515,43 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         homeButton.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the right side of the search button
 
         addToNavbar(homeButton);
+    }
+
+    private void addStoresToMain(){
+        //get all stores and for each store add a button to the main content area
+        List<String> stores = getAllStores();
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setSpacing(true); // Optional: Set spacing between components
+
+        for (int i = 0; i < stores.size(); i += 4) {
+            HorizontalLayout row = new HorizontalLayout();
+            row.setWidthFull(); // Ensure row takes full width
+
+
+
+            // Counter to keep track of buttons added
+            for (int j = 0; j < 4 && (i + j) < stores.size(); j++) {
+                String store = stores.get(i + j);
+                Button storeButton = new Button(store, e -> {
+                    RouteParameters routeParameters = new RouteParameters("storeId", store);
+                    UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                });
+               //make button take a relative width from 4 buttons in a row
+                storeButton.setWidth("25%");
+                //make the height of the button relative to the width
+                storeButton.setHeight("100px");
+
+                row.add(storeButton);
+            }
+
+            // Add the row to the vertical layout
+            verticalLayout.add(row);
+        }
+
+        // Add the vertical layout to the main content area (assuming mainContent is a VerticalLayout or similar)
+        mainContent.add(verticalLayout);
+
+
     }
 
     private void addCategoriesButton() {
@@ -534,11 +589,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         category4.addClassName("round-button");
         category5.addClassName("round-button");
 
-        category1.getElement().getStyle().set("color","#293139");
-        category2.getElement().getStyle().set("color", "#293139");
-        category3.getElement().getStyle().set("color", "#293139");
-        category4.getElement().getStyle().set("color", "#293139");
-        category5.getElement().getStyle().set("color", "#293139");
+        category1.getElement().getStyle().set("color","white");
+        category2.getElement().getStyle().set("color", "white");
+        category3.getElement().getStyle().set("color", "white");
+        category4.getElement().getStyle().set("color", "white");
+        category5.getElement().getStyle().set("color", "white");
 
 
         //the text of the button at the bottom
@@ -1180,7 +1235,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             //If the username is changed, update the welcome text
 //            welcomeText();
             //if there is an error, keep the dialog open
-
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             dialog.close();
         });
         save.getElement().getStyle().set("color", "black");

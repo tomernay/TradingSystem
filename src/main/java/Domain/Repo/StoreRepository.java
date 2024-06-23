@@ -915,7 +915,7 @@ public class StoreRepository {
         return stores.containsKey(storeID);
     }
 
-    public Response<String> retrieveAllCategoriesFromAllStore(String username) {
+    public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
         ArrayList<String> categories = new ArrayList<>();
         for (Store store : stores.values()) {
             Response<ArrayList<String>> response = store.retrieveAllCategoriesFromAllStore();
@@ -928,12 +928,15 @@ public class StoreRepository {
             }
             return Response.error("Couldn't retrieve all categories from all stores", null);
         }
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return Response.success("All categories were retrieved successfully", objectMapper.convertValue(categories, String.class));
-        } catch (Exception e) {
-            SystemLogger.error("[ERROR] Couldn't retrieve all categories from all stores");
+        return Response.success("All categories were retrieved successfully", categories);
+    }
+
+    public Response<List<String>> getAllStores() {
+        List<String> storesList = new ArrayList<>();
+        for (Store store : stores.values()) {
+            storesList.add(store.getName());
         }
-        return Response.error("Couldn't retrieve all categories from all stores", null);
+
+        return Response.success("All stores were retrieved successfully", storesList);
     }
 }
