@@ -532,9 +532,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             // Counter to keep track of buttons added
             for (int j = 0; j < 4 && (i + j) < stores.size(); j++) {
                 String store = stores.get(i + j);
+                final Integer storeId = getStoreIdByName(store);
                 Button storeButton = new Button(store, e -> {
-                    RouteParameters routeParameters = new RouteParameters("storeId", store);
-                    UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                    RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
+                    UI.getCurrent().navigate(StorePageView.class, routeParameters);
                 });
                //make button take a relative width from 4 buttons in a row
                 storeButton.setWidth("25%");
