@@ -14,6 +14,7 @@ import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Response;
 import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -24,6 +25,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
@@ -40,8 +42,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 
+import java.awt.*;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -90,10 +94,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         addNotificationButton();
         shoppingCart();
         discountsText();
-        addCategoriesButton();
-        addMessageButton();
+//        addCategoriesButton();
+        addStoresToMain();
+//        addMessageButton();
         UI currentUI = UI.getCurrent();
-        navigateToStorePage();
+//        navigateToStorePage();
 //        addHomeButtonToDrawer();
 
         // Initialize the notification count
@@ -326,6 +331,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return presenter.getUsersStores();
     }
 
+    private List<String> getAllStores(){
+        return presenter.getAllStores();
+    }
+
+
+
     private void navigateToRegister() {
         getUI().ifPresent(ui -> ui.navigate("register"));
     }
@@ -471,6 +482,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             } catch (ExecutionException eX) {
                 eX.printStackTrace();
             }
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
 
             dialog.close();
         });
@@ -486,7 +498,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialogLayout.add(closeDialogButton);
 
         dialogLayout.add(storeName, openStore);
-
         dialog.add(dialogLayout);
         dialog.open();
     }
@@ -504,6 +515,43 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         homeButton.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the right side of the search button
 
         addToNavbar(homeButton);
+    }
+
+    private void addStoresToMain(){
+        //get all stores and for each store add a button to the main content area
+        List<String> stores = getAllStores();
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setSpacing(true); // Optional: Set spacing between components
+
+        for (int i = 0; i < stores.size(); i += 4) {
+            HorizontalLayout row = new HorizontalLayout();
+            row.setWidthFull(); // Ensure row takes full width
+
+
+
+            // Counter to keep track of buttons added
+            for (int j = 0; j < 4 && (i + j) < stores.size(); j++) {
+                String store = stores.get(i + j);
+                Button storeButton = new Button(store, e -> {
+                    RouteParameters routeParameters = new RouteParameters("storeId", store);
+                    UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                });
+               //make button take a relative width from 4 buttons in a row
+                storeButton.setWidth("25%");
+                //make the height of the button relative to the width
+                storeButton.setHeight("100px");
+
+                row.add(storeButton);
+            }
+
+            // Add the row to the vertical layout
+            verticalLayout.add(row);
+        }
+
+        // Add the vertical layout to the main content area (assuming mainContent is a VerticalLayout or similar)
+        mainContent.add(verticalLayout);
+
+
     }
 
     private void addCategoriesButton() {

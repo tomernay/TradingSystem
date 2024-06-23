@@ -3,6 +3,7 @@ package Service;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
+import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Facades.StoreFacade;
 import Utilities.Messages.Message;
@@ -64,6 +65,8 @@ public class StoreService {
     public boolean isStoreOwner(Integer storeID, String username) {
         return storeFacade.isStoreOwner(storeID, username);
     }
+
+
 
     /**
      * This method checks if the user is a manager of the store
@@ -992,6 +995,15 @@ public class StoreService {
             return storeFacade.retrieveAllCategoriesFromAllStore();
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to retrieve all categories  but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+
+    public Response<List<String>> getAllStores(String username, String token) {
+        SystemLogger.info("[START] User: " + username + " is trying to retrieve all stores");
+        if (userService.isValidToken(token, username)) {
+            return storeFacade.getAllStores();
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to retrieve all stores  but the token was invalid");
         return Response.error("Invalid token", null);
     }
 }

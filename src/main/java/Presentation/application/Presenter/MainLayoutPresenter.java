@@ -90,6 +90,8 @@ public class MainLayoutPresenter {
         view.navigateToLogin();
     }
 
+
+
     public String getUserName() {
         String username = CookiesHandler.getUsernameFromCookies(request);
         if (username == null) {
@@ -249,5 +251,16 @@ public class MainLayoutPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         return userService.isValidToken(token, username);
+    }
+
+
+    public List<String> getAllStores() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        Response<List<String>> response = storeService.getAllStores(username, token);
+        if (response.isSuccess()) {
+            return response.getData();
+        }
+        return new ArrayList<>();
     }
 }

@@ -930,4 +930,13 @@ public class StoreRepository {
         }
         return Response.success("All categories were retrieved successfully", categories);
     }
+
+    public Response<List<String>> getAllStores() {
+        List<String> storesList = new ArrayList<>();
+        for (Store store : stores.values()) {
+            storesList.add(store.getName());
+        }
+
+        return Response.success("All stores were retrieved successfully", storesList);
+    }
 }

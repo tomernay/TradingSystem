@@ -4,6 +4,7 @@ import Domain.Repo.StoreRepository;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
+import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -67,6 +68,7 @@ public class StoreFacade {
     public StoreRepository getStoreRepository() {
         return storeRepository;
     }
+
 
 
     public Response<String> nominateOwner(Integer storeID, String currentUsername, String nominatorUsername) {
@@ -297,5 +299,9 @@ public class StoreFacade {
 
     public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
         return storeRepository.retrieveAllCategoriesFromAllStore();
+    }
+
+    public Response<List<String>> getAllStores() {
+        return storeRepository.getAllStores();
     }
 }
