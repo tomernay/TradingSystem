@@ -78,7 +78,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         flexLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Center the components in the FlexLayout
 
         H1 loginTitle = new H1("Login");
-        loginTitle.getStyle().set("font-size", "4em"); // Set the font size to 2.5em
+        loginTitle.getStyle().set("font-size", "5.5em"); // Set the font size to 2.5em
+        loginTitle.getStyle().set("font-weight", "bold");
 
         add(loginTitle, flexLayout, buttons, registerGuestButtons);
     }

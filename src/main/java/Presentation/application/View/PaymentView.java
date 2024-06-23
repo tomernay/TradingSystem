@@ -240,7 +240,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Example SVG content with IDs for placeholders
         String svgContent = "<svg width=\"300\" height=\"200\" viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">" +
-                "<rect width=\"300\" height=\"200\" rx=\"15\" ry=\"15\" fill=\"#007BFF\" />" +
+                "<rect width=\"300\" height=\"200\" rx=\"15\" ry=\"15\" fill=\"#6A6A6AC0\" />" +
                 "<text x=\"20\" y=\"40\" font-size=\"24\" fill=\"#ffffff\">VISA</text>" +
                 "<text x=\"20\" y=\"100\" font-size=\"18\" fill=\"#ffffff\" id=\"card-number\">XXXX XXXX XXXX XXXX</text>" +
                 "<text x=\"20\" y=\"150\" font-size=\"18\" fill=\"#ffffff\" id=\"card-name\">Cardholder Name</text>" +
@@ -322,6 +322,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Submit Button
         Button submitButton = new Button("Submit");
+        submitButton.addClassName("add-button");
         submitButton.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
             // Check if all fields are filled
             if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty() || streetAddressField.isEmpty() || cityField.isEmpty() || stateField.isEmpty() || zipCodeField.isEmpty() || IdField.isEmpty()) {
@@ -343,7 +344,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
             }
         });
         submitButton.getStyle()
-                .set("background-color", "#007BFF")
+                .set("background-color", "#6A6A6AC0")
                 .set("color", "#ffffff")
                 .set("border", "none")
                 .set("padding", "10px 20px")

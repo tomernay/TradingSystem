@@ -71,7 +71,8 @@ public class RegisterView extends VerticalLayout{
         flexLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Center the components in the FlexLayout
 
         H1 registerTitle = new H1("Register");
-        registerTitle.getStyle().set("font-size", "4em"); // Set the font size to 2.5em
+        registerTitle.getStyle().set("font-size", "5.5em"); // Set the font size to 2.5em
+        registerTitle.getStyle().set("font-weight", "bold");
 
         add(registerTitle, flexLayout, buttons, backButtonLayout);
     }

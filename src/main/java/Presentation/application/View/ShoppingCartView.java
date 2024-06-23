@@ -53,6 +53,8 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
         // Initialize buttons layout
         Button checkoutButton = new Button("Checkout", e -> presenter.checkout());
         Button clearCartButton = new Button("Clear Cart", e -> presenter.clearCart());
+        checkoutButton.addClassName("custom-regular-button");
+        clearCartButton.addClassName("custom-regular-button");
 
         buttonsLayout = new HorizontalLayout(checkoutButton, clearCartButton);
         buttonsLayout.setAlignItems(Alignment.CENTER);
@@ -224,6 +226,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
                 quantityField.setValue(currentValue + 1);
                 updateQuantity(item, currentValue + 1);
             });
+            increaseButton.addClassName("plus-button");
 
             Button decreaseButton = new Button("-", e -> {
                 int currentValue = quantityField.getValue() != null ? quantityField.getValue() : 0;
@@ -232,6 +235,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
                     updateQuantity(item, currentValue - 1);
                 }
             });
+            decreaseButton.addClassName("plus-button");
 
             layout.add(increaseButton, quantityField, decreaseButton);
             layout.setAlignItems(Alignment.CENTER);
@@ -243,11 +247,14 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
 
             return layout;
         })).setHeader("Quantity");
-
-        grid.addComponentColumn(item -> new Button("Remove", e -> {
-            presenter.removeProductFromCart(item.getProductID(), item.getStoreID(), presenter.getUsername());
-            presenter.getShoppingCartContents(); // Refresh cart after removal
-        })).setHeader("Actions");
+        grid.addComponentColumn(item -> {
+            Button removeButton = new Button("Remove", e -> {
+                presenter.removeProductFromCart(item.getProductID(), item.getStoreID(), presenter.getUsername());
+                presenter.getShoppingCartContents(); // Refresh cart after removal
+            });
+            removeButton.addClassName("custom-regular-button");
+            return removeButton;
+        }).setHeader("Actions");
 
         // Set text in the header row cell instead of component
         grid.prependHeaderRow().getCell(grid.getColumns().get(0)).setText("Store Name: " + storeName);

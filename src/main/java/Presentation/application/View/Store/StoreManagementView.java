@@ -115,7 +115,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         VerticalLayout mainLayout = new VerticalLayout();
         mainLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        H1 storeTitle = new H1("Store Management: Store " + storeName);
+        H1 storeTitle = new H1("Store Management: " + storeName);
         storeTitle.addClassName("store-title");
 
         VerticalLayout buttonLayout = new VerticalLayout();
