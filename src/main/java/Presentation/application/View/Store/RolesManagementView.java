@@ -29,7 +29,7 @@ import java.util.Set;
 
 @PageTitle("Roles Management")
 @Route(value = "roles-management/:storeId", layout = MainLayoutView.class)
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class RolesManagementView extends VerticalLayout implements BeforeEnterObserver {
 
     private final RolesManagementPresenter presenter;
@@ -43,7 +43,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         this.presenter = presenter;
         this.presenter.setView(this);
 
-        addClassName("roles-management-view");
+        addClassName("page-view");
         setSizeFull();
         setMargin(true);
         setPadding(true);
@@ -62,6 +62,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         usernameFilter.addValueChangeListener(event -> updateRoles());
 
         grid = new Grid<>();
+        grid.addClassName("custom-grid");
         grid.addColumn(Map.Entry::getKey).setHeader("Username");
         grid.addColumn(Map.Entry::getValue).setHeader("Role");
         grid.addItemClickListener(event -> handleGridItemClick(event.getItem()));
@@ -150,12 +151,12 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
         if ((presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator")) && presenter.isActiveStore(storeId)) {
             Button addButton = new Button("+ Nominate", e -> showNominationDialog());
-            addButton.addClassName("add-button");  // Adding class for custom styling
+            addButton.addClassName("yes_button");  // Adding class for custom styling
             buttonLayout.add(addButton);
         }
         if (presenter.hasRole(storeId, "Owner") && presenter.isActiveStore(storeId)) {
             Button waiveOwnershipButton = new Button("Waive Ownership", e -> navigateToOwnershipWaiving());
-            waiveOwnershipButton.addClassName("waive-button");  // Adding class for custom styling
+            waiveOwnershipButton.addClassName("no_button");  // Adding class for custom styling
             buttonLayout.add(waiveOwnershipButton);
         }
         // Back to Store Management button
@@ -163,7 +164,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
-        backButton.addClassName("custom-regular-button");
+        backButton.addClassName("button");
         buttonLayout.add(backButton);
 
         return buttonLayout;
@@ -174,6 +175,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         confirmationDialog.setWidth("400px");
 
         VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         dialogLayout.add("Are you sure you want to waive your ownership?");
 
         Button confirmButton = new Button("Yes", e -> {
@@ -183,8 +185,14 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             UI.getCurrent().navigate("");
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
         });
+        confirmButton.addClassName("yes_button");
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("no_button");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, confirmButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
 
         dialogLayout.add(confirmButton, cancelButton);
         confirmationDialog.add(dialogLayout);
@@ -209,12 +217,11 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
     private void showSubscriberDialog(String username) {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setCloseOnOutsideClick(false);
 
-        Button removeSubscriptionButton = new Button("Remove Subscription", e -> {
-            presenter.removeSubscription(storeId, username);
-            dialog.close();
-        });
+        Button removeSubscriptionButton = new Button("Remove Subscription", e -> navigateToSubscriptionRemoving(username));
+        removeSubscriptionButton.addClassName("button");
 
         VerticalLayout dialogLayout = new VerticalLayout(removeSubscriptionButton);
         dialogLayout.setPadding(false);
@@ -222,14 +229,45 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         dialog.open();
     }
 
+    private void navigateToSubscriptionRemoving(String username) {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        dialogLayout.add("Are you sure you want to remove this subscription?");
+
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.removeSubscription(storeId, username);
+            confirmationDialog.close();
+            showSuccess("Subscription removed successfully");
+            UI.getCurrent().navigate("");
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+        });
+        confirmButton.addClassName("yes_button");
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("no_button");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, confirmButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
+
+        dialogLayout.add(buttonLayout);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
+
     private void showNominationDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setCloseOnOutsideClick(false);
 
         Button nominateOwnerButton = new Button("Nominate Owner", e -> showOwnerNominationDialog());
         Button nominateManagerButton = new Button("Nominate Manager", e -> showManagerNominationDialog());
-        nominateOwnerButton.addClassName("custom-regular-button");
-        nominateManagerButton.addClassName("custom-regular-button");
+        nominateOwnerButton.addClassName("button");
+        nominateManagerButton.addClassName("button");
         VerticalLayout dialogLayout = new VerticalLayout(nominateOwnerButton, nominateManagerButton);
         dialogLayout.setPadding(true);
         dialogLayout.setSpacing(true);
@@ -248,7 +286,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.nominateOwner(storeId, usernameField.getValue());
             dialog.close();
         });
-        nominateButton.addClassName("add-button");
+        nominateButton.addClassName("yes_button");
 
         VerticalLayout dialogLayout = new VerticalLayout(usernameField, nominateButton);
         dialogLayout.setPadding(true);
@@ -261,6 +299,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
     private void showManagerNominationDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setCloseOnOutsideClick(false);
 
         TextField usernameField = new TextField("Enter Username");
@@ -273,7 +312,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.nominateManager(storeId, nominatedUsername, selectedPermissions);
             dialog.close();
         });
-        nominateButton.addClassName("add-button");
+        nominateButton.addClassName("yes_button");
 
         VerticalLayout dialogLayout = new VerticalLayout(usernameField, permissionSelect, nominateButton);
         dialogLayout.setPadding(true);
@@ -286,6 +325,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
     private void showPermissionManagementDialog(String managerUsername) {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setCloseOnOutsideClick(false);
 
         MultiSelectListBox<String> permissionSelect = new MultiSelectListBox<>();
@@ -308,7 +348,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.updateManagerPermissions(storeId, managerUsername, selectedPermissions);
             dialog.close();
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         VerticalLayout dialogLayout = new VerticalLayout(titleLayout, permissionSelect, saveButton);
         dialogLayout.setPadding(true);

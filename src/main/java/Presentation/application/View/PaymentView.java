@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 @Route("payment")
 @PageTitle("Payment")
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class PaymentView extends VerticalLayout implements HasUrlParameter<String>, BeforeEnterObserver {
     private Double totalPrice = 0.0;
     private final PaymentPresenter paymentPresenter;
@@ -52,7 +52,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
     private List<ProductDTO> products;
 
     public PaymentView(PaymentPresenter paymentPresenter) {
-        setClassName("payment-view");
+        setClassName("page-view");
         setSizeFull();  // Ensure the VerticalLayout takes the full height
         getStyle().set("display", "flex");
         getStyle().set("justify-content", "center");
@@ -63,7 +63,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Payment Information Title
         H1 title = new H1("Payment Information");
-        title.addClassName("payment-title");
+        title.addClassName("title");
 
         // Credit Card Component
         creditCard = createCreditCardComponent();
@@ -230,7 +230,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
         Div creditCard = new Div();
         creditCard.addClassName("credit-card");
         creditCard.getStyle()
-                .set("background-color", "#f7f7f7")
+                .set("background-color", "#E6DCD3")
                 .set("padding", "20px")
                 .set("border-radius", "8px")
                 .set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.1)")
@@ -240,7 +240,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Example SVG content with IDs for placeholders
         String svgContent = "<svg width=\"300\" height=\"200\" viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">" +
-                "<rect width=\"300\" height=\"200\" rx=\"15\" ry=\"15\" fill=\"#6A6A6AC0\" />" +
+                "<rect width=\"300\" height=\"200\" rx=\"15\" ry=\"15\" fill=\"#BDA18C\" />" +
                 "<text x=\"20\" y=\"40\" font-size=\"24\" fill=\"#ffffff\">VISA</text>" +
                 "<text x=\"20\" y=\"100\" font-size=\"18\" fill=\"#ffffff\" id=\"card-number\">XXXX XXXX XXXX XXXX</text>" +
                 "<text x=\"20\" y=\"150\" font-size=\"18\" fill=\"#ffffff\" id=\"card-name\">Cardholder Name</text>" +
@@ -255,9 +255,9 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
     private Div createFormContainer() {
         Div formContainer = new Div();
-        formContainer.addClassName("form-container");
+//        formContainer.addClassName("form-container");
         formContainer.getStyle()
-                .set("background-color", "#ffffff")
+                .set("background-color", "#E6DCD3")
                 .set("padding", "20px")
                 .set("border-radius", "8px")
                 .set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.1)");
@@ -322,7 +322,7 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
 
         // Submit Button
         Button submitButton = new Button("Submit");
-        submitButton.addClassName("add-button");
+        submitButton.addClassName("button");
         submitButton.addClickListener((ComponentEventListener<ClickEvent<Button>>) buttonClickEvent -> {
             // Check if all fields are filled
             if (nameField.isEmpty() || cardNumberField.isEmpty() || expirationField.isEmpty() || securityCodeField.isEmpty() || streetAddressField.isEmpty() || cityField.isEmpty() || stateField.isEmpty() || zipCodeField.isEmpty() || IdField.isEmpty()) {
@@ -344,8 +344,6 @@ public class PaymentView extends VerticalLayout implements HasUrlParameter<Strin
             }
         });
         submitButton.getStyle()
-                .set("background-color", "#6A6A6AC0")
-                .set("color", "#ffffff")
                 .set("border", "none")
                 .set("padding", "10px 20px")
                 .set("border-radius", "5px")

@@ -21,7 +21,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @Route("login")
 @PageTitle("Login")
 @AnonymousAllowed
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginPresenter presenter;
@@ -31,7 +31,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     public LoginView(LoginPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
-        addClassName("register-view");
+        addClassName("page-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -39,20 +39,12 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         Button loginButton = new Button("Login", e -> presenter.loginAsSubscriber(username.getValue(), password.getValue()));
         Button registerButton = new Button("Register", e -> navigateToRegister());
         Button guestButton = new Button("Continue as Guest", e -> presenter.loginAsGuest());
-        //SET page title color
-
-        // Change the color of the buttons
-        loginButton.getElement().getStyle().set("background-color", "#BDA18C");
-        loginButton.getElement().getStyle().set("color", "#FFFFFF");
-        registerButton.getElement().getStyle().set("background-color", "#BDA18C");
-        registerButton.getElement().getStyle().set("color", "#FFFFFF");
-        guestButton.getElement().getStyle().set("background-color", "#BDA18C");
-        guestButton.getElement().getStyle().set("color", "#FFFFFF");
-
-        // Set a specific width for the buttons
-        loginButton.setWidth("350px");
-        registerButton.setWidth("167px");
-        guestButton.setWidth("167px");
+        loginButton.addClassName("button");
+        registerButton.addClassName("button");
+        guestButton.addClassName("button");
+        loginButton.setWidth("376px");
+        registerButton.setWidth("180px");
+        guestButton.setWidth("180px");
 
         HorizontalLayout buttons = new HorizontalLayout(loginButton);
         buttons.setAlignItems(Alignment.CENTER);
@@ -79,35 +71,21 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         flexLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Center the components in the FlexLayout
 
         H1 loginTitle = new H1("Login");
-        loginTitle.getStyle().set("font-size", "4em"); // Set the font size to 2.5em
-        loginTitle.getStyle().set("font-weight", "bold");
-        loginTitle.getStyle().set("color", "#3F352C");
-        //--------------------------------------------------------------------------------------------------------------------------------------
+        loginTitle.addClassName("title");
+        loginTitle.getStyle().set("font-size", "7em");
 
-        // Create a container for all elements
+
         VerticalLayout container = new VerticalLayout();
         container.setAlignItems(Alignment.CENTER); // Center align items
         container.getStyle().set("background-color", "#E6DCD3"); // Set background color to white
         container.getStyle().set("padding", "20px"); // Add padding inside the container
         container.getStyle().set("border", "2px solid #B4A79E"); // Add a border
         container.getStyle().set("border-radius", "8px"); // Add border radius for rounded corners
-//        container.getStyle().set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)"); // Optional: add a subtle box shadow
-        container.getStyle().set("width", "30%"); // Set a width relative to the viewport
+        container.getStyle().set("width", "23%"); // Set a width relative to the viewport
         container.getStyle().set("min-height", "50vh"); // Set a minimum height relative to the viewport
         container.getStyle().set("max-height", "80vh");
-
-
-//        container.getStyle().set("height", "60%");
-
-
-        // Add elements to the container
         container.add(loginTitle, formLayout, buttons, registerGuestButtons);
-
-        // Add the container to the view
         add(container);
-        //--------------------------------------------------------------------------------------------------------------------------------------
-
-//        add(loginTitle, flexLayout, buttons, registerGuestButtons);
     }
 
     @Override

@@ -1,4 +1,3 @@
-
 package Presentation.application.View;
 
 import Presentation.application.CookiesHandler;
@@ -18,6 +17,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
@@ -31,6 +31,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
@@ -60,9 +61,10 @@ import com.vaadin.flow.component.textfield.TextField;
 /**
  * The main view is a top-level placeholder for other views.
  */
+//@CssImport(value= "./styles/navbarStyles.css", themeFor = "vaadin-app-layout")
 @Route("")
 @PageTitle("Main")
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private final MainLayoutPresenter presenter;
@@ -74,7 +76,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
     public MainLayoutView(MainLayoutPresenter presenter) {
-        addClassName("main-view");
+        addClassName("page-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
         mainContent = new VerticalLayout();
@@ -111,6 +113,13 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                         "});",
                 getElement()
         );
+
+        // Set the color of the navbar
+
+        getElement().executeJs(
+                "this.shadowRoot.querySelector('[part=\"navbar\"]').style.backgroundColor = '#E6DCD3';"
+        );
+
     }
 
     @ClientCallable
@@ -207,85 +216,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             //add the category item to the menu
             categoryMenu.addItem(categoryItem);
         }
-
         addToNavbar(categoryButton);
-
-
-    }
-
-    private void addHomeButtonToDrawer() {
-        Button homeButton = new Button("", e -> {
-            UI.getCurrent().navigate(MainLayoutView.class);
-            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
-        });
-        homeButton.getElement().getStyle().set("color", "black");
-        homeButton.setWidthFull();
-        addToDrawer(homeButton);
-    }
-
-    private void addDrawerContent() {
- Span appName = new Span("My App");
- // appName.addClassNames(Lumo.FontStyle.BOLD, Lumo.FontStyle.LARGE);
- Header header = new Header(appName);
-
- Scroller scroller = new Scroller(createNavigation());
-
- addToDrawer(header, scroller, createFooter());
- }
-
-
- private SideNav createNavigation() {
- SideNav nav = new SideNav();
- SideNavItem paymentItem = new SideNavItem("Payment");
- paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
- @Override
- public void onComponentEvent(AttachEvent event) {
-
- }
- });
-
-// nav.addItem(new SideNavItem("Payment", PaymentView.class));
-
-// nav.addItem(new SideNavItem("Messages", MessagesList.class));
-// nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
-// nav.addItem(new SideNavItem("My Shopping Cart", ShoppingCartView.class)); // New navigation item
-
-
- return nav;
- }
-
-    private void navigateToStorePage() {
-//        UI.getCurrent().navigate(StorePageView.class);
-        //add the button to the main content area not the navbar
-        Button nav = new Button("Store Page", e -> UI.getCurrent().navigate(StorePageView.class));
-        nav.getElement().getStyle().set("color", "black");
-//        setContent(nav);
-        mainContent.add(nav);
-
-    }
-
-    private void openDialog() {
-        Dialog dialog = new Dialog();
-        dialog.setWidth("500px");
-        dialog.setHeight("400px");
-
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.add(new Div(new com.vaadin.flow.component.html.Span("My Stores")));
-        Button closeDialogButton = new Button("Close", e -> dialog.close());
-        closeDialogButton.getElement().getStyle().set("color", "black");
-        dialogLayout.add(closeDialogButton);
-
-        dialog.add(dialogLayout);
-        dialog.open();
     }
 
 
     private void addUserButton() {
-        // Navigate to the shopping cart page
-        //dropdown menu
 
         Button userButton = new Button("");
         ContextMenu dropdownMenu = new ContextMenu(userButton);
+        dropdownMenu.addClassName("custom-context-menu");
         dropdownMenu.setOpenOnClick(true);
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
@@ -334,6 +273,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void myStoresDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setWidth("500px");
         dialog.setHeight("400px");
 
@@ -356,7 +296,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                 UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
                 dialog.close();
             });
-            storeButton.getElement().getStyle().set("color", "black");
+            storeButton.addClassName("button");
 
             if (isStoreActive(storeId)) {
                 activeStoresLayout.add(storeButton);
@@ -366,7 +306,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         }
 
         Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
-        openNewStore.getElement().getStyle().set("color", "black");
+        openNewStore.addClassName("button");
         openNewStore.getElement().getStyle().set("position", "absolute");
         openNewStore.getElement().getStyle().set("bottom", "0");
         openNewStore.getElement().getStyle().set("left", "0");
@@ -381,6 +321,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     public void discountsText() {
         Span discounts = new Span("Discounts");
+        discounts.addClassName("title");
         //center the text
         discounts.getElement().getStyle().set("margin", "0 auto");
 
@@ -495,6 +436,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                     RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
                     UI.getCurrent().navigate(StorePageView.class, routeParameters);
                 });
+                storeButton.addClassName("button");
                //make button take a relative width from 4 buttons in a row
                 storeButton.setWidth("25%");
                 //make the height of the button relative to the width
@@ -647,13 +589,13 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
     private void addHeaderContent() {
-        DrawerToggle toggle = new DrawerToggle();
-        toggle.setAriaLabel("Menu toggle");
+//        DrawerToggle toggle = new DrawerToggle();
+//        toggle.setAriaLabel("Menu toggle");
 
         viewTitle = new H1();
         //  viewTitle.addClassNames(Lumo.FontStyle.LARGE, Lumo.Margin.NONE);
         Button b=new Button("check message",e->sub.add(new NormalMessage("Message has benn added")));
-        addToNavbar(toggle, viewTitle);
+//        addToNavbar(viewTitle);
     }
 
 //    private void addDrawerContent() {
@@ -728,6 +670,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void displaySearchResults(ArrayList<ProductDTO> results) {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setWidth("800px");
         dialog.setHeight("700px");
 
@@ -813,9 +756,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
             // Create the add to cart button with a + icon and transparent background
             Button addToCartButton = new Button("Add to Cart");
-            addToCartButton.getElement().getStyle().set("background-color", "lightgray");
+            addToCartButton.addClassName("button");
             addToCartButton.addClickListener(e -> addToCart(product, quantityField.getValue()));
-            addToCartButton.getElement().getStyle().set("color", "black");
             addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
 
             HorizontalLayout quantityIncDec = new HorizontalLayout();
@@ -986,6 +928,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     private void openSettings(){
         //open a dialog with two buttons - change username and change password
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setWidth("400px");
         dialog.setHeight("250px");
 
@@ -1218,7 +1161,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
-        viewTitle.setText(getCurrentPageTitle());
     }
 
     private String getCurrentPageTitle() {

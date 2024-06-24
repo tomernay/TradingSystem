@@ -1,2 +1,191 @@
-/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+.page-view {
+    background-image: url('bags.jpg');
+    background-size: cover;
+    background-position: center;
+}
+.button {
+    color: white;
+    background-color: #BDA18C;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    background-color: #a88c74;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.yes_button {
+    color: white;
+    background-color: #937c6d;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.yes_button:hover {
+    background-color: #816d60;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.yes_button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no_button {
+    color: white;
+    background-color: #d3b59d;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.no_button:hover {
+    background-color: #b89f89;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.no_button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.title {
+    color: #3F352C;
+    font-family: 'Anton', sans-serif; /* Using the Anton Google Font */
+    font-weight: 400; /* Ensuring bold weight */
+    background: linear-gradient(90deg, #3F352C, #705D50); /* Subtle gradient effect */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 2px; /* Increased letter spacing */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Text & password fields colors */
+
+/* Custom focus color for TextField and PasswordField */
+vaadin-text-field::part(input-field):focus::before,
+vaadin-text-field::part(input-field):focus::after,
+vaadin-text-area::part(input-field):focus::before,
+vaadin-text-area::part(input-field):focus::after,
+vaadin-combo-box::part(input-field):focus::before,
+vaadin-combo-box::part(input-field):focus::after,
+vaadin-number-field::part(input-field):focus::before,
+vaadin-number-field::part(input-field):focus::after,
+vaadin-password-field::part(input-field):focus::before,
+vaadin-password-field::part(input-field):focus::after {
+    background-color: #3F352C; /* Set your desired focus color here */
+    border-color: #3F352C; /* Set your desired focus color here */
+}
+
+/* Custom label color on focus */
+vaadin-text-field[focused]::part(label),
+vaadin-text-area[focused]::part(label),
+vaadin-combo-box[focused]::part(label),
+vaadin-number-field[focused]::part(label),
+vaadin-password-field[focused]::part(label) {
+    color: #3F352C; /* Set your desired label color here */
+}
+
+
+/* MAIN PAGE */
+.center-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.notification-container {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-count {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    line-height: 1;
+    /*display: none; !* Initially hidden *!*/
+}
+
+.notification-count.visible {
+    display: inline-block; /* Show when there are notifications */
+}
+
+.custom-context-menu {
+    background-color: #E6DCD3 !important; /* Override default background color */
+}
+
+/* GRIDS */
+.custom-grid {
+    --lumo-base-color: #E6DCD3; /* Base color */
+}
+
+.custom-grid [part~="header-cell"],
+.custom-grid [part~="body-cell"],
+.custom-grid [part~="footer-cell"] {
+    background-color: #E6DCD3 !important; /* Cell background color */
+    color: #000; /* Text color */
+    font-weight: bold; /* Make text bold */
+}
+
+.custom-grid [part~="row"]:nth-child(odd) [part~="body-cell"] {
+    background-color: #E6DCD3; /* Odd row color */
+}
+
+.custom-grid [part~="row"]:nth-child(even) [part~="body-cell"] {
+    background-color: #D3C9BA; /* Even row color */
+}
+
+/* ROLES PAGE */
+.dialog-title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.manager-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #3F352C;
+}
+
+
+
+
+
+
+
 

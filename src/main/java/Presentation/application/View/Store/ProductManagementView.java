@@ -29,7 +29,7 @@ import java.util.Set;
 
 @Route(value = "products-management/:storeId", layout = MainLayoutView.class)
 @PageTitle("Product Management")
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class ProductManagementView extends VerticalLayout implements BeforeEnterObserver {
 
     private final ProductManagementPresenter presenter;
@@ -41,7 +41,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
     public ProductManagementView(ProductManagementPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
-        addClassName("product-management-view");
+        addClassName("page-view");
 
         // Adjusting layout to occupy full page
         setSizeFull();
@@ -75,6 +75,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
 
     private void showEditProductDialog(ProductDTO product) {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setWidth("600px"); // Adjusting dialog width for better appearance
 
         FormLayout form = new FormLayout();
@@ -119,7 +120,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
                 newCategoryField.clear();
             }
         });
-        addCategoryButton.addClassName("custom-regular-button");
+        addCategoryButton.addClassName("button");
 
         categoriesCheckboxGroup.addValueChangeListener(event -> {
             updatedCategories.setValue(event.getValue());
@@ -129,7 +130,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         form.add(new HorizontalLayout(newCategoryField, addCategoryButton));
 
         Button closeButton = new Button("Cancel", event -> dialog.close());
-        closeButton.addClassName("cancel-button");
+        closeButton.addClassName("no_button");
         Button saveButton = new Button("Save", event -> {
             presenter.updateProductName(product.getProductID(), updatedName[0]);
             presenter.updateProductDescription(product.getProductID(), updatedDescription[0]);
@@ -146,7 +147,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
 
             dialog.close();
         });
-        saveButton.addClassName("save-button");
+        saveButton.addClassName("yes_button");
 
         HorizontalLayout buttonsLayout = new HorizontalLayout(closeButton, saveButton);
         buttonsLayout.setJustifyContentMode(JustifyContentMode.END);
@@ -160,6 +161,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
 
     private void showAddProductDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setWidth("600px"); // Adjusting dialog width for better appearance
 
         FormLayout form = new FormLayout();
@@ -185,19 +187,19 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             }
         });
 
-        addCategoryButton.addClassName("custom-regular-button");
+        addCategoryButton.addClassName("button");
 
         form.add(nameField, descriptionField, priceField, quantityField, categoriesCheckboxGroup);
         form.add(new HorizontalLayout(newCategoryField, addCategoryButton));
 
         Button closeButton = new Button("Cancel", event -> dialog.close());
-        closeButton.addClassName("cancel-button");
+        closeButton.addClassName("no_button");
         Button saveButton = new Button("Save", event -> {
             Set<String> categories = new HashSet<>(categoriesCheckboxGroup.getValue());
             presenter.addProduct(nameField.getValue(), descriptionField.getValue(), Double.parseDouble(priceField.getValue()), Integer.parseInt(quantityField.getValue()), categories);
             dialog.close();
         });
-        saveButton.addClassName("save-button");
+        saveButton.addClassName("yes_button");
 
         HorizontalLayout buttonsLayout = new HorizontalLayout(closeButton, saveButton);
         buttonsLayout.setJustifyContentMode(JustifyContentMode.END);
@@ -229,17 +231,17 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
-
-        backButton.addClassName("custom-regular-button");
+        backButton.addClassName("button");
         headerLayout.add(backButton);
         if (presenter.hasPermission(storeId, "MANAGE_PRODUCTS") && presenter.isActiveStore(storeId)) {
             addProductButton = new Button("+ Add Product", event1 -> showAddProductDialog());
-            addProductButton.addClassName("custom-regular-button");
+            addProductButton.addClassName("button");
             headerLayout.add(addProductButton);
         }
 
         // Setting up the product grid
         productGrid = new Grid<>(ProductDTO.class);
+        productGrid.addClassName("custom-grid");
         productGrid.setSizeFull();
         productGrid.setColumns("productName", "description", "price", "quantity");
         productGrid.addColumn(product -> {
@@ -250,7 +252,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             productGrid.addComponentColumn(product -> {
 
                 Button removeButton = new Button("Remove", e -> navigateToProductRemoving(product.getProductID()));
-                removeButton.addClassName("custom-regular-button");
+                removeButton.addClassName("button");
                 return removeButton;
             }).setHeader("Actions");
             productGrid.addItemClickListener(event1 -> showEditProductDialog(event1.getItem()));
@@ -266,6 +268,7 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
         confirmationDialog.setWidth("400px");
 
         VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         dialogLayout.add("Are you sure you want to remove this product?");
 
         Button confirmButton = new Button("Yes", e -> {
@@ -273,12 +276,16 @@ public class ProductManagementView extends VerticalLayout implements BeforeEnter
             confirmationDialog.close();
             showSuccess("Product removed successfully");
         });
-        confirmButton.addClassName("add-button");
+        confirmButton.addClassName("yes_button");
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
-        dialogLayout.add(confirmButton, cancelButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, confirmButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
+
+        dialogLayout.add(buttonLayout);
         confirmationDialog.add(dialogLayout);
         confirmationDialog.open();
     }

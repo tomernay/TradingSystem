@@ -1,322 +1,322 @@
-.login-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-/* Targeting the submit button within the vaadin-login-form */
-.login-view vaadin-login-form vaadin-button[theme~="primary"] {
-    background-color: black !important;
-    color: white !important;
-}
-/* Targeting the header of the text field within the vaadin-login-form-wrapper */
-.login-view vaadin-login-form-wrapper vaadin-text-field .label {
-    color: black !important;
-}
+/*.login-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*!* Targeting the submit button within the vaadin-login-form *!*/
+/*.login-view vaadin-login-form vaadin-button[theme~="primary"] {*/
+/*    background-color: black !important;*/
+/*    color: white !important;*/
+/*}*/
+/*!* Targeting the header of the text field within the vaadin-login-form-wrapper *!*/
+/*.login-view vaadin-login-form-wrapper vaadin-text-field .label {*/
+/*    color: black !important;*/
+/*}*/
 
-/* Targeting the header of the password field within the vaadin-login-form-wrapper */
-.login-view vaadin-login-form-wrapper vaadin-password-field .label {
-    color: black !important;
-}
+/*!* Targeting the header of the password field within the vaadin-login-form-wrapper *!*/
+/*.login-view vaadin-login-form-wrapper vaadin-password-field .label {*/
+/*    color: black !important;*/
+/*}*/
 
-.fade-enter-active {
-    animation: fadeIn 0.5s;
-}
+/*.fade-enter-active {*/
+/*    animation: fadeIn 0.5s;*/
+/*}*/
 
-.fade-exit-active {
-    animation: fadeOut 0.5s;
-}
+/*.fade-exit-active {*/
+/*    animation: fadeOut 0.5s;*/
+/*}*/
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
+/*@keyframes fadeIn {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*    }*/
+/*}*/
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
+/*@keyframes fadeOut {*/
+/*    from {*/
+/*        opacity: 1;*/
+/*    }*/
+/*    to {*/
+/*        opacity: 0;*/
+/*    }*/
+/*}*/
 
-.store-management-view {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f5f5f5; /* Light gray background */
-}
+/*.store-management-view {*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    background-color: #f5f5f5; !* Light gray background *!*/
+/*}*/
 
-.store-title {
-    font-size: 85px; /* ALOT bigger title */
-    color: #333; /* Dark gray color */
-    margin-bottom: 80px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: -20px; /* Add space from the top */
-}
-
-
-
-.custom-button {
-    width: 300px; /* Wider buttons */
-    height: 60px; /* Adjusted height */
-    font-size: 20px; /* Increased font size */
-    color: white;
-    background-color: #444; /* Dark gray background */
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 10px;
-    text-align: center;
-}
-
-.custom-button:hover {
-    background-color: #666; /* Slightly lighter gray for hover effect */
-}
-
-.custom-button:focus {
-    outline: none;
-    background-color: #555; /* Medium gray for focus */
-}
-
-.dialog-button {
-    font-size: 18px;
-    color: white;
-    background-color: #444;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 5px;
-}
-
-.dialog-button:hover {
-    background-color: #666;
-}
-
-.dialog-button:focus {
-    outline: none;
-    background-color: #555;
-}
-
-.custom-regular-button {
-    color: white;
-    background-color: #444; /* Dark gray background */
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center;
-    border-radius: 4px;
-    padding: 10px 20px;
-}
+/*.store-title {*/
+/*    font-size: 85px; !* ALOT bigger title *!*/
+/*    color: #333; !* Dark gray color *!*/
+/*    margin-bottom: 80px;*/
+/*    font-weight: bold;*/
+/*    text-align: center;*/
+/*    margin-top: -20px; !* Add space from the top *!*/
+/*}*/
 
 
 
+/*.custom-button {*/
+/*    width: 300px; !* Wider buttons *!*/
+/*    height: 60px; !* Adjusted height *!*/
+/*    font-size: 20px; !* Increased font size *!*/
+/*    color: white;*/
+/*    background-color: #444; !* Dark gray background *!*/
+/*    border: none;*/
+/*    border-radius: 10px;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s;*/
+/*    margin-top: 10px;*/
+/*    text-align: center;*/
+/*}*/
 
-.register-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-.roles-management-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-.main-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-.store-management-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-.product-management-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-.discounts-policies-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
-.payment-view {
-    background-image: url('background2.jpg');
-    background-size: cover; /* Adjust as needed */
-    background-position: center; /* Adjust as needed */
-}
+/*.custom-button:hover {*/
+/*    background-color: #666; !* Slightly lighter gray for hover effect *!*/
+/*}*/
 
-/* Styles for the Roles Management View */
-.roles-management-view {
-    padding: 20px;
-}
+/*.custom-button:focus {*/
+/*    outline: none;*/
+/*    background-color: #555; !* Medium gray for focus *!*/
+/*}*/
 
-.roles-management-view .filter-layout {
-    margin-bottom: 10px;
-}
+/*.dialog-button {*/
+/*    font-size: 18px;*/
+/*    color: white;*/
+/*    background-color: #444;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s;*/
+/*    margin: 5px;*/
+/*}*/
 
-.roles-management-view .grid {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+/*.dialog-button:hover {*/
+/*    background-color: #666;*/
+/*}*/
 
-/* Button Styles */
-.add-button {
-    background-color: #218838;
-    color: white;
-    border-radius: 5px;
-    margin-right: 10px;
-    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
-}
-.add-button:hover {
-    background-color: #125721; /* Darker shade of green for hover effect */
-}
+/*.dialog-button:focus {*/
+/*    outline: none;*/
+/*    background-color: #555;*/
+/*}*/
 
-.waive-button {
-    background-color: #dc3545;
-    color: white;
-    border-radius: 5px;
-    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
-}
-.waive-button:hover {
-    background-color: #811d28; /* Darker shade of green for hover effect */
-}
-
-/* Dialog Styles */
-.dialog-layout {
-    padding: 20px;
-    spacing: true;
-    align-items: center;
-}
-
-/* Styles for Dialog Titles */
-.dialog-title {
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-.manager-name {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #007BFF;
-}
-
-.notification-container {
-    position: relative;
-    display: inline-block;
-}
-
-.notification-count {
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    line-height: 1;
-    /*display: none; !* Initially hidden *!*/
-}
-
-.notification-count.visible {
-    display: inline-block; /* Show when there are notifications */
-}
-
-.round-button {
-    background-color: #f7f7f7;
-
-    color: white;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    padding: 10px;
-    margin-right: 10px;
-    text-align: center;
-    line-height: 100px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-}
-
-.center-layout {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-}
+/*.custom-regular-button {*/
+/*    color: white;*/
+/*    background-color: #444; !* Dark gray background *!*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s;*/
+/*    text-align: center;*/
+/*    border-radius: 4px;*/
+/*    padding: 10px 20px;*/
+/*}*/
 
 
-.product-management-view {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
-.header {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
 
-.plus-button {
-    background-color: #d5d5d5;
-    color: black;
-    border: none;
-    cursor: pointer;
-}
+/*.register-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*.roles-management-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*.main-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*.store-management-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*.product-management-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*.discounts-policies-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
+/*.payment-view {*/
+/*    background-image: url('background2.jpg');*/
+/*    background-size: cover; !* Adjust as needed *!*/
+/*    background-position: center; !* Adjust as needed *!*/
+/*}*/
 
-.plus-button:hover {
-    background-color: #737373;
-}
+/*!* Styles for the Roles Management View *!*/
+/*.roles-management-view {*/
+/*    padding: 20px;*/
+/*}*/
 
-.dialog-form {
-    width: 100%;
-}
+/*.roles-management-view .filter-layout {*/
+/*    margin-bottom: 10px;*/
+/*}*/
 
-.dialog-form .form-item {
-    margin-bottom: 15px;
-}
+/*.roles-management-view .grid {*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*}*/
 
-.save-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
-}
+/*!* Button Styles *!*/
+/*.add-button {*/
+/*    background-color: #218838;*/
+/*    color: white;*/
+/*    border-radius: 5px;*/
+/*    margin-right: 10px;*/
+/*    transition: background-color 0.3s ease; !* Smooth transition for the hover effect *!*/
+/*}*/
+/*.add-button:hover {*/
+/*    background-color: #125721; !* Darker shade of green for hover effect *!*/
+/*}*/
 
-.save-button:hover {
-    background-color: #1c7030;
-}
+/*.waive-button {*/
+/*    background-color: #dc3545;*/
+/*    color: white;*/
+/*    border-radius: 5px;*/
+/*    transition: background-color 0.3s ease; !* Smooth transition for the hover effect *!*/
+/*}*/
+/*.waive-button:hover {*/
+/*    background-color: #811d28; !* Darker shade of green for hover effect *!*/
+/*}*/
 
-.cancel-button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition for the hover effect */
-}
+/*!* Dialog Styles *!*/
+/*.dialog-layout {*/
+/*    padding: 20px;*/
+/*    spacing: true;*/
+/*    align-items: center;*/
+/*}*/
 
-.cancel-button:hover {
-    background-color: #951b27;
-}
+/*!* Styles for Dialog Titles *!*/
+/*.dialog-title {*/
+/*    font-size: 1.5em;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*.manager-name {*/
+/*    font-size: 1.5em;*/
+/*    font-weight: bold;*/
+/*    color: #007BFF;*/
+/*}*/
+
+/*.notification-container {*/
+/*    position: relative;*/
+/*    display: inline-block;*/
+/*}*/
+
+/*.notification-count {*/
+/*    background-color: red;*/
+/*    color: white;*/
+/*    border-radius: 50%;*/
+/*    padding: 2px 6px;*/
+/*    font-size: 12px;*/
+/*    position: absolute;*/
+/*    top: -5px;*/
+/*    right: -5px;*/
+/*    line-height: 1;*/
+/*    !*display: none; !* Initially hidden *!*!*/
+/*}*/
+
+/*.notification-count.visible {*/
+/*    display: inline-block; !* Show when there are notifications *!*/
+/*}*/
+
+/*.round-button {*/
+/*    background-color: #f7f7f7;*/
+
+/*    color: white;*/
+/*    width: 200px;*/
+/*    height: 200px;*/
+/*    border-radius: 50%;*/
+/*    padding: 10px;*/
+/*    margin-right: 10px;*/
+/*    text-align: center;*/
+/*    line-height: 100px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);*/
+/*    transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.center-layout {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    height: 80vh;*/
+/*}*/
+
+
+/*.product-management-view {*/
+/*    background-color: #f9f9f9;*/
+/*    padding: 20px;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.header {*/
+/*    font-size: 24px;*/
+/*    font-weight: bold;*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+/*.plus-button {*/
+/*    background-color: #d5d5d5;*/
+/*    color: black;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.plus-button:hover {*/
+/*    background-color: #737373;*/
+/*}*/
+
+/*.dialog-form {*/
+/*    width: 100%;*/
+/*}*/
+
+/*.dialog-form .form-item {*/
+/*    margin-bottom: 15px;*/
+/*}*/
+
+/*.save-button {*/
+/*    background-color: #28a745;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    padding: 10px 20px;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s ease; !* Smooth transition for the hover effect *!*/
+/*}*/
+
+/*.save-button:hover {*/
+/*    background-color: #1c7030;*/
+/*}*/
+
+/*.cancel-button {*/
+/*    background-color: #dc3545;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    padding: 10px 20px;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s ease; !* Smooth transition for the hover effect *!*/
+/*}*/
+
+/*.cancel-button:hover {*/
+/*    background-color: #951b27;*/
+/*}*/
 

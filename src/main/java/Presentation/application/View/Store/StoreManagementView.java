@@ -11,6 +11,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.*;
 
@@ -22,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @PageTitle("Store Management")
 @Route(value = "store-management/:storeId", layout = MainLayoutView.class)
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class StoreManagementView extends VerticalLayout implements BeforeEnterObserver {
 
     private final Div content;
@@ -35,7 +36,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         content.setSizeFull();
         this.presenter = presenter;
         presenter.attachView(this);
-        addClassName("store-management-view");
+        addClassName("page-view");
 
         // Set full size
         setSizeFull();
@@ -46,6 +47,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         confirmationDialog.setWidth("400px");
 
         VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         dialogLayout.add("Are you sure you want to re-open this store?");
 
         Button confirmButton = new Button("Yes", e -> {
@@ -54,21 +56,27 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store re-opened successfully");
         });
-        confirmButton.addClassName("add-button");
+        confirmButton.addClassName("yes_button");
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
-        dialogLayout.add(confirmButton, cancelButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, confirmButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
+
+        dialogLayout.add(buttonLayout);
         confirmationDialog.add(dialogLayout);
         confirmationDialog.open();
     }
 
     private void navigateToStoreClosing() {
         Dialog confirmationDialog = new Dialog();
+        confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         confirmationDialog.setWidth("400px");
 
         VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         dialogLayout.add("Are you sure you want to close this store?");
 
         Button confirmButton = new Button("Yes", e -> {
@@ -77,12 +85,16 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store closed successfully");
         });
-        confirmButton.addClassName("add-button");
+        confirmButton.addClassName("yes_button");
 
         Button cancelButton = new Button("No", e -> confirmationDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
-        dialogLayout.add(confirmButton, cancelButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, confirmButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
+
+        dialogLayout.add(buttonLayout);
         confirmationDialog.add(dialogLayout);
         confirmationDialog.open();
     }
@@ -100,6 +112,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
     private void openCreateDiscountDialog() {
         List<ProductDTO> products = presenter.getProducts(storeId);
         Dialog createDiscountDialog = new CreateDiscountDialog(presenter, storeId, products);
+        createDiscountDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         createDiscountDialog.open();
     }
 
@@ -110,35 +123,50 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         }
         String id = event.getRouteParameters().get("storeId").orElse("");
         storeId = Integer.parseInt(id);
-        storeId = Integer.parseInt(id);
         storeName = presenter.getStoreName(storeId);
-        VerticalLayout mainLayout = new VerticalLayout();
-        mainLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
         H1 storeTitle = new H1("Store Management: " + storeName);
-        storeTitle.addClassName("store-title");
+        storeTitle.addClassName("title");
+        storeTitle.getStyle().set("font-size", "8em"); // Set the title size here
+        storeTitle.getStyle().set("text-align", "center");
+        storeTitle.getStyle().set("width", "100%"); // Ensure it spans the width of the container
 
         VerticalLayout buttonLayout = new VerticalLayout();
         buttonLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setAlignItems(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        buttonLayout.getStyle().set("margin-top", "10vh");
 
         if (presenter.hasPermission(storeId, "VIEW_PRODUCTS")) {
-            Button productManagementButton = new Button("Products Management", e -> navigateToProductManagement());
-            productManagementButton.addClassName("custom-button");
+            Button productManagementButton = new Button("Products", e -> navigateToProductManagement());
+            productManagementButton.addClassName("button");
+            productManagementButton.getStyle().set("font-size", "1.5em"); // Set button text size here
+            productManagementButton.getStyle().set("padding", "1.5em 2.5em"); // Set button padding here
+            productManagementButton.getStyle().set("min-width", "250px"); // Set minimum width here
             buttonLayout.add(productManagementButton);
         }
         if (presenter.hasPermission(storeId, "VIEW_DISCOUNTS_POLICIES")) {
             Button createDiscountButton = new Button("Discounts / Policies", e -> openCreateDiscountDialog());
-            createDiscountButton.addClassName("custom-button");
+            createDiscountButton.addClassName("button");
+            createDiscountButton.getStyle().set("font-size", "1.5em"); // Set button text size here
+            createDiscountButton.getStyle().set("padding", "1.5em 2.5em"); // Set button padding here
+            createDiscountButton.getStyle().set("min-width", "250px"); // Set minimum width here
             buttonLayout.add(createDiscountButton);
         }
         if (presenter.hasPermission(storeId, "VIEW_STORE_STAFF_INFO")) {
-            Button rolesManagementButton = new Button("Roles Management", e -> navigateToRolesManagement());
-            rolesManagementButton.addClassName("custom-button");
+            Button rolesManagementButton = new Button("Roles", e -> navigateToRolesManagement());
+            rolesManagementButton.addClassName("button");
+            rolesManagementButton.getStyle().set("font-size", "1.5em"); // Set button text size here
+            rolesManagementButton.getStyle().set("padding", "1.5em 2.5em"); // Set button padding here
+            rolesManagementButton.getStyle().set("min-width", "250px"); // Set minimum width here
             buttonLayout.add(rolesManagementButton);
         }
         if (presenter.hasPermission(storeId, "VIEW_PURCHASE_HISTORY")) {
-            Button viewPurchaseHistoryButton = new Button("View Purchase History");
-            viewPurchaseHistoryButton.addClassName("custom-button");
+            Button viewPurchaseHistoryButton = new Button("Purchase History");
+            viewPurchaseHistoryButton.addClassName("button");
+            viewPurchaseHistoryButton.getStyle().set("font-size", "1.5em"); // Set button text size here
+            viewPurchaseHistoryButton.getStyle().set("padding", "1.5em 2.5em"); // Set button padding here
+            viewPurchaseHistoryButton.getStyle().set("min-width", "250px"); // Set minimum width here
             viewPurchaseHistoryButton.addClickListener(event1 -> {
                 Integer storeId = this.storeId;
                 getUI().ifPresent(ui -> ui.navigate("orders/" + storeId));
@@ -149,11 +177,17 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         if (presenter.isCreator(storeId)) {
             if (presenter.isActiveStore(storeId)) {
                 Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());
-                storeClosingButton.addClassName("custom-button");
+                storeClosingButton.addClassName("button");
+                storeClosingButton.getStyle().set("font-size", "1.5em"); // Set button text size here
+                storeClosingButton.getStyle().set("padding", "1.5em 2.5em"); // Set button padding here
+                storeClosingButton.getStyle().set("min-width", "250px"); // Set minimum width here
                 buttonLayout.add(storeClosingButton);
             } else {
                 Button storeReopeningButton = new Button("Reopen Store", e -> navigateToStoreReopening());
-                storeReopeningButton.addClassName("custom-button");
+                storeReopeningButton.addClassName("button");
+                storeReopeningButton.getStyle().set("font-size", "1.5em"); // Set button text size here
+                storeReopeningButton.getStyle().set("padding", "1.5em 2.5em"); // Set button padding here
+                storeReopeningButton.getStyle().set("min-width", "250px"); // Set minimum width here
                 buttonLayout.add(storeReopeningButton);
             }
         }
@@ -161,8 +195,8 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         buttonLayout.setSpacing(true);
 
         add(storeTitle);
-        add(mainLayout);
-        mainLayout.add(buttonLayout, content);
+        add(buttonLayout);
+        add(content);
     }
 
     private boolean isLoggedIn() {
