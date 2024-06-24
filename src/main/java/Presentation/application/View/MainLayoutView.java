@@ -8,11 +8,9 @@ import Presentation.application.View.Store.StoreManagementView;
 import Presentation.application.View.Store.StorePageView;
 
 
-import Presentation.application.View.Store.StorePurchaseHistory;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
-import Utilities.Response;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -21,7 +19,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -42,12 +39,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 
-import java.awt.*;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import Domain.Store.Inventory.ProductDTO;
@@ -915,6 +912,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         TextField minPrice = new TextField("Min Price");
         TextField maxPrice = new TextField("Max Price");
 
+
 //        ComboBox<String> productReviewFilter = new ComboBox<>();
 //        productReviewFilter.setLabel("Product Review");
 //        productReviewFilter.setItems("Excellent", "Good", "Average", "Poor");
@@ -928,7 +926,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Button applyFilterButton = new Button("Apply Filters", e -> {
 
             // Apply the selected filters and update the search results accordingly
-            filterPriceRange(results, Double.parseDouble(minPrice.getValue()), Double.parseDouble(maxPrice.getValue()));
+           ArrayList<ProductDTO> filteredResults = filterPriceRange(results, Double.parseDouble(minPrice.getValue()), Double.parseDouble(maxPrice.getValue()));
+            displaySearchResults(filteredResults);
 //            filterProductReview(productReviewFilter.getValue());
 //            filterStoreReview(storeReviewFilter.getValue());
 
@@ -965,20 +964,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
      * @param maxPrice the maximum price for the range filter (exclusive)
      * @return a Response containing the filtered and sorted list of ProductDTO
      */
-    public static ArrayList<ProductDTO> filterPriceRange(ArrayList<ProductDTO> results, double minPrice, double maxPrice) {
-//        if (!productsResponse.isSuccess()) {
-//            return Response.error("Failed to retrieve products", null);
-//        }
-
-//        ArrayList<ProductDTO> allProducts = productsResponse.getData();
-        ArrayList<ProductDTO> filteredProducts = results.stream()
-                .filter(product -> product.getPrice() > minPrice && product.getPrice() < maxPrice)
-                .sorted((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-
-
-        return filteredProducts;
+       public static ArrayList<ProductDTO> filterPriceRange(ArrayList<ProductDTO> results, double minPrice, double maxPrice) {
+        ArrayList<ProductDTO> filteredResults = new ArrayList<>();
+        for (ProductDTO product : results) {
+            if (product.getPrice() >= minPrice && product.getPrice() <= maxPrice) {
+                filteredResults.add(product);
+            }
+        }
+    return filteredResults;
+//}
     }
 
 
