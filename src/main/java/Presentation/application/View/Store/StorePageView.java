@@ -39,15 +39,14 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         addClassName("store-page-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
-        UI.getCurrent().getPage().executeJs(
-                "document.body.addEventListener('click', function() {" +
-                        "    $0.$server.handleUserAction();" +
-                        "});",
-                getElement()
-        );
+//        UI.getCurrent().getPage().executeJs(
+//                "document.body.addEventListener('click', function() {" +
+//                        "    $0.$server.handleUserAction();" +
+//                        "});",
+//                getElement()
+//        );
         mainContent = new VerticalLayout();
-        setContent(mainContent);
-        getStoresProducts();
+//        setContent(mainContent);
 
     }
 
@@ -73,8 +72,9 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
         HorizontalLayout productDetailsLayout = new HorizontalLayout();
         productDetailsLayout.setWidthFull();
-        productDetailsLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        productDetailsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
+        productDetailsLayout.setSpacing(true);
 
 
         for (ProductDTO product : products) {
@@ -85,19 +85,18 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
             //add 4 vertical layouts for each column
 
-            // Product name span
-//            Span productNameSpan = new Span(product.getProductName());
-//            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+            Span productNameSpan = new Span(product.getProductName());
+            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
 
-            // Product price span
-//            Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
-//            productPriceSpan.getElement().getStyle().set("color", "gray");
+            Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
+            productPriceSpan.getElement().getStyle().set("color", "gray");
 
             // Quantity input field
             IntegerField quantityField = new IntegerField();
             quantityField.setMin(1); // Minimum quantity allowed
             quantityField.setWidth("2em"); // Set a fixed width for better alignment
             quantityField.setValue(1); // Default quantity
+
 
             // Create buttons for increasing and decreasing quantity
             Button increaseButton = new Button("+");
@@ -125,10 +124,12 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
             addToCartButton.getElement().getStyle().set("color", "black");
             addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
 
+            HorizontalLayout quantityIncDec = new HorizontalLayout();
+            quantityIncDec.add(increaseButton, quantityField, decreaseButton);
             // Add components to productDetailsLayout
-            nameLayout.add(product.getProductName());
-            priceLayout.add(product.getPrice() + "$");
-            quantityLayout.add(increaseButton, quantityField, decreaseButton);
+            nameLayout.add(productNameSpan);
+            priceLayout.add(productPriceSpan);
+            quantityLayout.add(quantityIncDec);
             buttonLayout.add(addToCartButton);
             // Add productDetailsLayout to productDiv
 //            productDiv.add(productDetailsLayout);
@@ -155,6 +156,14 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         String id = event.getRouteParameters().get("storeId").orElse("");
         storeId = Integer.parseInt(id);
         storeName = presenter.getStoreName(storeId);
+        //add store name to the page
+        Span storeNameSpan = new Span(storeName);
+        storeNameSpan.getElement().getStyle().set("font-size", "2em");
+        storeNameSpan.getElement().getStyle().set("font-weight", "bold");
+        storeNameSpan.getElement().getStyle().set("color", "#3F352C");
+        mainContent.add(storeNameSpan);
+        getStoresProducts();
+
 
 //        presenter.setStoreId(Integer.parseInt(storeId));
 //        presenter.getStoresProducts(Integer.parseInt(storeId));
