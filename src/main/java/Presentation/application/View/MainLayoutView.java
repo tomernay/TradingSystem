@@ -198,7 +198,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //fetch all categories from the server
         ArrayList<String> categories = presenter.getAllCategories();
         //add a button for each category
-        categoryMenu.addItem("all");
+
         for (String cat : categories) {
             MenuItem categoryItem = categoryMenu.addItem(cat, e -> {
 //                //search for products by category

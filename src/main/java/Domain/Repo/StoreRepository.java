@@ -920,14 +920,16 @@ public class StoreRepository {
         for (Store store : stores.values()) {
             Response<ArrayList<String>> response = store.retrieveAllCategoriesFromAllStore();
             if (response.isSuccess()) {
-                for(String category : response.getData()){
-                    if(!categories.contains(category)){
+                for (String category : response.getData()) {
+                    if (!categories.contains(category)) {
                         categories.add(category);
                     }
                 }
+            } else {
+                SystemLogger.error("[ERROR] Couldn't retrieve categories from store: " + store.getName());
             }
-            return Response.error("Couldn't retrieve all categories from all stores", null);
         }
+
         return Response.success("All categories were retrieved successfully", categories);
     }
 
