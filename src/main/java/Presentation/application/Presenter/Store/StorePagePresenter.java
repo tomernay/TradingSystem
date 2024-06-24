@@ -1,12 +1,17 @@
 package Presentation.application.Presenter.Store;
 
+import Domain.Store.Inventory.Product;
+import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.StorePageView;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
+import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 
 @Component
@@ -27,17 +32,34 @@ public class StorePagePresenter {
         this.view = view;
     }
 
-    public void search(String search) {
+    public void search(String search, int storeId) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Integer storeID = 0;
-        storeService.viewProductFromStoreByName(storeID, search, username, token);
+        storeService.viewProductFromStoreByName(storeId, search, username, token);
     }
 
-    public void displayProducts() {
+    public ArrayList<ProductDTO> getStoresProducts(int storeID) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Integer storeID = 0;
-        storeService.getAllProductsFromStore(storeID, username, token);
+        Response<ArrayList<ProductDTO>> res = storeService.getAllProductsFromStore(storeID, username, token);
+        ArrayList<ProductDTO> products = res.getData();
+        //if response is successful add products to products list
+        return products;
+    }
+
+    public void addToCart(ProductDTO product, int quantity) {
+        userService.addProductToShoppingCart(product.getStoreID(), product.getProductID(), quantity, CookiesHandler.getUsernameFromCookies(request), CookiesHandler.getTokenFromCookies(request));
+    }
+
+    public String getStoreName(Integer storeId) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+        return storeService.getStoreNameByID(storeId, username, token).getData();
+    }
+
+    public boolean isLoggedIn() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isValidToken(token, username);
     }
 }

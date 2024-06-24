@@ -8,11 +8,9 @@ import Presentation.application.View.Store.StoreManagementView;
 import Presentation.application.View.Store.StorePageView;
 
 
-import Presentation.application.View.Store.StorePurchaseHistory;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
-import Utilities.Response;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -21,7 +19,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -42,12 +39,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 
-import java.awt.*;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import Domain.Store.Inventory.ProductDTO;
@@ -293,15 +290,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
-        //check if the user is a store manager / owner/ creator
-//if so add a button to manage stores
-//        if(presenter.isManager() || presenter.isOwner() || presenter.isCreator(){
-//            MenuItem manageStores = dropdownMenu.addItem("Manage Stores", e -> {
-//                // Navigate to the shopping cart page
-//            });
-//        }
 
-        //check if a user is a guest or subscribed user
 
         if(!presenter.getUserName().contains("Guest")) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
@@ -341,38 +330,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         getUI().ifPresent(ui -> ui.navigate("register"));
     }
 
-//    private void myStoresButton() {
-//        // Navigate to the shopping cart page
-//        Button myStores = new Button("My Stores", e -> myStoresDialog());
-//        myStores.getElement().getStyle().setColor("black");
-////        myStores.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
-//        addToDrawer(myStores);
-//
-//
-//    }
 
-//    private void openStoresDialog() {
-//        // Navigate to the shopping cart page
-//        //when clicked open a dialog with the stores
-//        Dialog dialog = new Dialog();
-//        dialog.setWidth("500px");
-//        dialog.setHeight("400px");
-//        VerticalLayout dialogLayout = new VerticalLayout();
-//        dialogLayout.add(new Span("choose a store:"));
-//        //dropdown menu presenting the stores
-//        ContextMenu dropdownMenu = new ContextMenu();
-//        //present items based on given data - i dont know how many stores there are
-//
-//
-//
-//
-//
-//        Button closeDialogButton = new Button("Close", g -> dialog.close());
-//        dialogLayout.add(closeDialogButton);
-//
-//        dialog.add(dialogLayout);
-//        dialog.open();
-//    }
 
     private void myStoresDialog() {
         Dialog dialog = new Dialog();
@@ -532,9 +490,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             // Counter to keep track of buttons added
             for (int j = 0; j < 4 && (i + j) < stores.size(); j++) {
                 String store = stores.get(i + j);
+                final Integer storeId = getStoreIdByName(store);
                 Button storeButton = new Button(store, e -> {
-                    RouteParameters routeParameters = new RouteParameters("storeId", store);
-                    UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                    RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
+                    UI.getCurrent().navigate(StorePageView.class, routeParameters);
                 });
                //make button take a relative width from 4 buttons in a row
                 storeButton.setWidth("25%");
@@ -765,53 +724,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return false;
     }
 
-//    private void displaySearchResults(ArrayList<ProductDTO> results) {
-//        Dialog dialog = new Dialog();
-//        dialog.setWidth("800px");
-//        dialog.setHeight("700px");
-//
-//        // Create and configure the filter button
-//        Button filterButton = new Button("");
-//        //set icon
-//        filterButton.setIcon(new Icon(VaadinIcon.FILTER));
-//        filterButton.getElement().getStyle().set("color", "black");
-//        filterButton.getElement().getStyle().set("background-color", "transparent");
-//        filterButton.addClickListener(event -> openFilterDialog(results));
-//        filterButton.getElement().getStyle().set("margin-left", "auto"); // Align the filter button to the right
-//
-//        // Create a horizontal layout for the title and filter button
-//        HorizontalLayout titleAndFilterLayout = new HorizontalLayout();
-//        titleAndFilterLayout.setWidthFull();
-//        titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-//
-//        // Create the "Search Results" span title
-//        Span searchResultsSpan = new Span("Search Results");
-//        searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
-//
-//        // Add the title and filter button to the titleAndFilterLayout
-//        titleAndFilterLayout.add(searchResultsSpan, filterButton);
-//
-//        VerticalLayout dialogLayout = new VerticalLayout();
-//        dialogLayout.add(titleAndFilterLayout);
-//
-//        if(results.isEmpty()){
-//            dialogLayout.add(new Span("No results found"));
-//        }
-//        for (ProductDTO product : results) {
-//            Div productDiv = new Div();
-//            productDiv.setText(product.getProductName());
-//            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product));
-//            productDiv.add(addToCartButton);
-//            dialogLayout.add(productDiv);
-//        }
-//
-//        Button closeDialogButton = addCloseButton(dialog);
-//        dialogLayout.add(closeDialogButton);
-//
-//        // Add the dialog layout to the dialog
-//        dialog.add(dialogLayout);
-//        dialog.open();
-//    }
+
 
     private void displaySearchResults(ArrayList<ProductDTO> results) {
         Dialog dialog = new Dialog();
@@ -831,6 +744,15 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         titleAndFilterLayout.setWidthFull();
         titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
+        HorizontalLayout productDetailsLayout = new HorizontalLayout();
+        VerticalLayout nameLayout = new VerticalLayout();
+        VerticalLayout priceLayout = new VerticalLayout();
+        VerticalLayout quantityLayout = new VerticalLayout();
+        VerticalLayout buttonLayout = new VerticalLayout();
+
+        productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
+
+
         // Create the "Search Results" span title
         Span searchResultsSpan = new Span("Search Results");
         searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
@@ -846,20 +768,23 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         }
 
         for (ProductDTO product : results) {
-            Div productDiv = new Div();
+//            Div productDiv = new Div();
 
-            // Create a horizontal layout for product details (name, price, quantity, buttons)
-            HorizontalLayout productDetailsLayout = new HorizontalLayout();
-            productDetailsLayout.setWidthFull();
-            productDetailsLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+
 
             // Product name span
             Span productNameSpan = new Span(product.getProductName());
             productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+            //set the font size of the product name
+            productNameSpan.getElement().getStyle().set("font-size", "18px");
+            //set height of the product name
+            productNameSpan.getElement().getStyle().set("height", "48px");
 
             // Product price span
             Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
             productPriceSpan.getElement().getStyle().set("color", "gray");
+            productPriceSpan.getElement().getStyle().set("font-size", "18px");
+            productPriceSpan.getElement().getStyle().set("height", "48px");
 
             // Quantity input field
             IntegerField quantityField = new IntegerField();
@@ -893,14 +818,22 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             addToCartButton.getElement().getStyle().set("color", "black");
             addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
 
+            HorizontalLayout quantityIncDec = new HorizontalLayout();
+            quantityIncDec.add(increaseButton, quantityField, decreaseButton);
+
+            nameLayout.add(productNameSpan);
+            priceLayout.add(productPriceSpan);
+            quantityLayout.add(quantityIncDec);
+            buttonLayout.add(addToCartButton);
+
             // Add components to productDetailsLayout
-            productDetailsLayout.add(productNameSpan, productPriceSpan, createQuantityLayout(quantityField, decreaseButton, increaseButton, addToCartButton));
+//            productDetailsLayout.add(productNameSpan, productPriceSpan, createQuantityLayout(quantityField, decreaseButton, increaseButton, addToCartButton));
 
             // Add productDetailsLayout to productDiv
-            productDiv.add(productDetailsLayout);
+//            productDiv.add(productDetailsLayout);
 
             // Add productDiv to dialogLayout
-            dialogLayout.add(productDiv);
+            dialogLayout.add(productDetailsLayout);
         }
 
         // Add close button to dialogLayout
@@ -979,6 +912,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         TextField minPrice = new TextField("Min Price");
         TextField maxPrice = new TextField("Max Price");
 
+
 //        ComboBox<String> productReviewFilter = new ComboBox<>();
 //        productReviewFilter.setLabel("Product Review");
 //        productReviewFilter.setItems("Excellent", "Good", "Average", "Poor");
@@ -992,7 +926,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Button applyFilterButton = new Button("Apply Filters", e -> {
 
             // Apply the selected filters and update the search results accordingly
-            filterPriceRange(results, Double.parseDouble(minPrice.getValue()), Double.parseDouble(maxPrice.getValue()));
+           ArrayList<ProductDTO> filteredResults = filterPriceRange(results, Double.parseDouble(minPrice.getValue()), Double.parseDouble(maxPrice.getValue()));
+            displaySearchResults(filteredResults);
 //            filterProductReview(productReviewFilter.getValue());
 //            filterStoreReview(storeReviewFilter.getValue());
 
@@ -1019,12 +954,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
-//    private void filterProductReview(String value) {
-//    }
-//
-//    private void filterPriceRange(String value) {
-//
-//    }
 
 
     /**
@@ -1035,105 +964,23 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
      * @param maxPrice the maximum price for the range filter (exclusive)
      * @return a Response containing the filtered and sorted list of ProductDTO
      */
-    public static ArrayList<ProductDTO> filterPriceRange(ArrayList<ProductDTO> results, double minPrice, double maxPrice) {
-//        if (!productsResponse.isSuccess()) {
-//            return Response.error("Failed to retrieve products", null);
-//        }
-
-//        ArrayList<ProductDTO> allProducts = productsResponse.getData();
-        ArrayList<ProductDTO> filteredProducts = results.stream()
-                .filter(product -> product.getPrice() > minPrice && product.getPrice() < maxPrice)
-                .sorted((p1, p2) -> Double.compare(p1.getPrice(), p2.getPrice()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-
-
-        return filteredProducts;
+       public static ArrayList<ProductDTO> filterPriceRange(ArrayList<ProductDTO> results, double minPrice, double maxPrice) {
+        ArrayList<ProductDTO> filteredResults = new ArrayList<>();
+        for (ProductDTO product : results) {
+            if (product.getPrice() >= minPrice && product.getPrice() <= maxPrice) {
+                filteredResults.add(product);
+            }
+        }
+    return filteredResults;
+//}
     }
 
-
-
-
-//    private void displaySearchResults(ArrayList<ProductDTO> results) {
-//        Dialog dialog = new Dialog();
-//        dialog.setWidth("800px");
-//        dialog.setHeight("700px");
-//        //set to whole screen
-////        dialog.setWidth("100%");
-////        dialog.setHeight("100%");
-//
-//        Button filterButton = new Button("Filter");
-//        filterButton.addClickListener(event -> openFilterDialog());
-//        filterButton.getElement().getStyle().set("margin-left", "auto"); // Align the filter button to the right
-//
-//        // Create a horizontal layout for the filter button
-//        HorizontalLayout filterLayout = new HorizontalLayout(filterButton);
-//        filterLayout.setWidthFull();
-//        filterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-//
-//        VerticalLayout dialogLayout = new VerticalLayout();
-//        dialogLayout.add(new Span("Search Results"));
-//
-//        for (ProductDTO product : results) {
-//            Div productDiv = new Div();
-//            productDiv.setText(product.getName());
-//            Button addToCartButton = new Button("Add to Cart", e -> addToCart(product));
-//            productDiv.add(addToCartButton);
-//            dialogLayout.add(productDiv);
-//        }
-
-
-
-//        HorizontalLayout searchBarLayout = new HorizontalLayout(searchBar, filterButton);
-//        searchBarLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-//
-//        Button closeDialogButton = addCloseButton(dialog);
-//        dialogLayout.add(closeDialogButton);
-//        filterLayout.add(filterButton);
-//        dialog.add(filterLayout, dialogLayout);
-//        dialog.open();
-//    }
 
 
 
     private void addToCart(ProductDTO product, Integer quantity) {
         presenter.addToCart(product, quantity);
     }
-
-
-
-
-//    public void addSearchBar() {
-//        // Add search bar to the header
-//        ComboBox<String> searchBar = new ComboBox<>();
-//        searchBar.setPlaceholder("Search for anything");
-//        searchBar.getElement().getStyle().setColor("black");
-//        searchBar.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search bar
-//        searchBar.getElement().getStyle().set("margin-left", "10px"); // Add a margin to the left side of the search bar
-//        searchBar.setWidthFull(); // Set the width of the search bar to 100%
-//
-//        searchBar.setItemLabelGenerator(item -> item);
-//        searchBar.setClearButtonVisible(true);
-//        searchBar.setAllowCustomValue(true);
-//
-//        // Fetch and display search results as user types
-//        searchBar.addCustomValueSetListener(event -> {
-//            String searchTerm = event.getDetail();
-//            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-//                List<String> results = search(searchTerm).stream()
-//                        .map(ProductDTO::getName)
-//                        .collect(Collectors.toList());
-//                searchBar.setItems(results);
-//            }
-//        });
-//
-//        addToNavbar(searchBar);
-//    }
-
-
-//    public ArrayList<ProductDTO> search(String search) {
-//        return presenter.searchProducts(search);
-//    }
 
 
     private void openSettings(){
