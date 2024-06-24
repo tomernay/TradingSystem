@@ -1,5 +1,5 @@
 .login-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
@@ -16,6 +16,32 @@
 /* Targeting the header of the password field within the vaadin-login-form-wrapper */
 .login-view vaadin-login-form-wrapper vaadin-password-field .label {
     color: black !important;
+}
+
+.fade-enter-active {
+    animation: fadeIn 0.5s;
+}
+
+.fade-exit-active {
+    animation: fadeOut 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 .store-management-view {
@@ -36,6 +62,8 @@
     text-align: center;
     margin-top: -20px; /* Add space from the top */
 }
+
+
 
 .custom-button {
     width: 300px; /* Wider buttons */
@@ -95,37 +123,37 @@
 
 
 .register-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
 .roles-management-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
 .main-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
 .store-management-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
 .product-management-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
 .discounts-policies-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
 .payment-view {
-    background-image: url('background2.jpg');
+    background-image: url('bags.jpg');
     background-size: cover; /* Adjust as needed */
     background-position: center; /* Adjust as needed */
 }
@@ -208,7 +236,7 @@
 }
 
 .round-button {
-    background-color: #333;
+    background-color: #f7f7f7;
 
     color: white;
     width: 200px;
@@ -245,18 +273,15 @@
     margin-bottom: 20px;
 }
 
-.add-product-button {
-    background-color: #007bff;
-    color: white;
+.plus-button {
+    background-color: #d5d5d5;
+    color: black;
     border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
     cursor: pointer;
-    margin-top: 10px;
 }
 
-.add-product-button:hover {
-    background-color: #0056b3;
+.plus-button:hover {
+    background-color: #737373;
 }
 
 .dialog-form {

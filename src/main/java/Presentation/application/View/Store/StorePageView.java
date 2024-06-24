@@ -34,6 +34,7 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
     private VerticalLayout mainContent;
     private Integer storeId;
     private String storeName;
+    private ArrayList<ProductDTO> products;
 
     public StorePageView(StorePagePresenter presenter) {
         addClassName("store-page-view");
@@ -45,9 +46,8 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 //                        "});",
 //                getElement()
 //        );
-        mainContent = new VerticalLayout();
-//        setContent(mainContent);
 
+        //mainContent.add(new Span("Store Page"));
     }
 
     //change the search method to search in the store
@@ -60,8 +60,10 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
     }
 
+
+
     //display stores products
-    public void getStoresProducts() {
+    public void displayStoresProducts() {
         //display products
         ArrayList<ProductDTO> products = presenter.getStoresProducts(storeId);
 //        VerticalLayout dialogLayout = new VerticalLayout();
@@ -137,7 +139,29 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
             // Add productDiv to dialogLayout
 //            dialogLayout.add(productDiv);
         }
-        mainContent.add(productDetailsLayout);
+        // Create a container for the product details layout
+        Div container = new Div();
+        container.getStyle().set("display", "flex");
+        container.getStyle().set("flex-direction", "column");
+        container.getStyle().set("align-items", "center");
+        container.getStyle().set("justify-content", "center");
+        container.getStyle().set("padding", "20px");
+        container.getStyle().set("background-color", "#E6DCD3"); // Optional: set a background color
+        container.getStyle().set("border", "2px solid #B4A79E"); // Optional: set a border
+        container.getStyle().set("border-radius", "8px"); // Optional: set border radius for rounded corners
+        container.getStyle().set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)"); // Optional: add a subtle box shadow
+        container.setWidth("90%"); // Adjust width to content
+        container.setHeight("auto"); // Adjust height to content
+        //margins left and right auto to center the container
+        container.getStyle().set("margin-left", "auto");
+        container.getStyle().set("margin-right", "auto");
+
+
+        // Add the product details layout to the container
+        container.add(productDetailsLayout);
+
+        // Add the container to the main content
+        mainContent.add(container);
 
     }
 
@@ -161,9 +185,11 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         storeNameSpan.getElement().getStyle().set("font-size", "2em");
         storeNameSpan.getElement().getStyle().set("font-weight", "bold");
         storeNameSpan.getElement().getStyle().set("color", "#3F352C");
-        mainContent.add(storeNameSpan);
-        getStoresProducts();
-
+//        mainContent.add(storeNameSpan);
+        //display store products
+        mainContent = new VerticalLayout();
+        setContent(mainContent);
+        displayStoresProducts();
 
 //        presenter.setStoreId(Integer.parseInt(storeId));
 //        presenter.getStoresProducts(Integer.parseInt(storeId));
