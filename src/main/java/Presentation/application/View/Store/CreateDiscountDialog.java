@@ -51,10 +51,10 @@ public class CreateDiscountDialog extends Dialog {
             Button simplePolicyButton = new Button("Create Simple Policy", e -> openSimplePolicyForm());
             Button removeDiscountButton = new Button("Remove Discount", e -> openRemoveDiscountDialog());
             Button removePolicyButton = new Button("Remove Policy", e -> openRemovePolicyDialog());
-            simpleDiscountButton.addClassName("custom-regular-button");
-            simplePolicyButton.addClassName("custom-regular-button");
-            removeDiscountButton.addClassName("custom-regular-button");
-            removePolicyButton.addClassName("custom-regular-button");
+            simpleDiscountButton.addClassName("button");
+            simplePolicyButton.addClassName("button");
+            removeDiscountButton.addClassName("button");
+            removePolicyButton.addClassName("button");
             VerticalLayout createButtonsLayout = new VerticalLayout(simpleDiscountButton, simplePolicyButton);
             VerticalLayout removeButtonsLayout = new VerticalLayout(removeDiscountButton, removePolicyButton);
 
@@ -68,7 +68,9 @@ public class CreateDiscountDialog extends Dialog {
 
         // Titles
         H3 policiesTitle = new H3("Policies:");
+        policiesTitle.addClassName("title");
         H3 discountsTitle = new H3("Discounts:");
+        discountsTitle.addClassName("title");
 
         // Add layouts to main layout
         layout.add(policiesTitle, policyCanvas, discountsTitle, discountCanvas);
@@ -88,6 +90,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void openRemoveDiscountDialog() {
         Dialog removeDiscountDialog = new Dialog();
+        removeDiscountDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         removeDiscountDialog.setWidth("400px");
 
         FormLayout formLayout = new FormLayout();
@@ -109,10 +112,10 @@ public class CreateDiscountDialog extends Dialog {
                 removeDiscountDialog.close();
             }
         });
-        removeButton.addClassName("add-button");
+        removeButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> removeDiscountDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
         formLayout.add(discountComboBox, removeButton, cancelButton);
         removeDiscountDialog.add(formLayout);
@@ -121,6 +124,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void openRemovePolicyDialog() {
         Dialog removePolicyDialog = new Dialog();
+        removePolicyDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         removePolicyDialog.setWidth("400px");
 
         FormLayout formLayout = new FormLayout();
@@ -142,11 +146,11 @@ public class CreateDiscountDialog extends Dialog {
                 removePolicyDialog.close();
             }
         });
-        removeButton.addClassName("add-button");
+        removeButton.addClassName("yes_button");
 
 
         Button cancelButton = new Button("Cancel", e -> removePolicyDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
         formLayout.add(policyComboBox, removeButton, cancelButton);
         removePolicyDialog.add(formLayout);
@@ -162,17 +166,20 @@ public class CreateDiscountDialog extends Dialog {
         List<DiscountDTO> loadedDiscounts = presenter.loadDiscounts(storeId);
         for (DiscountDTO discount : loadedDiscounts) {
             DiscountBox discountBox = new DiscountBox(presenter, this, storeId, discount);
+            discountBox.getStyle().set("background-color", "#E6DCD3"); // Set background color for DiscountBox
             addDiscountBoxToCanvas(discountBox);
         }
         List<ConditionDTO> loadedPolicies = presenter.loadPolicies(storeId);
         for (ConditionDTO policy : loadedPolicies) {
             PolicyBox policyBox = new PolicyBox(presenter, this, storeId, policy);
+            policyBox.getStyle().set("background-color", "#E6DCD3"); // Set background color for DiscountBox
             addPolicyBoxToCanvas(policyBox);
         }
     }
 
     private void openSimpleDiscountForm() {
         Dialog simpleDiscountDialog = new Dialog();
+        simpleDiscountDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         simpleDiscountDialog.setWidth("400px");
 
         FormLayout formLayout = new FormLayout();
@@ -205,10 +212,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes(); // Reload all boxes
             simpleDiscountDialog.close();
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> simpleDiscountDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
         formLayout.add(productComboBox, categoryField, discountPercentField, saveButton, cancelButton);
         simpleDiscountDialog.add(formLayout);
         simpleDiscountDialog.open();
@@ -216,6 +223,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void openSimplePolicyForm() {
         Dialog simplePolicyDialog = new Dialog();
+        simplePolicyDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         simplePolicyDialog.setWidth("400px");
 
         FormLayout formLayout = new FormLayout();
@@ -294,10 +302,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             simplePolicyDialog.close();
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> simplePolicyDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
         formLayout.add(policyTypeComboBox, quantityTypeComboBox, categoryField, productComboBox, quantityField, minQuantityField, maxQuantityField, priceField, minPriceField, maxPriceField, saveButton, cancelButton);
         simplePolicyDialog.add(formLayout);
@@ -376,6 +384,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void showDiscountToPolicyConnectionTypeDialog(DiscountBox source, PolicyBox target) {
         Dialog connectionTypeDialog = new Dialog();
+        connectionTypeDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         connectionTypeDialog.setWidth("300px");
 
         FormLayout formLayout = new FormLayout();
@@ -388,10 +397,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             connectionTypeDialog.close();
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
         formLayout.add(policyTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);
@@ -400,6 +409,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void showConnectionTypeDialog(DiscountBox source, DiscountBox target) {
         Dialog connectionTypeDialog = new Dialog();
+        connectionTypeDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         connectionTypeDialog.setWidth("300px");
 
         FormLayout formLayout = new FormLayout();
@@ -413,10 +423,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             connectionTypeDialog.close();
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
-        saveButton.addClassName("waive-button");
+        saveButton.addClassName("no_button");
 
         formLayout.add(discountTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);
@@ -425,6 +435,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void showPolicyConnectionTypeDialog(PolicyBox source, PolicyBox target) {
         Dialog connectionTypeDialog = new Dialog();
+        connectionTypeDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         connectionTypeDialog.setWidth("400px");
         connectionTypeDialog.setHeight("400px"); // Increase height to show full details
 
@@ -476,10 +487,10 @@ public class CreateDiscountDialog extends Dialog {
                         connectionTypeDialog.close();
                     }
                 });
-                conditionSaveButton.addClassName("add-button");
+                conditionSaveButton.addClassName("yes_button");
 
                 Button conditionCancelButton = new Button("Cancel", ce -> conditionDialog.close());
-                conditionCancelButton.addClassName("waive-button");
+                conditionCancelButton.addClassName("no_button");
 
                 conditionForm.add(basePolicyComboBox, conditionComboBox, conditionSaveButton, conditionCancelButton);
                 conditionDialog.add(conditionForm);
@@ -490,10 +501,10 @@ public class CreateDiscountDialog extends Dialog {
                 connectionTypeDialog.close();
             }
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
         formLayout.add(policyTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);
@@ -502,6 +513,7 @@ public class CreateDiscountDialog extends Dialog {
 
     private void showPolicyToDiscountConnectionTypeDialog(PolicyBox source, DiscountBox target) {
         Dialog connectionTypeDialog = new Dialog();
+        connectionTypeDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         connectionTypeDialog.setWidth("300px");
 
         FormLayout formLayout = new FormLayout();
@@ -514,10 +526,10 @@ public class CreateDiscountDialog extends Dialog {
             loadAllBoxes();
             connectionTypeDialog.close();
         });
-        saveButton.addClassName("add-button");
+        saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> connectionTypeDialog.close());
-        cancelButton.addClassName("waive-button");
+        cancelButton.addClassName("no_button");
 
         formLayout.add(discountTypeComboBox, saveButton, cancelButton);
         connectionTypeDialog.add(formLayout);

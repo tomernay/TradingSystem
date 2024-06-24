@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 @PageTitle("")
 @Route(value = "store-page/:storeId", layout = MainLayoutView.class)
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
     private StorePagePresenter presenter;
@@ -37,7 +37,7 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
     private ArrayList<ProductDTO> products;
 
     public StorePageView(StorePagePresenter presenter) {
-        addClassName("store-page-view");
+        addClassName("page-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
 //        UI.getCurrent().getPage().executeJs(
@@ -121,9 +121,8 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
             // Create the add to cart button with a + icon and transparent background
             Button addToCartButton = new Button("Add to Cart");
-            addToCartButton.getElement().getStyle().set("background-color", "lightgray");
+            buttonLayout.addClassName("button");
             addToCartButton.addClickListener(e -> addToCart(product, quantityField.getValue()));
-            addToCartButton.getElement().getStyle().set("color", "black");
             addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
 
             HorizontalLayout quantityIncDec = new HorizontalLayout();

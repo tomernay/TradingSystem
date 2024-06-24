@@ -7,6 +7,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -31,7 +32,7 @@ import java.util.stream.Collectors;
 
 @PageTitle("Shopping Cart")
 @Route(value = "shopping-cart", layout = MainLayoutView.class)
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class ShoppingCartView extends VerticalLayout implements BeforeEnterObserver {
 
     private final ShoppingCartPresenter presenter;
@@ -43,7 +44,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
     public ShoppingCartView(ShoppingCartPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
-        addClassName("shopping-cart-view");
+        addClassName("page-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -53,8 +54,8 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
         // Initialize buttons layout
         Button checkoutButton = new Button("Checkout", e -> presenter.checkout());
         Button clearCartButton = new Button("Clear Cart", e -> presenter.clearCart());
-        checkoutButton.addClassName("custom-regular-button");
-        clearCartButton.addClassName("custom-regular-button");
+        checkoutButton.addClassName("button");
+        clearCartButton.addClassName("button");
 
         buttonsLayout = new HorizontalLayout(checkoutButton, clearCartButton);
         buttonsLayout.setAlignItems(Alignment.CENTER);
@@ -194,6 +195,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
 
     private Grid<ProductDTO> createGridForStore(List<ProductDTO> products, String storeName) {
         Grid<ProductDTO> grid = new Grid<>(ProductDTO.class);
+        grid.addClassName("custom-grid");
         grid.removeColumnByKey("storeID");
         grid.removeColumnByKey("storeName");
         grid.removeColumnByKey("productID");
@@ -226,7 +228,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
                 quantityField.setValue(currentValue + 1);
                 updateQuantity(item, currentValue + 1);
             });
-            increaseButton.addClassName("plus-button");
+            increaseButton.addClassName("button");
 
             Button decreaseButton = new Button("-", e -> {
                 int currentValue = quantityField.getValue() != null ? quantityField.getValue() : 0;
@@ -235,7 +237,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
                     updateQuantity(item, currentValue - 1);
                 }
             });
-            decreaseButton.addClassName("plus-button");
+            decreaseButton.addClassName("button");
 
             layout.add(increaseButton, quantityField, decreaseButton);
             layout.setAlignItems(Alignment.CENTER);
@@ -248,11 +250,8 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
             return layout;
         })).setHeader("Quantity");
         grid.addComponentColumn(item -> {
-            Button removeButton = new Button("Remove", e -> {
-                presenter.removeProductFromCart(item.getProductID(), item.getStoreID(), presenter.getUsername());
-                presenter.getShoppingCartContents(); // Refresh cart after removal
-            });
-            removeButton.addClassName("custom-regular-button");
+            Button removeButton = new Button("Remove", e -> navigateToProductRemoving(item.getProductID(), item.getStoreID()));
+            removeButton.addClassName("button");
             return removeButton;
         }).setHeader("Actions");
 
@@ -260,6 +259,35 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
         grid.prependHeaderRow().getCell(grid.getColumns().get(0)).setText("Store Name: " + storeName);
 
         return grid;
+    }
+
+    private void navigateToProductRemoving(Integer productID, Integer storeID) {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        dialogLayout.add("Are you sure you want to remove this product?");
+
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.removeProductFromCart(productID, storeID, presenter.getUsername());
+            presenter.getShoppingCartContents(); // Refresh cart after removal
+            confirmationDialog.close();
+            showSuccess("Product removed successfully");
+        });
+        confirmButton.addClassName("yes_button");
+
+        Button cancelButton = new Button("No", e -> confirmationDialog.close());
+        cancelButton.addClassName("no_button");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, confirmButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
+
+        dialogLayout.add(buttonLayout);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
     }
 
     private void updateQuantity(ProductDTO item, int newQuantity) {

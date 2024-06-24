@@ -32,15 +32,17 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
     public StorePurchaseHistory(StorePurchaseHistoryPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
+        addClassName("page-view");
 
         Button backButton = new Button("Back to Store Management", event1 -> {
             RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
             UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
         });
-        backButton.addClassName("custom-regular-button");
+        backButton.addClassName("button");
         add(backButton);
 
         ordersGrid = new Grid<>(OrderDTO.class);
+        ordersGrid.addClassName("custom-grid");
         ordersGrid.removeColumnByKey("storeID");
         ordersGrid.removeColumnByKey("status");
         ordersGrid.removeColumnByKey("products");
@@ -57,6 +59,7 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
         // Set the item details renderer for displaying product details
         ordersGrid.setItemDetailsRenderer(new ComponentRenderer<>(order -> {
             Grid<ProductDTO> productGrid = new Grid<>(ProductDTO.class);
+            productGrid.addClassName("custom-grid");
             productGrid.addColumn(ProductDTO::getProductID).setHeader("Product ID");
             productGrid.addColumn(ProductDTO::getProductName).setHeader("Name");
             productGrid.addColumn(ProductDTO::getQuantity).setHeader("Quantity");
