@@ -2,6 +2,7 @@ package Presentation.application.View.Store;
 
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.Presenter.Store.StorePagePresenter;
+import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -17,6 +18,9 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
@@ -145,12 +149,42 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
+        if (!presenter.isLoggedIn() || !isLoggedIn()) {
+            event.rerouteTo(LoginView.class);
+        }
         String id = event.getRouteParameters().get("storeId").orElse("");
         storeId = Integer.parseInt(id);
         storeName = presenter.getStoreName(storeId);
 
 //        presenter.setStoreId(Integer.parseInt(storeId));
 //        presenter.getStoresProducts(Integer.parseInt(storeId));
+    }
+
+    private boolean isLoggedIn() {
+        // Retrieve the current HTTP request
+        HttpServletRequest request = (HttpServletRequest) VaadinService.getCurrentRequest();
+
+        if (request != null) {
+            // Retrieve cookies from the request
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("token".equals(cookie.getName())) {
+                        // Assuming a valid token indicates a logged-in user
+                        return isValidToken(cookie.getValue());
+                    }
+                }
+            }
+        }
+
+        // If no valid token is found, the user is not logged in
+        return false;
+    }
+
+    private boolean isValidToken(String token) {
+        // Implement your token validation logic here
+        // This could involve checking the token against a database or decoding a JWT token
+        return token != null && !token.isEmpty();
     }
 }
 

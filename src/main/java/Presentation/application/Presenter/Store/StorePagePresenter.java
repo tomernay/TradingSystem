@@ -56,4 +56,10 @@ public class StorePagePresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.getStoreNameByID(storeId, username, token).getData();
     }
+
+    public boolean isLoggedIn() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isValidToken(token, username);
+    }
 }
