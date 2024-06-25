@@ -279,6 +279,7 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
 
     private void showOwnerNominationDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setCloseOnOutsideClick(false);
 
         TextField usernameField = new TextField("Enter Username");

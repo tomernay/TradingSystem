@@ -635,11 +635,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
-        // Check if the user is already logged in
-//        if (!isLoggedIn()) {
-//            // If not logged in, reroute to the login page
-//            event.rerouteTo(LoginView.class);
-//        }
         if (!presenter.isLoggedIn() || !isLoggedIn()) {
             event.rerouteTo(LoginView.class);
         }
@@ -845,45 +840,17 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialogLayout.add(new Span("Filter Options"));
         dialogLayout.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
 
-        // Add filter options such as price range, product review, and store review
-//        ComboBox<String> priceRangeFilter = new ComboBox<>();
-//        priceRangeFilter.setLabel("Price Range");
-//        priceRangeFilter.setItems("Low to High", "High to Low");
-//
         // add filter for prices range - min and max in an interactive line to drag min and max from 2 edges
         TextField minPrice = new TextField("Min Price");
         TextField maxPrice = new TextField("Max Price");
-
-
-//        ComboBox<String> productReviewFilter = new ComboBox<>();
-//        productReviewFilter.setLabel("Product Review");
-//        productReviewFilter.setItems("Excellent", "Good", "Average", "Poor");
-//
-//        ComboBox<String> storeReviewFilter = new ComboBox<>();
-//        storeReviewFilter.setLabel("Store Review");
-//        storeReviewFilter.setItems("Excellent", "Good", "Average", "Poor");
-
-
 
         Button applyFilterButton = new Button("Apply Filters", e -> {
 
             // Apply the selected filters and update the search results accordingly
            ArrayList<ProductDTO> filteredResults = filterPriceRange(results, Double.parseDouble(minPrice.getValue()), Double.parseDouble(maxPrice.getValue()));
             displaySearchResults(filteredResults);
-//            filterProductReview(productReviewFilter.getValue());
-//            filterStoreReview(storeReviewFilter.getValue());
-
-
             dialog.close();
         });
-
-
-        //put apply filter button at the bottom
-//        applyFilterButton.getElement().getStyle().set("position", "absolute");
-//        applyFilterButton.getElement().getStyle().set("bottom", "0");
-//        applyFilterButton.getElement().getStyle().set("left", "0");
-//        applyFilterButton.getElement().getStyle().set("right", "0");
-
         applyFilterButton.getElement().getStyle().set("color", "black");
         applyFilterButton.getElement().getStyle().set("background-color", "transparent");
         dialogLayout.add(minPrice,maxPrice, applyFilterButton);
@@ -944,10 +911,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //center
         changeUsername.getElement().getStyle().set("margin", "0 auto");
 
-        changeUsername.getElement().getStyle().set("color", "black");
+        changeUsername.addClassName("button");
         Button changePassword = new Button("Change Password", e -> openChangePasswordDialog());
         //black
-        changePassword.getElement().getStyle().set("color", "black");
+        changePassword.addClassName("button");
         changePassword.getElement().getStyle().set("border-radius", "5px");
         //make it wide as the dialog box
         changePassword.setWidth("90%");
@@ -966,6 +933,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void openChangePasswordDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         //make the title font smaller
 
         dialog.setWidth("500px");
@@ -988,12 +956,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             presenter.changePassword(password.getValue(), confirmPassword.getValue(), password);
 //            dialog.close();
         });
-        save.getElement().getStyle().set("color", "black");
+        save.addClassName("button");
         //position save button at the bottom right corner
         save.getElement().getStyle().set("position", "absolute");
         save.getElement().getStyle().set("bottom", "0");
         save.getElement().getStyle().set("right", "0");
-        save.getElement().getStyle().set("background-color", "transparent");
+
         Button cancelButton = cancelButton(dialog);
 
 
@@ -1006,6 +974,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private void openChangeUsernameDialog() {
         Dialog dialog = new Dialog();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setWidth("500px");
         dialog.setHeight("200px");
 
@@ -1028,12 +997,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             dialog.close();
         });
-        save.getElement().getStyle().set("color", "black");
+        save.addClassName("button");
         //position save button at the bottom right corner
         save.getElement().getStyle().set("position", "absolute");
         save.getElement().getStyle().set("bottom", "0");
         save.getElement().getStyle().set("right", "0");
-        save.getElement().getStyle().set("background-color", "transparent");
+
         Button cancelButton = cancelButton(dialog);
 
         //transparent background
