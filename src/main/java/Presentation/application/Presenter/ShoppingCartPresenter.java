@@ -100,7 +100,7 @@ public class ShoppingCartPresenter {
     public void checkout() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<List<ProductDTO>> response = userService.lockShoppingCart(username, token);
+        Response<List<ProductDTO>> response = userService.lockShoppingCart(username, token,null );
         if (response.isSuccess()) {
             view.navigateToPayment(this.totalPrice);
         } else {

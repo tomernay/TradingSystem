@@ -3,7 +3,6 @@ package Service;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Facades.StoreFacade;
 import Utilities.Messages.Message;
@@ -802,8 +801,8 @@ public class StoreService {
 
 
 
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
-        return storeFacade.LockProducts(shoppingCart);
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart, Boolean isOverEighteen) {
+        return storeFacade.LockProducts(shoppingCart,isOverEighteen);
     }
 
 
@@ -1005,6 +1004,23 @@ public class StoreService {
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to retrieve all stores  but the token was invalid");
         return Response.error("Invalid token", null);
+    }
+
+    public Response<Boolean> isExistAlcohol(String username, String token){
+        SystemLogger.info("[START] User: " + username + " is trying to check if alcohol exists");
+        if (userService.isValidToken(token, username)) {
+            Map<Integer,Map<Integer,Integer>> shoppingCart = userService.getShoppingCartContents(username, token).getData();
+            return storeFacade.isExistAlcohol(shoppingCart);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to check if alcohol exists but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+    public List<String> getDiscountsStrings(int storeID) {
+        return storeFacade.getDiscountsStrings(storeID);
+    }
+
+    public List<String> getPoliciesString(int storeID) {
+        return storeFacade.getPoliciesString(storeID);
     }
 }
 

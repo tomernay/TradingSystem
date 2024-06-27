@@ -67,7 +67,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -109,7 +109,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
         storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 1, null, null, null,3.0, null, true);
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -151,7 +151,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(false);
@@ -187,7 +187,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -223,7 +223,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -259,7 +259,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -294,7 +294,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
         storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, 1, null, 0.0, 3.0, false);
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -325,7 +325,7 @@ public class PurchaseCartUnitTest {
     @Test
     public void purchaseCartEmptyCart() {
         orderRepository = orderService.getOrderFacade().getOrderRepository();
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null);
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -358,8 +358,8 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response2 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
+        Response<List<ProductDTO>> response2 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -400,7 +400,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
         storeService.removeProductFromStore(1, 0, "newOwner", owner.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -433,7 +433,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 100, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);
@@ -468,7 +468,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
         storeService.closeStore(0, "newOwner", owner.getToken());
-        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken());
+        Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null);
 
         // Mock the handshake method to return true
         Mockito.when(paymentGateway.handshake()).thenReturn(true);

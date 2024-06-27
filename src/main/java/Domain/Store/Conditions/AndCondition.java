@@ -67,4 +67,10 @@ public class AndCondition implements Condition{
     public Boolean getPriceIndicator() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "(" + condition1.toString() + ") AND (" + condition2.toString() + ")";
+
+    }
 }

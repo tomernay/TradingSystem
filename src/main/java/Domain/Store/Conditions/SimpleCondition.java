@@ -90,4 +90,44 @@ public class SimpleCondition implements Condition{
         }
         return (minAmount == null || !(minAmount > amount)) && (maxAmount == null || !(maxAmount < amount));
     }
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        if (productID != null) {
+            result.append("Product ID: ").append(productID);
+        }
+        if (category != null && !category.isEmpty()) {
+            result.append("Category: ").append(category);
+        }
+        if (price != null) {
+            result.append("Price ");
+            if (amount != null) {
+                result.append("is exactly: ").append(amount);
+            }
+            if (minAmount != null && maxAmount != null) {
+                result.append("is between: ").append(minAmount).append(" and ").append(maxAmount);
+            }
+            if (maxAmount != null && minAmount == null) {
+                result.append("is at most: ").append(maxAmount);
+            }
+            if (minAmount != null && maxAmount == null) {
+                result.append("is at least: ").append(minAmount);
+            }
+        } else {
+            if (amount != null) {
+                result.append(" has a quantity of exactly: ").append(amount).append(" items");
+            }
+            if (minAmount != null && maxAmount != null) {
+                result.append(" has a quantity between: ").append(minAmount).append(" and ").append(maxAmount).append(" items");
+            }
+            if (maxAmount != null && minAmount == null) {
+                result.append(" has a quantity of at most: ").append(maxAmount).append(" items");
+            }
+            if (minAmount != null && maxAmount == null) {
+                result.append(" has a quantity of at least: ").append(minAmount).append(" items");
+            }
+        }
+        return result.toString();
+    }
+
 }

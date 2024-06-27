@@ -63,4 +63,8 @@ public class OrCondition implements Condition{
     public Boolean getPriceIndicator() {
         return null;
     }
+    @Override
+    public String toString() {
+        return "(" + condition1.toString() + ") OR (" + condition2.toString() + ")";
+    }
 }

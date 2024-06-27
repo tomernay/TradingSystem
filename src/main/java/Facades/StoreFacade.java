@@ -221,8 +221,8 @@ public class StoreFacade {
         return storeRepository.viewProductFromAllStoresByCategory(category);
     }
 
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
-        return storeRepository.LockProducts(shoppingCart);
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart,Boolean isOverEighteen) {
+        return storeRepository.LockProducts(shoppingCart,isOverEighteen);
     }
 
     public Response<String> CreateDiscount(Integer productID, Integer storeID, String username, String category, Double percent) {
@@ -303,5 +303,17 @@ public class StoreFacade {
 
     public Response<List<String>> getAllStores() {
         return storeRepository.getAllStores();
+    }
+
+    public Response<Boolean> isExistAlcohol(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+        return storeRepository.isExistAlcohol(shoppingCart);
+    }
+
+    public List<String> getDiscountsStrings(int storeID) {
+        return storeRepository.getDiscountsStrings(storeID);
+    }
+
+    public List<String> getPoliciesString(int storeID) {
+        return storeRepository.getPoliciesString(storeID);
     }
 }

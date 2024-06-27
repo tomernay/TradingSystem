@@ -15,6 +15,7 @@ import Utilities.SystemLogger;
 //import javax.persistence.Id;
 //import javax.persistence.Table;
 //import javax.persistence.Transient;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 //@Table(name = "stores")
 public class Store {
 
-//    @Id
+    //    @Id
     private Integer storeID;
     private String storeName;
     private Inventory inventory;
@@ -34,8 +35,6 @@ public class Store {
     private Map<Integer, Condition> policies = new HashMap<>();
     private final AtomicInteger productIDGeneratorPolicy = new AtomicInteger(1);
     private final AtomicInteger productIDGeneratorDiscount = new AtomicInteger(1);
-
-
 
 
     // Constructor
@@ -281,8 +280,7 @@ public class Store {
             if (managerPermissions.get(userName).contains(requiredPermission)) {
                 SystemLogger.info("[SUCCESS] Permission granted to the user: " + userName + " to " + requiredPermission.toString().toLowerCase().replace('_', ' '));
                 return Response.success("Permission granted", null);
-            }
-            else {
+            } else {
                 SystemLogger.error("[ERROR] The user: " + userName + " tried to " + requiredPermission.toString().toLowerCase().replace('_', ' ') + " but he doesn't have the permission");
                 return Response.error(s, null);
             }
@@ -300,7 +298,6 @@ public class Store {
         }
         return inventory.setProductQuantity(productID, newQuantity);
     }
-
 
 
     public Response<String> addProductQuantity(Integer productID, Integer amountToAdd, String userName) {
@@ -397,7 +394,7 @@ public class Store {
             SystemLogger.error("[ERROR] " + userName + " tried to add the product: " + name + " to the store but he doesn't have the permission");
             return permissionCheck;
         }
-        return inventory.addProductToStore(storeID, storeName,name, desc, price, quantity);
+        return inventory.addProductToStore(storeID, storeName, name, desc, price, quantity);
     }
 
     public Response<String> addProductToStore(String name, String desc, Double price, Integer quantity, ArrayList<String> categories, String userName) {
@@ -448,8 +445,7 @@ public class Store {
             if (isStoreManager(username)) {
                 return managerPermissions.get(username).contains(Permissions.valueOf(permission));
             }
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return false;
         }
         return false;
@@ -466,7 +462,7 @@ public class Store {
     }
 
     public Response<String> isProductExist(Integer productID) {
-        if (inventory.isProductExist(productID)){
+        if (inventory.isProductExist(productID)) {
             return Response.success("The product exists in the store", null);
         }
         return Response.error("The product doesn't exist in the store", null);
@@ -484,18 +480,29 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
-    public Response<Boolean> checkPolicy(Map<ProductDTO, Integer> productsInShoppingCart) {
-        for (Condition c : policies.values()) {
-            if (!c.isValid(productsInShoppingCart)) {
-                return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
+    public Response<Boolean> checkPolicy(Map<ProductDTO, Integer> productsInShoppingCart,Boolean isOverEighteen) {
+
+        if (!isOverEighteen) {
+            return new Response<>(false, "conditions are  not valid", false);
+        } else {
+            LocalTime now = LocalTime.now();
+            LocalTime startTime = LocalTime.of(23, 0);
+            LocalTime endTime = LocalTime.of(5, 0);
+            if (!(now.isAfter(startTime) || now.isBefore(endTime) || isOverEighteen == null )) {
+
+                for (Condition c : policies.values()) {
+                    if (!c.isValid(productsInShoppingCart)) {
+                        return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
+                    }
+                }
+                return new Response<>(true, "All conditions are valid", true);
             }
+            return new Response<>(false, "conditions are  not valid", false);
         }
-        return new Response<>(true, "All conditions are valid", true);
     }
 
 
-
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Integer> productsShoppingCart) {
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Integer> productsShoppingCart,Boolean isOverEighteen) {
         Response<List<ProductDTO>> productDTOList = inventory.LockProducts(productsShoppingCart);
         if (!productDTOList.isSuccess()) {
             return productDTOList;
@@ -504,10 +511,9 @@ public class Store {
         for (ProductDTO productDTO : productDTOList.getData()) {
             products.put(productDTO, productsShoppingCart.get(productDTO.getProductID()));
         }
-        if(checkPolicy(products).getData()){
+        if (checkPolicy(products,isOverEighteen).getData()) {
             return productDTOList;
-        }
-        else {
+        } else {
             inventory.unlockProductsBackToStore(productsShoppingCart);
             return new Response<>(false, "The conditions are not valid", null);
         }
@@ -543,13 +549,13 @@ public class Store {
 
     public Response<Double> CalculateDiscounts(Map<Integer, Integer> productsInStore) {
         double discount = 0;
-        Map<ProductDTO,Integer> products = new HashMap<>();
+        Map<ProductDTO, Integer> products = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : productsInStore.entrySet()) {
             Response<ProductDTO> response = inventory.getProductFromStore(entry.getKey());
             if (!response.isSuccess()) {
                 return new Response<>(false, "Failed to calculate discount");
             }
-            products.put(response.getData(),productsInStore.get(entry.getKey()));
+            products.put(response.getData(), productsInStore.get(entry.getKey()));
         }
         for (Discount d : discounts.values()) {
             Response<Double> responseDiscount = d.CalculatorDiscount(products);
@@ -558,7 +564,7 @@ public class Store {
             }
             discount += responseDiscount.getData();
         }
-        return new Response<>(true,"calculate discounts successfull", discount);
+        return new Response<>(true, "calculate discounts successfull", discount);
     }
 
     public synchronized Response<String> unlockProductsBackToStore(Map<Integer, Integer> productsInStore) {
@@ -594,18 +600,15 @@ public class Store {
     public DiscountDTO buildDiscountDTO(Discount d) {
         if (d instanceof SimpleDiscount) {
             if (d.getProductID() == null) {
-                return new DiscountDTO(d.getDiscountID(), null, null,storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
+                return new DiscountDTO(d.getDiscountID(), null, null, storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
             }
-            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(d.getProductID()).getData(),storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
-        }
-        else if (d instanceof MaxDiscount) {
-            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "MAX", null, null, buildDiscountDTO(d.getDiscount1()), buildDiscountDTO(d.getDiscount2()), null);
-        }
-        else if (d instanceof PlusDiscount) {
-            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "PLUS", null, null, buildDiscountDTO(d.getDiscount1()), buildDiscountDTO(d.getDiscount2()), null);
-        }
-        else {
-            return new DiscountDTO(d.getDiscountID(), null, null,storeID, "CONDITION", null, null, buildDiscountDTO(d.getDiscount1()), null, buildConditionDTO(d.getCondition()));
+            return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(d.getProductID()).getData(), storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
+        } else if (d instanceof MaxDiscount) {
+            return new DiscountDTO(d.getDiscountID(), null, null, storeID, "MAX", null, null, buildDiscountDTO(d.getDiscount1()), buildDiscountDTO(d.getDiscount2()), null);
+        } else if (d instanceof PlusDiscount) {
+            return new DiscountDTO(d.getDiscountID(), null, null, storeID, "PLUS", null, null, buildDiscountDTO(d.getDiscount1()), buildDiscountDTO(d.getDiscount2()), null);
+        } else {
+            return new DiscountDTO(d.getDiscountID(), null, null, storeID, "CONDITION", null, null, buildDiscountDTO(d.getDiscount1()), null, buildConditionDTO(d.getCondition()));
         }
     }
 
@@ -614,19 +617,15 @@ public class Store {
             if (condition.getProductID() == null) {
                 return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
             }
-            return new ConditionDTO(condition.getConditionID(),  condition.getProductID(),String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(),"Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
-        }
-        else if (condition instanceof AndCondition) {
+            return new ConditionDTO(condition.getConditionID(), condition.getProductID(), String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
+        } else if (condition instanceof AndCondition) {
             return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "AND");
-        }
-        else if (condition instanceof OrCondition) {
+        } else if (condition instanceof OrCondition) {
             return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "OR");
-        }
-        else if (condition instanceof XorCondition) {
+        } else if (condition instanceof XorCondition) {
             return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "XOR");
-        }
-        else {
-            return new ConditionDTO(condition.getConditionID(), null,null, null, "Condition", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, null);
+        } else {
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Condition", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, null);
         }
     }
 
@@ -650,7 +649,7 @@ public class Store {
         Discount NewDiscount = null;
         int id = productIDGeneratorDiscount.getAndIncrement();
         if (discountType.equals("MAX")) {
-             NewDiscount = new MaxDiscount(discount1, discount2, id);
+            NewDiscount = new MaxDiscount(discount1, discount2, id);
         }
         if (discountType.equals("PLUS")) {
             NewDiscount = new PlusDiscount(discount1, discount2, id);
@@ -659,7 +658,7 @@ public class Store {
         discounts.remove(discountId1);
         discounts.remove(discountId2);
         return Response.success("Discount created successfully", String.valueOf(id - 1));
-        }
+    }
 
     public Response<String> makeConditionDiscount(String username, Integer discountId, Integer conditionId) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
@@ -686,14 +685,14 @@ public class Store {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if ((productID == null && category == null && price == null) || (productID != null && !isProductExist(productID).isSuccess())){
+        if ((productID == null && category == null && price == null) || (productID != null && !isProductExist(productID).isSuccess())) {
             return new Response<>(false, "productID,price and category can't be null");
         }
         if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
             return new Response<>(false, "minAmount can't be null");
         }
         int id = productIDGeneratorPolicy.getAndIncrement();
-        policies.put(id, new SimpleCondition(id,productID, category, amount, minAmount, maxAmount, price));
+        policies.put(id, new SimpleCondition(id, productID, category, amount, minAmount, maxAmount, price));
         return new Response<>(true, "Condition created successfully");
     }
 
@@ -771,6 +770,27 @@ public class Store {
 
     public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
         return inventory.retrieveAllCategoriesFromAllStore();
+    }
+
+    public Response<Boolean> isExistAlcohol(Map<Integer, Integer> productsInStore) {
+        return inventory.isExistAlcohol(productsInStore);
+    }
+
+    public List<String> getDiscountsStrings() {
+        List<String> discounts = new ArrayList<>();
+        for (Discount d : this.discounts.values()) {
+            discounts.add(d.toString());
+        }
+        return discounts;
+    }
+
+    public List<String> getPoliciesString() {
+        List<String> policies = new ArrayList<>();
+        for (Condition c : this.policies.values()) {
+            policies.add(c.toString());
+        }
+        return policies;
+
     }
 }
 

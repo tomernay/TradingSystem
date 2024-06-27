@@ -75,5 +75,10 @@ public class DiscountCondition implements Discount{
         return condition;
     }
 
+    @Override
+    public String toString() {
+        return "(" + discount.toString() + ") if (" + condition.toString() + ")";
+    }
+
 
 }

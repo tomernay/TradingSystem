@@ -72,7 +72,7 @@ public class purchaseCart {
                 System.out.println("Thread " + Thread.currentThread().getName() + " locked cart and calculated price for user: " + userName);
 
                 // Lock the cart and calculate the price
-                Response <List<ProductDTO>> response = userService.lockShoppingCart("user" + finalI, token);
+                Response <List<ProductDTO>> response = userService.lockShoppingCart("user" + finalI, token,null );
 
 
                 // Log the response
