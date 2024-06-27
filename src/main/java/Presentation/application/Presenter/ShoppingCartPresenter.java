@@ -97,10 +97,24 @@ public class ShoppingCartPresenter {
         }
     }
 
-    public void checkout() {
+    public boolean hasAlcoholItemsInCart() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        Response<List<ProductDTO>> response = userService.lockShoppingCart(username, token,null );
+        return storeService.isExistAlcohol(username, token).getData();
+    }
+
+    public void initiateCheckout() {
+        if (hasAlcoholItemsInCart()) {
+            view.showAlcoholConfirmationDialog();
+        } else {
+            checkout(false);
+        }
+    }
+
+    public void checkout(boolean isOver18) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        Response<List<ProductDTO>> response = userService.lockShoppingCart(username, token, isOver18);
         if (response.isSuccess()) {
             view.navigateToPayment(this.totalPrice);
         } else {

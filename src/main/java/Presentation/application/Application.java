@@ -73,6 +73,7 @@ public class Application implements AppShellConfigurator {
         Response<Integer> res2 = userService.SendOwnerNominationRequest(0, "mia", "owner", token);
         userService.ownerNominationResponse(res2.getData(),"owner", true, owner.getToken());
         storeService.addProductToStore(0,"Bamba","Bamba",200.0,1, new ArrayList<>(List.of("test")),"mia",subscriber.getToken());
+        storeService.addProductToStore(0,"VODKA","VODKA",200.0,1, new ArrayList<>(List.of("ALCOHOL")),"mia",subscriber.getToken());
         storeService.addProductToStore(0,"Bisli","Bisli",100.0,1,"mia",subscriber.getToken());
         storeService.addProductToStore(1,"CHIPS","CHIPS",200.0,1,"mia",subscriber.getToken());
         storeService.addProductToStore(1,"DORITOS","DORITOS",100.0,1,"mia",subscriber.getToken());

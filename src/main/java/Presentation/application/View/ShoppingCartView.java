@@ -52,7 +52,7 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
         storeGrids = new ArrayList<>();
 
         // Initialize buttons layout
-        Button checkoutButton = new Button("Checkout", e -> presenter.checkout());
+        Button checkoutButton = new Button("Checkout", e -> presenter.initiateCheckout());
         Button clearCartButton = new Button("Clear Cart", e -> presenter.clearCart());
         checkoutButton.addClassName("button");
         clearCartButton.addClassName("button");
@@ -98,6 +98,37 @@ public class ShoppingCartView extends VerticalLayout implements BeforeEnterObser
                 getElement()
         );
     }
+
+    public void showAlcoholConfirmationDialog() {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        confirmationDialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        dialogLayout.add("Your cart contains alcohol products. Are you over 18?");
+
+        Button yesButton = new Button("Yes", e -> {
+            presenter.checkout(true);
+            confirmationDialog.close();
+        });
+        yesButton.addClassName("yes_button");
+
+        Button noButton = new Button("No", e -> {
+            presenter.checkout(false);
+            confirmationDialog.close();
+        });
+        noButton.addClassName("no_button");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout(noButton, yesButton);
+        buttonLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.END); // Align buttons to the right
+
+        dialogLayout.add(buttonLayout);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
 
     @ClientCallable
     public void handleUserAction() {

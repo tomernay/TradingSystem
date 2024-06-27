@@ -481,23 +481,26 @@ public class Store {
     }
 
     public Response<Boolean> checkPolicy(Map<ProductDTO, Integer> productsInShoppingCart,Boolean isOverEighteen) {
-
-        if (!isOverEighteen) {
-            return new Response<>(false, "conditions are  not valid", false);
-        } else {
+        if (isOverEighteen != null && !isOverEighteen) {
+            SystemLogger.error("[ERROR] The user is not over 18");
+            return Response.error("Can't purchase Alcohol under 18 years old.", false);
+        }
+        else {
             LocalTime now = LocalTime.now();
             LocalTime startTime = LocalTime.of(23, 0);
             LocalTime endTime = LocalTime.of(5, 0);
-            if (!(now.isAfter(startTime) || now.isBefore(endTime) || isOverEighteen == null )) {
-
+            if (isOverEighteen == null || !(now.isAfter(startTime) || now.isBefore(endTime))) {
                 for (Condition c : policies.values()) {
                     if (!c.isValid(productsInShoppingCart)) {
-                        return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
+                        SystemLogger.error("[ERROR] The condition: " + c.getConditionID() + " is not valid");
+                        return Response.error("The condition: " + c.getConditionID() + " is not valid", false);
                     }
                 }
-                return new Response<>(true, "All conditions are valid", true);
+                SystemLogger.info("[SUCCESS] All conditions are valid");
+                return Response.success("All conditions are valid", true);
             }
-            return new Response<>(false, "conditions are  not valid", false);
+            SystemLogger.error("[ERROR] Can't purchase Alcohol between 23:00 and 05:00");
+            return Response.error("You can't purchase Alcohol between 23:00 and 05:00", false);
         }
     }
 
@@ -511,11 +514,12 @@ public class Store {
         for (ProductDTO productDTO : productDTOList.getData()) {
             products.put(productDTO, productsShoppingCart.get(productDTO.getProductID()));
         }
-        if (checkPolicy(products,isOverEighteen).getData()) {
+        Response<Boolean> checkPolicy = checkPolicy(products,isOverEighteen);
+        if (checkPolicy.getData()) {
             return productDTOList;
         } else {
             inventory.unlockProductsBackToStore(productsShoppingCart);
-            return new Response<>(false, "The conditions are not valid", null);
+            return Response.error(checkPolicy.getMessage(), null);
         }
 
     }

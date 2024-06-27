@@ -121,7 +121,7 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
             // Create the add to cart button with a + icon and transparent background
             Button addToCartButton = new Button("Add to Cart");
-            buttonLayout.addClassName("button");
+            addToCartButton.addClassName("button");
             addToCartButton.addClickListener(e -> addToCart(product, quantityField.getValue()));
             addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
 
