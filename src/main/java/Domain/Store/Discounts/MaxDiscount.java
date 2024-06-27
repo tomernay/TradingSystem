@@ -74,6 +74,11 @@ public class MaxDiscount implements Discount{
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "Maximum of: (" + discount1.toString() + ") and (" + discount2.toString() + ")";
+    }
 
 
-}
+
+    }

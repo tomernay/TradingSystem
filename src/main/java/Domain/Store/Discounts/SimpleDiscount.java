@@ -74,5 +74,16 @@ public class SimpleDiscount implements Discount{
     public Condition getCondition() {
         return null;
     }
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(percent + "% off");
+        if (productID != null) {
+            result.append(" on product ID: ").append(productID);
+        }
+        if (category != null && !category.isEmpty()) {
+            result.append(" on category: ").append(category);
+        }
+        return result.toString();
+    }
 
 }

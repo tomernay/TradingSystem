@@ -304,4 +304,16 @@ public class StoreFacade {
     public Response<List<String>> getAllStores() {
         return storeRepository.getAllStores();
     }
+
+    public Response<Boolean> isExistAlcohol(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+        return storeRepository.isExistAlcohol(shoppingCart);
+    }
+
+    public List<String> getDiscountsStrings(int storeID) {
+        return storeRepository.getDiscountsStrings(storeID);
+    }
+
+    public List<String> getPoliciesString(int storeID) {
+        return storeRepository.getPoliciesString(storeID);
+    }
 }

@@ -71,4 +71,8 @@ public class PlusDiscount implements Discount {
     public Condition getCondition() {
         return null;
     }
+    @Override
+    public String toString() {
+        return "Sum of: (" + discount1.toString() + ") and (" + discount2.toString() + ")";
+    }
 }

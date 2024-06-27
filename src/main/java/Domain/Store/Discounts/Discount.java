@@ -24,6 +24,7 @@ public interface Discount {
     public Discount getDiscount1();
     public Discount getDiscount2();
     public Condition getCondition();
+    public String toString();
 
 
 

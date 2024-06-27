@@ -768,6 +768,26 @@ public class Inventory {
         SystemLogger.info("[SUCCESS] Categories retrieved successfully");
         return Response.success("Categories retrieved successfully", categoriesList);
     }
+
+    public Response<Boolean> isExistAlcohol(Map<Integer, Integer> productsInStore) {
+        for (Map.Entry<Integer, Integer> entry : productsInStore.entrySet()) {
+            Integer productID = entry.getKey();
+            if (!isProductExist(productID)) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " does not exist.");
+                return Response.error("Product with ID: " + productID + " does not exist.", false);
+            }
+            Product product = getProduct(productID);
+            if (product == null) {
+                SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
+                return Response.error("Product with ID: " + productID + " not found.", false);
+            }
+            if (categories.containsKey("ALCOHOL") && categories.get("Alcohol").contains(productID)){
+                return Response.success("Alcohol product found", true);
+            }
+        }
+        return Response.success("No alcohol product found", false);
+
+    }
 }
 
 

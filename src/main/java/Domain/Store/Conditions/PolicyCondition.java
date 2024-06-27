@@ -25,9 +25,13 @@ public class PolicyCondition implements Condition{
         }
         return true;
     }
-
-
     @Override
+    public String toString() {
+        return "(" + condition1.toString() + ") if (" + condition2.toString() + ")";
+    }
+
+
+        @Override
     public Integer getConditionID() {
         return conditionID;
     }

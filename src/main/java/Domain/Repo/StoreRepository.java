@@ -85,11 +85,11 @@ public class StoreRepository {
         }
         if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The currentUsername is not the store owner / creator
             SystemLogger.error("[ERROR] " + currentUsername + " tried to add permissions: " + permission + " to " + subscriberUsername + " but " + currentUsername + " is not the store owner / creator");
-            return Response.error("The user trying to do this action is not the store owner.",null);
+            return Response.error("The user trying to do this action is not the store owner.", null);
         }
         if (!isStoreManager(storeID, subscriberUsername)) { //The subscriber is not the store manager
             SystemLogger.error("[ERROR] " + currentUsername + " tried to add permissions: " + permission + " to " + subscriberUsername + " but " + subscriberUsername + " is not the store manager");
-            return Response.error("The user you're trying to change permissions for is not the store manager.",null);
+            return Response.error("The user you're trying to change permissions for is not the store manager.", null);
         }
         return stores.get(storeID).addManagerPermissions(subscriberUsername, permission);
     }
@@ -105,16 +105,16 @@ public class StoreRepository {
         }
         if (!isStoreOwner(storeID, currentUsername) && !isStoreCreator(storeID, currentUsername)) { //The currentUsername is not the store owner / creator
             SystemLogger.error("[ERROR] " + currentUsername + " tried to remove permissions: " + permission + " from " + subscriberUsername + " but " + currentUsername + " is not the store owner / creator");
-            return Response.error("The user trying to do this action is not the store owner.",null);
+            return Response.error("The user trying to do this action is not the store owner.", null);
         }
         if (!isStoreManager(storeID, subscriberUsername)) { //The subscriber is not the store manager
             SystemLogger.error("[ERROR] " + currentUsername + " tried to remove permissions: " + permission + " from " + subscriberUsername + " but " + subscriberUsername + " is not the store manager");
-            return Response.error("The user you're trying to change permissions for is not the store manager.",null);
+            return Response.error("The user you're trying to change permissions for is not the store manager.", null);
         }
         return stores.get(storeID).removeManagerPermissions(subscriberUsername, permission);
     }
 
-    public Response<Map<String, String>> requestEmployeesStatus(Integer storeID){
+    public Response<Map<String, String>> requestEmployeesStatus(Integer storeID) {
         if (!stores.containsKey(storeID)) {
             if (!deactivatedStores.containsKey(storeID)) {
                 SystemLogger.error("[ERROR] Store: " + storeID + " doesn't exist");
@@ -125,7 +125,7 @@ public class StoreRepository {
         return stores.get(storeID).getSubscribersResponse();
     }
 
-    public Response<Map<String, List<String>>> requestManagersPermissions(Integer storeID){
+    public Response<Map<String, List<String>>> requestManagersPermissions(Integer storeID) {
         if (!stores.containsKey(storeID)) {
             if (!deactivatedStores.containsKey(storeID)) {
                 SystemLogger.error("[ERROR] Store: " + storeID + " doesn't exist");
@@ -146,20 +146,19 @@ public class StoreRepository {
         return stores.get(storeID).isStoreCreator(currentUsername);
     }
 
-    public Response<Integer> addStore(String storeName,String creator) {
+    public Response<Integer> addStore(String storeName, String creator) {
 
         try {
-            Store store = new Store(storeID.get() ,storeName ,creator);
+            Store store = new Store(storeID.get(), storeName, creator);
             Inventory inventory = new Inventory(storeID.get());
             store.setInventory(inventory);
             stores.put(this.storeID.get(), store);
             this.storeID.getAndIncrement();
-            SystemLogger.info("[SUCCESS] successfully opened the store "+ storeName);
-            return Response.success("successfully opened the store "+ storeName, this.storeID.get()-1);
-        }
-        catch (Exception e) {
-            SystemLogger.error("[ERROR] couldn't open store "+ storeName);
-            return Response.error("couldn't open store "+ storeName, null);
+            SystemLogger.info("[SUCCESS] successfully opened the store " + storeName);
+            return Response.success("successfully opened the store " + storeName, this.storeID.get() - 1);
+        } catch (Exception e) {
+            SystemLogger.error("[ERROR] couldn't open store " + storeName);
+            return Response.error("couldn't open store " + storeName, null);
         }
     }
 
@@ -168,22 +167,19 @@ public class StoreRepository {
     }
 
 
-
-
     public Response<List<String>> closeStore(Integer storeID, String currentUsername) {
         if (!stores.containsKey(storeID)) {
             if (!deactivatedStores.containsKey(storeID)) {
                 SystemLogger.error("[ERROR] " + currentUsername + " tried to close store: " + storeID + " but the store doesn't exist");
                 return Response.error("Store doesn't exist", null);
-            }
-            else{
+            } else {
                 SystemLogger.error("[ERROR] " + currentUsername + " tried to close store: " + storeID + " but the store is already closed");
                 return Response.error("Store: " + getStoreNameByID(storeID, currentUsername) + " is already closed", null);
             }
         }
         if (!isStoreCreator(storeID, currentUsername)) { //The subscriber is not the store manager
             SystemLogger.error("[ERROR] " + currentUsername + " tried to close store: " + storeID + " but the user is not the store creator");
-            return Response.error("The user trying to do this action is not the store creator.",null);
+            return Response.error("The user trying to do this action is not the store creator.", null);
         }
         Store store = stores.get(storeID);
         if (store == null) {
@@ -196,11 +192,11 @@ public class StoreRepository {
         return Response.success("Store: " + getStoreNameByID(storeID, currentUsername) + " was closed successfully", new ArrayList<>(deactivatedStores.get(storeID).getSubscribers().keySet()));
     }
 
-    public boolean isClosedStore(Integer storeID){
+    public boolean isClosedStore(Integer storeID) {
         return deactivatedStores.containsKey(storeID);
     }
 
-    public boolean isOpenedStore(Integer storeID){
+    public boolean isOpenedStore(Integer storeID) {
         return stores.containsKey(storeID);
     }
 
@@ -215,7 +211,7 @@ public class StoreRepository {
         }
         if (!isStoreOwner(storeID, currentUsername)) {
             SystemLogger.error("[ERROR] " + currentUsername + " tried to waive ownership in store: " + storeID + " but the user is not the store owner");
-            return Response.error("The user trying to do this action is not the store owner.",null);
+            return Response.error("The user trying to do this action is not the store owner.", null);
         }
         return stores.get(storeID).waiveOwnership(currentUsername);
     }
@@ -598,8 +594,9 @@ public class StoreRepository {
         }
         return stores.get(storeID).isCategoryExist(category);
     }
+
     public Response<String> unlockProductsBackToStore(Map<Integer, Map<Integer, Integer>> shoppingCart) {
-        if(shoppingCart.isEmpty()){
+        if (shoppingCart.isEmpty()) {
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<Integer, Map<Integer, Integer>> storeEntry : shoppingCart.entrySet()) {
@@ -618,7 +615,7 @@ public class StoreRepository {
 
     public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         ArrayList<Integer> storeLocked = new ArrayList<>();
-        if(shoppingCart.isEmpty()){
+        if (shoppingCart.isEmpty()) {
             return Response.error("Shopping cart is empty", null);
         }
         List<ProductDTO> output = new ArrayList<>();
@@ -641,8 +638,7 @@ public class StoreRepository {
             if (resProductDTO.isSuccess()) {
                 storeLocked.add(storeID);
                 output.addAll(resProductDTO.getData());
-            }
-            else {
+            } else {
                 for (Integer store : storeLocked) {
                     stores.get(store).unlockShoppingCart(shoppingCart.get(store));
                 }
@@ -661,11 +657,11 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to create discount in store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to edit discount in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit discounts", null);
         }
-        return stores.get(storeID).CreateDiscount(productID, category, percent,"simple", username);
+        return stores.get(storeID).CreateDiscount(productID, category, percent, "simple", username);
     }
 
     public Response<String> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
@@ -676,14 +672,12 @@ public class StoreRepository {
             Response<Double> discountShop;
             if (!stores.containsKey(storeID)) {
                 discountShop = deactivatedStores.get(storeID).CalculateDiscounts(productsInStore);
-            }
-            else {
+            } else {
                 discountShop = stores.get(storeID).CalculateDiscounts(productsInStore);
             }
             if (discountShop.isSuccess()) {
                 discount += discountShop.getData();
-            }
-            else {
+            } else {
                 return Response.error(discountShop.getMessage(), null);
             }
         }
@@ -710,7 +704,7 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to remove discount in store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to remove discount in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to remove discount", null);
         }
@@ -718,7 +712,7 @@ public class StoreRepository {
     }
 
     public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(Map<Integer, Map<Integer, Integer>> shoppingCart) {
-        if(shoppingCart.isEmpty()){
+        if (shoppingCart.isEmpty()) {
             return Response.error("Shopping cart is empty", null);
         }
         for (Map.Entry<Integer, Map<Integer, Integer>> storeEntry : shoppingCart.entrySet()) {
@@ -744,14 +738,12 @@ public class StoreRepository {
             Response<String> res;
             if (!stores.containsKey(storeID)) {
                 res = deactivatedStores.get(storeID).calculateShoppingCartPrice(productsInStore);
-            }
-            else {
+            } else {
                 res = stores.get(storeID).calculateShoppingCartPrice(productsInStore);
             }
             if (res.isSuccess()) {
                 price += Double.parseDouble(res.getData());
-            }
-            else {
+            } else {
                 return Response.error(res.getMessage(), null);
             }
         }
@@ -767,13 +759,12 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to make complex discount in store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to edit discount in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit discounts", null);
         }
         return stores.get(storeID).makeComplexDiscount(username, discountId1, discountId2, discountType);
     }
-
 
 
     public Response<String> makeConditionDiscount(String username, Integer storeID, Integer discountId, Integer conditionId) {
@@ -785,7 +776,7 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to make condition discount in store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to edit discount in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit discounts", null);
         }
@@ -801,11 +792,11 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to add simple policy to store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to edit policy in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit policies", null);
         }
-        return stores.get(storeID).addSimplePolicyToStore(username,category,productID, amount, minAmount, maxAmount, price);
+        return stores.get(storeID).addSimplePolicyToStore(username, category, productID, amount, minAmount, maxAmount, price);
     }
 
     public Response<String> removeProductFromCategory(Integer productId, String category, Integer storeId, String username) {
@@ -829,7 +820,7 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to make complex policy in store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to edit policy in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit policies", null);
         }
@@ -855,7 +846,7 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to make condition policy in store: " + storeID + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeID, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeID, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to edit policy in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit policies", null);
         }
@@ -871,7 +862,7 @@ public class StoreRepository {
             SystemLogger.error("[ERROR] " + username + " tried to remove policy in store: " + storeId + " but the store is deactivated");
             return Response.error("Store: " + getStoreNameByID(storeId, username) + " is deactivated", null);
         }
-        if(!hasPermission(storeId, username, "MANAGE_DISCOUNTS_POLICIES")){
+        if (!hasPermission(storeId, username, "MANAGE_DISCOUNTS_POLICIES")) {
             SystemLogger.error("[ERROR] " + username + " tried to remove policy in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to remove policies", null);
         }
@@ -890,15 +881,14 @@ public class StoreRepository {
             if (!stores.containsKey(storeID)) {
                 SystemLogger.error("[ERROR] " + currentUsername + " tried to reopen store: " + storeID + " but the store doesn't exist");
                 return Response.error("Store doesn't exist", null);
-            }
-            else{
+            } else {
                 SystemLogger.error("[ERROR] " + currentUsername + " tried to reopen store: " + storeID + " but the store is already opened");
                 return Response.error("Store: " + getStoreNameByID(storeID, currentUsername) + " is already opened", null);
             }
         }
         if (!isStoreCreator(storeID, currentUsername)) { //The subscriber is not the store manager
             SystemLogger.error("[ERROR] " + currentUsername + " tried to reopen store: " + storeID + " but the user is not the store creator");
-            return Response.error("The user trying to do this action is not the store creator.",null);
+            return Response.error("The user trying to do this action is not the store creator.", null);
         }
         Store store = deactivatedStores.get(storeID);
         if (store == null) {
@@ -940,5 +930,39 @@ public class StoreRepository {
         }
 
         return Response.success("All stores were retrieved successfully", storesList);
+    }
+
+    public Response<Boolean> isExistAlcohol(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+        for (Map.Entry<Integer, Map<Integer, Integer>> storeEntry : shoppingCart.entrySet()) {
+            Integer storeID = storeEntry.getKey();
+            Map<Integer, Integer> productsInStore = storeEntry.getValue();
+            if (!stores.containsKey(storeID)) {
+                if (deactivatedStores.containsKey(storeID)) {
+                    if (deactivatedStores.get(storeID).isExistAlcohol(productsInStore).getData()) {
+                        return Response.success("Alcohol exists in the shopping cart", true);
+                    }
+                }
+                return Response.error("Store with ID: " + storeID + " doesn't exist", false);
+            }
+            if (stores.get(storeID).isExistAlcohol(productsInStore).getData()) {
+                return Response.success("Alcohol exists in the shopping cart", true);
+            }
+        }
+        return Response.success("Alcohol doesn't exist in the shopping cart", false);
+    }
+
+    public List<String> getDiscountsStrings(int storeID) {
+        if (!stores.containsKey(storeID)) {
+            return new ArrayList<>();
+        }
+        return stores.get(storeID).getDiscountsStrings();
+    }
+
+    public List<String> getPoliciesString(int storeID) {
+        if (!stores.containsKey(storeID)) {
+            return new ArrayList<>();
+        }
+        return stores.get(storeID).getPoliciesString();
+
     }
 }

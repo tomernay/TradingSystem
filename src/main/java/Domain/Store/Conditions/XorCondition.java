@@ -66,5 +66,8 @@ public class XorCondition implements  Condition{
         return null;
     }
 
-
+    @Override
+    public String toString() {
+        return "(" + condition1.toString() + ") XOR (" + condition2.toString() + ")";
+    }
 }

@@ -1006,5 +1006,22 @@ public class StoreService {
         SystemLogger.error("[ERROR] User: " + username + " tried to retrieve all stores  but the token was invalid");
         return Response.error("Invalid token", null);
     }
+
+    public Response<Boolean> isExistAlcohol(String username, String token){
+        SystemLogger.info("[START] User: " + username + " is trying to check if alcohol exists");
+        if (userService.isValidToken(token, username)) {
+            Map<Integer,Map<Integer,Integer>> shoppingCart = userService.getShoppingCartContents(username, token).getData();
+            return storeFacade.isExistAlcohol(shoppingCart);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to check if alcohol exists but the token was invalid");
+        return Response.error("Invalid token", null);
+    }
+    public List<String> getDiscountsStrings(int storeID) {
+        return storeFacade.getDiscountsStrings(storeID);
+    }
+
+    public List<String> getPoliciesString(int storeID) {
+        return storeFacade.getPoliciesString(storeID);
+    }
 }
 
