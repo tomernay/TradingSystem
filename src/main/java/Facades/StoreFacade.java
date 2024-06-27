@@ -221,8 +221,8 @@ public class StoreFacade {
         return storeRepository.viewProductFromAllStoresByCategory(category);
     }
 
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
-        return storeRepository.LockProducts(shoppingCart);
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart,Boolean isOverEighteen) {
+        return storeRepository.LockProducts(shoppingCart,isOverEighteen);
     }
 
     public Response<String> CreateDiscount(Integer productID, Integer storeID, String username, String category, Double percent) {

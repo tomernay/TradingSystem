@@ -613,7 +613,7 @@ public class StoreRepository {
     }
 
 
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart,Boolean isOverEighteen) {
         ArrayList<Integer> storeLocked = new ArrayList<>();
         if (shoppingCart.isEmpty()) {
             return Response.error("Shopping cart is empty", null);
@@ -634,7 +634,7 @@ public class StoreRepository {
                 SystemLogger.error("[ERROR] Store with ID: " + storeID + " is deactivated");
                 return Response.error("Store: " + deactivatedStores.get(storeID).getName() + " is deactivated and can't be purchased from.", null);
             }
-            resProductDTO = stores.get(storeID).LockProducts(productsInStore); //Lock the shopping cart
+            resProductDTO = stores.get(storeID).LockProducts(productsInStore,isOverEighteen); //Lock the shopping cart
             if (resProductDTO.isSuccess()) {
                 storeLocked.add(storeID);
                 output.addAll(resProductDTO.getData());

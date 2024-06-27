@@ -781,7 +781,7 @@ public class Inventory {
                 SystemLogger.error("[ERROR] Product with ID: " + productID + " not found.");
                 return Response.error("Product with ID: " + productID + " not found.", false);
             }
-            if (categories.containsKey("ALCOHOL") && categories.get("Alcohol").contains(productID)){
+            if (categories.containsKey("ALCOHOL") && categories.get("ALCOHOL").contains(productID)){
                 return Response.success("Alcohol product found", true);
             }
         }

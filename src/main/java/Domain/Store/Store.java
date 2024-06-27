@@ -15,6 +15,7 @@ import Utilities.SystemLogger;
 //import javax.persistence.Id;
 //import javax.persistence.Table;
 //import javax.persistence.Transient;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -479,17 +480,29 @@ public class Store {
         return inventory.isCategoryExist(category);
     }
 
-    public Response<Boolean> checkPolicy(Map<ProductDTO, Integer> productsInShoppingCart) {
-        for (Condition c : policies.values()) {
-            if (!c.isValid(productsInShoppingCart)) {
-                return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
+    public Response<Boolean> checkPolicy(Map<ProductDTO, Integer> productsInShoppingCart,Boolean isOverEighteen) {
+
+        if (!isOverEighteen) {
+            return new Response<>(false, "conditions are  not valid", false);
+        } else {
+            LocalTime now = LocalTime.now();
+            LocalTime startTime = LocalTime.of(23, 0);
+            LocalTime endTime = LocalTime.of(5, 0);
+            if (!(now.isAfter(startTime) || now.isBefore(endTime) || isOverEighteen == null )) {
+
+                for (Condition c : policies.values()) {
+                    if (!c.isValid(productsInShoppingCart)) {
+                        return new Response<>(false, "The condition: " + c.getConditionID() + " is not valid", false);
+                    }
+                }
+                return new Response<>(true, "All conditions are valid", true);
             }
+            return new Response<>(false, "conditions are  not valid", false);
         }
-        return new Response<>(true, "All conditions are valid", true);
     }
 
 
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Integer> productsShoppingCart) {
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Integer> productsShoppingCart,Boolean isOverEighteen) {
         Response<List<ProductDTO>> productDTOList = inventory.LockProducts(productsShoppingCart);
         if (!productDTOList.isSuccess()) {
             return productDTOList;
@@ -498,7 +511,7 @@ public class Store {
         for (ProductDTO productDTO : productDTOList.getData()) {
             products.put(productDTO, productsShoppingCart.get(productDTO.getProductID()));
         }
-        if (checkPolicy(products).getData()) {
+        if (checkPolicy(products,isOverEighteen).getData()) {
             return productDTOList;
         } else {
             inventory.unlockProductsBackToStore(productsShoppingCart);

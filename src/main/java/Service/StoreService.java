@@ -3,7 +3,6 @@ package Service;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Facades.StoreFacade;
 import Utilities.Messages.Message;
@@ -802,8 +801,8 @@ public class StoreService {
 
 
 
-    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
-        return storeFacade.LockProducts(shoppingCart);
+    public Response<List<ProductDTO>> LockProducts(Map<Integer, Map<Integer, Integer>> shoppingCart, Boolean isOverEighteen) {
+        return storeFacade.LockProducts(shoppingCart,isOverEighteen);
     }
 
 

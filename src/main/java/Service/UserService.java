@@ -8,16 +8,11 @@ import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import Domain.Repo.UserRepository;
-import Domain.Users.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -399,11 +394,13 @@ public class UserService {
 
     /**
      * This method locks the shopping cart - preventing the user from making any changes to the shopping cart & removes the products from the stores.
-     * @param username The username of the subscriber.
-     * @param token The token of the subscriber.
+     *
+     * @param username       The username of the subscriber.
+     * @param token          The token of the subscriber.
+     * @param isOverEighteen
      * @return
      */
-    public Response<List<ProductDTO>> lockShoppingCart(String username, String token) {
+    public Response<List<ProductDTO>> lockShoppingCart(String username, String token, Boolean isOverEighteen) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
             if(adminService.isSuspended(username)){
@@ -415,7 +412,7 @@ public class UserService {
                 return Response.error(resShoppingCartContents.getMessage(), null);
             }
             // Lock the shopping cart products in the stores
-            Response<List<ProductDTO>> list_product = storeService.LockProducts(resShoppingCartContents.getData());
+            Response<List<ProductDTO>> list_product = storeService.LockProducts(resShoppingCartContents.getData(),isOverEighteen );
             if (list_product.isSuccess()) { // If the shopping cart locking was successful
                 purchaseProcessTimer(username, token); // Start the purchase process timer for the user
                 return list_product;
