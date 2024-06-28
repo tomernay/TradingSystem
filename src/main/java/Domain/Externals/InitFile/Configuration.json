@@ -1,0 +1,32 @@
+{
+  "payments service": "ProxyPaymentGateway",
+  "supplier service": "ProxySupplyGateway",
+  "Admin details": {
+    "user": "admin@",
+    "password": "123456"
+  },
+  "init sequence": [
+    { "function": "register", "parameters": { "username": "mia", "password": "Password123!" } },
+    { "function": "register", "parameters": { "username": "manager", "password": "Password123!" } },
+    { "function": "register", "parameters": { "username": "owner", "password": "Password123!" } },
+    { "function": "loginAsSubscriber", "parameters": { "username": "mia", "password": "Password123!" } },
+    { "function": "loginAsSubscriber", "parameters": { "username": "manager", "password": "Password123!" } },
+    { "function": "loginAsSubscriber", "parameters": { "username": "owner", "password": "Password123!" } },
+    { "function": "addStore", "parameters": { "storeName": "newStore", "ownerUsername": "mia" } },
+    { "function": "addStore", "parameters": { "storeName": "newStore2", "ownerUsername": "mia" } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 0, "productName": "yair", "description": "d", "price": 20, "quantity": 30, "categories": [] } },
+    { "function": "SendManagerNominationRequest", "parameters": { "storeIndex": 0, "ownerUsername": "mia", "managerUsername": "manager", "permissions": ["VIEW_PRODUCTS", "MANAGE_PRODUCTS", "VIEW_DISCOUNTS_POLICIES"] } },
+    { "function": "managerNominationResponse", "parameters": { "requestId": 0, "managerUsername": "manager", "accepted": true } },
+    { "function": "SendOwnerNominationRequest", "parameters": { "storeIndex": 0, "ownerUsername": "mia", "newOwnerUsername": "owner" } },
+    { "function": "ownerNominationResponse", "parameters": { "requestId": 0, "newOwnerUsername": "owner", "accepted": true } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 0, "productName": "Bamba", "description": "Bamba", "price": 200.0, "quantity": 1, "categories": ["test"] } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 0, "productName": "VODKA", "description": "VODKA", "price": 200.0, "quantity": 1, "categories": ["ALCOHOL"] } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 0, "productName": "Bisli", "description": "Bisli", "price": 100.0, "quantity": 1, "categories": [] } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 1, "productName": "CHIPS", "description": "CHIPS", "price": 200.0, "quantity": 1, "categories": [] } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 1, "productName": "DORITOS", "description": "DORITOS", "price": 100.0, "quantity": 1, "categories": [] } },
+    { "function": "addProductToShoppingCart", "parameters": { "storeIndex": 0, "productId": 1, "quantity": 1, "username": "mia" } },
+    { "function": "addProductToShoppingCart", "parameters": { "storeIndex": 0, "productId": 2, "quantity": 1, "username": "mia" } },
+    { "function": "addProductToShoppingCart", "parameters": { "storeIndex": 1, "productId": 1, "quantity": 1, "username": "mia" } },
+    { "function": "logoutAsSubscriber", "parameters": { "username": "mia" } }
+  ]
+}
