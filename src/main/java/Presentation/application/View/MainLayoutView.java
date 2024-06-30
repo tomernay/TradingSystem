@@ -528,7 +528,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         viewTitle = new H1();
         //  viewTitle.addClassNames(Lumo.FontStyle.LARGE, Lumo.Margin.NONE);
-        Button b=new Button("check message",e->sub.add(new NormalMessage("Message has benn added")));
+        Button b=new Button("check message",e->sub.add(new NormalMessage("Message has been added")));
 //        addToNavbar(viewTitle);
     }
 

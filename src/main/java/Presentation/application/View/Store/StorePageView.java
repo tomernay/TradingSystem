@@ -10,6 +10,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -216,17 +218,40 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
     public void openPoliciesDialog(List<String> policies){
         //create a dialog with the store policies
         Dialog dialog = new Dialog();
+        //add title to the dialog H
+        H2 header = new H2("Store Policies");
+        header.getElement().getStyle().set("margin-bottom", "20px"); // Add space below the header
+
+        header.getElement().getStyle().set("color", "#3F352C");
+        dialog.add(header);
+
+//        dialog.getElement().getStyle().set("background-color", "#E6DCD3");
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         dialog.setCloseOnEsc(true);
         dialog.setCloseOnOutsideClick(true);
         dialog.setWidth("400px");
         dialog.setHeight("400px");
-        dialog.add(new Span("Store Policies"));
-        //add the policies to the dialog
-        for(String policy : policies){
-            Span policySpan = new Span(policy);
-            dialog.add(policySpan);
-        }
 
+        VerticalLayout layout = new VerticalLayout();
+        layout.setPadding(false);
+        layout.setSpacing(false);
+//        dialog.add(new Span("Store Policies\n"));
+        //add the policies to the dialog
+        for(int i = 0; i < policies.size(); i++){
+            String policy = policies.get(i);
+            Span policySpan = new Span(policy + "\n");
+            //add a seperator between each policy
+            layout.add(policySpan);
+//            policySpan.getElement().getStyle().set("font-size", "1.5em");
+            policySpan.getElement().getStyle().set("color", "#3F352C");
+
+            // Add a separator (Hr) between policies
+            if (i < policies.size() - 1) {
+                layout.add(new Hr());
+            }
+
+        }
+        dialog.add(layout);
         dialog.open();
     }
 
