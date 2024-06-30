@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class PlusDiscount implements Discount {
 
-    private Discount discount1;
-    private Discount discount2;
-    private Integer discountID;
+    private final Discount discount1;
+    private final Discount discount2;
+    private final Integer discountID;
 
     public PlusDiscount(Discount discount1, Discount discount2, Integer discountID) {
         this.discount1 = discount1;

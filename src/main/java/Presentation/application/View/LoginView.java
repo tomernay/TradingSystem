@@ -42,9 +42,9 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         loginButton.addClassName("button");
         registerButton.addClassName("button");
         guestButton.addClassName("button");
-        loginButton.setWidth("376px");
-        registerButton.setWidth("180px");
-        guestButton.setWidth("180px");
+        loginButton.setWidth("90%");
+        registerButton.setWidth("45%");
+        guestButton.setWidth("45%");
 
         HorizontalLayout buttons = new HorizontalLayout(loginButton);
         buttons.setAlignItems(Alignment.CENTER);
@@ -72,7 +72,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         H1 loginTitle = new H1("Login");
         loginTitle.addClassName("title");
-        loginTitle.getStyle().set("font-size", "7em");
+        loginTitle.getStyle().set("font-size", "450%");
 
 
         VerticalLayout container = new VerticalLayout();

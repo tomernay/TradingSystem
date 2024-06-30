@@ -2,21 +2,21 @@ package Domain.Store.Conditions;
 
 import Domain.Store.Inventory.ProductDTO;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class SimpleCondition implements Condition{
-    private Integer conditionID;
-    private Integer productID;
-    private String category;
-    private Double minAmount;
-    private Double maxAmount;
-    private Double amount;
-    private Boolean price;
+    private final Integer conditionID;
+    private final Integer productID;
+    private final String category;
+    private final Double minAmount;
+    private final Double maxAmount;
+    private final Double amount;
+    private final Boolean price;
+    private final String productName;
 
 
-    public SimpleCondition(Integer conditionID, Integer productID, String category, Double amount, Double minAmount, Double maxAmount,Boolean price) {
+    public SimpleCondition(Integer conditionID, Integer productID, String category, Double amount, Double minAmount, Double maxAmount,Boolean price,String productName) {
         this.conditionID = conditionID;
         this.productID = productID;
         this.category = category;
@@ -24,12 +24,10 @@ public class SimpleCondition implements Condition{
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
         this.price = price;
+        this.productName = productName;
     }
 
     public Boolean getPriceIndicator() {
-        if (price == null){
-            return null;
-        }
         return price;
     }
 
@@ -94,7 +92,7 @@ public class SimpleCondition implements Condition{
     public String toString() {
         StringBuilder result = new StringBuilder();
         if (productID != null) {
-            result.append("Product ID: ").append(productID);
+            result.append("Product name: ").append(productName);
         }
         if (category != null && !category.isEmpty()) {
             result.append("Category: ").append(category);

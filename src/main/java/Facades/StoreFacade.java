@@ -229,7 +229,7 @@ public class StoreFacade {
         return storeRepository.CreateDiscount(productID, storeID, category, percent, username);
     }
 
-    public Response<String> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+    public Response<Double> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         return storeRepository.CalculateDiscounts(shoppingCart);
     }
 

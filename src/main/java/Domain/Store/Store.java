@@ -543,7 +543,10 @@ public class Store {
         int IdDiscount;
         if (type.equals("simple")) {
             IdDiscount = productIDGeneratorDiscount.getAndIncrement();
-            discount = new SimpleDiscount(percent, productID, category, IdDiscount);
+            if(productID == null)
+                discount = new SimpleDiscount(percent, null, category, IdDiscount, null);
+            else
+                discount = new SimpleDiscount(percent, productID, category, IdDiscount, getProductName(productID).getData());
             discounts.put(IdDiscount, discount);
         } else {
             return new Response<>(false, "Failed to create discount");
@@ -696,7 +699,11 @@ public class Store {
             return new Response<>(false, "minAmount can't be null");
         }
         int id = productIDGeneratorPolicy.getAndIncrement();
-        policies.put(id, new SimpleCondition(id, productID, category, amount, minAmount, maxAmount, price));
+        if (productID == null) {
+            policies.put(id, new SimpleCondition(id, null, category, amount, minAmount, maxAmount, price, null));
+        } else {
+            policies.put(id, new SimpleCondition(id, productID, category, amount, minAmount, maxAmount, price, getProductName(productID).getData()));
+        }
         return new Response<>(true, "Condition created successfully");
     }
 

@@ -1,5 +1,6 @@
 package UnitTests;
-
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
 import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Repo.OrderRepository;
@@ -14,12 +15,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+//import org.powermock.api.mockito.PowerMockito;
+//import org.powermock.core.classloader.annotations.PrepareForTest;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
+//@PrepareForTest({ LocalDateTime.class, LocalTime.class })
 public class PurchaseCartUnitTest {
 
     ServiceInitializer serviceInitializer;
@@ -59,6 +68,7 @@ public class PurchaseCartUnitTest {
         storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(1, "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
+        storeService.addProductToStore(0,"VODKA","VODKA",200.0,1, new ArrayList<>(List.of("ALCOHOL")),"newOwner",owner.getToken());
     }
 
     @Test

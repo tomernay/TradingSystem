@@ -806,7 +806,7 @@ public class StoreService {
     }
 
 
-    public Response<String> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+    public Response<Double> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         return storeFacade.CalculateDiscounts(shoppingCart);
     }
 
