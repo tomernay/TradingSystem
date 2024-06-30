@@ -91,6 +91,85 @@ public class AdminView extends AppLayout  {
         systemManagerButton();
     }
 
+    public void suspendUserButton() {
+        Button suspendUserButton = new Button("Suspend User", e -> openSuspendUserDialog());
+        suspendUserButton.addClassName("button");
+        //set the button size
+        suspendUserButton.setWidth("200px");
+
+        actions.add(suspendUserButton);
+    }
+
+    private void openSuspendUserDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+        //retrieve all open stores
+        Set<String> subscribers = presenter.getAllSubscribers();
+        ComboBox<String> storeComboBox = new ComboBox<>();
+        storeComboBox.setItems(subscribers);
+        storeComboBox.setLabel("Select subscriber to suspend:");
+        storeComboBox.getElement().getStyle().set("color", "#3F352C");
+        dialogLayout.add(storeComboBox);
+        Button closeButton = new Button("Suspend subscriber", e -> {
+            String subName = storeComboBox.getValue();
+            if (subName == null) {
+                Notification.show("Please select a store to close");
+            } else {
+                //ask for confirmation
+                openSuspendConfirmationDialog(subName);
+
+                //close store
+                //presenter.closeStore(storeName);
+                dialog.close();
+            }
+        });
+        closeButton.addClassName("button");
+        //center the button
+        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, closeButton);
+        dialogLayout.add(closeButton);
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
+    private void openSuspendConfirmationDialog(String subName) {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setCloseOnEsc(false);
+        confirmationDialog.setCloseOnOutsideClick(false);
+        confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        dialogLayout.add(new H3("Are you sure you want to suspend " + subName + "?"));
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.suspendSubscriber(subName);
+            confirmationDialog.close();
+        });
+        confirmButton.addClassName("yes_button");
+        Button cancelButton = new Button("No", e -> {
+            confirmationDialog.close();
+        });
+        cancelButton.addClassName("no_button");
+        buttonsLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+        buttonsLayout.add(confirmButton, cancelButton);
+        dialogLayout.add(buttonsLayout);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
+    }
+
+    public void cancelSuspensionButton() {
+        Button cancelSuspensionButton = new Button("Cancel Suspension");
+        cancelSuspensionButton.addClassName("button");
+        //set the button size
+        cancelSuspensionButton.setWidth("200px");
+
+        actions.add(cancelSuspensionButton);
+    }
+
     public void purchaseHistoryButton() {
         Button purchaseHistoryButton = new Button("Purchase History");
         purchaseHistoryButton.addClassName("button");

@@ -54,4 +54,10 @@ public class AdminPresenter {
 //        userService.removeSubscriber(subName, username, token);
 
     }
+
+    public void suspendSubscriber(String subName) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        //suspendSubscriber(subName, username, token);
+    }
 }
