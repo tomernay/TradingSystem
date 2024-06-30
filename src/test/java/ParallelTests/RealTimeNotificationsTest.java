@@ -46,7 +46,7 @@ public class RealTimeNotificationsTest {
         UI.setCurrent(mockUI);
 
         // Initialize and connect the WSClient
-        wsClient = new WSClient(UI.getCurrent(), "user");
+        wsClient = WSClient.getClient(UI.getCurrent(), "user");
         wsClient.onOpen(new HandshakeImpl1Server());
         wsClient.setOnMessageListener(message -> {
             Notification.show(message); // Simulate UI update

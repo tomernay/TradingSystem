@@ -297,7 +297,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         try {
             UI ui=UI.getCurrent();
-            wsClient=new WSClient(ui,user);
+            wsClient=WSClient.getClient(ui,user);
 
 
         } catch (URISyntaxException e) {
@@ -315,7 +315,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             } catch (ExecutionException eX) {
                 eX.printStackTrace();
             }
-            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+          //  UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
 
             dialog.close();
         });
@@ -463,7 +463,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         String user = CookiesHandler.getUsernameFromCookies(getRequest());
 
         try {
-            webSocketClient = new WSClient(ui, user);
+            webSocketClient = WSClient.getClient(ui, user);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Notification.show("Error initializing WebSocket client");

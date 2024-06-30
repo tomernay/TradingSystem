@@ -14,15 +14,33 @@ import java.util.concurrent.ExecutionException;
 public class WSClient extends WebSocketClient {
 
     private CompletableFuture<String> futureMessage;
-    String user="";
-    private UI ui;
-    public WSClient(UI ui,String user) throws URISyntaxException {
-        super(new URI("ws://localhost:8080/websocket"));
-        this.futureMessage = new CompletableFuture<>();
-        connect();
-        this.user=user;
-        this.ui=ui;
+    static String user="";
+    static UI ui;
+    static WSClient client;
+
+
+    public static WSClient getClient(UI ut,String u) throws URISyntaxException {
+        if(client==null){
+            client=new WSClient();
+        }
+        user=u;
+        ui=ut;
+        return client;
+
     }
+
+    public static String getUser() {
+        return user;
+    }
+
+    public static UI getUi() {
+        return ui;
+    }
+
+    public static void setUser(String user) {
+        WSClient.user = user;
+    }
+
 
     public WSClient() throws URISyntaxException {
         super(new URI("ws://localhost:8080/websocket"));

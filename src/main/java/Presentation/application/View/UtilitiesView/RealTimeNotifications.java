@@ -15,7 +15,7 @@ public class RealTimeNotifications {
     static WSClient wsClient;
     public static void sendMessage(UI ui,String me,String user){
         try {
-            wsClient=new WSClient(ui,user);
+            wsClient=WSClient.getClient(ui,user);
 
 
         } catch (URISyntaxException e) {
