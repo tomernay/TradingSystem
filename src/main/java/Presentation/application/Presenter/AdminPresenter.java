@@ -60,4 +60,10 @@ public class AdminPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         //suspendSubscriber(subName, username, token);
     }
+
+    public void cancelSuspension(String subName) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        //cancelSuspension(subName, username, token);
+    }
 }

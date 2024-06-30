@@ -162,12 +162,46 @@ public class AdminView extends AppLayout  {
     }
 
     public void cancelSuspensionButton() {
-        Button cancelSuspensionButton = new Button("Cancel Suspension");
+        Button cancelSuspensionButton = new Button("Cancel Suspension", e -> openCancelSuspensionDialog());
         cancelSuspensionButton.addClassName("button");
         //set the button size
         cancelSuspensionButton.setWidth("200px");
 
         actions.add(cancelSuspensionButton);
+    }
+
+    private void openCancelSuspensionDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+        //retrieve all open stores
+        Set<String> subscribers = presenter.getAllSubscribers();
+        ComboBox<String> storeComboBox = new ComboBox<>();
+        storeComboBox.setItems(subscribers);
+        storeComboBox.setLabel("Select subscriber to cancel suspension:");
+        storeComboBox.getElement().getStyle().set("color", "#3F352C");
+        dialogLayout.add(storeComboBox);
+        Button closeButton = new Button("Cancel suspension", e -> {
+            String subName = storeComboBox.getValue();
+            if (subName == null) {
+                Notification.show("Please select a store to close");
+            } else {
+                //ask for confirmation
+                presenter.cancelSuspension(subName);
+
+                //close store
+                //presenter.closeStore(storeName);
+                dialog.close();
+            }
+        });
+        closeButton.addClassName("button");
+        //center the button
+        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, closeButton);
+        dialogLayout.add(closeButton);
+        dialog.add(dialogLayout);
+        dialog.open();
     }
 
     public void purchaseHistoryButton() {
