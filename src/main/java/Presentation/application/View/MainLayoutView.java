@@ -616,13 +616,18 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         titleAndFilterLayout.setWidthFull();
         titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        HorizontalLayout productDetailsLayout = new HorizontalLayout();
+//        HorizontalLayout productDetailsLayout = new HorizontalLayout();
         VerticalLayout nameLayout = new VerticalLayout();
         VerticalLayout priceLayout = new VerticalLayout();
         VerticalLayout quantityLayout = new VerticalLayout();
         VerticalLayout buttonLayout = new VerticalLayout();
+        nameLayout.setSpacing(false);
+        priceLayout.setSpacing(false);
+        quantityLayout.setSpacing(false);
+        buttonLayout.setSpacing(false);
 
-        productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
+
+//        productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
 
 
         // Create the "Search Results" span title
@@ -641,22 +646,30 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         for (ProductDTO product : results) {
 //            Div productDiv = new Div();
+            // Create a horizontal layout for each product's details
+            HorizontalLayout productDetailsLayout = new HorizontalLayout();
+            productDetailsLayout.setWidthFull();
+            productDetailsLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Center align items vertically
 
 
 
             // Product name span
             Span productNameSpan = new Span(product.getProductName());
-            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+//            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
             //set the font size of the product name
-            productNameSpan.getElement().getStyle().set("font-size", "18px");
+            productNameSpan.getElement().getStyle().set("font-size", "17px");
             //set height of the product name
-            productNameSpan.getElement().getStyle().set("height", "48px");
+            //top margin
+            productNameSpan.getElement().getStyle().set("margin-top", "10px");
+            productNameSpan.getElement().getStyle().set("margin-bottom", "10px");
 
             // Product price span
             Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
             productPriceSpan.getElement().getStyle().set("color", "gray");
-            productPriceSpan.getElement().getStyle().set("font-size", "18px");
-            productPriceSpan.getElement().getStyle().set("height", "48px");
+            productPriceSpan.getElement().getStyle().set("font-size", "17px");
+            productPriceSpan.getElement().getStyle().set("margin-top", "10px");
+            productPriceSpan.getElement().getStyle().set("margin-bottom", "10px");
+//            productPriceSpan.getElement().getStyle().set("height", "43px");
 
             // Quantity input field
             IntegerField quantityField = new IntegerField();
@@ -696,6 +709,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             priceLayout.add(productPriceSpan);
             quantityLayout.add(quantityIncDec);
             buttonLayout.add(addToCartButton);
+
+            productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
 
             // Add components to productDetailsLayout
 //            productDetailsLayout.add(productNameSpan, productPriceSpan, createQuantityLayout(quantityField, decreaseButton, increaseButton, addToCartButton));

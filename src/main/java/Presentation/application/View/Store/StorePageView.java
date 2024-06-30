@@ -107,11 +107,21 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         VerticalLayout quantityLayout = new VerticalLayout();
         VerticalLayout buttonLayout = new VerticalLayout();
 
-        HorizontalLayout productDetailsLayout = new HorizontalLayout();
-        productDetailsLayout.setWidthFull();
-        productDetailsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
-        productDetailsLayout.setSpacing(true);
+        Div container = new Div();
+        container.getStyle().set("display", "flex");
+        container.getStyle().set("flex-direction", "column");
+        container.getStyle().set("align-items", "center");
+        container.getStyle().set("justify-content", "center");
+        container.getStyle().set("padding", "20px");
+        container.getStyle().set("background-color", "#E6DCD3"); // Optional: set a background color
+        container.getStyle().set("border", "2px solid #B4A79E"); // Optional: set a border
+        container.getStyle().set("border-radius", "8px"); // Optional: set border radius for rounded corners
+        container.getStyle().set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)"); // Optional: add a subtle box shadow
+        container.setWidth("90%"); // Adjust width to content
+        container.setHeight("auto"); // Adjust height to content
+        //margins left and right auto to center the container
+        container.getStyle().set("margin-left", "auto");
+        container.getStyle().set("margin-right", "auto");
 
 
         for (ProductDTO product : products) {
@@ -119,14 +129,25 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
             // Create a horizontal layout for product details (name, price, quantity, buttons)
 
-
+            HorizontalLayout productDetailsLayout = new HorizontalLayout();
+            productDetailsLayout.setWidthFull();
+            productDetailsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+            productDetailsLayout.setSpacing(true);
             //add 4 vertical layouts for each column
 
             Span productNameSpan = new Span(product.getProductName());
-            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+//            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+            productNameSpan.getElement().getStyle().set("font-size", "18px");
+            //set height of the product name
+            //top margin
+            productNameSpan.getElement().getStyle().set("margin-top", "10px");
+            productNameSpan.getElement().getStyle().set("margin-bottom", "7px");
 
             Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
             productPriceSpan.getElement().getStyle().set("color", "gray");
+            productPriceSpan.getElement().getStyle().set("font-size", "18px");
+            productPriceSpan.getElement().getStyle().set("margin-top", "10px");
+            productPriceSpan.getElement().getStyle().set("margin-bottom", "7px");
 
             // Quantity input field
             IntegerField quantityField = new IntegerField();
@@ -172,27 +193,14 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
             // Add productDiv to dialogLayout
 //            dialogLayout.add(productDiv);
+            productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
+            container.add(productDetailsLayout);
         }
         // Create a container for the product details layout
-        Div container = new Div();
-        container.getStyle().set("display", "flex");
-        container.getStyle().set("flex-direction", "column");
-        container.getStyle().set("align-items", "center");
-        container.getStyle().set("justify-content", "center");
-        container.getStyle().set("padding", "20px");
-        container.getStyle().set("background-color", "#E6DCD3"); // Optional: set a background color
-        container.getStyle().set("border", "2px solid #B4A79E"); // Optional: set a border
-        container.getStyle().set("border-radius", "8px"); // Optional: set border radius for rounded corners
-        container.getStyle().set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)"); // Optional: add a subtle box shadow
-        container.setWidth("90%"); // Adjust width to content
-        container.setHeight("auto"); // Adjust height to content
-        //margins left and right auto to center the container
-        container.getStyle().set("margin-left", "auto");
-        container.getStyle().set("margin-right", "auto");
+
 
 
         // Add the product details layout to the container
-        container.add(productDetailsLayout);
 
         // Add the container to the main content
         mainContent.add(container);
