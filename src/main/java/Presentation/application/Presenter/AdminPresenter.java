@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class AdminPresenter {
@@ -41,9 +42,16 @@ public class AdminPresenter {
         storeService.closeStore(storeID, username, token);
     }
 
-    public List<String> getAllSubscribers() {
+    public Set<String> getAllSubscribers() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         return userService.getAllSubscribers(username, token).getData();
+    }
+
+    public void removeSubscriber(String subName) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+//        userService.removeSubscriber(subName, username, token);
+
     }
 }

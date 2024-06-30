@@ -757,7 +757,7 @@ public class UserService {
         return userFacade.getUnreadMessagesCount(username, token);
     }
 
-    public Response<Object> getAllSubscribers(String username, String token) {
+    public Response<Set<String>> getAllSubscribers(String username, String token) {
         if(isValidToken(token,username)){
             return userFacade.getAllSubscribers(username);
         }

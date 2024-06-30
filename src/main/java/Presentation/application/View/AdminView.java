@@ -86,6 +86,27 @@ public class AdminView extends AppLayout  {
         mainContent.add(actions);
         actions.setAlignItems(FlexComponent.Alignment.CENTER);
         closeStoreButton();
+        cancelSubscriptionButton();
+        purchaseHistoryButton();
+        systemManagerButton();
+    }
+
+    public void purchaseHistoryButton() {
+        Button purchaseHistoryButton = new Button("Purchase History");
+        purchaseHistoryButton.addClassName("button");
+        //set the button size
+        purchaseHistoryButton.setWidth("200px");
+
+        actions.add(purchaseHistoryButton);
+    }
+
+    public void systemManagerButton() {
+        Button systemManagerButton = new Button("System Management");
+        systemManagerButton.addClassName("button");
+        //set the button size
+        systemManagerButton.setWidth("200px");
+
+        actions.add(systemManagerButton);
     }
 
     public void closeStoreButton() {
@@ -176,19 +197,19 @@ public class AdminView extends AppLayout  {
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         //retrieve all open stores
-        List<String> subscribers = presenter.getAllSubscribers();
+        Set<String> subscribers = presenter.getAllSubscribers();
         ComboBox<String> storeComboBox = new ComboBox<>();
         storeComboBox.setItems(subscribers);
-        storeComboBox.setLabel("Select Store to Close");
+        storeComboBox.setLabel("Select subscriber to remove:");
         storeComboBox.getElement().getStyle().set("color", "#3F352C");
         dialogLayout.add(storeComboBox);
-        Button closeButton = new Button("Close Store", e -> {
-            String storeName = storeComboBox.getValue();
-            if (storeName == null) {
+        Button closeButton = new Button("Remove subscriber", e -> {
+            String subName = storeComboBox.getValue();
+            if (subName == null) {
                 Notification.show("Please select a store to close");
             } else {
                 //ask for confirmation
-                openClosingConfirmationDialog(storeName);
+                openRemovingConfirmationDialog(subName);
 
                 //close store
                 //presenter.closeStore(storeName);
@@ -201,6 +222,33 @@ public class AdminView extends AppLayout  {
         dialogLayout.add(closeButton);
         dialog.add(dialogLayout);
         dialog.open();
+    }
+
+    private void openRemovingConfirmationDialog(String subName) {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.setCloseOnEsc(false);
+        confirmationDialog.setCloseOnOutsideClick(false);
+        confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        dialogLayout.add(new H3("Are you sure you want to remove " + subName + "?"));
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        Button confirmButton = new Button("Yes", e -> {
+            presenter.removeSubscriber(subName);
+            confirmationDialog.close();
+        });
+        confirmButton.addClassName("yes_button");
+        Button cancelButton = new Button("No", e -> {
+            confirmationDialog.close();
+        });
+        cancelButton.addClassName("no_button");
+        buttonsLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+        buttonsLayout.add(confirmButton, cancelButton);
+        dialogLayout.add(buttonsLayout);
+        confirmationDialog.add(dialogLayout);
+        confirmationDialog.open();
     }
 
 

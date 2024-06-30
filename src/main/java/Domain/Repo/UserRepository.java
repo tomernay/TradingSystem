@@ -673,7 +673,7 @@ public class UserRepository implements JpaRepository<User, Long> {
         return null;
     }
 
-    public Response<Object> getAllSubscribers(String username) {
+    public Response<Set<String>> getAllSubscribers(String username) {
         return Response.success("All subscribers",subscribers.keySet());
     }
 }
