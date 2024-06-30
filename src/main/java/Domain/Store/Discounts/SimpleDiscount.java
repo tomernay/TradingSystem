@@ -14,14 +14,17 @@ public class SimpleDiscount implements Discount{
     private Integer productID;
     private String category;
     private Integer discountID;
+    private String nameProduct;
 
 
-    public SimpleDiscount(Double percent, Integer productID, String category, Integer discountID) {
+    public SimpleDiscount(Double percent, Integer productID, String category, Integer discountID, String nameProduct) {
         this.percent = percent;
         this.productID = productID;
         this.category = category;
         this.discountID = discountID;
+        this.nameProduct = nameProduct;
     }
+
 
 
     public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
@@ -78,7 +81,7 @@ public class SimpleDiscount implements Discount{
     public String toString() {
         StringBuilder result = new StringBuilder(percent + "% off");
         if (productID != null) {
-            result.append(" on product ID: ").append(productID);
+            result.append(" on name: ").append(nameProduct);
         }
         if (category != null && !category.isEmpty()) {
             result.append(" on category: ").append(category);

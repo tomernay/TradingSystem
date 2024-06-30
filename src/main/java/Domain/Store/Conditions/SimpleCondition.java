@@ -14,9 +14,10 @@ public class SimpleCondition implements Condition{
     private Double maxAmount;
     private Double amount;
     private Boolean price;
+    private String producdName;
 
 
-    public SimpleCondition(Integer conditionID, Integer productID, String category, Double amount, Double minAmount, Double maxAmount,Boolean price) {
+    public SimpleCondition(Integer conditionID, Integer productID, String category, Double amount, Double minAmount, Double maxAmount,Boolean price,String producdName) {
         this.conditionID = conditionID;
         this.productID = productID;
         this.category = category;
@@ -24,6 +25,7 @@ public class SimpleCondition implements Condition{
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
         this.price = price;
+        this.producdName = producdName;
     }
 
     public Boolean getPriceIndicator() {
@@ -94,7 +96,7 @@ public class SimpleCondition implements Condition{
     public String toString() {
         StringBuilder result = new StringBuilder();
         if (productID != null) {
-            result.append("Product ID: ").append(productID);
+            result.append("Product name: ").append(producdName);
         }
         if (category != null && !category.isEmpty()) {
             result.append("Category: ").append(category);
