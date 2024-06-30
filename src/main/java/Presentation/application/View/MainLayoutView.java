@@ -837,7 +837,13 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
     private void addToCart(ProductDTO product, Integer quantity) {
-        presenter.addToCart(product, quantity);
+        try {
+            presenter.addToCart(product, quantity);
+            Notification.show("Product added to cart successfully!");
+        }
+        catch (Exception e) {
+            Notification.show("Error adding product to cart: " + e.getMessage());
+        }
     }
 
 

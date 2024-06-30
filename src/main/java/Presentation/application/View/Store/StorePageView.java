@@ -13,6 +13,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -264,7 +265,14 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
     }
 
     private void addToCart(ProductDTO product, Integer quantity) {
-        presenter.addToCart(product, quantity);
+        try {
+            presenter.addToCart(product, quantity);
+            Notification.show("Product added to cart successfully!");
+        }
+        catch (Exception e) {
+            Notification.show("Error adding product to cart: " + e.getMessage());
+        }
+
     }
 
 
