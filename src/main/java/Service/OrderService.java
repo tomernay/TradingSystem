@@ -137,4 +137,12 @@ public class OrderService {
     public Response<List<OrderDTO>> getOrdersHistory(Integer storeID) {
         return orderFacade.getOrdersHistoryDTO(storeID);
     }
+
+    public PaymentGateway getPaymentGateway() {
+        return paymentGateway;
+    }
+
+    public SupplySystem getSupplySystem() {
+        return supplySystem;
+    }
 }

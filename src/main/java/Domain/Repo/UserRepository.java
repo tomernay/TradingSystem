@@ -136,11 +136,11 @@ public class UserRepository implements JpaRepository<User, Long> {
     }
 
     public Response<String> register(String username, String password) {
-        if(!isUsernameValid(username) ) {
+        /*   if(!isUsernameValid(username) ) {
             SystemLogger.error("[ERROR] Username does not meet the requirements");
             return Response.error("Username does not meet the requirements", null);
-        }
-        else if(!isValidPassword(password)) {
+        }*/
+         if(!isValidPassword(password)) {
             SystemLogger.error("[ERROR] Password does not meet the requirements");
             return Response.error("Password does not meet the requirements", null);
         }

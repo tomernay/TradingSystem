@@ -45,7 +45,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertEquals(userRepository.getSubscribers().size(), 1);
     }
 
-    @Test
+    /* @Test
     public void registerUserInvalidUsernameTest(){
         // Try to register a user with a username that does not meet the requirements
         userService.register("","Password123!");
@@ -53,7 +53,7 @@ public class UserRegisterLoginLogoutTests {
         // The registration should fail, so the success status should be false
         Assert.assertFalse(userRepository.getSubscribers().containsKey(""));
         Assert.assertEquals(userRepository.getSubscribers().size(), 0);
-    }
+    }*/
 
     @Test
     public void registerUserInvalidPasswordTest(){

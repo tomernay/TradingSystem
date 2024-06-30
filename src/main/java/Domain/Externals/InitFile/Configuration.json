@@ -1,0 +1,25 @@
+{
+  "payments service": "ProxyPaymentGateway",
+  "supplier service": "ProxySupplyGateway",
+  "Admin details": {
+    "user": "admin@",
+    "password": "123456"
+  },
+  "init sequence": [
+    { "function": "register", "parameters": { "username": "u2", "password": "Password123!" } },
+    { "function": "register", "parameters": { "username": "u3", "password": "Password123!" } },
+    { "function": "register", "parameters": { "username": "u4", "password": "Password123!" } },
+    { "function": "register", "parameters": { "username": "u5", "password": "Password123!" } },
+    { "function": "register", "parameters": { "username": "u6", "password": "Password123!" } },
+    { "function": "loginAsSubscriber", "parameters": { "username": "u2", "password": "Password123!" } },
+    { "function": "addStore", "parameters": { "storeName": "s1", "ownerUsername": "u2" } },
+    { "function": "addProductToStore", "parameters": { "storeIndex": 0, "productName": "Bamba", "description": "Bamba", "price": 30, "quantity": 20, "categories": ["snacks"], "ownerUsername": "u2" } },
+    { "function": "SendManagerNominationRequest", "parameters": { "storeIndex": 0, "ownerUsername": "u2", "managerUsername": "u3", "permissions": ["MANAGE_PRODUCTS"] } },
+    { "function": "managerNominationResponse", "parameters": { "requestId": 0, "managerUsername": "u3", "accepted": true } },
+    { "function": "SendOwnerNominationRequest", "parameters": { "storeIndex": 0, "ownerUsername": "u2", "newOwnerUsername": "u4" } },
+    { "function": "ownerNominationResponse", "parameters": { "requestId": 1, "newOwnerUsername": "u4", "accepted": true } },
+    { "function": "SendOwnerNominationRequest", "parameters": { "storeIndex": 0, "ownerUsername": "u2", "newOwnerUsername": "u5" } },
+    { "function": "ownerNominationResponse", "parameters": { "requestId": 2, "newOwnerUsername": "u5", "accepted": true } },
+    { "function": "logoutAsSubscriber", "parameters": { "username": "u2" } }
+  ]
+}

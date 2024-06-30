@@ -1,5 +1,6 @@
 package Presentation.application;
 
+import Domain.Externals.InitFile.Configuration;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
@@ -8,6 +9,9 @@ import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
@@ -16,6 +20,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +42,23 @@ import java.util.Map;
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {
-        init();
+        Configuration configuration = null;
+        try {
+            // Read the configuration file
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/Configuration.json"));
+
+            // Initialize the Configuration object
+            Configuration.init(configNode);
+            configuration=new Configuration(configNode);
+            serviceInitializer=ServiceInitializer.getInstance(configuration);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1); // Exit if there is an error reading the configuration file
+        }
+
+
+        // Pass the configuration to SpringApplication.run
         SpringApplication.run(Application.class, args);
     }
 

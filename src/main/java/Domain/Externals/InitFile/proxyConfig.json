@@ -1,0 +1,17 @@
+{
+  "payments service": "ProxyPaymentGateway",
+  "supplier service": "ProxySupplyGateway",
+  "Admin details": {
+    "user": "admin@",
+    "password": "123456"
+  },
+  "init sequence": [
+    {
+      "function": "register",
+      "parameters": {
+        "username": "mia",
+        "password": "Password123!"
+      }
+    }
+  ]
+}
