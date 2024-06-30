@@ -8,6 +8,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -196,6 +197,39 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
     }
 
+    public void displayPolicies(){
+        //add a simple text button at the left corner of the page that when clicked opens a dialog with the store policies
+        List<String> policies = presenter.getPolicies(storeId);
+        Button policiesButton = new Button("Store Policies",e -> openPoliciesDialog(policies));
+        policiesButton.getElement().getStyle().set("color", "#3F352C");
+        policiesButton.getElement().getStyle().set("background-color", "transparent");
+        policiesButton.getElement().getStyle().set("border", "none");
+        policiesButton.getElement().getStyle().set("position", "absolute");
+        policiesButton.getElement().getStyle().set("bottom", "0");
+        policiesButton.getElement().getStyle().set("left", "0");
+        policiesButton.getElement().getStyle().set("margin", "10px");
+        //add to the bottom of the page
+
+        mainContent.add(policiesButton);
+    }
+
+    public void openPoliciesDialog(List<String> policies){
+        //create a dialog with the store policies
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("400px");
+        dialog.setHeight("400px");
+        dialog.add(new Span("Store Policies"));
+        //add the policies to the dialog
+        for(String policy : policies){
+            Span policySpan = new Span(policy);
+            dialog.add(policySpan);
+        }
+
+        dialog.open();
+    }
+
     private void addToCart(ProductDTO product, Integer quantity) {
         presenter.addToCart(product, quantity);
     }
@@ -222,6 +256,7 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         setContent(mainContent);
         displayDiscounts();
         displayStoresProducts();
+        displayPolicies();
 
 //        presenter.setStoreId(Integer.parseInt(storeId));
 //        presenter.getStoresProducts(Integer.parseInt(storeId));

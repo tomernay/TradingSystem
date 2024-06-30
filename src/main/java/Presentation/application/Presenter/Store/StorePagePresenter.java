@@ -67,4 +67,8 @@ public class StorePagePresenter {
     public List<String> getDiscounts(Integer storeId) {
         return storeService.getDiscountsStrings(storeId);
     }
+
+    public List<String> getPolicies(Integer storeId) {
+        return storeService.getPoliciesString(storeId);
+    }
 }
