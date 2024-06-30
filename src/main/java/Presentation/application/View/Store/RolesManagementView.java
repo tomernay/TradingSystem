@@ -1,8 +1,10 @@
 package Presentation.application.View.Store;
 
+import Presentation.application.CookiesHandler;
 import Presentation.application.Presenter.Store.RolesManagementPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
+import Presentation.application.View.UtilitiesView.WSClient;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -19,13 +21,17 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 @PageTitle("Roles Management")
 @Route(value = "roles-management/:storeId", layout = MainLayoutView.class)
@@ -240,9 +246,24 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         Button confirmButton = new Button("Yes", e -> {
             presenter.removeSubscription(storeId, username);
             confirmationDialog.close();
-            showSuccess("Subscription removed successfully");
-            UI.getCurrent().navigate("");
-            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
+
+                UI ui=UI.getCurrent();
+                String user= CookiesHandler.getUsernameFromCookies(((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest());
+
+            try {
+                WSClient wsClient=WSClient.getClient(ui,user);
+                wsClient.sendMessage(user+":remove subscription");
+                wsClient.sendMessage(username+":remove subscription");
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+            } catch (ExecutionException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            //   showSuccess("Subscription removed successfully");
+           // UI.getCurrent().navigate("");
+           // UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 100);");
         });
         confirmButton.addClassName("yes_button");
 

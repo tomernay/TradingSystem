@@ -54,7 +54,7 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
 
         UI ui = UI.getCurrent();
         try {
-            wsClient = new WSClient(ui, user);
+            wsClient = WSClient.getClient(ui, user);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
