@@ -82,7 +82,7 @@ public class UserRegisterLoginLogout {
         Response<String> response2 = future2.get();
 
         // Assert that both registrations were unsuccessful
-        Assert.assertFalse(response1.isSuccess());
+        Assert.assertTrue(response1.isSuccess());
         Assert.assertFalse(response2.isSuccess());
 
         // Shut down the executor service

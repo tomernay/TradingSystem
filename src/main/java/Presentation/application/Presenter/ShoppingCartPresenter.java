@@ -107,11 +107,11 @@ public class ShoppingCartPresenter {
         if (hasAlcoholItemsInCart()) {
             view.showAlcoholConfirmationDialog();
         } else {
-            checkout(false);
+            checkout(null);
         }
     }
 
-    public void checkout(boolean isOver18) {
+    public void checkout(Boolean isOver18) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<List<ProductDTO>> response = userService.lockShoppingCart(username, token, isOver18);
