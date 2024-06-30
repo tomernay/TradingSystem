@@ -89,6 +89,10 @@ public class AdminView extends AppLayout  {
         cancelSubscriptionButton();
         purchaseHistoryButton();
         systemManagerButton();
+        suspendUserButton();
+        cancelSuspensionButton();
+        watchSuspensionsButton();
+
     }
 
     public void suspendUserButton() {
@@ -177,7 +181,7 @@ public class AdminView extends AppLayout  {
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         //retrieve all open stores
-        Set<String> subscribers = presenter.getAllSubscribers();
+        Set<String> subscribers = presenter.getAllSubscribers(); //TODO: change to get all suspended subscribers
         ComboBox<String> storeComboBox = new ComboBox<>();
         storeComboBox.setItems(subscribers);
         storeComboBox.setLabel("Select subscriber to cancel suspension:");
@@ -200,6 +204,34 @@ public class AdminView extends AppLayout  {
         //center the button
         dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, closeButton);
         dialogLayout.add(closeButton);
+        dialog.add(dialogLayout);
+        dialog.open();
+    }
+
+    public void watchSuspensionsButton() {
+        Button watchSuspensionsButton = new Button("Watch Suspended users" , e -> openWatchSuspensionsDialog());
+        watchSuspensionsButton.addClassName("button");
+        //set the button size
+        watchSuspensionsButton.setWidth("200px");
+
+        actions.add(watchSuspensionsButton);
+    }
+
+    private void openWatchSuspensionsDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(false);
+        dialog.setCloseOnOutsideClick(false);
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+        //retrieve all open stores
+        Set<String> subscribers = presenter.getAllSubscribers(); //TODO: change to get all suspended subscribers
+        //present the suspended users
+        for (String sub : subscribers) {
+            dialogLayout.add(new H3(sub));
+        }
+        //TODO : show date, duration, and end date
+        //center the button
+
         dialog.add(dialogLayout);
         dialog.open();
     }
