@@ -92,15 +92,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         searchByCategory();
         addNotificationButton();
         shoppingCart();
-        discountsText();
-//        addCategoriesButton();
         addStoresToMain();
-//        addMessageButton();
         UI currentUI = UI.getCurrent();
-//        navigateToStorePage();
-//        addHomeButtonToDrawer();
-
-        // Initialize the notification count
         int unreadCount = presenter.getUnreadMessagesCount(); // Fetch this from the server or database
         if (unreadCount > 0) {
             notificationCountSpan.setText(String.valueOf(unreadCount));
@@ -113,8 +106,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                         "});",
                 getElement()
         );
-
-        // Set the color of the navbar
 
         getElement().executeJs(
                 "this.shadowRoot.querySelector('[part=\"navbar\"]').style.backgroundColor = '#E6DCD3';"
@@ -129,53 +120,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             UI.getCurrent().navigate(LoginView.class);
         }
     }
-//    private void createCategorySearchButton() {
-//        // Create the button to open the category list
-//        Button categorySearchButton = new Button("Search by Category");
-//        categorySearchButton.addClickListener(event -> openCategoryDialog());
-//
-//        // Add the button to your layout, for example, in the navbar
-//        addToNavbar(categorySearchButton);
-//    }
-//
-//    private void openCategoryDialog() {
-//        Dialog categoryDialog = new Dialog();
-//        categoryDialog.setWidth("400px");
-//        categoryDialog.setHeight("300px");
-//
-//        // Create and configure the close button for the dialog
-//        Button closeButton = new Button("Close");
-//        closeButton.addClickListener(event -> categoryDialog.close());
-//
-//        // Layout for the dialog content
-//        VerticalLayout dialogLayout = new VerticalLayout();
-//        dialogLayout.setPadding(false);
-//        dialogLayout.setSpacing(false);
-//
-//        // Add the close button to the dialog layout
-//        dialogLayout.add(closeButton);
-//
-//        // Fetch all categories from the presenter
-//        ArrayList<String> categories = presenter.getAllCategories();
-//
-//        for (String category : categories) {
-//            Button categoryButton = new Button(category);
-//            categoryButton.getElement().getStyle().set("margin", "5px"); // Add some margin for better spacing
-//            categoryButton.getElement().getStyle().set("background-color", "#4CAF50"); // Set button color
-//            categoryButton.getElement().getStyle().set("color", "white"); // Set text color
-//            categoryButton.addClickListener(event -> {
-//                categoryDialog.close();
-//                searchByCategory(category);
-//            });
-//            dialogLayout.add(categoryButton);
-//        }
-//
-//        // Add the layout to the dialog
-//        categoryDialog.add(dialogLayout);
-//
-//        // Open the dialog
-//        categoryDialog.open();
-//    }
+
 
     public ArrayList<String> getAllCategories() {
         // Fetch all categories from the server or database
@@ -208,10 +153,10 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         for (String cat : categories) {
             MenuItem categoryItem = categoryMenu.addItem(cat, e -> {
 //                //search for products by category
-//                Response<ArrayList<ProductDTO>> productsRes = presenter.searchProductsByCategory(cat);
+                ArrayList<ProductDTO> products = presenter.searchProductsByCategory(cat).getData();
 //                ArrayList<ProductDTO> products = productsRes.getData();
 //                //display the products
-//                displaySearchResults(products);
+                displaySearchResults(products);
             });
             //add the category item to the menu
             //categoryMenu.addItem(categoryItem);
@@ -321,20 +266,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
-    public void discountsText() {
-        Span discounts = new Span("Discounts");
-        discounts.addClassName("title");
-        //center the text
-        discounts.getElement().getStyle().set("margin", "0 auto");
 
-        discounts.getElement().getStyle().set("font-size", "20px");
-        discounts.getElement().getStyle().set("margin-left", "10px");
-        discounts.getElement().getStyle().set("margin-top", "10px");
-        discounts.getElement().getStyle().set("margin-bottom", "10px");
-        //add the text to the main content area
-
-        mainContent.add(discounts);
-    }
 
     // Assume these methods are part of your presenter or some utility class
     private boolean isStoreActive(Integer storeId) {
