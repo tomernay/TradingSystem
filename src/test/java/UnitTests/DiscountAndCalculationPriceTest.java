@@ -66,9 +66,9 @@ public class DiscountAndCalculationPriceTest {
         storeService.CreateDiscountSimple("newOwner", owner.getToken(), 1, 0, null, 20.0);
         Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
-        Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
+        Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         System.out.println(discount.getData());
-        Assert.assertTrue(discount.getData().equals("1.0"));
+        Assert.assertTrue(discount.getData().equals(1.0));
     }
 
     @Test
@@ -78,8 +78,8 @@ public class DiscountAndCalculationPriceTest {
         storeService.makeComplexDiscount("newOwner", owner.getToken(), 0, 1, 2, "PLUS");
         Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
-        Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
-        Assert.assertTrue(discount.getData().equals("21.0"));
+        Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
+        Assert.assertTrue(discount.getData().equals(21.0));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class DiscountAndCalculationPriceTest {
         storeService.makeComplexDiscount("newOwner", owner.getToken(), 0, 1, 2, "MAX");
         Response<List<DiscountDTO>> discountInStore = storeService.getDiscountsFromStore(0, "newOwner", owner.getToken());
         Assert.assertTrue(discountInStore.getData().size() == 1);
-        Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
-        Assert.assertTrue(discount.getData().equals("20.0"));
+        Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
+        Assert.assertTrue(discount.getData().equals(20.0));
     }
 
     @Test
@@ -103,8 +103,8 @@ public class DiscountAndCalculationPriceTest {
         Response<List<ConditionDTO>> policies = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
         System.out.println(policies.getData().size());
         Assert.assertTrue(policies.getData().size() == 0);
-        Response<String> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
-        Assert.assertTrue(discount.getData().equals("20.0"));
+        Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
+        Assert.assertTrue(discount.getData().equals(20.0));
 
 
 

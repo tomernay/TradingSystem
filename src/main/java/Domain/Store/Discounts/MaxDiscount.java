@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MaxDiscount implements Discount{
-    private Discount discount1;
-    private Discount discount2;
-    private Integer discountID;
-    private DiscountType discountType;
+    private final Discount discount1;
+    private final Discount discount2;
+    private final Integer discountID;
+    private final DiscountType discountType;
 
     public MaxDiscount(Discount discount1, Discount discount2, Integer discountID) {
         this.discount1 = discount1;

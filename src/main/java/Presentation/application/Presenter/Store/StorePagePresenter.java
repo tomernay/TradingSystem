@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -61,5 +62,13 @@ public class StorePagePresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         return userService.isValidToken(token, username);
+    }
+
+    public List<String> getDiscounts(Integer storeId) {
+        return storeService.getDiscountsStrings(storeId);
+    }
+
+    public List<String> getPolicies(Integer storeId) {
+        return storeService.getPoliciesString(storeId);
     }
 }

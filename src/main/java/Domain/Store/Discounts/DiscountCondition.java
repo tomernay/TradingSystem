@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public class DiscountCondition implements Discount{
-    private Discount discount;
-    private Condition condition;
-    private Integer discountID;
-    private DiscountType discountType;
+    private final Discount discount;
+    private final Condition condition;
+    private final Integer discountID;
+    private final DiscountType discountType;
 
 
 

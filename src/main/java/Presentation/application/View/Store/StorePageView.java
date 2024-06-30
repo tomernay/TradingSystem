@@ -8,6 +8,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @PageTitle("")
 @Route(value = "store-page/:storeId", layout = MainLayoutView.class)
@@ -40,12 +42,12 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         addClassName("page-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
-//        UI.getCurrent().getPage().executeJs(
-//                "document.body.addEventListener('click', function() {" +
-//                        "    $0.$server.handleUserAction();" +
-//                        "});",
-//                getElement()
-//        );
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
 
         //mainContent.add(new Span("Store Page"));
     }
@@ -61,6 +63,37 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
     }
 
 
+    public void displayDiscounts(){
+        Div container = new Div();
+        container.getStyle().set("display", "flex");
+        container.getStyle().set("flex-direction", "column");
+        container.getStyle().set("align-items", "center");
+        container.getStyle().set("justify-content", "center");
+        container.getStyle().set("padding", "20px");
+        container.getStyle().set("background-color", "#E6DCD3"); // Optional: set a background color
+        container.getStyle().set("border", "2px solid #B4A79E"); // Optional: set a border
+        container.getStyle().set("border-radius", "8px"); // Optional: set border radius for rounded corners
+        container.getStyle().set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)"); // Optional: add a subtle box shadow
+        container.setWidth("90%"); // Adjust width to content
+        container.setHeight("auto"); // Adjust height to content
+        //margins left and right auto to center the container
+        container.getStyle().set("margin-left", "auto");
+        container.getStyle().set("margin-right", "auto");
+
+        //display discounts
+        List<String> discounts = presenter.getDiscounts(storeId);
+
+        for (String discount : discounts) {
+            Span discountSpan = new Span(discount);
+            discountSpan.getElement().getStyle().set("font-size", "1.5em");
+            discountSpan.getElement().getStyle().set("color", "#3F352C");
+            container.add(discountSpan);
+        }
+
+        if(!discounts.isEmpty()){
+            mainContent.add(container);
+        }
+    }
 
     //display stores products
     public void displayStoresProducts() {
@@ -164,6 +197,39 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
 
     }
 
+    public void displayPolicies(){
+        //add a simple text button at the left corner of the page that when clicked opens a dialog with the store policies
+        List<String> policies = presenter.getPolicies(storeId);
+        Button policiesButton = new Button("Store Policies",e -> openPoliciesDialog(policies));
+        policiesButton.getElement().getStyle().set("color", "#3F352C");
+        policiesButton.getElement().getStyle().set("background-color", "transparent");
+        policiesButton.getElement().getStyle().set("border", "none");
+        policiesButton.getElement().getStyle().set("position", "absolute");
+        policiesButton.getElement().getStyle().set("bottom", "0");
+        policiesButton.getElement().getStyle().set("left", "0");
+        policiesButton.getElement().getStyle().set("margin", "10px");
+        //add to the bottom of the page
+
+        mainContent.add(policiesButton);
+    }
+
+    public void openPoliciesDialog(List<String> policies){
+        //create a dialog with the store policies
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("400px");
+        dialog.setHeight("400px");
+        dialog.add(new Span("Store Policies"));
+        //add the policies to the dialog
+        for(String policy : policies){
+            Span policySpan = new Span(policy);
+            dialog.add(policySpan);
+        }
+
+        dialog.open();
+    }
+
     private void addToCart(ProductDTO product, Integer quantity) {
         presenter.addToCart(product, quantity);
     }
@@ -188,7 +254,9 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         //display store products
         mainContent = new VerticalLayout();
         setContent(mainContent);
+        displayDiscounts();
         displayStoresProducts();
+        displayPolicies();
 
 //        presenter.setStoreId(Integer.parseInt(storeId));
 //        presenter.getStoresProducts(Integer.parseInt(storeId));
