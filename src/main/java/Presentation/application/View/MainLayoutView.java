@@ -214,10 +214,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //                displaySearchResults(products);
             });
             //add the category item to the menu
-            categoryMenu.addItem(categoryItem);
+            //categoryMenu.addItem(categoryItem);
         }
         addToNavbar(categoryButton);
     }
+
+
 
 
     private void addUserButton() {
@@ -1047,7 +1049,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         notificationContainer.addClassName("notification-container");
 
         // Add the notification container to the navbar
-        addToNavbar(notificationContainer);
+        if(!presenter.getUserName().contains("Guest")) {
+            addToNavbar(notificationContainer);
+        }
     }
 
 
