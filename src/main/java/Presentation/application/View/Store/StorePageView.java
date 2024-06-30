@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @PageTitle("")
 @Route(value = "store-page/:storeId", layout = MainLayoutView.class)
@@ -40,12 +41,12 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         addClassName("page-view");
         this.presenter = presenter;
         this.presenter.attachView(this);
-//        UI.getCurrent().getPage().executeJs(
-//                "document.body.addEventListener('click', function() {" +
-//                        "    $0.$server.handleUserAction();" +
-//                        "});",
-//                getElement()
-//        );
+        UI.getCurrent().getPage().executeJs(
+                "document.body.addEventListener('click', function() {" +
+                        "    $0.$server.handleUserAction();" +
+                        "});",
+                getElement()
+        );
 
         //mainContent.add(new Span("Store Page"));
     }
@@ -61,6 +62,37 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
     }
 
 
+    public void displayDiscounts(){
+        Div container = new Div();
+        container.getStyle().set("display", "flex");
+        container.getStyle().set("flex-direction", "column");
+        container.getStyle().set("align-items", "center");
+        container.getStyle().set("justify-content", "center");
+        container.getStyle().set("padding", "20px");
+        container.getStyle().set("background-color", "#E6DCD3"); // Optional: set a background color
+        container.getStyle().set("border", "2px solid #B4A79E"); // Optional: set a border
+        container.getStyle().set("border-radius", "8px"); // Optional: set border radius for rounded corners
+        container.getStyle().set("box-shadow", "0 2px 4px rgba(0, 0, 0, 0.1)"); // Optional: add a subtle box shadow
+        container.setWidth("90%"); // Adjust width to content
+        container.setHeight("auto"); // Adjust height to content
+        //margins left and right auto to center the container
+        container.getStyle().set("margin-left", "auto");
+        container.getStyle().set("margin-right", "auto");
+
+        //display discounts
+        List<String> discounts = presenter.getDiscounts(storeId);
+
+        for (String discount : discounts) {
+            Span discountSpan = new Span(discount);
+            discountSpan.getElement().getStyle().set("font-size", "1.5em");
+            discountSpan.getElement().getStyle().set("color", "#3F352C");
+            container.add(discountSpan);
+        }
+
+        if(!discounts.isEmpty()){
+            mainContent.add(container);
+        }
+    }
 
     //display stores products
     public void displayStoresProducts() {
@@ -188,6 +220,7 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
         //display store products
         mainContent = new VerticalLayout();
         setContent(mainContent);
+        displayDiscounts();
         displayStoresProducts();
 
 //        presenter.setStoreId(Integer.parseInt(storeId));
