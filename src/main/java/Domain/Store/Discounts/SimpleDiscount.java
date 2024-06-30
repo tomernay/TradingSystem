@@ -79,10 +79,10 @@ public class SimpleDiscount implements Discount{
     public String toString() {
         StringBuilder result = new StringBuilder(percent + "% off");
         if (productID != null) {
-            result.append(" on product: ").append(productName);
+            result.append(" on ").append(productName);
         }
         if (category != null && !category.isEmpty()) {
-            result.append(" on category: ").append(category);
+            result.append(" on category ").append(category);
         }
         return result.toString();
     }
