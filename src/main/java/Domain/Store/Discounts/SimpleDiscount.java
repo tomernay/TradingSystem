@@ -1,28 +1,26 @@
 package Domain.Store.Discounts;
 
 import Domain.Store.Conditions.Condition;
-import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 
-import java.util.List;
 import java.util.Map;
 
 public class SimpleDiscount implements Discount{
 
-    private Double percent;
-    private Integer productID;
-    private String category;
-    private Integer discountID;
-    private String nameProduct;
+    private final Double percent;
+    private final Integer productID;
+    private final String category;
+    private final Integer discountID;
+    private final String productName;
 
 
-    public SimpleDiscount(Double percent, Integer productID, String category, Integer discountID, String nameProduct) {
+    public SimpleDiscount(Double percent, Integer productID, String category, Integer discountID, String productName) {
         this.percent = percent;
         this.productID = productID;
         this.category = category;
         this.discountID = discountID;
-        this.nameProduct = nameProduct;
+        this.productName = productName;
     }
 
 
@@ -81,7 +79,7 @@ public class SimpleDiscount implements Discount{
     public String toString() {
         StringBuilder result = new StringBuilder(percent + "% off");
         if (productID != null) {
-            result.append(" on name: ").append(nameProduct);
+            result.append(" on product: ").append(productName);
         }
         if (category != null && !category.isEmpty()) {
             result.append(" on category: ").append(category);

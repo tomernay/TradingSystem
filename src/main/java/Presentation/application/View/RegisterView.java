@@ -38,8 +38,8 @@ public class RegisterView extends VerticalLayout{
         Button backButton = new Button("Back to Login", e -> navigateToLogin());
         registerButton.addClassName("button");
         backButton.addClassName("button");
-        registerButton.setWidth("376px");
-        backButton.setWidth("180px");
+        registerButton.setWidth("90%");
+        backButton.setWidth("45%");
 
         HorizontalLayout buttons = new HorizontalLayout(registerButton);
         buttons.setAlignItems(Alignment.CENTER);
@@ -63,7 +63,7 @@ public class RegisterView extends VerticalLayout{
 
         H1 registerTitle = new H1("Register");
         registerTitle.addClassName("title");
-        registerTitle.getStyle().set("font-size", "7em"); // Match the font size of the login title
+        registerTitle.getStyle().set("font-size", "450%"); // Match the font size of the login title
 
         // Create a container for all elements
         VerticalLayout container = new VerticalLayout();

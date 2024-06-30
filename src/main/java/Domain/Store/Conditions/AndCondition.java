@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class AndCondition implements Condition{
 
-    private Condition condition1;
-    private Condition condition2;
-    private Integer conditionID;
+    private final Condition condition1;
+    private final Condition condition2;
+    private final Integer conditionID;
 
     public AndCondition(Condition condition1, Condition condition2, Integer conditionID) {
         this.condition1 = condition1;

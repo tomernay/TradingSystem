@@ -501,7 +501,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message & the discounts. <br> If not, returns an error message.
      */
-    public Response<String> CalculateDiscounts(String username, String token) {
+    public Response<Double> CalculateDiscounts(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
         if (isValidToken(token, username)) {
             Response<Map<Integer, Map<Integer, Integer>>> resShoppSingCartContents = userFacade.getShoppingCartContents(username);

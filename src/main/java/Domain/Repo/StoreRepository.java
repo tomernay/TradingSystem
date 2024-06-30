@@ -664,7 +664,7 @@ public class StoreRepository {
         return stores.get(storeID).CreateDiscount(productID, category, percent, "simple", username);
     }
 
-    public Response<String> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
+    public Response<Double> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
         double discount = 0;
         for (Map.Entry<Integer, Map<Integer, Integer>> storeEntry : shoppingCart.entrySet()) {
             Integer storeID = storeEntry.getKey();
@@ -681,7 +681,7 @@ public class StoreRepository {
                 return Response.error(discountShop.getMessage(), null);
             }
         }
-        return Response.success("[SUCCESS] Successfully calculated the discount.", String.valueOf(discount));
+        return Response.success("[SUCCESS] Successfully calculated the discount.", discount);
     }
 
 
