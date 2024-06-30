@@ -177,6 +177,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
 
+        if(presenter.getUserName().equals("u1")) {
+            MenuItem admin = dropdownMenu.addItem("Admin actions", e -> {
+                UI.getCurrent().navigate(AdminView.class);
+            });
+        }
+
 
         if(!presenter.getUserName().contains("Guest")) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());

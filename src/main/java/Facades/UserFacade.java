@@ -164,4 +164,8 @@ public class UserFacade {
     public Response<Integer> getUnreadMessagesCount(String username, String token) {
         return userRepository.getUnreadMessagesCount(username, token);
     }
+
+    public Response<Object> getAllSubscribers(String username) {
+        return userRepository.getAllSubscribers(username);
+    }
 }

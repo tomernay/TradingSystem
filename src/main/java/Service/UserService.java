@@ -756,4 +756,12 @@ public class UserService {
     public Response<Integer> getUnreadMessagesCount(String username, String token) {
         return userFacade.getUnreadMessagesCount(username, token);
     }
+
+    public Response<Object> getAllSubscribers(String username, String token) {
+        if(isValidToken(token,username)){
+            return userFacade.getAllSubscribers(username);
+        }
+        SystemLogger.error("[ERROR] User: " + username + " tried to get all subscribers but the token was invalid");
+        return Response.error("Invalid token",null);
+    }
 }

@@ -672,4 +672,8 @@ public class UserRepository implements JpaRepository<User, Long> {
     public Page<User> findAll(Pageable pageable) {
         return null;
     }
+
+    public Response<Object> getAllSubscribers(String username) {
+        return Response.success("All subscribers",subscribers.keySet());
+    }
 }
