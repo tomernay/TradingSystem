@@ -365,7 +365,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         for (int i = 0; i < stores.size(); i += 4) {
             HorizontalLayout row = new HorizontalLayout();
             row.setWidthFull(); // Ensure row takes full width
-
+            row.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
 
             // Counter to keep track of buttons added

@@ -67,7 +67,7 @@ import java.awt.*;
 public class AdminView extends AppLayout  {
     private AdminPresenter presenter;
     private VerticalLayout mainContent;
-    private VerticalLayout actions;
+    private List<Button> actions;
 
 
     public AdminView(AdminPresenter presenter) {
@@ -81,10 +81,10 @@ public class AdminView extends AppLayout  {
 //                getElement()
 //        );
         mainContent = new VerticalLayout();
-        actions = new VerticalLayout();
+        actions = new ArrayList<>();
         setContent(mainContent);
-        mainContent.add(actions);
-        actions.setAlignItems(FlexComponent.Alignment.CENTER);
+        //mainContent.add(actions);
+        //actions.setAlignItems(FlexComponent.Alignment.CENTER);
         closeStoreButton();
         cancelSubscriptionButton();
         purchaseHistoryButton();
@@ -93,6 +93,40 @@ public class AdminView extends AppLayout  {
         cancelSuspensionButton();
         watchSuspensionsButton();
 
+        organizeActions();
+
+    }
+
+    private void organizeActions() {
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setSpacing(true); // Optional: Set spacing between components
+        verticalLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Center align the rows within the vertical layout
+
+
+        for (int i = 0; i < actions.size(); i += 4) {
+            HorizontalLayout row = new HorizontalLayout();
+            row.setWidthFull(); // Ensure row takes full width
+            row.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Center align the buttons within the row
+
+
+            // Add up to 4 buttons per row
+            for (int j = 0; j < 4 && (i + j) < actions.size(); j++) {
+                Button actionButton = actions.get(i + j);
+                actionButton.addClassName("button");
+
+                // Set the width and height of the button
+                actionButton.setWidth("25%");
+                actionButton.setHeight("100px");
+
+                row.add(actionButton);
+            }
+
+            // Add the row to the vertical layout
+            verticalLayout.add(row);
+        }
+
+        // Add the vertical layout to the main content area (assuming mainContent is a VerticalLayout or similar)
+        mainContent.add(verticalLayout);
     }
 
     public void suspendUserButton() {
