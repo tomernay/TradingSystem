@@ -31,12 +31,12 @@ public class DiscountTest {
         userService.register("newOwner", "Password123!");
         userService.loginAsSubscriber("yair12312", "Password123!");
         userService.loginAsSubscriber("newOwner", "Password123!");
-        buyer = userService.getUserFacade().getUserRepository().getUser("yair12312");
-        owner = userService.getUserFacade().getUserRepository().getUser("newOwner");
+        buyer = userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
+        owner = userService.getUserFacade().getUserRepository().getSubscriber("newOwner");
         storeService.addStore("newStore0", "newOwner", owner.getToken());
-        store1 = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
         storeService.addStore("newStore1", "newOwner", owner.getToken());
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
+        store2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1);
         storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(1, "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
@@ -53,21 +53,21 @@ public class DiscountTest {
 
     @Test
     public void simpleDiscountOnStore(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),null,0,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),null,0,null,20.0);
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(21.0), discount.getData());
     }
 
     @Test
     public void simpleDiscountOnProduct(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),1,0,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),1,0,null,20.0);
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(1.0), discount.getData());
     }
 
     @Test
     public void FailDiscountAllnull(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),null,null,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),null,null,null,20.0);
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(0.0), discount.getData());
         Response<List<DiscountDTO>> allDiscount1 = storeService.getDiscountsFromStore(0,"newOwner",owner.getToken());
@@ -78,7 +78,7 @@ public class DiscountTest {
 
     @Test
     public void FailDiscountWithoutPermission(){
-        storeService.CreateDiscountSimple("newOwner","",null,1,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner","",null,1,null,20.0);
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(0.0), discount.getData());
         Response<List<DiscountDTO>> allDiscount1 = storeService.getDiscountsFromStore(0,"newOwner",owner.getToken());
@@ -89,8 +89,8 @@ public class DiscountTest {
 
     @Test
     public void twoDiscounts(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),null,0,null,20.0);
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),1,1,null,50.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),null,0,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),1,1,null,50.0);
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(22.5), discount.getData());
         Response<List<DiscountDTO>> allDiscount1 = storeService.getDiscountsFromStore(0,"newOwner",owner.getToken());
@@ -101,8 +101,8 @@ public class DiscountTest {
 
     @Test
     public void maxDiscount(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),null,0,null,20.0);
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),1,0,null,50.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),null,0,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),1,0,null,50.0);
         storeService.makeComplexDiscount("newOwner",owner.getToken(),0,1,2,"MAX");
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(21.0), discount.getData());
@@ -112,8 +112,8 @@ public class DiscountTest {
 
     @Test
     public void plusDiscound(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),null,0,null,20.0);
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),1,0,null,50.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),null,0,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),1,0,null,50.0);
         storeService.makeComplexDiscount("newOwner",owner.getToken(),0,1,2,"PLUS");
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());
         Assert.assertEquals(Double.valueOf(23.5), discount.getData());
@@ -124,7 +124,7 @@ public class DiscountTest {
 
     @Test
     public void conditionalDiscount(){
-        storeService.CreateDiscountSimple("newOwner",owner.getToken(),null,0,null,20.0);
+        storeService.CreateSimpleDiscount("newOwner",owner.getToken(),null,0,null,20.0);
         storeService.addSimplePolicyToStore("newOwner",owner.getToken(),0,null,null,null,10.0,null,true);
         storeService.makeConditionDiscount("newOwner",owner.getToken(),0,1,1);
         Response<Double> discount = userService.CalculateDiscounts("yair12312", buyer.getToken());

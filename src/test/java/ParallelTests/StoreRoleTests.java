@@ -31,14 +31,14 @@ public class StoreRoleTests {
         userService=serviceInitializer.getUserService();
         userService.register("yair12312","Password123!");
         userService.loginAsSubscriber("yair12312","Password123!");
-        subscriber=userService.getUserFacade().getUserRepository().getUser("yair12312");
+        subscriber=userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
 
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         storeService.addStore("yairStore","yair12312",subscriber.getToken());
-        store=storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store=storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
     }
 
     @Test
@@ -50,11 +50,11 @@ public class StoreRoleTests {
             String username = "owner" + i;
             userService.register(username, "Password123!");
             userService.loginAsSubscriber(username, "Password123!");
-            owners.add(userService.getUserFacade().getUserRepository().getUser(username));
+            owners.add(userService.getUserFacade().getUserRepository().getSubscriber(username));
 
             // Original owner nominates new owner
             Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getSubscriber(username).getToken());
         }
 
         // Create a list of threads
@@ -109,11 +109,11 @@ public class StoreRoleTests {
             String username = "owner" + i;
             userService.register(username, "Password123!");
             userService.loginAsSubscriber(username, "Password123!");
-            owners.add(userService.getUserFacade().getUserRepository().getUser(username));
+            owners.add(userService.getUserFacade().getUserRepository().getSubscriber(username));
 
             // Original owner nominates new owner
             Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getSubscriber(username).getToken());
         }
 
         // Create a list of threads
@@ -161,11 +161,11 @@ public class StoreRoleTests {
             String username = "owner" + i;
             userService.register(username, "Password123!");
             userService.loginAsSubscriber(username, "Password123!");
-            owners.add(userService.getUserFacade().getUserRepository().getUser(username));
+            owners.add(userService.getUserFacade().getUserRepository().getSubscriber(username));
 
             // Original owner nominates new owner
             Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getSubscriber(username).getToken());
         }
 
         Response<Integer> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
@@ -216,11 +216,11 @@ public class StoreRoleTests {
             String username = "owner" + i;
             userService.register(username, "Password123!");
             userService.loginAsSubscriber(username, "Password123!");
-            owners.add(userService.getUserFacade().getUserRepository().getUser(username));
+            owners.add(userService.getUserFacade().getUserRepository().getSubscriber(username));
 
             // Original owner nominates new owner
             Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), username, subscriber.getToken());
-            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getUser(username).getToken());
+            userService.ownerNominationResponse(response.getData(), username, true, userService.getUserFacade().getUserRepository().getSubscriber(username).getToken());
         }
 
         Response<Integer> response = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS"), subscriber.getToken());

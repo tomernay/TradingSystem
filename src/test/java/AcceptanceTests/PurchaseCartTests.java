@@ -52,12 +52,12 @@ public class PurchaseCartTests {
         userService.register("newOwner", "Password123!");
         userService.loginAsSubscriber("yair12312", "Password123!");
         userService.loginAsSubscriber("newOwner", "Password123!");
-        buyer = userService.getUserFacade().getUserRepository().getUser("yair12312");
-        owner = userService.getUserFacade().getUserRepository().getUser("newOwner");
+        buyer = userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
+        owner = userService.getUserFacade().getUserRepository().getSubscriber("newOwner");
         storeService.addStore("newStore0", "newOwner", owner.getToken());
-        store1 = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
         storeService.addStore("newStore1", "newOwner", owner.getToken());
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
+        store2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1);
         storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(1, "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());

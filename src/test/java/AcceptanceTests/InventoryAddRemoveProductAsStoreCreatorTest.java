@@ -30,13 +30,13 @@ public class InventoryAddRemoveProductAsStoreCreatorTest {
 
         userService.register("mor","pass1Pas@");
         userService.loginAsSubscriber("mor","pass1Pas@");
-        subscriber = userService.getUserFacade().getUserRepository().getUser("mor");
-        subscriber2 = userService.getUserFacade().getUserRepository().getUser("mor");
+        subscriber = userService.getUserFacade().getUserRepository().getSubscriber("mor");
+        subscriber2 = userService.getUserFacade().getUserRepository().getSubscriber("mor");
 
         storeService.addStore("morStore","mor",subscriber.getToken());
         storeService.addStore("morStore2","mor",subscriber2.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
+        store = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
+        store2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1);
     }
 
     @Test

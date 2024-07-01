@@ -74,8 +74,8 @@ public class UserRegisterLoginLogout {
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         // Submit two tasks to register with invalid usernames
-        Future<Response<String>> future1 = executorService.submit(() -> userService.register("","Password123!"));
-        Future<Response<String>> future2 = executorService.submit(() -> userService.register("","Password123!"));
+        Future<Response<String>> future1 = executorService.submit(() -> userService.register("a","Password123!"));
+        Future<Response<String>> future2 = executorService.submit(() -> userService.register("a","Password123!"));
 
         // Get the responses. This will block until the tasks are complete.
         Response<String> response1 = future1.get();
@@ -127,8 +127,12 @@ public class UserRegisterLoginLogout {
         Response<String> response2 = future2.get();
 
         // Assert that both logins were successful
-        Assert.assertTrue(response1.isSuccess());
-        Assert.assertTrue(response2.isSuccess());
+        if (response1.isSuccess()) {
+            Assert.assertFalse(response2.isSuccess());
+        }
+        else {
+            Assert.assertTrue(response2.isSuccess());
+        }
 
         // Shut down the executor service
         executorService.shutdown();

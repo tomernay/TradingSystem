@@ -33,7 +33,7 @@ public class purchaseCart {
         orderService = serviceInitializer.getOrderService();
         userService.register("yair12312", "Password123!");
         userService.loginAsSubscriber("yair12312", "Password123!");
-        owner = userService.getUserFacade().getUserRepository().getUser("yair12312");
+        owner = userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
         storeService.addStore("newStore0", "yair12312", owner.getToken());
         storeService.addStore("newStore1", "yair12312", owner.getToken());
         storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 3, "yair12312", owner.getToken());
@@ -54,7 +54,7 @@ public class purchaseCart {
             String userName = "user" + i;
             userService.register(userName, userName + "Pass123!");
             userService.loginAsSubscriber(userName, userName + "Pass123!");
-            Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getUser(userName);
+            Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getSubscriber(userName);
             userService.addProductToShoppingCart(0, 1, 3, "user" + i, newSubscriber.getToken());
             userService.addProductToShoppingCart(0, 2, 3, "user" + i, newSubscriber.getToken());
             userService.addProductToShoppingCart(1, 1, 3, "user" + i, newSubscriber.getToken());

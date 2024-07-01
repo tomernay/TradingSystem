@@ -51,13 +51,12 @@ public class AdminPresenter {
     public Set<String> getAllSubscribers() {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-        return userService.getAllSubscribers(username, token).getData();
+        return userService.getAllSubscribersUsernames(username, token).getData();
     }
 
     public void removeSubscriber(String subName) {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
-//        userService.removeSubscriber(subName, username, token);
 
 
     }

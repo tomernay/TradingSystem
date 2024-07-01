@@ -53,11 +53,11 @@ public class MainLayoutPresenter {
 
     }
 
-    public void changePassword(String password, String confirmPassword, PasswordField passwordField) {
+    public void changePassword(String oldPassword, String newPassword, String confirmPassword, PasswordField passwordField) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
-        if (password.equals(confirmPassword)) {
-            Response<String> response = userService.changePassword(username, password, confirmPassword, token);
+        if (newPassword.equals(confirmPassword)) {
+            Response<String> response = userService.changePassword(username, oldPassword, newPassword, token);
             if (!response.isSuccess()) {
                 view.showPwdError(response.getMessage(), passwordField);
             } else {

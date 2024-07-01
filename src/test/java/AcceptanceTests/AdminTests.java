@@ -31,13 +31,13 @@ public class AdminTests {
         orderService = serviceInitializer.getOrderService();
         userService.register("yair","Password123!");
         userService.loginAsSubscriber("yair","Password123!");
-        subscriber=userService.getUserFacade().getUserRepository().getUser("yair");
+        subscriber=userService.getUserFacade().getUserRepository().getSubscriber("yair");
 
         userService.register("yair2","Password123!");
         userService.loginAsSubscriber("yair2","Password123!");
-        buyer=userService.getUserFacade().getUserRepository().getUser("yair2");
+        buyer=userService.getUserFacade().getUserRepository().getSubscriber("yair2");
         storeService.addStore("yairStore","yair",subscriber.getToken());
-        store=storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store=storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
         storeService.addProductToStore(1,"bamba","product",10.0,10,"yair",subscriber.getToken());
         userService.addProductToShoppingCart(0, 1, 5, "yair2", buyer.getToken());
 

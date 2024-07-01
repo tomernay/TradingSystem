@@ -914,10 +914,11 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(new Span(""));
 //        dialogLayout.add(title);
+        PasswordField oldPassword = new PasswordField("Old Password");
         PasswordField password = new PasswordField("New Password");
         PasswordField confirmPassword = new PasswordField("Confirm Password");
         Button save = new Button("Save changes", e -> {
-            presenter.changePassword(password.getValue(), confirmPassword.getValue(), password);
+            presenter.changePassword(oldPassword.getValue(), password.getValue(), confirmPassword.getValue(), password);
 //            dialog.close();
         });
         save.addClassName("button");

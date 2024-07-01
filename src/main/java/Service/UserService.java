@@ -558,27 +558,9 @@ public class UserService {
     // Message Methods
 
 
-
-
-    /**
-     * This method sends a response for a message.
-     * @param username The username of the subscriber.
-     * @param answer The answer for the nomination request (true for accept, false for decline).
-     * @param token The token of the subscriber.
-     * @return If successful, returns a success message. <br> If not, returns an error message.
-     */
-//    public Response<String> messageResponse(String username, boolean answer, String token) {
-//        SystemLogger.info("[START] User: " + username + " is trying to respond to a message");
-//        if(isValidToken(token,username)) {
-//            if (adminService.isSuspended(username)) {
-//                SystemLogger.error("[ERROR] User: " + username + " is suspended");
-//                return Response.error("You're suspended", null);
-//            }
-//            return userFacade.messageResponse(username, answer);
-//        }
-//        SystemLogger.error("[ERROR] User: " + username + " tried to respond to a message but the token was invalid");
-//        return Response.error("Invalid token",null);
-//    }
+    public Response<String> sendMessage(String username, String message) {
+        return userFacade.sendMessage(username, message);
+    }
 
 
     /**
@@ -607,12 +589,7 @@ public class UserService {
      * @return If successful, returns a success message & the messages. <br> If not, returns an error message.
      */
     public Response<List<Message>> getMessages(String username){
-        return  new Response<List<Message>>(true,"",userFacade.getUserRepository().getMessages(username));
-    }
-
-
-    public Response<String> addNormalMessage(String user,String message){
-        return new Response<String>(true,"",userFacade.getUserRepository().addNormalMessage(user,message));
+        return userFacade.getMessages(username);
     }
 
 
@@ -715,9 +692,9 @@ public class UserService {
 
 
 
-    public Response<String> changePassword(String username, String password,String confirmPassword, String token) {
+    public Response<String> changePassword(String username, String oldPassword, String newPassword, String token) {
         if(isValidToken(token,username)){
-            userFacade.changePassword(username, password, confirmPassword);
+            userFacade.changePassword(username, oldPassword, newPassword);
             return Response.success("Password changed successfully", null);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to change his password but the token was invalid");
@@ -749,17 +726,25 @@ public class UserService {
 
 
     public Response<String> removeMessage(String username, String token, Integer messageID) {
-        return userFacade.removeMessage(username, token, messageID);
+        if (!isValidToken(token, username)) {
+            SystemLogger.error("[ERROR] User: " + username + " tried to remove a message but the token was invalid");
+            return Response.error("Invalid token", null);
+        }
+        return userFacade.removeMessage(username, messageID);
     }
 
 
     public Response<Integer> getUnreadMessagesCount(String username, String token) {
-        return userFacade.getUnreadMessagesCount(username, token);
+        if (!isValidToken(token, username)) {
+            SystemLogger.error("[ERROR] User: " + username + " tried to get the unread messages count but the token was invalid");
+            return Response.error("Invalid token", null);
+        }
+        return userFacade.getUnreadMessagesCount(username);
     }
 
-    public Response<Set<String>> getAllSubscribers(String username, String token) {
+    public Response<Set<String>> getAllSubscribersUsernames(String username, String token) {
         if(isValidToken(token,username)){
-            return userFacade.getAllSubscribers(username);
+            return userFacade.getAllSubscribersUsernames();
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to get all subscribers but the token was invalid");
         return Response.error("Invalid token",null);

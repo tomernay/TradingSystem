@@ -39,9 +39,9 @@ public class InventoryAddProductTest {
 
         userService.register("itay", "ItayPass123!");
         userService.loginAsSubscriber("itay", "ItayPass123!");
-        subscriber = userService.getUserFacade().getUserRepository().getUser("itay");
+        subscriber = userService.getUserFacade().getUserRepository().getSubscriber("itay");
         storeService.addStore("itayStore", "itay", subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class InventoryAddProductTest {
             String userName = "user" + i;
             userService.register(userName, userName + "Pass123!");
             userService.loginAsSubscriber(userName, userName + "Pass123!");
-            Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getUser(userName);
+            Subscriber newSubscriber = userService.getUserFacade().getUserRepository().getSubscriber(userName);
             Response<Integer> response = userService.SendOwnerNominationRequest(store.getId(), "itay", userName, subscriber.getToken());
             userService.ownerNominationResponse(response.getData(), userName, true, newSubscriber.getToken());
 

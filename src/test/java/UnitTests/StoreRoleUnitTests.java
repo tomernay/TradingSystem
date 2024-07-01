@@ -36,10 +36,10 @@ public class StoreRoleUnitTests {
 
         userService.register("yair12312","Password123!");
         userService.loginAsSubscriber("yair12312","Password123!");
-        subscriber=userService.getUserFacade().getUserRepository().getUser("yair12312");
+        subscriber=userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
 
         storeService.addStore("yairStore","yair12312",subscriber.getToken());
-        store=storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store=storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class StoreRoleUnitTests {
     public void selfAddPermissionTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -77,7 +77,7 @@ public class StoreRoleUnitTests {
     public void selfRemovePermissionTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -90,7 +90,7 @@ public class StoreRoleUnitTests {
     public void makeStoreOwnerTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         userService.ownerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -101,7 +101,7 @@ public class StoreRoleUnitTests {
     public void makeStoreManagerTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -112,7 +112,7 @@ public class StoreRoleUnitTests {
     public void makeStoreOwnerDeclineTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         userService.ownerNominationResponse(res.getData(), subscriber2.getUsername(), false, subscriber2.getToken());
@@ -123,7 +123,7 @@ public class StoreRoleUnitTests {
     public void makeStoreManagerDeclineTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), false, subscriber2.getToken());
@@ -134,11 +134,11 @@ public class StoreRoleUnitTests {
     public void notOwnerMakeStoreOwnerTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         userService.register("niv1212","Password123!");
         userService.loginAsSubscriber("niv1212","Password123!");
-        subscriber3=userService.getUserFacade().getUserRepository().getUser("niv1212");
+        subscriber3=userService.getUserFacade().getUserRepository().getSubscriber("niv1212");
 
         userService.SendOwnerNominationRequest(store.getId(), subscriber3.getUsername(), subscriber2.getUsername(), subscriber3.getToken());
         Assert.assertFalse(subscriber2.getMessages().stream().anyMatch(message -> message instanceof nominateOwnerMessage && ((nominateOwnerMessage) message).getStoreID() == store.getId() && ((nominateOwnerMessage) message).getNominatorUsername().equals(subscriber3.getUsername())));
@@ -148,11 +148,11 @@ public class StoreRoleUnitTests {
     public void notOwnerMakeStoreManagerTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         userService.register("niv1212","Password123!");
         userService.loginAsSubscriber("niv1212","Password123!");
-        subscriber3=userService.getUserFacade().getUserRepository().getUser("niv1212");
+        subscriber3=userService.getUserFacade().getUserRepository().getSubscriber("niv1212");
 
         userService.SendManagerNominationRequest(store.getId(), subscriber3.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber3.getToken());
         Assert.assertFalse(subscriber2.getMessages().stream().anyMatch(message -> message instanceof nominateManagerMessage && ((nominateManagerMessage) message).getStoreID() == store.getId() && ((nominateManagerMessage) message).getNominatorUsername().equals(subscriber3.getUsername())));
@@ -162,7 +162,7 @@ public class StoreRoleUnitTests {
     public void makeExistingStoreOwnerTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         userService.ownerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -174,7 +174,7 @@ public class StoreRoleUnitTests {
     public void makeExistingStoreManagerTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -186,7 +186,7 @@ public class StoreRoleUnitTests {
     public void addPermissionSuccessTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -198,7 +198,7 @@ public class StoreRoleUnitTests {
     public void removePermissionSuccessTest(){
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendManagerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), Arrays.asList("MANAGE_PRODUCTS", "MANAGE_DISCOUNTS_POLICIES"), subscriber.getToken());
         userService.managerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());
@@ -222,7 +222,7 @@ public class StoreRoleUnitTests {
     public void waiveOwnerRoleTest() {
         userService.register("tomer1212","Password123!");
         userService.loginAsSubscriber("tomer1212","Password123!");
-        subscriber2=userService.getUserFacade().getUserRepository().getUser("tomer1212");
+        subscriber2=userService.getUserFacade().getUserRepository().getSubscriber("tomer1212");
 
         Response<Integer> res = userService.SendOwnerNominationRequest(store.getId(), subscriber.getUsername(), subscriber2.getUsername(), subscriber.getToken());
         userService.ownerNominationResponse(res.getData(), subscriber2.getUsername(), true, subscriber2.getToken());

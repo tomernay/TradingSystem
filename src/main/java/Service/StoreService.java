@@ -3,7 +3,6 @@ package Service;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.StoreDTO;
 import Facades.StoreFacade;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -680,22 +679,6 @@ public class StoreService {
     }
 
     /**
-     * This method retrieves the store by its ID
-     * @param storeID the ID of the store
-     * @param username the username of the user
-     * @param token the token of the user
-     * @return If successful, returns the store. <br> If not, returns an error message.
-     */
-    public Response<StoreDTO> getStoreByID(Integer storeID, String username, String token) {
-        SystemLogger.info("[START] User: " + username + " is trying to search store by storeID: " + storeID);
-        if (userService.isValidToken(token, username)) {
-            return storeFacade.getStoreByID(storeID, username);
-        }
-        SystemLogger.error("[ERROR] User: " + username + " tried to search store by storeID: " + storeID + " but the token was invalid");
-        return Response.error("Invalid token", null);
-    }
-
-    /**
      * This method retrieves if the user is a subscriber of the store
      * @param storeID the ID of the store
      * @param username the username of the user
@@ -755,26 +738,6 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-//    //may be deleted
-//    public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByCategory(String category, String UserName, String token) {
-//        SystemLogger.info("[START] User: " + UserName + " is trying to search products by category: " + category);
-//        if (userService.isValidToken(token, UserName)) {
-//            return storeFacade.getProductsFromAllStoresByCategory(category);
-//        }
-//        SystemLogger.error("[ERROR] User: " + UserName + " tried to search products by category: " + category + " but the token was invalid");
-//        return Response.error("Invalid token", null);
-//    }
-//
-//    //may be deleted
-//    public Response<ArrayList<ProductDTO>> getProductsFromAllStoresByName(String productName, String UserName, String token) {
-//        SystemLogger.info("[START] User: " + UserName + " is trying to search products by name: " + productName);
-//        if (userService.isValidToken(token, UserName)) {
-//            return storeFacade.getProductsFromAllStoresByName(productName);
-//        }
-//        SystemLogger.error("[ERROR] User: " + UserName + " tried to search products by name: " + productName + " but the token was invalid");
-//        return Response.error("Invalid token", null);
-//    }
-
     /**
      * This method adds a simple discount to the store
      * @param username the username of the user
@@ -785,7 +748,7 @@ public class StoreService {
      * @param percent the percent of the discount
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> CreateDiscountSimple(String username, String token, Integer productID, Integer storeID, String category, Double percent) {
+    public Response<String> CreateSimpleDiscount(String username, String token, Integer productID, Integer storeID, String category, Double percent) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {

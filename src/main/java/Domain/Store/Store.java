@@ -202,7 +202,6 @@ public class Store {
         return subscribers.get(currentUsername) instanceof StoreCreator;
     }
 
-    //yair added
     public Map<String, SubscriberState> getSubscribers() {
         return subscribers;
     }
@@ -492,7 +491,7 @@ public class Store {
             if (isOverEighteen == null || !(now.isAfter(startTime) || now.isBefore(endTime))) {
                 for (Condition c : policies.values()) {
                     if (!c.isValid(productsInShoppingCart)) {
-                        SystemLogger.error("[ERROR] The condition: " + c.getConditionID() + " is not valid");
+                        SystemLogger.error("[ERROR] The following policy is not valid:\n" + c);
                         return Response.error("The condition: " + c.getConditionID() + " is not valid", false);
                     }
                 }
@@ -571,7 +570,7 @@ public class Store {
             }
             discount += responseDiscount.getData();
         }
-        return new Response<>(true, "calculate discounts successfull", discount);
+        return new Response<>(true, "Calculated discounts successfully", discount);
     }
 
     public synchronized Response<String> unlockProductsBackToStore(Map<Integer, Integer> productsInStore) {
