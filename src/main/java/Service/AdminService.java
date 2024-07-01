@@ -3,7 +3,6 @@ package Service;
 import Facades.AdminFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
-
 import java.util.Date;
 import java.util.Map;
 
@@ -80,9 +79,11 @@ public class AdminService {
                 SystemLogger.error("[ERROR] The User Does Not Exist");
                 return Response.error("The User Does Not Exist", null);
             }
-
-            //TO DO - implementation of SUSPENDING a user
-            return adminFacade.getAdminRepository().suspendUser(subscriberUsername,endOfSuspensionDate);
+            Response<String> res = adminFacade.suspendUser(subscriberUsername,endOfSuspensionDate);
+            if (res.isSuccess()){
+                userService.sendMessage(subscriberUsername, "You have been suspended until " + endOfSuspensionDate);
+            }
+            return res;
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");
@@ -96,8 +97,11 @@ public class AdminService {
                 SystemLogger.error("[ERROR] The User Does Not Exist");
                 return Response.error("The User Does Not Exist", null);
             }
-
-            return adminFacade.getAdminRepository().reactivateUser(subscriberUsername);
+            Response<String> res = adminFacade.reactivateUser(subscriberUsername);
+            if (res.isSuccess()){
+                userService.sendMessage(subscriberUsername, "Your account have been reactivated");
+            }
+            return res;
         }
         catch (Exception exception){
             SystemLogger.error("[ERROR] Other Exception");
@@ -106,12 +110,12 @@ public class AdminService {
     }
 
     public Response<Map<String,Date>> getSuspensionList(){
-        Map<String,Date> list = adminFacade.getAdminRepository().getSuspensionList();
+        Map<String,Date> list = adminFacade.getSuspensionList();
         return Response.success("suspension list", list);
     }
 
     public boolean isSuspended(String subscriberID){
-        return adminFacade.getAdminRepository().isSuspended(subscriberID);
+        return adminFacade.isSuspended(subscriberID);
     }
 
 }

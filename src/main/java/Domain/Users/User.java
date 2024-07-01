@@ -43,14 +43,6 @@ public class User {
         Token = token;
     }
 
-    public boolean logoutAsGuest(){
-        if(shoppingCart != null){
-            shoppingCart = null;
-            return true;
-        }
-        return false;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -144,5 +136,11 @@ public class User {
 
     public boolean isInPurchaseProcess() {
         return shoppingCart.isInPurchaseProcess();
+    }
+
+    public Response<String> resetShoppingCart() {
+        shoppingCart = new ShoppingCart();
+        SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " released successfully");
+        return Response.success("Shopping cart released successfully", null);
     }
 }

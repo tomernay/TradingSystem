@@ -36,9 +36,9 @@ public class StoreCreation {
         init();
         ExecutorService executorService = Executors.newFixedThreadPool(3);
 
-        Future<Response<Integer>> future1 = executorService.submit(() -> storeService.addStore("store1", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
-        Future<Response<Integer>> future2 = executorService.submit(() -> storeService.addStore("store2", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
-        Future<Response<Integer>> future3 = executorService.submit(() -> storeService.addStore("store3", "mia", userService.getUserFacade().getUserRepository().getUser("mia").getToken()));
+        Future<Response<Integer>> future1 = executorService.submit(() -> storeService.addStore("store1", "mia", userService.getUserFacade().getUserRepository().getSubscriber("mia").getToken()));
+        Future<Response<Integer>> future2 = executorService.submit(() -> storeService.addStore("store2", "mia", userService.getUserFacade().getUserRepository().getSubscriber("mia").getToken()));
+        Future<Response<Integer>> future3 = executorService.submit(() -> storeService.addStore("store3", "mia", userService.getUserFacade().getUserRepository().getSubscriber("mia").getToken()));
 
         Response<Integer> res1 = future1.get();
         Response<Integer> res2 = future2.get();

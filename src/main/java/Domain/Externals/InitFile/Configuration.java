@@ -4,7 +4,6 @@ import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Payment.ProxyPaymentGateway;
 import Domain.Externals.Suppliers.ProxySupplySystem;
 import Domain.Externals.Suppliers.SupplySystem;
-import Domain.Order;
 import Domain.Users.Subscriber.Subscriber;
 import Service.OrderService;
 import Service.ServiceInitializer;
@@ -100,7 +99,7 @@ public class Configuration {
                         break;
                     case "addStore":
                         userService.loginAsSubscriber(params.get("ownerUsername").asText(), "Password123!"); // Assuming all passwords are the same
-                        subscriber = userService.getUserFacade().getUserRepository().getUser(params.get("ownerUsername").asText());
+                        subscriber = userService.getUserFacade().getUserRepository().getSubscriber(params.get("ownerUsername").asText());
                         storeService.addStore(params.get("storeName").asText(), params.get("ownerUsername").asText(), subscriber.getToken());
                         break;
                     case "addProductToStore":

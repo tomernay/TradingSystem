@@ -1,7 +1,6 @@
 package Presentation.application;
 
 import Domain.Externals.InitFile.Configuration;
-import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.OrderService;
@@ -76,19 +75,19 @@ public class Application implements AppShellConfigurator {
         userService.register("mia","Password123!");
         Response<String> resLogin = userService.loginAsSubscriber("mia","Password123!");
         String token = resLogin.getData();
-        subscriber = userService.getUserFacade().getUserRepository().getUser("mia");
+        subscriber = userService.getUserFacade().getUserRepository().getSubscriber("mia");
         storeService = serviceInitializer.getStoreService();
         orderService = serviceInitializer.getOrderService();
         userService.register("manager","Password123!");
         userService.loginAsSubscriber("manager","Password123!");
         userService.register("owner","Password123!");
         userService.loginAsSubscriber("owner","Password123!");
-        owner=userService.getUserFacade().getUserRepository().getUser("owner");
-        manager = userService.getUserFacade().getUserRepository().getUser("manager");
+        owner=userService.getUserFacade().getUserRepository().getSubscriber("owner");
+        manager = userService.getUserFacade().getUserRepository().getSubscriber("manager");
         storeService.addStore("newStore", "mia",subscriber.getToken());
-        store = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
         storeService.addStore("newStore2", "mia",subscriber.getToken());
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
         storeService.addProductToStore(0,"yair","d",20,30,"mia",subscriber.getToken());
         Response<Integer> res = userService.SendManagerNominationRequest(0, "mia", "manager", List.of("VIEW_PRODUCTS","MANAGE_PRODUCTS", "VIEW_DISCOUNTS_POLICIES"), token);
         userService.managerNominationResponse(res.getData(), "manager", true, manager.getToken());

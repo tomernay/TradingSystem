@@ -65,7 +65,7 @@ public class StoreManagementPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         if (Objects.equals(type, "Simple")) {
-            storeService.CreateDiscountSimple(username, token, productId, storeId, category, discountPercent);
+            storeService.CreateSimpleDiscount(username, token, productId, storeId, category, discountPercent);
         }
         else if (Objects.equals(type, "Complex")) {
             storeService.makeComplexDiscount(username, token, storeId, discount1.getID(), discount2.getID(), discountType);

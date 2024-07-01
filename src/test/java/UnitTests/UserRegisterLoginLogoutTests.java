@@ -74,7 +74,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertTrue(PasswordEncoderUtil.matches("ValidPassword123!",userRepository.getSubscribers().get("validUser").getPassword()));
         // Attempt to log in as a subscriber with valid credentials
         userService.loginAsSubscriber("validUser","ValidPassword123!");
-        Assert.assertTrue(userRepository.getSubscribersLoggedIn().containsKey("validUser"));
+        Assert.assertTrue(userRepository.getSubscribersLoggedIn().contains("validUser"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 1);
     }
 
@@ -87,7 +87,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertTrue(PasswordEncoderUtil.matches("ValidPassword123!",userRepository.getSubscribers().get("validUser").getPassword()));
         // Attempt to log in as a subscriber with invalid username
         userService.loginAsSubscriber("invalidUser","ValidPassword123!");
-        Assert.assertFalse(userRepository.getSubscribersLoggedIn().containsKey("invalidUser"));
+        Assert.assertFalse(userRepository.getSubscribersLoggedIn().contains("invalidUser"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
     }
 
@@ -100,7 +100,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertTrue(PasswordEncoderUtil.matches("ValidPassword123!",userRepository.getSubscribers().get("validUser").getPassword()));
         // Attempt to log in as a subscriber with invalid password
         userService.loginAsSubscriber("validUser","InvalidPassword123!");
-        Assert.assertFalse(userRepository.getSubscribersLoggedIn().containsKey("validUser"));
+        Assert.assertFalse(userRepository.getSubscribersLoggedIn().contains("validUser"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
     }
 
@@ -113,7 +113,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertTrue(PasswordEncoderUtil.matches("ValidPassword123!",userRepository.getSubscribers().get("validUser").getPassword()));
         // Attempt to log in as a subscriber with valid credentials
         userService.loginAsSubscriber("validUser","ValidPassword123!");
-        Assert.assertTrue(userRepository.getSubscribersLoggedIn().containsKey("validUser"));
+        Assert.assertTrue(userRepository.getSubscribersLoggedIn().contains("validUser"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 1);
 
         // Generate a valid token for a different user
@@ -134,12 +134,12 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertTrue(userRepository.getSubscribers().containsKey("nivn96"));
         Assert.assertEquals(userRepository.getSubscribers().size(), 1);
         Assert.assertTrue(PasswordEncoderUtil.matches("Password123!",userRepository.getSubscribers().get("nivn96").getPassword()));
-        Assert.assertTrue(userRepository.getSubscribersLoggedIn().containsKey("nivn96"));
+        Assert.assertTrue(userRepository.getSubscribersLoggedIn().contains("nivn96"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 1);
 
         // Attempt to log out as a subscriber
         userService.logoutAsSubscriber("nivn96");
-        Assert.assertFalse(userRepository.getSubscribersLoggedIn().containsKey("nivn96"));
+        Assert.assertFalse(userRepository.getSubscribersLoggedIn().contains("nivn96"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
     }
 
@@ -150,11 +150,11 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertTrue(userRepository.getSubscribers().containsKey("nivn96"));
         Assert.assertEquals(userRepository.getSubscribers().size(), 1);
         Assert.assertTrue(PasswordEncoderUtil.matches("Password123!",userRepository.getSubscribers().get("nivn96").getPassword()));
-        Assert.assertFalse(userRepository.getSubscribersLoggedIn().containsKey("nivn96"));
+        Assert.assertFalse(userRepository.getSubscribersLoggedIn().contains("nivn96"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
         // Attempt to log out as a subscriber
         userService.logoutAsSubscriber("nivn96");
-        Assert.assertFalse(userRepository.getSubscribersLoggedIn().containsKey("nivn96"));
+        Assert.assertFalse(userRepository.getSubscribersLoggedIn().contains("nivn96"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
     }
 
@@ -164,7 +164,7 @@ public class UserRegisterLoginLogoutTests {
         Assert.assertEquals(userRepository.getSubscribers().size(), 0);
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
         userService.logoutAsSubscriber("nonExistentUser");
-        Assert.assertFalse(userRepository.getSubscribersLoggedIn().containsKey("nonExistentUser"));
+        Assert.assertFalse(userRepository.getSubscribersLoggedIn().contains("nonExistentUser"));
         Assert.assertEquals(userRepository.getSubscribersLoggedIn().size(), 0);
     }
 

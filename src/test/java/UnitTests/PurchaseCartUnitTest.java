@@ -59,12 +59,12 @@ public class PurchaseCartUnitTest {
         userService.register("newOwner", "Password123!");
         userService.loginAsSubscriber("yair12312", "Password123!");
         userService.loginAsSubscriber("newOwner", "Password123!");
-        buyer = userService.getUserFacade().getUserRepository().getUser("yair12312");
-        owner = userService.getUserFacade().getUserRepository().getUser("newOwner");
+        buyer = userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
+        owner = userService.getUserFacade().getUserRepository().getSubscriber("newOwner");
         storeService.addStore("newStore0", "newOwner", owner.getToken());
-        store1 = storeService.getStoreFacade().getStoreRepository().getStore(0);
+        store1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0);
         storeService.addStore("newStore1", "newOwner", owner.getToken());
-        store2 = storeService.getStoreFacade().getStoreRepository().getStore(1);
+        store2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1);
         storeService.addProductToStore(0, "newOProduct1", "DOG", 5, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(0, "newOProduct2", "DOG", 10, 10, "newOwner", owner.getToken());
         storeService.addProductToStore(1, "newOProduct3", "DOG", 3, 10, "newOwner", owner.getToken());
@@ -95,8 +95,8 @@ public class PurchaseCartUnitTest {
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -137,8 +137,8 @@ public class PurchaseCartUnitTest {
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -179,8 +179,8 @@ public class PurchaseCartUnitTest {
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -215,8 +215,8 @@ public class PurchaseCartUnitTest {
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -251,8 +251,8 @@ public class PurchaseCartUnitTest {
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -285,8 +285,8 @@ public class PurchaseCartUnitTest {
         Response<String> response = orderService.payAndSupply(response1.getData(), 108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is not updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -320,8 +320,8 @@ public class PurchaseCartUnitTest {
         Response<String> response = orderService.payAndSupply(response1.getData(), 108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is not updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -350,8 +350,8 @@ public class PurchaseCartUnitTest {
         Response<String> response = orderService.payAndSupply(response1.getData(), 0.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is not updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -386,8 +386,8 @@ public class PurchaseCartUnitTest {
         Response<String> response = orderService.payAndSupply(response1.getData(), 108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -426,8 +426,8 @@ public class PurchaseCartUnitTest {
         Response<String> response = orderService.payAndSupply(response1.getData(), 108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is not updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -459,8 +459,8 @@ public class PurchaseCartUnitTest {
         Response<String> response = orderService.payAndSupply(response1.getData(), 108.0, "yair12312", buyer.getToken(),
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
-        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getStore(0).getInventory();
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory1 = storeService.getStoreFacade().getStoreRepository().getActiveStore(0).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is not updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");
@@ -495,7 +495,7 @@ public class PurchaseCartUnitTest {
                 "123 Street, City, State, Zip", "1234567812345678", "12/23", "123", "John Doe", "111111111");
 
 
-        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getStore(1).getInventory();
+        Inventory inventory2 = storeService.getStoreFacade().getStoreRepository().getActiveStore(1).getInventory();
 
         // Verify the purchase history is not updated
         orderService.getPurchaseHistoryBySubscriber("yair12312");

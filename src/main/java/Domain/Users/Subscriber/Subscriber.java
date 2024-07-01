@@ -186,4 +186,9 @@ public class Subscriber extends User {
         }
         return Response.success("[SUCCESS] Successfully retrieved the number of unread messages.", unread);
     }
+
+    public Response<String> sendMessage(String message) {
+        messages.add(new NormalMessage(message));
+        return Response.success("[SUCCESS] Message sent successfully.", null);
+    }
 }

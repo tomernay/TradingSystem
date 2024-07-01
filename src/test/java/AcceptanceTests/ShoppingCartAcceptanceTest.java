@@ -26,8 +26,8 @@ public class ShoppingCartAcceptanceTest {
         userService.register("newOwner","Password123!");
         userService.loginAsSubscriber("yair12312","Password123!");
         userService.loginAsSubscriber("newOwner","Password123!");
-        buyer=userService.getUserFacade().getUserRepository().getUser("yair12312");
-        owner=userService.getUserFacade().getUserRepository().getUser("newOwner");
+        buyer=userService.getUserFacade().getUserRepository().getSubscriber("yair12312");
+        owner=userService.getUserFacade().getUserRepository().getSubscriber("newOwner");
         storeService.addStore("newStore","newOwner",owner.getToken());
 
     }
