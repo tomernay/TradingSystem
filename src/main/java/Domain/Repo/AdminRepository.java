@@ -5,7 +5,8 @@ import Domain.Users.Admin;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
-import java.sql.Date;
+import java.time.ZoneId;
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class AdminRepository {
     public Response<String> suspendUser(String subscriberUsername, Date endOfSuspensionDate){
         try {
             if (!(admin.getSuspensionList().containsKey(subscriberUsername))) {
-                admin.getSuspensionList().put(subscriberUsername, endOfSuspensionDate);
+                admin.suspendUser(subscriberUsername, endOfSuspensionDate);
                 SystemLogger.error("[SUCCESS] The User " +subscriberUsername+ " Has Been Suspended");
                 return new Response<>(true,"The user has been successfully suspended");
             }
@@ -54,16 +55,19 @@ public class AdminRepository {
     public boolean isSuspended(String user){
         if(!(admin.getSuspensionList().containsKey(user))){
             return false;
-        } else if (isDateBeforeOrEqualNow(admin.getSuspensionList().get(user))) {
-            return false;
-        }
-        return true;
+        } else return !isDateBeforeOrEqualNow(admin.getSuspensionList().get(user));
     }
 
-    public static boolean isDateBeforeOrEqualNow(Date sqlDate) {
+    public static boolean isDateBeforeOrEqualNow(Date date) {
         LocalDate currentDate = LocalDate.now();
-        LocalDate dateToCheck = sqlDate.toLocalDate();
+        LocalDate dateToCheck = convertDateToLocalDate(date);
         return !dateToCheck.isAfter(currentDate);
+    }
+
+    public static LocalDate convertDateToLocalDate(Date date) {
+        return date.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
 }

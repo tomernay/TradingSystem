@@ -4,7 +4,9 @@ package Presentation.application.View;
 import Presentation.application.Presenter.AdminPresenter;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -44,6 +46,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -85,10 +89,10 @@ public class AdminView extends AppLayout  {
         setContent(mainContent);
         //mainContent.add(actions);
         //actions.setAlignItems(FlexComponent.Alignment.CENTER);
-        closeStoreButton();
-        cancelSubscriptionButton();
+//        closeStoreButton();
+//        cancelSubscriptionButton();
         purchaseHistoryButton();
-        systemManagerButton();
+//        systemManagerButton();
         suspendUserButton();
         cancelSuspensionButton();
         watchSuspensionsButton();
@@ -140,49 +144,60 @@ public class AdminView extends AppLayout  {
 
     private void openSuspendUserDialog() {
         Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(false);
-        dialog.setCloseOnOutsideClick(false);
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
-        //retrieve all open stores
-        Set<String> subscribers = presenter.getAllSubscribers();
-        ComboBox<String> storeComboBox = new ComboBox<>();
-        storeComboBox.setItems(subscribers);
-        storeComboBox.setLabel("Select subscriber to suspend:");
-        storeComboBox.getElement().getStyle().set("color", "#3F352C");
-        dialogLayout.add(storeComboBox);
-        Button closeButton = new Button("Suspend subscriber", e -> {
-            String subName = storeComboBox.getValue();
-            if (subName == null) {
-                Notification.show("Please select a store to close");
-            } else {
-                //ask for confirmation
-                openSuspendConfirmationDialog(subName);
 
-                //close store
-                //presenter.closeStore(storeName);
+        Set<String> subscribers = presenter.getAllSubscribers();
+        ComboBox<String> subscriberComboBox = new ComboBox<>();
+        subscriberComboBox.addClassName("custom-context-menu");
+        subscriberComboBox.setItems(subscribers);
+        subscriberComboBox.setLabel("Select subscriber to suspend:");
+        subscriberComboBox.getElement().getStyle().set("color", "#3F352C");
+        dialogLayout.add(subscriberComboBox);
+
+        DatePicker endDatePicker = new DatePicker();
+        endDatePicker.setLabel("Select end date:");
+        endDatePicker.getElement().getStyle().set("color", "#3F352C");
+        dialogLayout.add(endDatePicker);
+
+        Button suspendButton = new Button("Suspend subscriber", e -> {
+            String subName = subscriberComboBox.getValue();
+            LocalDate localEndDate = endDatePicker.getValue();
+            if (subName == null) {
+                Notification.show("Please select a subscriber to suspend");
+            } else if (localEndDate == null) {
+                Notification.show("Please select an end date for the suspension");
+            } else {
+                Date endDate = Date.from(localEndDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                openSuspendConfirmationDialog(subName, endDate);
                 dialog.close();
             }
         });
-        closeButton.addClassName("button");
-        //center the button
-        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, closeButton);
-        dialogLayout.add(closeButton);
+        suspendButton.addClassName("button");
+        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, suspendButton);
+        dialogLayout.add(suspendButton);
         dialog.add(dialogLayout);
         dialog.open();
     }
 
-    private void openSuspendConfirmationDialog(String subName) {
+    private void openSuspendConfirmationDialog(String subName, Date endDate) {
         Dialog confirmationDialog = new Dialog();
-        confirmationDialog.setCloseOnEsc(false);
-        confirmationDialog.setCloseOnOutsideClick(false);
+        confirmationDialog.setCloseOnEsc(true);
+        confirmationDialog.setCloseOnOutsideClick(true);
         confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-        dialogLayout.add(new H3("Are you sure you want to suspend " + subName + "?"));
+        dialogLayout.add(new H3("Are you sure you want to suspend " + subName + " until " + endDate + "?"));
         HorizontalLayout buttonsLayout = new HorizontalLayout();
         Button confirmButton = new Button("Yes", e -> {
-            presenter.suspendSubscriber(subName);
+            boolean success = presenter.suspendSubscriber(subName, endDate);
+            if (success) {
+                Notification.show("User suspended successfully");
+            } else {
+                Notification.show("Failed to suspend user");
+            }
             confirmationDialog.close();
         });
         confirmButton.addClassName("yes_button");
@@ -199,6 +214,7 @@ public class AdminView extends AppLayout  {
         confirmationDialog.open();
     }
 
+
     public void cancelSuspensionButton() {
         Button cancelSuspensionButton = new Button("Cancel Suspension", e -> openCancelSuspensionDialog());
         cancelSuspensionButton.addClassName("button");
@@ -210,42 +226,48 @@ public class AdminView extends AppLayout  {
 
     private void openCancelSuspensionDialog() {
         Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(false);
-        dialog.setCloseOnOutsideClick(false);
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("600px");
+        dialog.setHeight("400px");
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
-        //retrieve all open stores
-        Set<String> subscribers = presenter.getAllSubscribers(); //TODO: change to get all suspended subscribers
-        ComboBox<String> storeComboBox = new ComboBox<>();
-        storeComboBox.setItems(subscribers);
-        storeComboBox.setLabel("Select subscriber to cancel suspension:");
-        storeComboBox.getElement().getStyle().set("color", "#3F352C");
-        dialogLayout.add(storeComboBox);
-        Button closeButton = new Button("Cancel suspension", e -> {
-            String subName = storeComboBox.getValue();
-            if (subName == null) {
-                Notification.show("Please select a store to close");
-            } else {
-                //ask for confirmation
-                presenter.cancelSuspension(subName);
 
-                //close store
-                //presenter.closeStore(storeName);
+        // Retrieve the suspension list
+        Map<String, Date> suspensionList = presenter.getSuspensionList();
+
+        Grid<Map.Entry<String, Date>> grid = new Grid<>();
+        grid.addClassName("custom-grid");
+        grid.setItems(suspensionList.entrySet());
+        grid.addColumn(entry -> entry.getKey()).setHeader("Subscriber ID").setFlexGrow(1).setWidth("50%");
+        grid.addColumn(entry -> entry.getValue().toString()).setHeader("Suspension End Date").setFlexGrow(1).setWidth("50%");
+
+        dialogLayout.add(grid);
+
+        Button cancelButton = new Button("Cancel suspension", e -> {
+            Map.Entry<String, Date> selectedEntry = grid.asSingleSelect().getValue();
+            if (selectedEntry == null) {
+                Notification.show("Please select a suspended subscriber to cancel suspension");
+            } else {
+                boolean success = presenter.cancelSuspension(selectedEntry.getKey());
+                if (success) {
+                    Notification.show("Suspension canceled successfully");
+                } else {
+                    Notification.show("Failed to cancel suspension");
+                }
                 dialog.close();
             }
         });
-        closeButton.addClassName("button");
-        //center the button
-        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, closeButton);
-        dialogLayout.add(closeButton);
+        cancelButton.addClassName("button");
+        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, cancelButton);
+        dialogLayout.add(cancelButton);
         dialog.add(dialogLayout);
         dialog.open();
     }
 
     public void watchSuspensionsButton() {
-        Button watchSuspensionsButton = new Button("Watch Suspended users" , e -> openWatchSuspensionsDialog());
+        Button watchSuspensionsButton = new Button("Watch Suspended Users", e -> openWatchSuspensionsDialog());
         watchSuspensionsButton.addClassName("button");
-        //set the button size
         watchSuspensionsButton.setWidth("200px");
 
         actions.add(watchSuspensionsButton);
@@ -253,18 +275,23 @@ public class AdminView extends AppLayout  {
 
     private void openWatchSuspensionsDialog() {
         Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(false);
-        dialog.setCloseOnOutsideClick(false);
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("600px");
+        dialog.setHeight("400px");
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
-        //retrieve all open stores
-        Set<String> subscribers = presenter.getAllSubscribers(); //TODO: change to get all suspended subscribers
-        //present the suspended users
-        for (String sub : subscribers) {
-            dialogLayout.add(new H3(sub));
-        }
-        //TODO : show date, duration, and end date
-        //center the button
+
+        // Retrieve the suspension list
+        Map<String, Date> suspensionList = presenter.getSuspensionList();
+
+        Grid<Map.Entry<String, Date>> grid = new Grid<>();
+        grid.addClassName("custom-grid");
+        grid.setItems(suspensionList.entrySet());
+        grid.addColumn(entry -> entry.getKey()).setHeader("Subscriber ID").setFlexGrow(1).setWidth("50%");
+        grid.addColumn(entry -> entry.getValue().toString()).setHeader("Suspension End Date").setFlexGrow(1).setWidth("50%");
+
+        dialogLayout.add(grid);
 
         dialog.add(dialogLayout);
         dialog.open();
@@ -299,8 +326,8 @@ public class AdminView extends AppLayout  {
 
     private void openCloseStoreDialog() {
         Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(false);
-        dialog.setCloseOnOutsideClick(false);
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         //retrieve all open stores
@@ -335,8 +362,8 @@ public class AdminView extends AppLayout  {
 
     private void openClosingConfirmationDialog(String storeName) {
         Dialog confirmationDialog = new Dialog();
-        confirmationDialog.setCloseOnEsc(false);
-        confirmationDialog.setCloseOnOutsideClick(false);
+        confirmationDialog.setCloseOnEsc(true);
+        confirmationDialog.setCloseOnOutsideClick(true);
         confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
@@ -371,8 +398,8 @@ public class AdminView extends AppLayout  {
 
     private void openCancelSubscriptionDialog() {
         Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(false);
-        dialog.setCloseOnOutsideClick(false);
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         //retrieve all open stores
@@ -405,8 +432,8 @@ public class AdminView extends AppLayout  {
 
     private void openRemovingConfirmationDialog(String subName) {
         Dialog confirmationDialog = new Dialog();
-        confirmationDialog.setCloseOnEsc(false);
-        confirmationDialog.setCloseOnOutsideClick(false);
+        confirmationDialog.setCloseOnEsc(true);
+        confirmationDialog.setCloseOnOutsideClick(true);
         confirmationDialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
