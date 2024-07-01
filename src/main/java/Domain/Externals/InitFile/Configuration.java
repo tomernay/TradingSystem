@@ -1,7 +1,9 @@
 package Domain.Externals.InitFile;
 
+import Domain.Externals.Payment.DefaultPaymentGateway;
 import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Payment.ProxyPaymentGateway;
+import Domain.Externals.Suppliers.DefaultSupplySystem;
 import Domain.Externals.Suppliers.ProxySupplySystem;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Users.Subscriber.Subscriber;
@@ -25,8 +27,12 @@ public class Configuration {
     public Configuration(JsonNode jsonNode) {
         if (jsonNode.get("payments service").asText().equals("ProxyPaymentGateway"))
             paymentGateway = new ProxyPaymentGateway();
+        else
+            paymentGateway = new DefaultPaymentGateway();
         if (jsonNode.get("supplier service").asText().equals("ProxySupplyGateway"))
             supplySystem = new ProxySupplySystem();
+        else
+            supplySystem = new DefaultSupplySystem();
 
         JsonNode adminDetails = jsonNode.get("Admin details");
         adminUser = adminDetails.get("user").asText();

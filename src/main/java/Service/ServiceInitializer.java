@@ -21,7 +21,7 @@ public class ServiceInitializer {
         userService = new UserService();
         storeService = new StoreService();
         adminService = new AdminService();
-        orderService = new OrderService(new ProxyPaymentGateway(), new ProxySupplySystem());
+        orderService = new OrderService(new DefaultPaymentGateway(), new DefaultSupplySystem());
         userService.setStoreService(storeService);
         userService.setAdminService(adminService);
         storeService.setUserService(userService);
