@@ -177,6 +177,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
 
+        if(presenter.getUserName().equals("u1")) {
+            MenuItem admin = dropdownMenu.addItem("Admin actions", e -> {
+                UI.getCurrent().navigate(AdminView.class);
+            });
+        }
+
 
         if(!presenter.getUserName().contains("Guest")) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
@@ -288,6 +294,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         dialog.setHeight("250px");
 
         VerticalLayout dialogLayout = new VerticalLayout();
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+
         dialogLayout.add(new Span("Open a new store:"));
 
         TextField storeName = new TextField("Store Name");
@@ -315,11 +323,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             } catch (ExecutionException eX) {
                 eX.printStackTrace();
             }
-          //  UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
 
             dialog.close();
         });
-        openStore.getElement().getStyle().set("color", "black");
+        openStore.addClassName("button");
         //position save button at the center
         openStore.getElement().getStyle().set("position", "absolute");
         openStore.getElement().getStyle().set("bottom", "0");
@@ -359,7 +368,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         for (int i = 0; i < stores.size(); i += 4) {
             HorizontalLayout row = new HorizontalLayout();
             row.setWidthFull(); // Ensure row takes full width
-
+            row.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
 
             // Counter to keep track of buttons added

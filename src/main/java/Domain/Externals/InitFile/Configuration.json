@@ -2,10 +2,11 @@
   "payments service": "ProxyPaymentGateway",
   "supplier service": "ProxySupplyGateway",
   "Admin details": {
-    "user": "admin@",
+    "user": "u1@",
     "password": "123456"
   },
   "init sequence": [
+    { "function": "register", "parameters": { "username": "u1", "password": "Password123!" } },
     { "function": "register", "parameters": { "username": "u2", "password": "Password123!" } },
     { "function": "register", "parameters": { "username": "u3", "password": "Password123!" } },
     { "function": "register", "parameters": { "username": "u4", "password": "Password123!" } },

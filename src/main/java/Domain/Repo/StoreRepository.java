@@ -146,7 +146,7 @@ public class StoreRepository {
         return stores.get(storeID).isStoreCreator(currentUsername);
     }
 
-    public Response<Integer> addStore(String storeName, String creator) {
+    public synchronized Response<Integer> addStore(String storeName, String creator) {
 
         try {
             Store store = new Store(storeID.get(), storeName, creator);

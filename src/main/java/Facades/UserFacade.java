@@ -7,6 +7,7 @@ import Utilities.Response;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class UserFacade {
@@ -163,5 +164,9 @@ public class UserFacade {
 
     public Response<Integer> getUnreadMessagesCount(String username, String token) {
         return userRepository.getUnreadMessagesCount(username, token);
+    }
+
+    public Response<Set<String>> getAllSubscribers(String username) {
+        return userRepository.getAllSubscribers(username);
     }
 }
