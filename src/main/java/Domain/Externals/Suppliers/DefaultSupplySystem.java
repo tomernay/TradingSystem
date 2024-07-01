@@ -1,10 +1,10 @@
+// DefaultSupplySystem.java
+
 package Domain.Externals.Suppliers;
 
 import Domain.Externals.HttpUtils;
-import Domain.Store.Inventory.ProductDTO;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DefaultSupplySystem implements SupplySystem {
@@ -29,6 +29,7 @@ public class DefaultSupplySystem implements SupplySystem {
             params.put("zip", zip);
 
             String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            System.out.println("Raw Response: " + response);
             int transactionId = Integer.parseInt(response.trim());
             return (transactionId >= 10000 && transactionId <= 100000) ? transactionId : -1;
         } catch (Exception e) {
@@ -45,6 +46,7 @@ public class DefaultSupplySystem implements SupplySystem {
             params.put("transaction_id", String.valueOf(transactionId));
 
             String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            System.out.println("Raw Response: " + response);
             int result = Integer.parseInt(response.trim());
             return result == 1;
         } catch (Exception e) {
@@ -60,6 +62,7 @@ public class DefaultSupplySystem implements SupplySystem {
             params.put("action_type", "handshake");
 
             String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            System.out.println("Raw Response: " + response);
             return "OK".equals(response.trim());
         } catch (Exception e) {
             System.out.println("Handshake failed: " + e.getMessage());

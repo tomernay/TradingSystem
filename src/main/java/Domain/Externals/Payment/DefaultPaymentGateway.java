@@ -1,3 +1,5 @@
+// DefaultPaymentGateway.java
+
 package Domain.Externals.Payment;
 
 import Domain.Externals.HttpUtils;
@@ -20,10 +22,15 @@ public class DefaultPaymentGateway implements PaymentGateway {
             params.put("month", getMonth(expirationDate));
             params.put("year", getYear(expirationDate));
             params.put("holder", fullName);
-            params.put("ccv", cvv);
+            params.put("cvv", cvv);
             params.put("id", id);
 
+            System.out.println("Sending POST request to: " + EXTERNAL_API_URL);
+            System.out.println("Post data: " + params);
+
             String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            System.out.println("Raw Response: " + response);
+
             int transactionId = Integer.parseInt(response.trim());
             return (transactionId >= 10000 && transactionId <= 100000) ? transactionId : -1;
         } catch (Exception e) {
@@ -39,7 +46,12 @@ public class DefaultPaymentGateway implements PaymentGateway {
             params.put("action_type", "cancel_pay");
             params.put("transaction_id", String.valueOf(transactionId));
 
+            System.out.println("Sending POST request to: " + EXTERNAL_API_URL);
+            System.out.println("Post data: " + params);
+
             String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            System.out.println("Raw Response: " + response);
+
             int result = Integer.parseInt(response.trim());
             return result == 1;
         } catch (Exception e) {
@@ -54,7 +66,12 @@ public class DefaultPaymentGateway implements PaymentGateway {
             Map<String, String> params = new HashMap<>();
             params.put("action_type", "handshake");
 
+            System.out.println("Sending POST request to: " + EXTERNAL_API_URL);
+            System.out.println("Post data: " + params);
+
             String response = HttpUtils.sendPostRequest(EXTERNAL_API_URL, params);
+            System.out.println("Raw Response: " + response);
+
             return "OK".equals(response.trim());
         } catch (Exception e) {
             System.out.println("Handshake failed: " + e.getMessage());
