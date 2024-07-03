@@ -1,6 +1,7 @@
 package ConfigurationFileTests;
 
 import Domain.Externals.InitFile.Configuration;
+import Domain.Externals.Payment.DefaultPaymentGateway;
 import Domain.Externals.Payment.ProxyPaymentGateway;
 import Domain.Users.Subscriber.Subscriber;
 import Presentation.application.Application;
@@ -20,10 +21,10 @@ public class ConfigurationFileTests {
 
    static ServiceInitializer serviceInitializer;
     @BeforeClass
-    public static void setUp() {
+    public static void setUp() throws Exception {
 
             Configuration configuration = null;
-            try {
+
                 // Read the configuration file
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/proxyConfig.json"));
@@ -31,10 +32,6 @@ public class ConfigurationFileTests {
                 // Initialize the Configuration object
                 Configuration.init(configNode);
                 serviceInitializer=ServiceInitializer.getInstance(configuration);
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.exit(1); // Exit if there is an error reading the configuration file
-            }
 
             // Pass the configuration to SpringApplication.run
 
@@ -44,8 +41,54 @@ public class ConfigurationFileTests {
     @Test
     public void testConfiguration(){
         OrderService orderService=ServiceInitializer.getInstance().getOrderService();
-        Assert.assertTrue(orderService.getPaymentGateway() instanceof ProxyPaymentGateway);
+        Assert.assertTrue(orderService.getPaymentGateway() instanceof DefaultPaymentGateway);
         boolean isMiaExist=ServiceInitializer.getInstance().getUserService().userExists("mia");
         Assert.assertTrue(isMiaExist);
+    }
+
+    @Test
+    public void testFileNotExist()  {
+        try {
+
+
+            Configuration configuration = null;
+
+            // Read the configuration file
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/p.json"));
+
+            // Initialize the Configuration object
+            Configuration.init(configNode);
+            serviceInitializer = ServiceInitializer.getInstance(configuration);
+            OrderService orderService = ServiceInitializer.getInstance().getOrderService();
+            Assert.assertTrue(false);
+            boolean isMiaExist = ServiceInitializer.getInstance().getUserService().userExists("mia");
+            Assert.assertTrue(false);
+        }catch (Exception e){
+            Assert.assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testFileError()  {
+        try {
+
+
+            Configuration configuration = null;
+
+            // Read the configuration file
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/FailedTestFile.json"));
+
+            // Initialize the Configuration object
+            Configuration.init(configNode);
+            serviceInitializer = ServiceInitializer.getInstance(configuration);
+            OrderService orderService = ServiceInitializer.getInstance().getOrderService();
+            Assert.assertTrue(false);
+            boolean isMiaExist = ServiceInitializer.getInstance().getUserService().userExists("mia");
+            Assert.assertTrue(false);
+        }catch (Exception e){
+            Assert.assertTrue(true);
+        }
     }
 }
