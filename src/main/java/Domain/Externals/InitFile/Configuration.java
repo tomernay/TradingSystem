@@ -12,9 +12,12 @@ import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Configuration {
@@ -24,16 +27,27 @@ public class Configuration {
     private String adminPassword;
     private List<FunctionCall> initSequence;
 
-    public Configuration(JsonNode jsonNode) {
-        if (jsonNode.get("payments service").asText().equals("ProxyPaymentGateway"))
-            paymentGateway = new ProxyPaymentGateway();
-        else
-            paymentGateway = new DefaultPaymentGateway();
-        if (jsonNode.get("supplier service").asText().equals("ProxySupplyGateway"))
-            supplySystem = new ProxySupplySystem();
-        else
-            supplySystem = new DefaultSupplySystem();
+    public Configuration(JsonNode jsonNode) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
 
+        JsonNode paymentServiceNode = jsonNode.get("payments service");
+        if (paymentServiceNode.has("ProxyPaymentGateway")) {
+            paymentGateway = mapper.treeToValue(paymentServiceNode.get("ProxyPaymentGateway"), ProxyPaymentGateway.class);
+        } else if (paymentServiceNode.has("DefaultPaymentGateway")) {
+            paymentGateway = mapper.treeToValue(paymentServiceNode.get("DefaultPaymentGateway"), DefaultPaymentGateway.class);
+        }
+        else{
+            throw new IllegalArgumentException("Invalid payment service configuration");
+        }
+        JsonNode supplierServiceNode = jsonNode.get("supplier service");
+        if (supplierServiceNode.has("ProxySupplyGateway")) {
+            supplySystem = mapper.treeToValue(supplierServiceNode.get("ProxySupplyGateway"), ProxySupplySystem.class);
+        } else if (supplierServiceNode.has("DefaultSupplySystem")) {
+            supplySystem = mapper.treeToValue(supplierServiceNode.get("DefaultSupplySystem"), DefaultSupplySystem.class);
+        }
+        else{
+            throw new IllegalArgumentException("Invalid supplier service configuration");
+        }
         JsonNode adminDetails = jsonNode.get("Admin details");
         adminUser = adminDetails.get("user").asText();
         adminPassword = adminDetails.get("password").asText();
@@ -83,7 +97,7 @@ public class Configuration {
     }
 
 
-    public static void init(JsonNode configNode) {
+    public static void init(JsonNode configNode) throws JsonProcessingException {
         Configuration config = new Configuration(configNode);
         ServiceInitializer.reset();
         ServiceInitializer serviceInitializer = ServiceInitializer.getInstance();
@@ -99,6 +113,7 @@ public class Configuration {
                 switch (functionCall.getFunction()) {
                     case "register":
                         userService.register(params.get("username").asText(), params.get("password").asText());
+
                         break;
                     case "loginAsSubscriber":
                         userService.loginAsSubscriber(params.get("username").asText(), params.get("password").asText());
@@ -109,13 +124,22 @@ public class Configuration {
                         storeService.addStore(params.get("storeName").asText(), params.get("ownerUsername").asText(), subscriber.getToken());
                         break;
                     case "addProductToStore":
+                        ArrayList<String> categories = new ArrayList<>();
+                        JsonNode categoriesNode = params.get("categories");
+                        if (categoriesNode != null && categoriesNode.isArray()) {
+                            Iterator<JsonNode> elements = categoriesNode.elements();
+                            while (elements.hasNext()) {
+                                categories.add(elements.next().asText());
+                            }
+                        }
                         storeService.addProductToStore(
                                 params.get("storeIndex").asInt(),
                                 params.get("productName").asText(),
                                 params.get("description").asText(),
                                 params.get("price").asDouble(),
                                 params.get("quantity").asInt(),
-                                new ArrayList<>(params.get("categories").findValuesAsText("")),
+                               categories
+                                ,
                                 params.get("ownerUsername").asText(),
                                 subscriber.getToken()
                         );
@@ -159,12 +183,20 @@ public class Configuration {
                         userService.logoutAsSubscriber(params.get("username").asText());
                         break;
                     default:
-                        System.out.println("4");
+                       throw new IllegalArgumentException();
 
                 }
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+                e.printStackTrace();
+           // throw new IllegalArgumentException("Illegal external file");
+            }
         }
+    }
+
+    public static void main(String[] args) throws JsonProcessingException {
+        ProxyPaymentGateway proxyPaymentGateway=new ProxyPaymentGateway();
+        System.out.println(proxyPaymentGateway);
     }
 
 }
