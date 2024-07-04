@@ -48,7 +48,6 @@ public class Configuration {
         else{
             throw new IllegalArgumentException("Invalid supplier service configuration");
         }
-
         JsonNode adminDetails = jsonNode.get("Admin details");
         adminUser = adminDetails.get("user").asText();
         adminPassword = adminDetails.get("password").asText();
