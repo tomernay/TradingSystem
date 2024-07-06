@@ -69,8 +69,4 @@ public class PolicyCondition implements Condition{
         return condition2;
     }
 
-    @Override
-    public Boolean getPriceIndicator() {
-        return null;
-    }
 }

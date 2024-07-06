@@ -9,18 +9,19 @@ import java.util.Map;
 public class SimpleDiscount implements Discount{
 
     private final Double percent;
-    private final Integer productID;
-    private final String category;
     private final Integer discountID;
     private final String productName;
+    private final TYPE type;
+    private final String Object;
 
 
-    public SimpleDiscount(Double percent, Integer productID, String category, Integer discountID, String productName) {
+    public SimpleDiscount(Double percent, Integer discountID, String productName, TYPE type, String object) {
         this.percent = percent;
-        this.productID = productID;
-        this.category = category;
+
         this.discountID = discountID;
         this.productName = productName;
+        this.type = type;
+        this.Object = object;
     }
 
 
@@ -28,10 +29,8 @@ public class SimpleDiscount implements Discount{
     public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
         double discount = 0;
         for (ProductDTO product : products.keySet()) {
-            if (productID == null || product.getProductID().equals(productID)){
-                if (category == null || product.getCategories().contains(category)){
-                    discount += product.getPrice() * percent * products.get(product) / 100;
-                }
+            if((type.equals(TYPE.PRODUCT) && product.getProductID().toString().equals(Object)) || (type.equals(TYPE.CATEGORY) && product.getCategories().contains(Object)) || type.equals(TYPE.STORE)){
+                discount += product.getPrice() * percent * products.get(product) / 100;
             }
         }
         return new Response<Double>(true,"Calculator Discount",discount);
@@ -52,14 +51,17 @@ public class SimpleDiscount implements Discount{
     public Double getPercent() {
         return percent;
     }
+
     @Override
     public Integer getProductID() {
-        return productID;
+        return Integer.valueOf(Object);
     }
+
     @Override
     public String getCategory() {
-        return category;
+        return Object;
     }
+
 
     @Override
     public Discount getDiscount1() {
@@ -78,11 +80,11 @@ public class SimpleDiscount implements Discount{
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(percent + "% off");
-        if (productID != null) {
+        if (type == type.PRODUCT) {
             result.append(" on ").append(productName);
         }
-        if (category != null && !category.isEmpty()) {
-            result.append(" on category ").append(category);
+        if (type.CATEGORY == type) {
+            result.append(" on category ").append(Object);
         }
         return result.toString();
     }

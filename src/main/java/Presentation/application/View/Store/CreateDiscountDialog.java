@@ -107,7 +107,7 @@ public class CreateDiscountDialog extends Dialog {
         Button removeButton = new Button("Remove", e -> {
             DiscountBox selectedDiscount = discountComboBox.getValue();
             if (selectedDiscount != null) {
-                presenter.removeDiscount(storeId, selectedDiscount.toDTO());
+                //presenter.removeDiscount(storeId, selectedDiscount.toDTO());
                 loadAllBoxes();
                 removeDiscountDialog.close();
             }
@@ -141,7 +141,7 @@ public class CreateDiscountDialog extends Dialog {
         Button removeButton = new Button("Remove", e -> {
             PolicyBox selectedPolicy = policyComboBox.getValue();
             if (selectedPolicy != null) {
-                presenter.removePolicy(storeId, selectedPolicy.toDTO());
+                //presenter.removePolicy(storeId, selectedPolicy.toDTO());
                 loadAllBoxes();
                 removePolicyDialog.close();
             }
@@ -208,7 +208,7 @@ public class CreateDiscountDialog extends Dialog {
                 category = null;
             }
             double discountPercent = discountPercentField.getValue();
-            presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, null, null, null, null); // Save discount
+            //presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, null, null, null, null); // Save discount
             loadAllBoxes(); // Reload all boxes
             simpleDiscountDialog.close();
         });
@@ -298,7 +298,7 @@ public class CreateDiscountDialog extends Dialog {
             Double price = priceField.getValue() != null ? priceField.getValue() : null;
             Double minPrice = minPriceField.getValue() != null ? minPriceField.getValue() : null;
             Double maxPrice = maxPriceField.getValue() != null ? maxPriceField.getValue() : null;
-            presenter.savePolicy(storeId, "Simple", policyType, category, productId, quantityType, quantity, minQuantity, maxQuantity, price, minPrice, maxPrice, null, null, null); // Save policy
+            //presenter.savePolicy(storeId, "Simple", policyType, category, productId, quantityType, quantity, minQuantity, maxQuantity, price, minPrice, maxPrice, null, null, null); // Save policy
             loadAllBoxes();
             simplePolicyDialog.close();
         });
@@ -393,7 +393,7 @@ public class CreateDiscountDialog extends Dialog {
         policyTypeComboBox.setItems("Condition");
 
         Button saveButton = new Button("Connect", e -> {
-            presenter.saveDiscount(storeId, "Condition", null, null, null, source, null, null, target); // Save discount with policy condition
+            //presenter.saveDiscount(storeId, "Condition", null, null, null, source, null, null, target); // Save discount with policy condition
             loadAllBoxes();
             connectionTypeDialog.close();
         });
@@ -419,7 +419,7 @@ public class CreateDiscountDialog extends Dialog {
 
         Button saveButton = new Button("Connect", e -> {
             String discountType = discountTypeComboBox.getValue();
-            presenter.saveDiscount(storeId, "Complex", null, null, null, source, target, discountType, null); // Save discount
+            //presenter.saveDiscount(storeId, "Complex", null, null, null, source, target, discountType, null); // Save discount
             loadAllBoxes();
             connectionTypeDialog.close();
         });
@@ -481,7 +481,7 @@ public class CreateDiscountDialog extends Dialog {
                     PolicyBox basePolicy = basePolicyComboBox.getValue();
 
                     if (condition != null && basePolicy != null) {
-                        presenter.savePolicy(storeId, "Condition", null, null, null, null, null, null, null, null, null, null, basePolicy, condition, null); // Save discount
+                        //presenter.savePolicy(storeId, "Condition", null, null, null, null, null, null, null, null, null, null, basePolicy, condition, null); // Save discount
                         loadAllBoxes();
                         conditionDialog.close();
                         connectionTypeDialog.close();
@@ -496,7 +496,7 @@ public class CreateDiscountDialog extends Dialog {
                 conditionDialog.add(conditionForm);
                 conditionDialog.open();
             } else {
-                presenter.savePolicy(storeId, "Complex", null, null, null, null, null, null, null, null, null, null, source, target, policyType); // Save discount
+                //presenter.savePolicy(storeId, "Complex", null, null, null, null, null, null, null, null, null, null, source, target, policyType); // Save discount
                 loadAllBoxes();
                 connectionTypeDialog.close();
             }
@@ -522,7 +522,7 @@ public class CreateDiscountDialog extends Dialog {
         discountTypeComboBox.setItems("Condition");
 
         Button saveButton = new Button("Connect", e -> {
-            presenter.saveDiscount(storeId, "Condition", null, null, null, target, null, null, source); // Save discount with policy condition
+            //presenter.saveDiscount(storeId, "Condition", null, null, null, target, null, null, source); // Save discount with policy condition
             loadAllBoxes();
             connectionTypeDialog.close();
         });

@@ -1,9 +1,9 @@
 package UnitTests;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mockStatic;
 import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Repo.OrderRepository;
+import Domain.Store.Discounts.TYPE;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
@@ -15,15 +15,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 //import org.powermock.api.mockito.PowerMockito;
 //import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,7 +114,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 1, null, null, null,3.0, null, true);
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null,null, 10.0,TYPE.PRODUCT , "1");
         Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
@@ -303,7 +299,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, 1, null, 0.0, 3.0, false);
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 1.0, TYPE.PRODUCT , "2");
         Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true

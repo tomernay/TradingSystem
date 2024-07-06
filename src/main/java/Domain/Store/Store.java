@@ -528,7 +528,7 @@ public class Store {
         inventory.unlockProductsBackToStore(stringIntegerMap);
     }
 
-    public Response<String> CreateDiscount(Integer productID, String category, Double percent, String type, String username) {
+    public Response<String> CreateDiscount(Double percent, String type, String username, TYPE categories, String object) {
         Discount discount;
         if (percent <= 0 || percent > 100) {
             return new Response<>(false, "Discount percent must be between 0 and 1");
@@ -536,16 +536,13 @@ public class Store {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if (productID != null && !isProductExist(productID).isSuccess()) {
+        if ( categories.equals("PRODUCT") && object != null && !isProductExist(Integer.valueOf(object)).isSuccess()) {
             return new Response<>(false, "Product does not exist in store");
         }
-        int IdDiscount;
+        int IdDiscount = productIDGeneratorDiscount.getAndIncrement();
         if (type.equals("simple")) {
-            IdDiscount = productIDGeneratorDiscount.getAndIncrement();
-            if(productID == null)
-                discount = new SimpleDiscount(percent, null, category, IdDiscount, null);
-            else
-                discount = new SimpleDiscount(percent, productID, category, IdDiscount, getProductName(productID).getData());
+            discount = new SimpleDiscount(percent,IdDiscount,getProductName(Integer.valueOf(object)).getData() , categories, object);
+
             discounts.put(IdDiscount, discount);
         } else {
             return new Response<>(false, "Failed to create discount");
@@ -621,17 +618,17 @@ public class Store {
     private ConditionDTO buildConditionDTO(Condition condition) {
         if (condition instanceof SimpleCondition) {
             if (condition.getProductID() == null) {
-                return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
+                return new ConditionDTO(condition.getConditionID(), null, null, condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), null, null, null, null);
             }
-            return new ConditionDTO(condition.getConditionID(), condition.getProductID(), String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), condition.getPriceIndicator(), null, null, null, null);
+            return new ConditionDTO(condition.getConditionID(), condition.getProductID(), String.valueOf(getProductName(condition.getProductID()).getData()), condition.getCategory(), "Simple", condition.getAmount(), condition.getMinAmount(), condition.getMaxAmount(), null, null, null, null);
         } else if (condition instanceof AndCondition) {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "AND");
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null , buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "AND");
         } else if (condition instanceof OrCondition) {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "OR");
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null , buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "OR");
         } else if (condition instanceof XorCondition) {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "XOR");
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Complex", null, null, null , buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, "XOR");
         } else {
-            return new ConditionDTO(condition.getConditionID(), null, null, null, "Condition", null, null, null, null, buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, null);
+            return new ConditionDTO(condition.getConditionID(), null, null, null, "Condition", null, null, null , buildConditionDTO(condition.getCondition1()), buildConditionDTO(condition.getCondition2()), null, null);
         }
     }
 
@@ -687,21 +684,21 @@ public class Store {
         return new Response<>(true, "Discount created successfully");
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Boolean price) {
+    public Response<String> addSimplePolicyToStore(String username, Double amount, Double minAmount, Double maxAmount,TYPE type,String value) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if ((productID == null && category == null && price == null) || (productID != null && !isProductExist(productID).isSuccess())) {
+        if ((type.equals(TYPE.PRODUCT)  && !isProductExist(Integer.valueOf(value)).isSuccess())) {
             return new Response<>(false, "productID,price and category can't be null");
         }
         if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
             return new Response<>(false, "minAmount can't be null");
         }
         int id = productIDGeneratorPolicy.getAndIncrement();
-        if (productID == null) {
-            policies.put(id, new SimpleCondition(id, null, category, amount, minAmount, maxAmount, price, null));
+        if (type.equals(TYPE.PRODUCT)) {
+            policies.put(id, new SimpleCondition(id,type,value, amount, minAmount, maxAmount, null));
         } else {
-            policies.put(id, new SimpleCondition(id, productID, category, amount, minAmount, maxAmount, price, getProductName(productID).getData()));
+            policies.put(id, new SimpleCondition(id,type,value, amount, minAmount, maxAmount, getProductName(Integer.valueOf(value)).getData()));
         }
         return new Response<>(true, "Condition created successfully");
     }

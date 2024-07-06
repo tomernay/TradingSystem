@@ -15,7 +15,7 @@ public class ConditionDTO {
     private String productName;
     private String relationType; // AND, OR, XOR
 
-    public ConditionDTO(Integer conditionID, Integer productID, String productName, String category, String discountType, Double amount, Double minAmount, Double maxAmount,Boolean price, ConditionDTO conditionDTO1, ConditionDTO conditionDTO2, ConditionDTO policyConditionDTO, String relationType) {
+    public ConditionDTO(Integer conditionID, Integer productID, String productName, String category, String discountType, Double amount, Double minAmount, Double maxAmount, ConditionDTO conditionDTO1, ConditionDTO conditionDTO2, ConditionDTO policyConditionDTO, String relationType) {
         this.conditionID = conditionID;
         this.productID = productID;
         this.productName = productName;
@@ -24,7 +24,6 @@ public class ConditionDTO {
         this.amount = amount;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
-        this.price = price;
         this.conditionDTO1 = conditionDTO1;
         this.conditionDTO2 = conditionDTO2;
         this.policyConditionDTO = policyConditionDTO;
