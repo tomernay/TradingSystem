@@ -1,6 +1,8 @@
 package Domain.Repo;
 
 import Domain.Store.Store;
+import Domain.Users.StateOfSubscriber.SubscriberState;
+import Domain.Users.Subscriber.Subscriber;
 import Utilities.Response;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -76,5 +78,12 @@ public class StoreRepository {
 
     public Map<Integer, Store> getDeactivatedStores() {
         return deactivatedStores;
+    }
+
+    public Response< Set<String>> getStoreCreator(Integer storeName) {
+        Map<String, SubscriberState> subscriberStateMap=stores.get(storeName).getSubscribers();
+
+            return new Response<Set<String>>(true,"",subscriberStateMap.keySet() );
+
     }
 }
