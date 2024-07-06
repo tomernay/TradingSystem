@@ -1,6 +1,9 @@
 package Domain.Repo;
 
 import Domain.Order;
+import Domain.Store.Inventory.ProductDTO;
+import Presentation.application.View.UtilitiesView.Broadcaster;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,5 +25,12 @@ public class OrderRepository {
 
     public Map<Integer, Order> getOrders() {
         return orders;
+    }
+
+    public void notifyStaff(List<ProductDTO> products,Set<String> names) {
+
+        for(String name : names) {
+            Broadcaster.broadcast("get a payment from store" + products.get(0).getStoreName(),name );
+        }
     }
 }

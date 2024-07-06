@@ -3,6 +3,8 @@ package Service;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
+import Domain.Store.Store;
+import Domain.Users.StateOfSubscriber.SubscriberState;
 import Facades.StoreFacade;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -571,6 +573,15 @@ public class StoreService {
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to get storeID by storeName: " + storeName + " but the token was invalid");
         return Response.error("Invalid token", null);
+    }
+
+    /**
+     * return store states
+     * @param storeName
+     * @return
+     */
+    public Response< Set<String>> getStoreRolls(Integer storeName) {
+        return storeFacade.getStoreRepository().getStoreCreator(storeName);
     }
 
     /**
