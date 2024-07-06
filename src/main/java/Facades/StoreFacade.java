@@ -8,6 +8,7 @@ import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Store.StoreDTO;
 import Domain.Store.StoreData.Permissions;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -154,6 +155,7 @@ public class StoreFacade {
             store.setInventory(inventory);
             storeRepository.addActiveStore(store);
             SystemLogger.info("[SUCCESS] successfully opened the store " + storeName);
+            Broadcaster.broadcast("successfully opened the store " + storeName,creator);
             return Response.success("successfully opened the store " + storeName, storeId);
         }
         catch (Exception e) {

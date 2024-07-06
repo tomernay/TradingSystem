@@ -2,6 +2,7 @@ package Presentation.application.Presenter.Store;
 
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.RolesManagementView;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
@@ -118,6 +119,7 @@ public class RolesManagementPresenter {
 
         permissionsToAdd.forEach(permission -> storeService.addManagerPermissions(storeID, username, managerUsername, permission, token));
         permissionsToRemove.forEach(permission -> storeService.removeManagerPermissions(storeID, username, managerUsername, permission, token));
+        Broadcaster.broadcast("your permission has been updated",managerUsername);
         view.showSuccess("Permissions updated for " + managerUsername);
     }
 
@@ -129,6 +131,7 @@ public class RolesManagementPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> response = storeService.removeStoreSubscription(storeID, username, subscriber, token);
+        Broadcaster.broadcast("you subscription has been removed from store:"+String.valueOf(storeID),subscriber);
         if (response.isSuccess()) {
             view.showSuccess("Removed subscription successfully from " + subscriber);
         } else {

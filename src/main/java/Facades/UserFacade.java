@@ -5,6 +5,7 @@ import Domain.Externals.Security.TokenHandler;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
@@ -91,6 +92,7 @@ public class UserFacade {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
+            Broadcaster.broadcast("Store " + storeName + " has been closed",subscriberName);
             Subscriber subscriber = userRepository.getSubscriber(subscriberName);
             subscriber.addMessage(new NormalMessage("Store " + storeName + " has been closed"));
         }
@@ -99,6 +101,7 @@ public class UserFacade {
     }
     public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
+            Broadcaster.broadcast("Store " + storeName + " has been reopen",subscriberName);
             Subscriber subscriber = userRepository.getSubscriber(subscriberName);
             subscriber.addMessage(new NormalMessage("Store " + storeName + " has been re-opened"));
         }
