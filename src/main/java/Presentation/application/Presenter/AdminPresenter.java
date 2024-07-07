@@ -80,4 +80,20 @@ public class AdminPresenter {
 
         return adminService.getPurchaseHistoryBySubscriber(subName).getData();
     }
+
+    public List<String> getPurchaseHistoryByStore(Integer storeID) {
+        return adminService.getPurchaseHistoryByStore(storeID).getData();
+    }
+
+    public List<String> getAllStores() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.getAllStores(username, token).getData();
+    }
+
+    public Integer getStoreIDbyName(String storeName) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.getStoreIDbyName(storeName, username, token).getData();
+    }
 }
