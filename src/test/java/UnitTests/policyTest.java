@@ -49,7 +49,7 @@ public class policyTest {
 
     @Test
     public void addSimplePolicy() {
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, TYPE.PRODUCT, "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, "PRODUCT", "1");
         Response<List<ProductDTO>> res1 = userService.lockShoppingCart("yair12312", buyer.getToken(), null);
         Assert.assertTrue(res1.isSuccess());
         Response<List<ConditionDTO>> res2 = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
@@ -58,16 +58,16 @@ public class policyTest {
 
     @Test
     public void FailAddSimplePolicy() {
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), null, null, null, 3.0, TYPE.PRODUCT, "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), null, null, null, 3.0, "PRODUCT", "1");
         Response<List<ConditionDTO>> res2 = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
         Assert.assertEquals(0, res2.getData().size());
     }
 
     @Test
     public void addComplexPolicyAND() {
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, TYPE.PRODUCT, "1");
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 15.0, TYPE.PRODUCT, "2");
-        storeService.makeComplexCondition(owner.getToken(), 0, 1, 2, ConditionType.AND, "newOwner");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, "PRODUCT", "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 15.0, "PRODUCT", "2");
+        storeService.makeComplexCondition(owner.getToken(), 0, 1, 2, "AND", "newOwner");
         Response<List<ConditionDTO>> res2 = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
         Assert.assertEquals(1, res2.getData().size());
         Response<List<ProductDTO>> res1 = userService.lockShoppingCart("yair12312", buyer.getToken(), null);
@@ -76,9 +76,9 @@ public class policyTest {
 
     @Test
     public void addComplexPolicyOR() {
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, TYPE.PRODUCT, "1");
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 15.0, TYPE.PRODUCT, "2");
-        storeService.makeComplexCondition(owner.getToken(), 0, 1, 2, ConditionType.OR, "newOwner");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, "PRODUCT", "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 15.0, "PRODUCT", "2");
+        storeService.makeComplexCondition(owner.getToken(), 0, 1, 2, "OR", "newOwner");
         Response<List<ConditionDTO>> res2 = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
         Assert.assertEquals(1, res2.getData().size());
         Response<List<ProductDTO>> res1 = userService.lockShoppingCart("yair12312", buyer.getToken(), null);
@@ -87,9 +87,9 @@ public class policyTest {
 
     @Test
     public void addComplexPolicyX0R() {
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, TYPE.PRODUCT, "1");
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 1.0, TYPE.PRODUCT, "2");
-        storeService.makeComplexCondition(owner.getToken(), 0, 1, 2, ConditionType.XOR, "newOwner");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, "PRODUCT", "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 1.0, "PRODUCT", "2");
+        storeService.makeComplexCondition(owner.getToken(), 0, 1, 2, "XOR", "newOwner");
         Response<List<ConditionDTO>> res2 = storeService.getPoliciesFromStore(0, "newOwner", owner.getToken());
         Assert.assertEquals(1, res2.getData().size());
         Response<List<ProductDTO>> res1 = userService.lockShoppingCart("yair12312", buyer.getToken(), null);

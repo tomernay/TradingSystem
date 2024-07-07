@@ -1,6 +1,8 @@
 package BrodacastTest;
 
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import com.vaadin.flow.shared.Registration;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,14 +28,14 @@ public class BroadcasterTest {
         Registration registration = Broadcaster.register(listener, user);
 
         // Assert
-        assertEquals(1, Broadcaster.getUserToLISTENER().size());
+        Assert.assertEquals(1, Broadcaster.getUserToLISTENER().size());
 
-        assertTrue(Broadcaster.getUserToLISTENER().containsKey(user));
-        assertTrue(Broadcaster.getListeners().contains(listener));
+        Assert.assertTrue(Broadcaster.getUserToLISTENER().containsKey(user));
+        Assert.assertTrue(Broadcaster.getListeners().contains(listener));
 
         // Unregister
         registration.remove();
-        assertEquals(0, Broadcaster.getUserToLISTENER().size());
+        Assert.assertEquals(0, Broadcaster.getUserToLISTENER().size());
 
     }
 
