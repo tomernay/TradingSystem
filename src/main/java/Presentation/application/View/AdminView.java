@@ -107,20 +107,20 @@ public class AdminView extends AppLayout  {
         verticalLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Center align the rows within the vertical layout
 
 
-        for (int i = 0; i < actions.size(); i += 4) {
+        for (int i = 0; i < actions.size(); i += 2) {
             HorizontalLayout row = new HorizontalLayout();
             row.setWidthFull(); // Ensure row takes full width
             row.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Center align the buttons within the row
 
 
             // Add up to 4 buttons per row
-            for (int j = 0; j < 4 && (i + j) < actions.size(); j++) {
+            for (int j = 0; j < 2 && (i + j) < actions.size(); j++) {
                 Button actionButton = actions.get(i + j);
                 actionButton.addClassName("button");
 
                 // Set the width and height of the button
-                actionButton.setWidth("25%");
-                actionButton.setHeight("100px");
+                actionButton.setWidth("50%");
+                actionButton.setHeight("180px");
 
                 row.add(actionButton);
             }
@@ -175,9 +175,20 @@ public class AdminView extends AppLayout  {
                 dialog.close();
             }
         });
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "grey");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+        closeButton.getElement().getStyle().set("background-color", "transparent");
+
         suspendButton.addClassName("button");
         dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, suspendButton);
         dialogLayout.add(suspendButton);
+        dialogLayout.add(closeButton);
         dialog.add(dialogLayout);
         dialog.open();
     }
@@ -194,9 +205,9 @@ public class AdminView extends AppLayout  {
         Button confirmButton = new Button("Yes", e -> {
             boolean success = presenter.suspendSubscriber(subName, endDate);
             if (success) {
-                Notification.show("User suspended successfully");
+                Notification.show("User "+ subName + " suspended successfully");
             } else {
-                Notification.show("Failed to suspend user");
+                Notification.show("Failed to suspend user" + subName);
             }
             confirmationDialog.close();
         });
@@ -207,6 +218,8 @@ public class AdminView extends AppLayout  {
         cancelButton.addClassName("no_button");
         buttonsLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+
 
         buttonsLayout.add(confirmButton, cancelButton);
         dialogLayout.add(buttonsLayout);
@@ -258,10 +271,22 @@ public class AdminView extends AppLayout  {
                 dialog.close();
             }
         });
+
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "grey");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+        closeButton.getElement().getStyle().set("background-color", "transparent");
+
         cancelButton.addClassName("button");
         dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, cancelButton);
         dialogLayout.add(cancelButton);
         dialog.add(dialogLayout);
+        dialog.add(closeButton);
         dialog.open();
     }
 
@@ -278,7 +303,7 @@ public class AdminView extends AppLayout  {
         dialog.setCloseOnEsc(true);
         dialog.setCloseOnOutsideClick(true);
         dialog.setWidth("600px");
-        dialog.setHeight("400px");
+        dialog.setHeight("auto");
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
         VerticalLayout dialogLayout = new VerticalLayout();
 
@@ -291,19 +316,65 @@ public class AdminView extends AppLayout  {
         grid.addColumn(entry -> entry.getKey()).setHeader("Subscriber ID").setFlexGrow(1).setWidth("50%");
         grid.addColumn(entry -> entry.getValue().toString()).setHeader("Suspension End Date").setFlexGrow(1).setWidth("50%");
 
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "grey");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+        closeButton.getElement().getStyle().set("background-color", "transparent");
+
         dialogLayout.add(grid);
+        dialogLayout.add(closeButton);
 
         dialog.add(dialogLayout);
         dialog.open();
     }
 
     public void purchaseHistoryButton() {
-        Button purchaseHistoryButton = new Button("Purchase History");
+        Button purchaseHistoryButton = new Button("Purchase History", e-> openPurchaseHistoryDialog());
         purchaseHistoryButton.addClassName("button");
         //set the button size
         purchaseHistoryButton.setWidth("200px");
 
         actions.add(purchaseHistoryButton);
+    }
+
+    private void openPurchaseHistoryDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("600px");
+        dialog.setHeight("auto");
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+
+        // Retrieve the purchase history
+        Map<String, List<String>> purchaseHistory = new HashMap<>();
+//presenter.getPurchaseHistory();
+        Grid<Map.Entry<String, List<String>>> grid = new Grid<>();
+        grid.addClassName("custom-grid");
+        grid.setItems(purchaseHistory.entrySet());
+        grid.addColumn(entry -> entry.getKey()).setHeader("Subscriber ID").setFlexGrow(1).setWidth("50%");
+        grid.addColumn(entry -> entry.getValue().toString()).setHeader("Purchase History").setFlexGrow(1).setWidth("50%");
+
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "#816d60");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+        closeButton.getElement().getStyle().set("background-color", "transparent");
+
+        dialogLayout.add(grid);
+        dialogLayout.add(closeButton);
+
+        dialog.add(dialogLayout);
+        dialog.open();
     }
 
     public void systemManagerButton() {
