@@ -1,6 +1,6 @@
 {
-  "payments service": {"ProxyPaymentGateway": {}},
-  "supplier service": {"ProxySupplyGateway": {}},
+  "payments service": {},
+  "supplier service": {},
   "Admin details": {
     "user": "admin@",
     "password": "123456"
