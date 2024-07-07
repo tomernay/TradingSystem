@@ -7,7 +7,6 @@ public class ConditionDTO {
     private Double minAmount;
     private Double maxAmount;
     private Double amount;
-    private Boolean price;
     private String discountType;
     private ConditionDTO conditionDTO1;
     private ConditionDTO conditionDTO2;
@@ -56,10 +55,6 @@ public class ConditionDTO {
 
     public Double getAmount() {
         return amount;
-    }
-
-    public Boolean getPrice() {
-        return price;
     }
 
     public ConditionDTO getConditionDTO1() {

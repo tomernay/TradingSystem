@@ -23,6 +23,12 @@ public class MaxDiscount implements Discount{
     }
 
     @Override
+    public String getType() {
+        return null;
+    }
+
+
+    @Override
     public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
         Response<Double> response1 = discount1.CalculatorDiscount(products);
         Response<Double> response2 = discount2.CalculatorDiscount(products);

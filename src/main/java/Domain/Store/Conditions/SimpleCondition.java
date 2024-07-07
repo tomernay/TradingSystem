@@ -33,12 +33,18 @@ public class SimpleCondition implements Condition{
 
     @Override
     public Integer getProductID() {
-        return 0;
+        if (TYPE.PRODUCT.equals(type)) {
+            return Integer.parseInt(value);
+        }
+        return null;
     }
 
     @Override
     public String getCategory() {
-        return "";
+        if (TYPE.CATEGORY.equals(type)) {
+            return value;
+        }
+        return null;
     }
 
 
@@ -82,6 +88,7 @@ public class SimpleCondition implements Condition{
         }
         return (minAmount == null || !(minAmount > amount)) && (maxAmount == null || !(maxAmount < amount));
     }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();

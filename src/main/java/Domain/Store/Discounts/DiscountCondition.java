@@ -30,6 +30,12 @@ public class DiscountCondition implements Discount{
     }
 
     @Override
+    public String getType() {
+        return null;
+    }
+
+
+    @Override
     public Integer getDiscountID() {
         return discountID;
     }

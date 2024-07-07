@@ -54,12 +54,23 @@ public class SimpleDiscount implements Discount{
 
     @Override
     public Integer getProductID() {
-        return Integer.valueOf(value);
+        if (type == TYPE.PRODUCT) {
+            return Integer.valueOf(value);
+        }
+        return null;
     }
 
     @Override
     public String getCategory() {
-        return value;
+        if (type == TYPE.CATEGORY) {
+            return value;
+        }
+        return null;
+    }
+
+    @Override
+    public String getType() {
+        return type.toString();
     }
 
 

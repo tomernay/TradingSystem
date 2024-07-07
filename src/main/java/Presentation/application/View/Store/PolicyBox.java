@@ -56,6 +56,7 @@ public class PolicyBox extends VerticalLayout {
             this.price = conditionDTO.getAmount();
             this.minPrice = conditionDTO.getMinAmount();
             this.maxPrice = conditionDTO.getMaxAmount();
+
         }
         this.productName = conditionDTO.getProductName();
 
@@ -105,54 +106,64 @@ public class PolicyBox extends VerticalLayout {
             return "Category";
         } else if (conditionDTO.getProductID() != null) {
             return "Product";
-        } else if (conditionDTO.getPrice() != null) {
+        }
+        else{
             return "Price";
         }
-        return "";
     }
 
     private void displayPolicyInfo() {
         removeAll();
         Div headerDiv = new Div();
+
         if ("Simple".equals(type)) {
             headerDiv.add(new Div("Policy Type: " + policyType));
-            if (policyType.equals("Category")) {
+            if ("Category".equals(policyType)) {
                 headerDiv.add(new Div("Category: " + category));
-            } else if (policyType.equals("Product")) {
+            } else if ("Product".equals(policyType)) {
                 headerDiv.add(new Div("Product: " + productName));
             }
-            headerDiv.add(new Div("Quantity Type: " + quantityType));
-            if ("Between".equals(quantityType)) {
-                headerDiv.add(new Div("Min Quantity: " + minQuantity));
-                headerDiv.add(new Div("Max Quantity: " + maxQuantity));
-            }
-            else if (quantityType.equals("Exactly")) {
-                headerDiv.add(new Div("Quantity: " + quantity));
-            }
-            else if (quantityType.equals("At least")) {
-                headerDiv.add(new Div("Min Quantity: " + minQuantity));
-            }
-            else if (quantityType.equals("At most")) {
-                headerDiv.add(new Div("Max Quantity: " + maxQuantity));
-            }
-            if (policyType.equals("Price")) {
+
+            // Quantity or Price information
+            if ("Price".equals(policyType)) {
                 headerDiv.add(new Div("Price Type: " + quantityType));
                 if ("Between".equals(quantityType)) {
                     headerDiv.add(new Div("Min Price: " + minPrice));
                     headerDiv.add(new Div("Max Price: " + maxPrice));
-                } else {
+                } else if ("Exactly".equals(quantityType)) {
                     headerDiv.add(new Div("Price: " + price));
+                } else if ("At least".equals(quantityType)) {
+                    headerDiv.add(new Div("Min Price: " + minPrice));
+                } else if ("At most".equals(quantityType)) {
+                    headerDiv.add(new Div("Max Price: " + maxPrice));
+                }
+            } else {
+                headerDiv.add(new Div("Quantity Type: " + quantityType));
+                if ("Between".equals(quantityType)) {
+                    headerDiv.add(new Div("Min Quantity: " + minQuantity));
+                    headerDiv.add(new Div("Max Quantity: " + maxQuantity));
+                } else if ("Exactly".equals(quantityType)) {
+                    headerDiv.add(new Div("Quantity: " + quantity));
+                } else if ("At least".equals(quantityType)) {
+                    headerDiv.add(new Div("Min Quantity: " + minQuantity));
+                } else if ("At most".equals(quantityType)) {
+                    headerDiv.add(new Div("Max Quantity: " + maxQuantity));
                 }
             }
-        } else if ("Complex".equals(type)) {
+        }
+
+        // Complex or Condition type information
+        else if ("Complex".equals(type)) {
             headerDiv.add(new Div("Policy Complex Type: " + policyConditionType));
         } else if ("Condition".equals(type)) {
             headerDiv.add(new Div("Conditioned Policy: "));
         }
+
         headerDiv.getStyle().set("cursor", "pointer");
         headerDiv.addClickListener(event -> toggleExpand());
         add(headerDiv);
 
+        // Detailed information
         detailsDiv.removeAll();
         if ("Complex".equals(type)) {
             detailsDiv.add(new Div("Policy 1 Details:"));
@@ -170,6 +181,7 @@ public class PolicyBox extends VerticalLayout {
             add(detailsDiv);
         }
     }
+
 
     private void toggleExpand() {
         isExpanded = !isExpanded;
@@ -232,18 +244,18 @@ public class PolicyBox extends VerticalLayout {
     }
 
 
-//    // Method to convert to DTO (data transfer object)
-//    public ConditionDTO toDTO() {
-//        if (Objects.equals(policyType, "Category") || Objects.equals(policyType, "Product")) {
-//            return new ConditionDTO(ID, productId, productName, category, type, quantity, minQuantity, maxQuantity, null, null, null, null, null);
-//        } else if (Objects.equals(policyType, "Price")) {
-//            return new ConditionDTO(ID, productId, productName, category, type, price, minPrice, maxPrice, true, null, null, null, null);
-//        } else if (Objects.equals(type, "Complex")) {
-//            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), policy2.toDTO(), null, policyConditionType);
-//        } else {
-//            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), null, policy2.toDTO(), null);
-//        }
-//    }
+    // Method to convert to DTO (data transfer object)
+    public ConditionDTO toDTO() {
+        if (Objects.equals(policyType, "Category") || Objects.equals(policyType, "Product")) {
+            return new ConditionDTO(ID, productId, productName, category, type, quantity, minQuantity, maxQuantity, null, null, null, null);
+        } else if (Objects.equals(policyType, "Price")) {
+            return new ConditionDTO(ID, productId, productName, category, type, price, minPrice, maxPrice, null, null, null, null);
+        } else if (Objects.equals(type, "Complex")) {
+            return new ConditionDTO(ID, null, null, null, type, null, null, null, policy1.toDTO(), policy2.toDTO(), null, policyConditionType);
+        } else {
+            return new ConditionDTO(ID, null, null, null, type, null, null, null, policy1.toDTO(), null, policy2.toDTO(), null);
+        }
+    }
 
     @Override
     public String toString() {

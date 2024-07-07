@@ -122,9 +122,8 @@ public class UserService {
                 return Response.error("You're suspended", null);
             }
             Message ownerNominationMessage = storeService.makeNominateOwnerMessage(storeID, nominatorUsername, nomineeUsername).getData();
-            Broadcaster.broadcast(ownerNominationMessage.getMessage(),nomineeUsername);
             if (ownerNominationMessage != null) {
-
+                Broadcaster.broadcast(ownerNominationMessage.getMessage(),nomineeUsername);
                 return userFacade.sendMessageToUser(nomineeUsername, ownerNominationMessage);
             }
         }

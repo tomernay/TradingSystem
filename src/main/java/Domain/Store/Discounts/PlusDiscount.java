@@ -20,6 +20,11 @@ public class PlusDiscount implements Discount {
         this.discountID = discountID;
     }
 
+    @Override
+    public String getType() {
+        return null;
+    }
+
 
     @Override
     public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {

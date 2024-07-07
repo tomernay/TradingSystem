@@ -625,7 +625,7 @@ public class Store {
 
     public DiscountDTO buildDiscountDTO(Discount d) {
         if (d instanceof SimpleDiscount) {
-            if (d.getProductID() == null) {
+            if (Objects.equals(d.getType(), "CATEGORY")) {
                 return new DiscountDTO(d.getDiscountID(), null, null, storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
             }
             return new DiscountDTO(d.getDiscountID(), d.getProductID(), getProductName(d.getProductID()).getData(), storeID, "SIMPLE", d.getCategory(), d.getPercent(), null, null, null);
@@ -711,15 +711,17 @@ public class Store {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        int valueConverted;
-        try {
-            valueConverted = Integer.parseInt(value);
-        }
-        catch (NumberFormatException e) {
-            return new Response<>(false, "Invalid value");
-        }
-        if ((type.equals("PRODUCT")  && !isProductExist(valueConverted).isSuccess())) {
-            return new Response<>(false, "productID,price and category can't be null");
+        int valueConverted = 0;
+        if (Objects.equals(type, "PRODUCT")) {
+            try {
+                valueConverted = Integer.parseInt(value);
+            }
+            catch (NumberFormatException e) {
+                return new Response<>(false, "Invalid value");
+            }
+            if (!isProductExist(valueConverted).isSuccess()) {
+                return new Response<>(false, "productID,price and category can't be null");
+            }
         }
         if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
             return new Response<>(false, "minAmount can't be null");
@@ -733,10 +735,10 @@ public class Store {
             return new Response<>(false, "Invalid type");
         }
         if (convertedType.equals(TYPE.PRODUCT)) {
-            policies.put(id, new SimpleCondition(id,convertedType,value, amount, minAmount, maxAmount, getProductName(Integer.valueOf(value)).getData()));
+            policies.put(id, new SimpleCondition(id,convertedType, value, amount, minAmount, maxAmount, getProductName(valueConverted).getData()));
         }
         else {
-            policies.put(id, new SimpleCondition(id,convertedType,value, amount, minAmount, maxAmount, null));
+            policies.put(id, new SimpleCondition(id,convertedType, value, amount, minAmount, maxAmount, null));
         }
         return new Response<>(true, "Condition created successfully");
     }
