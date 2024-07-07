@@ -140,11 +140,11 @@ public class OrderService {
         return orderFacade.CreateOrder(username, deliveryAddress, products);
     }
 
-    public Response<String> getPurchaseHistoryByStore(Integer storeID) {
+    public Response<List<String>> getPurchaseHistoryByStore(Integer storeID) {
         return orderFacade.getPurchaseHistoryByStore(storeID);
     }
 
-    public Response<String> getPurchaseHistoryBySubscriber(String subscriberID) {
+    public Response<List<String >> getPurchaseHistoryBySubscriber(String subscriberID) {
         return orderFacade.getPurchaseHistoryBySubscriber(subscriberID);
     }
 

@@ -352,16 +352,19 @@ public class AdminView extends AppLayout  {
         VerticalLayout dialogLayout = new VerticalLayout();
 
         // Retrieve the purchase history
-        Map<String, List<String>> purchaseHistory = new HashMap<>();
-//presenter.getPurchaseHistory();
-        Grid<Map.Entry<String, List<String>>> grid = new Grid<>();
-        grid.addClassName("custom-grid");
-        grid.setItems(purchaseHistory.entrySet());
-        grid.addColumn(entry -> entry.getKey()).setHeader("Subscriber ID").setFlexGrow(1).setWidth("50%");
-        grid.addColumn(entry -> entry.getValue().toString()).setHeader("Purchase History").setFlexGrow(1).setWidth("50%");
+       //2 buttons in a vertical layout - one for purchase history by store and one for purchase history by subscriber
+        Button purchaseHistoryByStoreButton = new Button("Purchase History by Store", e -> openPurchaseHistoryByStoreDialog());
+        purchaseHistoryByStoreButton.addClassName("button");
+        purchaseHistoryByStoreButton.setWidth("auto");
+
+        Button purchaseHistoryBySubscriberButton = new Button("Purchase History by Subscriber", e -> openPurchaseHistoryBySubscriberDialog());
+        purchaseHistoryBySubscriberButton.addClassName("button");
+        purchaseHistoryBySubscriberButton.setWidth("auto");
+
+        dialogLayout.add(purchaseHistoryByStoreButton, purchaseHistoryBySubscriberButton);
 
         Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
-        closeButton.getElement().getStyle().set("color", "#816d60");
+        closeButton.getElement().getStyle().set("color", "grey");
         //make the button round
         closeButton.addClassName("close-button");
         closeButton.addClickListener(e -> dialog.close());
@@ -370,11 +373,98 @@ public class AdminView extends AppLayout  {
         closeButton.getElement().getStyle().set("right", "0");
         closeButton.getElement().getStyle().set("background-color", "transparent");
 
-        dialogLayout.add(grid);
-        dialogLayout.add(closeButton);
+        dialog.add(dialogLayout);
+        dialog.add(closeButton);
+        dialog.open();
+    }
 
+    private void openPurchaseHistoryBySubscriberDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("auto");
+        dialog.setHeight("auto");
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+
+        // Retrieve the purchase history
+        Set<String> subscribers = presenter.getAllSubscribers();
+        ComboBox<String> subscriberComboBox = new ComboBox<>();
+        subscriberComboBox.addClassName("custom-context-menu");
+        subscriberComboBox.setItems(subscribers);
+        subscriberComboBox.setLabel("Select subscriber to view purchase history:");
+        subscriberComboBox.getElement().getStyle().set("color", "#3F352C");
+        dialogLayout.add(subscriberComboBox);
+
+        Button viewButton = new Button("View purchase history", e -> {
+            String subName = subscriberComboBox.getValue();
+            if (subName == null) {
+                Notification.show("Please select a subscriber to view purchase history");
+            } else {
+                openPurchaseHistoryBySubscriber(subName);
+                dialog.close();
+            }
+        });
+
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "grey");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+        closeButton.getElement().getStyle().set("background-color", "transparent");
+
+        viewButton.addClassName("button");
+        dialogLayout.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, viewButton);
+        dialogLayout.add(viewButton);
+        dialogLayout.add(closeButton);
         dialog.add(dialogLayout);
         dialog.open();
+    }
+
+    private void openPurchaseHistoryBySubscriber(String subName) {
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+        dialog.setWidth("600px");
+        dialog.setHeight("auto");
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+        VerticalLayout dialogLayout = new VerticalLayout();
+
+        // Retrieve the purchase history
+        List<String> purchaseHistory = presenter.getPurchaseHistoryBySubscriber(subName);
+
+        Grid<String> grid = new Grid<>();
+        grid.addClassName("custom-grid");
+        //if the purchase history is empty, display a message
+        if (purchaseHistory.isEmpty()) {
+            grid.setItems("No purchase history found for subscriber " + subName);
+        } else {
+            grid.setItems(purchaseHistory);
+        }
+        grid.addColumn(entry -> entry).setHeader("Purchase History").setFlexGrow(1).setWidth("100%");
+        dialogLayout.add(grid);
+
+
+
+        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
+        closeButton.getElement().getStyle().set("color", "grey");
+        //make the button round
+        closeButton.addClassName("close-button");
+        closeButton.addClickListener(e -> dialog.close());
+        closeButton.getElement().getStyle().set("position", "absolute");
+        closeButton.getElement().getStyle().set("top", "0");
+        closeButton.getElement().getStyle().set("right", "0");
+        closeButton.getElement().getStyle().set("background-color", "transparent");
+
+        dialog.add(dialogLayout);
+        dialog.add(closeButton);
+        dialog.open();
+    }
+
+    private void openPurchaseHistoryByStoreDialog() {
     }
 
     public void systemManagerButton() {

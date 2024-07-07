@@ -38,12 +38,12 @@ public class OrderFacade {
         return orderRepository;
     }
 
-    public Response<String> getPurchaseHistoryByStore(Integer storeID) {
-        List<Order> orderList = new ArrayList<>();
+    public Response<List<String>> getPurchaseHistoryByStore(Integer storeID) {
+        List<String> orderList = new ArrayList<>();
         Map<Integer, Order> orders = orderRepository.getOrders();
         for (Order order : orders.values()) {
             if (order.getStoreID().equals(storeID)) {
-                orderList.add(order);
+                orderList.add(order.toString());
             }
         }
         if (orderList.isEmpty()) {
@@ -51,15 +51,15 @@ public class OrderFacade {
             return Response.error("No orders found for store with ID: " + storeID, null);
         }
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
-        return Response.success(orderList.toString(), orderList.toString());
+        return Response.success("Successfully fetched order history", orderList);
     }
 
-    public Response<String> getPurchaseHistoryBySubscriber(String subscriberUsername) {
-        List<Order> orderList = new ArrayList<>();
+    public Response<List<String>> getPurchaseHistoryBySubscriber(String subscriberUsername) {
+        List<String> orderList = new ArrayList<>();
         Map<Integer, Order> orders = orderRepository.getOrders();
         for (Order order : orders.values()) {
             if (order.getUsername().equals(subscriberUsername)) {
-                orderList.add(order);
+                orderList.add(order.toString());
             }
         }
         if (orderList.isEmpty()) {
@@ -67,7 +67,7 @@ public class OrderFacade {
             return Response.error("No orders found for subscriber with ID: " + subscriberUsername, null);
         }
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
-        return Response.success(orderList.toString(), orderList.toString());
+        return Response.success("successfuly fetched order history", orderList);
     }
 
     public Response<String> CreateOrder(String username, String deliveryAddress, List<ProductDTO> shoppingCartContents) {
