@@ -21,7 +21,7 @@ public class ServiceInitializer {
         userService = new UserService();
         storeService = new StoreService();
         adminService = new AdminService();
-        orderService = new OrderService(new DefaultPaymentGateway(), new DefaultSupplySystem());
+        orderService = new OrderService(new DefaultPaymentGateway(), new DefaultSupplySystem(), storeService);
         userService.setStoreService(storeService);
         userService.setAdminService(adminService);
         storeService.setUserService(userService);
@@ -38,7 +38,7 @@ public class ServiceInitializer {
         userService = new UserService();
         storeService = new StoreService();
         adminService = new AdminService();
-        orderService = new OrderService(configuration.getPaymentGateway(), configuration.getSupplySystem());
+        //orderService = new OrderService(configuration.getPaymentGateway(), configuration.getSupplySystem());
         userService.setStoreService(storeService);
         userService.setAdminService(adminService);
         storeService.setUserService(userService);
