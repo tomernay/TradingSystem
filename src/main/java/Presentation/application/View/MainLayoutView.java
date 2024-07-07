@@ -7,6 +7,7 @@ import Presentation.application.View.Store.StoreManagementView;
 import Presentation.application.View.Store.StorePageView;
 
 
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
@@ -99,6 +100,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             notificationCountSpan.setText(String.valueOf(unreadCount));
             notificationCountSpan.setVisible(true);
         }
+
+        String user=CookiesHandler.getUsernameFromCookies(getRequest());
+        Broadcaster.register(message -> {
+            getUI().ifPresent(ui -> ui.access(() -> {
+                Notification.show(message);
+
+            }));
+        }, user);
 
         UI.getCurrent().getPage().executeJs(
                 "document.body.addEventListener('click', function() {" +
