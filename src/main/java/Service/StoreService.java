@@ -1,11 +1,10 @@
 package Service;
 
 import Domain.Store.Conditions.ConditionDTO;
+import Domain.Store.Conditions.ConditionType;
 import Domain.Store.Discounts.TYPE;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
-import Domain.Store.Store;
-import Domain.Users.StateOfSubscriber.SubscriberState;
 import Facades.StoreFacade;
 import Utilities.Messages.Message;
 import Utilities.Response;
@@ -901,10 +900,11 @@ public class StoreService {
         return Response.error("Invalid token", null);
     }
 
-    public Response<String> makeComplexCondition(String username, String token, Integer storeID, Integer policyId1, Integer policyId2, String ConditionType) {
+
+    public Response<String> makeComplexCondition(String token, Integer storeID, Integer policyId1, Integer policyId2, ConditionType conditionType, String username) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, ConditionType);
+            return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, conditionType.toString());
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
