@@ -6,6 +6,7 @@ import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.StoreData.Permissions;
 import Domain.Users.StateOfSubscriber.*;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
@@ -145,6 +146,7 @@ public class Store {
         if (!response.isSuccess()) {
             return response;
         }
+        Broadcaster.broadcast("you has been nominated ad Owner to:"+storeName+" by:"+nominatorUsername,subscriberUsername);
         SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store owner in store: " + storeName);
         return Response.success("The user: " + subscriberUsername + " has been nominated as the store owner", null);
     }
@@ -158,6 +160,7 @@ public class Store {
             return response;
         }
         managerPermissions.put(subscriberUsername, Permissions.convertStringList(permissions));
+        Broadcaster.broadcast("you has been nominated ad manager to:"+storeName+" by:"+nominatorUsername,subscriberUsername);
         SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store manager in store: " + storeName);
         return Response.success("The user: " + subscriberUsername + " has been nominated as the store manager", null);
     }
@@ -174,6 +177,7 @@ public class Store {
         }
         permissions.add(Permissions.valueOf(permission));
         managerPermissions.put(subscriberName, permissions);
+        Broadcaster.broadcast("your permissions has been change in:"+storeName,subscriberName);
         SystemLogger.info("[SUCCESS] Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + storeName);
         return Response.success("Added the permission: " + permission + " to the manager: " + subscriberName + " of store: " + storeName, null);
 
@@ -190,6 +194,7 @@ public class Store {
             return Response.error("The manager: " + subscriberName + " doesn't have the permission: " + permission + " on the store: " + storeName, null);
         }
         managerPermissions.put(subscriberName, permissions);
+        Broadcaster.broadcast("your permissions has been change in:"+storeName,subscriberName);
         SystemLogger.info("[SUCCESS] Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + storeName);
         return Response.success("Removed the permission: " + permission + " from the manager: " + subscriberName + " of store: " + storeName, null);
 
@@ -245,6 +250,7 @@ public class Store {
                     String nominator = reverseNominationMap.get(subscriber);
                     nominationGraph.get(nominator).remove(subscriber);
                 }
+                Broadcaster.broadcast("manager "+currentUsername+" has waived ownership which caused to waiving your ownership",subscriber);
             }
             SystemLogger.info("[SUCCESS] " + currentUsername + " successfully waived ownership of the store and removed all of his nominees");
             return Response.success("Successfully waived ownership of the store and remove all of nominees", toRemove);

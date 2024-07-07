@@ -2,6 +2,7 @@ package Service;
 
 import Domain.Store.Inventory.ProductDTO;
 import Facades.UserFacade;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
@@ -122,6 +123,7 @@ public class UserService {
             }
             Message ownerNominationMessage = storeService.makeNominateOwnerMessage(storeID, nominatorUsername, nomineeUsername).getData();
             if (ownerNominationMessage != null) {
+                Broadcaster.broadcast(ownerNominationMessage.getMessage(),nomineeUsername);
                 return userFacade.sendMessageToUser(nomineeUsername, ownerNominationMessage);
             }
         }
@@ -154,6 +156,7 @@ public class UserService {
             }
             Message managerNominationMessage = storeService.makeNominateManagerMessage(storeID,nominatorUsername, nomineeUsername, permissions).getData();
             if (managerNominationMessage != null) {
+                Broadcaster.broadcast(managerNominationMessage.getMessage(),nomineeUsername);
                 return userFacade.sendMessageToUser(nomineeUsername, managerNominationMessage);
             }
         }
@@ -230,6 +233,7 @@ public class UserService {
             Set<String> usernames = storeService.waiveOwnership(storeID, username).getData();
             userFacade.removeStoreRole(username, storeID);
             for (String subscriberUsername : usernames) {
+                Broadcaster.broadcast(username +" has waiving ownership from:"+String.valueOf(storeID),subscriberUsername);
                 userFacade.removeStoreRole(subscriberUsername, storeID);
                 userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
             }

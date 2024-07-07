@@ -4,24 +4,29 @@ import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.OrderDTO;
 import Domain.Store.Inventory.ProductDTO;
+
 import Facades.OrderFacade;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import Utilities.SystemLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class OrderService {
     private final OrderFacade orderFacade;
     private UserService userService;
     private SupplySystem supplySystem;
+    private StoreService storeService;
     private PaymentGateway paymentGateway;
 
-    public OrderService(PaymentGateway paymentGateway, SupplySystem supplySystem) {
+    public OrderService(PaymentGateway paymentGateway, SupplySystem supplySystem,StoreService storeService) {
         this.orderFacade = new OrderFacade();
         this.supplySystem = supplySystem;
         this.paymentGateway = paymentGateway;
+        this.storeService=storeService;
     }
 
     public OrderFacade getOrderFacade() {
@@ -92,7 +97,16 @@ public class OrderService {
         }
 
         finalizeOrder(username, token, deliveryAddress, products);
+        sendNotificationToStaff(products);
         return Response.success("Payment and supply successful", null);
+    }
+
+    /**
+     * send notification for all
+     * @param products
+     */
+    private void sendNotificationToStaff(List<ProductDTO> products){
+           orderFacade.getOrderRepository().notifyStaff(products, storeService.getStoreRolls(products.get(0).getStoreID()).getData());
     }
 
     private int processPayment(Double purchasePrice, String creditCardNumber, String expirationDate, String cvv, String fullName, String id) {
