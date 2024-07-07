@@ -759,7 +759,7 @@ public class StoreService {
      * @param value
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> CreateSimpleDiscount(String username, String token, Integer storeID, Double percent, TYPE type, String value) {
+    public Response<String> CreateSimpleDiscount(String username, String token, Integer storeID, Double percent, String type, String value) {
         SystemLogger.info("[START] User: " + username + " is trying to create discount for " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
@@ -891,7 +891,7 @@ public class StoreService {
      * @param value
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addSimplePolicyToStore(String username, String token, Integer storeID, Double amount, Double minAmount, Double maxAmount, TYPE type, String value) {
+    public Response<String> addSimplePolicyToStore(String username, String token, Integer storeID, Double amount, Double minAmount, Double maxAmount, String type, String value) {
         SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy in store: " + storeID);
         if (userService.isValidToken(token, username)) {
             return storeFacade.addSimplePolicyToStore(username, storeID, amount, minAmount, maxAmount, type, value);
@@ -901,10 +901,10 @@ public class StoreService {
     }
 
 
-    public Response<String> makeComplexCondition(String token, Integer storeID, Integer policyId1, Integer policyId2, ConditionType conditionType, String username) {
+    public Response<String> makeComplexCondition(String token, Integer storeID, Integer policyId1, Integer policyId2, String conditionType, String username) {
         SystemLogger.info("[START] User: " + username + " is trying to create complex policy for store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, conditionType.toString());
+            return storeFacade.makeComplexPolicy(username, storeID, policyId1, policyId2, conditionType);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to create complex policy for store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);

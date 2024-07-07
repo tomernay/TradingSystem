@@ -534,7 +534,7 @@ public class Store {
         inventory.unlockProductsBackToStore(stringIntegerMap);
     }
 
-    public Response<String> CreateDiscount(Double percent, String type, String username, TYPE categories, String object) {
+    public Response<String> CreateDiscount(Double percent, String username, String type, String value) {
         Discount discount;
         if (percent <= 0 || percent > 100) {
             return new Response<>(false, "Discount percent must be between 0 and 1");
@@ -542,17 +542,34 @@ public class Store {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if ( categories.equals("PRODUCT") && object != null && !isProductExist(Integer.valueOf(object)).isSuccess()) {
+        if (type.equals("PRODUCT") && value != null && !isProductExist(Integer.valueOf(value)).isSuccess()) {
             return new Response<>(false, "Product does not exist in store");
         }
         int IdDiscount = productIDGeneratorDiscount.getAndIncrement();
-        if (type.equals("simple")) {
-            discount = new SimpleDiscount(percent,IdDiscount,getProductName(Integer.valueOf(object)).getData() , categories, object);
-
-            discounts.put(IdDiscount, discount);
-        } else {
-            return new Response<>(false, "Failed to create discount");
+        TYPE typeConverted;
+        try {
+            typeConverted = TYPE.valueOf(type);
         }
+        catch (IllegalArgumentException e) {
+            return new Response<>(false, "Invalid discount type");
+        }
+        if (type.equals("PRODUCT")) {
+            try {
+                if (value != null) {
+                    discount = new SimpleDiscount(percent, IdDiscount, getProductName(Integer.valueOf(value)).getData(), typeConverted, value);
+                }
+                else {
+                    return new Response<>(false, "Failed to create discount");
+                }
+            }
+            catch (NumberFormatException e) {
+                return new Response<>(false, "Failed to create discount");
+            }
+        }
+        else {
+            discount = new SimpleDiscount(percent, IdDiscount, null, TYPE.valueOf(type), value);
+        }
+        discounts.put(IdDiscount, discount);
         return Response.success("Discount created successfully", String.valueOf(IdDiscount));
     }
 
@@ -690,21 +707,36 @@ public class Store {
         return new Response<>(true, "Discount created successfully");
     }
 
-    public Response<String> addSimplePolicyToStore(String username, Double amount, Double minAmount, Double maxAmount,TYPE type,String value) {
+    public Response<String> addSimplePolicyToStore(String username, Double amount, Double minAmount, Double maxAmount, String type, String value) {
         if (!isStoreOwner(username) && !isStoreManager(username) && !isStoreCreator(username)) {
             return new Response<>(false, "Only store owners and managers can create discounts");
         }
-        if ((type.equals(TYPE.PRODUCT)  && !isProductExist(Integer.valueOf(value)).isSuccess())) {
+        int valueConverted;
+        try {
+            valueConverted = Integer.parseInt(value);
+        }
+        catch (NumberFormatException e) {
+            return new Response<>(false, "Invalid value");
+        }
+        if ((type.equals("PRODUCT")  && !isProductExist(valueConverted).isSuccess())) {
             return new Response<>(false, "productID,price and category can't be null");
         }
         if ((minAmount != null && minAmount < 0) || (maxAmount != null && maxAmount < 0)) {
             return new Response<>(false, "minAmount can't be null");
         }
         int id = productIDGeneratorPolicy.getAndIncrement();
-        if (type.equals(TYPE.PRODUCT)) {
-            policies.put(id, new SimpleCondition(id,type,value, amount, minAmount, maxAmount, null));
-        } else {
-            policies.put(id, new SimpleCondition(id,type,value, amount, minAmount, maxAmount, getProductName(Integer.valueOf(value)).getData()));
+        TYPE convertedType;
+        try {
+            convertedType = TYPE.valueOf(type);
+        }
+        catch (IllegalArgumentException e) {
+            return new Response<>(false, "Invalid type");
+        }
+        if (convertedType.equals(TYPE.PRODUCT)) {
+            policies.put(id, new SimpleCondition(id,convertedType,value, amount, minAmount, maxAmount, getProductName(Integer.valueOf(value)).getData()));
+        }
+        else {
+            policies.put(id, new SimpleCondition(id,convertedType,value, amount, minAmount, maxAmount, null));
         }
         return new Response<>(true, "Condition created successfully");
     }

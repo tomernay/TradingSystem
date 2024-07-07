@@ -62,11 +62,11 @@ public class StoreManagementPresenter {
         return response.getData();
     }
 
-    public void saveDiscount(Integer storeId, String type, String category, Double discountPercent, DiscountBox discount1, DiscountBox discount2, String discountType, PolicyBox condition, TYPE typeDiscount ,String value) {
+    public void saveDiscount(Integer storeId, String type, Double discountPercent, DiscountBox discount1, DiscountBox discount2, String discountType, PolicyBox condition, String typeDiscount ,String value) {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         if (Objects.equals(type, "Simple")) {
-            storeService.CreateSimpleDiscount(username, token, storeId,discountPercent ,typeDiscount ,value );
+            storeService.CreateSimpleDiscount(username, token, storeId,discountPercent, typeDiscount, value);
         }
         else if (Objects.equals(type, "Complex")) {
             storeService.makeComplexDiscount(username, token, storeId, discount1.getID(), discount2.getID(), discountType);
@@ -82,11 +82,21 @@ public class StoreManagementPresenter {
         storeService.removeDiscount(storeId, username, token, discountDTO.getDiscountID());
     }
 
-//    public void savePolicy(Integer storeId, String type, String policyType, TYPE typePolicy, String value, String quantityType, Double quantity, Double minQuantity, Double maxQuantity, Double price, Double minPrice, Double maxPrice, PolicyBox policy1, PolicyBox policy2, String policyConditionType) {
-//        String username = CookiesHandler.getUsernameFromCookies(request);
-//        String token = CookiesHandler.getTokenFromCookies(request);
-//
-//        if ("Simple".equals(type)) {
+    public void savePolicy(Integer storeId, String type, String typePolicy, String value, String quantityType, Double quantity, Double minQuantity, Double maxQuantity, PolicyBox policy1, PolicyBox policy2, String policyConditionType) {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        String token = CookiesHandler.getTokenFromCookies(request);
+
+        if ("Simple".equals(type)) {
+            switch (quantityType) {
+                case "At most" ->
+                        storeService.addSimplePolicyToStore(username, token, storeId, null, null, quantity, typePolicy, value);
+                case "At least" ->
+                        storeService.addSimplePolicyToStore(username, token, storeId, null, quantity, null, typePolicy, value);
+                case "Exactly" ->
+                        storeService.addSimplePolicyToStore(username, token, storeId, quantity, null, null, typePolicy, value);
+                case "Between" ->
+                        storeService.addSimplePolicyToStore(username, token, storeId, null, minQuantity, maxQuantity, typePolicy, value);
+            }
 //            if ("Category".equals(policyType)) {
 //                switch (quantityType) {
 //                    case "At most" ->
@@ -121,12 +131,12 @@ public class StoreManagementPresenter {
 //                            storeService.addSimplePolicyToStore(username, token, storeId, null, minPrice, maxPrice, , true);
 //                }
 //            }
-//        } else if ("Complex".equals(type)) {
-//            storeService.makeComplexCondition(username, token, storeId, policy1.getID(), policy2.getID(), policyConditionType);
-//        } else if ("Condition".equals(type)) {
-//            storeService.makeConditionPolicy(username, token, storeId, policy1.getID(), policy2.getID());
-//        }
-//    }
+        } else if ("Complex".equals(type)) {
+            storeService.makeComplexCondition(token, storeId, policy1.getID(), policy2.getID(), policyConditionType, username);
+        } else if ("Condition".equals(type)) {
+            storeService.makeConditionPolicy(username, token, storeId, policy1.getID(), policy2.getID());
+        }
+    }
 
 
     public void removePolicy(Integer storeId, ConditionDTO conditionDTO) {

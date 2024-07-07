@@ -114,7 +114,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null,null, 10.0,TYPE.PRODUCT , "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null,null, 10.0,"PRODUCT" , "1");
         Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true
@@ -299,7 +299,7 @@ public class PurchaseCartUnitTest {
         userService.addProductToShoppingCart(0, 1,1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1, "yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 1.0, TYPE.PRODUCT , "2");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 1.0, "PRODUCT" , "2");
         Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
 
         // Mock the handshake method to return true

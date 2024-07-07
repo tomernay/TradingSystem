@@ -1,6 +1,5 @@
 package BrodacastTest;
 
-import Presentation.application.View.UtilitiesView.Broadcaster;
 import com.vaadin.flow.shared.Registration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,6 @@ import org.mockito.Mockito;
 
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class BroadcasterTest {

@@ -71,7 +71,7 @@ public class SimpleCondition implements Condition{
     public boolean isValid(Map<ProductDTO,Integer> products) {
         double amount = 0;
         for(ProductDTO product : products.keySet()){
-            if((TYPE.PRODUCT.equals(type) && product.getProductID().toString().equals(value) ) || (type.equals(TYPE.CATEGORY) && product.getCategories().contains(value))|| type.equals(TYPE.STORE)){
+            if((TYPE.PRODUCT.equals(type) && product.getProductID().toString().equals(value) ) || (type.equals(TYPE.CATEGORY) && product.getCategories().contains(value))){
 
                 amount = amount + products.get(product);
             }

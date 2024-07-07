@@ -208,7 +208,14 @@ public class CreateDiscountDialog extends Dialog {
                 category = null;
             }
             double discountPercent = discountPercentField.getValue();
-            //presenter.saveDiscount(storeId, "Simple", productId, category, discountPercent, null, null, null, null); // Save discount
+            if (productId != null) {
+                presenter.saveDiscount(storeId, "Simple", discountPercent, null, null, null, null, "PRODUCT", String.valueOf(productId)); // Save discount with PRODUCT
+            } else if (category != null) {
+                presenter.saveDiscount(storeId, "Simple", discountPercent, null, null, null, null, "CATEGORY", category); // Save discount with PRODUCT
+            }
+            else {
+                presenter.saveDiscount(storeId, "Simple", discountPercent, null, null, null, null, "PRICE", null); // Save discount with PRODUCT
+            }
             loadAllBoxes(); // Reload all boxes
             simpleDiscountDialog.close();
         });
@@ -292,16 +299,40 @@ public class CreateDiscountDialog extends Dialog {
             String category = categoryField.getValue();
             ProductDTO selectedProduct = productComboBox.getValue();
             Integer productId = selectedProduct != null ? selectedProduct.getProductID() : null;
+
             Double quantity = quantityField.getValue() != null ? quantityField.getValue() : null;
             Double minQuantity = minQuantityField.getValue() != null ? minQuantityField.getValue() : null;
             Double maxQuantity = maxQuantityField.getValue() != null ? maxQuantityField.getValue() : null;
+
             Double price = priceField.getValue() != null ? priceField.getValue() : null;
             Double minPrice = minPriceField.getValue() != null ? minPriceField.getValue() : null;
             Double maxPrice = maxPriceField.getValue() != null ? maxPriceField.getValue() : null;
-            //presenter.savePolicy(storeId, "Simple", policyType, category, productId, quantityType, quantity, minQuantity, maxQuantity, price, minPrice, maxPrice, null, null, null); // Save policy
+
+            // Determine which values to send
+            if (quantity == null && minQuantity == null && maxQuantity == null) {
+                // Use price fields as quantity fields
+                quantity = price;
+                minQuantity = minPrice;
+                maxQuantity = maxPrice;
+                quantityType = "PRICE";
+            } else {
+                // Use original quantity fields
+                quantityType = "QUANTITY";
+            }
+
+            // Determine which main field to send (PRODUCT / CATEGORY / PRICE)
+            if (productId != null) {
+                presenter.savePolicy(storeId, "Simple", policyType.toUpperCase(), String.valueOf(productId), quantityType, quantity, minQuantity, maxQuantity, null, null, null); // Save policy with PRODUCT
+            } else if (category != null) {
+                presenter.savePolicy(storeId, "Simple", policyType.toUpperCase(), category, quantityType, quantity, minQuantity, maxQuantity, null, null, null); // Save policy with CATEGORY
+            } else {
+                presenter.savePolicy(storeId, "Simple", policyType.toUpperCase(), null, quantityType, price, minPrice, maxPrice, null, null, null); // Save policy with PRICE
+            }
+
             loadAllBoxes();
             simplePolicyDialog.close();
         });
+
         saveButton.addClassName("yes_button");
 
         Button cancelButton = new Button("Cancel", e -> simplePolicyDialog.close());

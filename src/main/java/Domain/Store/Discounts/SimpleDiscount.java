@@ -12,16 +12,16 @@ public class SimpleDiscount implements Discount{
     private final Integer discountID;
     private final String productName;
     private final TYPE type;
-    private final String Object;
+    private final String value;
 
 
-    public SimpleDiscount(Double percent, Integer discountID, String productName, TYPE type, String object) {
+    public SimpleDiscount(Double percent, Integer discountID, String productName, TYPE type, String value) {
         this.percent = percent;
 
         this.discountID = discountID;
         this.productName = productName;
         this.type = type;
-        this.Object = object;
+        this.value = value;
     }
 
 
@@ -29,7 +29,7 @@ public class SimpleDiscount implements Discount{
     public Response<Double> CalculatorDiscount(Map<ProductDTO, Integer> products) {
         double discount = 0;
         for (ProductDTO product : products.keySet()) {
-            if((type.equals(TYPE.PRODUCT) && product.getProductID().toString().equals(Object)) || (type.equals(TYPE.CATEGORY) && product.getCategories().contains(Object)) || type.equals(TYPE.STORE)){
+            if((type.equals(TYPE.PRODUCT) && product.getProductID().toString().equals(value)) || (type.equals(TYPE.CATEGORY) && product.getCategories().contains(value)) || type.equals(TYPE.PRICE)){
                 discount += product.getPrice() * percent * products.get(product) / 100;
             }
         }
@@ -54,12 +54,12 @@ public class SimpleDiscount implements Discount{
 
     @Override
     public Integer getProductID() {
-        return Integer.valueOf(Object);
+        return Integer.valueOf(value);
     }
 
     @Override
     public String getCategory() {
-        return Object;
+        return value;
     }
 
 
@@ -80,11 +80,11 @@ public class SimpleDiscount implements Discount{
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(percent + "% off");
-        if (type == type.PRODUCT) {
+        if (type == TYPE.PRODUCT) {
             result.append(" on ").append(productName);
         }
-        if (type.CATEGORY == type) {
-            result.append(" on category ").append(Object);
+        if (TYPE.CATEGORY == type) {
+            result.append(" on category ").append(value);
         }
         return result.toString();
     }

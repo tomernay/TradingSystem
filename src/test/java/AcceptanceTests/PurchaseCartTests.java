@@ -97,7 +97,7 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart(0, 1, 1, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null,10.0, null, TYPE.PRODUCT ,"1" );
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null,10.0, null, "PRODUCT" ,"1" );
         Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
         Assert.assertTrue(response1.isSuccess());
         // Mock the handshake method to return true
@@ -233,7 +233,7 @@ public class PurchaseCartTests {
         userService.addProductToShoppingCart(0, 1, 4, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(0, 2, 10, "yair12312", buyer.getToken());
         userService.addProductToShoppingCart(1, 1, 1,"yair12312", buyer.getToken());
-        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, TYPE.PRODUCT, "1");
+        storeService.addSimplePolicyToStore("newOwner", owner.getToken(), 0, null, null, 3.0, "PRODUCT", "1");
         Response<List<ProductDTO>> response1 = userService.lockShoppingCart("yair12312", buyer.getToken(),null );
         Assert.assertFalse(response1.isSuccess());
 
