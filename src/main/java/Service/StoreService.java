@@ -1,6 +1,7 @@
 package Service;
 
 import Domain.Store.Conditions.ConditionDTO;
+import Domain.Store.Discounts.TYPE;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
@@ -751,22 +752,22 @@ public class StoreService {
 
     /**
      * This method adds a simple discount to the store
-     * @param username the username of the user
-     * @param token the token of the user
-     * @param productID the ID of the product
-     * @param storeID the ID of the store
-     * @param category the category
-     * @param percent the percent of the discount
+     *
+     * @param username         the username of the user
+     * @param token            the token of the user
+     * @param storeID          the ID of the store
+     * @param type
+     * @param value
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> CreateSimpleDiscount(String username, String token, Integer productID, Integer storeID, String category, Double percent) {
-        SystemLogger.info("[START] User: " + username + " is trying to create discount for product: " + productID + " in store: " + storeID);
+    public Response<String> CreateSimpleDiscount(String username, String token, Integer storeID, Double percent, TYPE type, String value) {
+        SystemLogger.info("[START] User: " + username + " is trying to create discount for " + storeID);
         if (userService.isValidToken(token, username)) {
             if (adminService.isSuspended(username)) {
                 SystemLogger.error("[ERROR] User: " + username + " is suspended");
                 return Response.error("You're suspended", null);
             }
-            return storeFacade.CreateDiscount(productID, storeID, username,category,percent);
+            return storeFacade.CreateDiscount(storeID, username,percent, type,value);
         }
         SystemLogger.error("[ERROR] User: " + username + " tried to create discount");
         return Response.error("Invalid token", null);
@@ -881,22 +882,22 @@ public class StoreService {
 
     /**
      * This method adds a simple purchase policy to the store
-     * @param username the username of the user
-     * @param token the token of the user
-     * @param storeID the ID of the store
-     * @param category the category
-     * @param productID the ID of the product
+     *
+     * @param username  the username of the user
+     * @param token     the token of the user
+     * @param storeID   the ID of the store
      * @param minAmount the minimum amount
      * @param maxAmount the maximum amount
-     * @param price the price
+     * @param type
+     * @param value
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    public Response<String> addSimplePolicyToStore(String username, String token, Integer storeID, String category, Integer productID, Double amount, Double minAmount, Double maxAmount, Boolean price) {
-        SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy for product: " + productID + " in store: " + storeID);
+    public Response<String> addSimplePolicyToStore(String username, String token, Integer storeID, Double amount, Double minAmount, Double maxAmount, TYPE type, String value) {
+        SystemLogger.info("[START] User: " + username + " is trying to add simple purchase policy in store: " + storeID);
         if (userService.isValidToken(token, username)) {
-            return storeFacade.addSimplePolicyToStore(username,category, storeID, productID, amount, minAmount, maxAmount,price);
+            return storeFacade.addSimplePolicyToStore(username, storeID, amount, minAmount, maxAmount, type, value);
         }
-        SystemLogger.error("[ERROR] User: " + username + " tried to add simple purchase policy for product: " + productID + " in store: " + storeID + " but the token was invalid");
+        SystemLogger.error("[ERROR] User: " + username + " tried to add simple purchase policy  in store: " + storeID + " but the token was invalid");
         return Response.error("Invalid token", null);
     }
 

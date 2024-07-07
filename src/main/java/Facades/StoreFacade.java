@@ -2,6 +2,7 @@ package Facades;
 
 import Domain.Repo.StoreRepository;
 import Domain.Store.Conditions.ConditionDTO;
+import Domain.Store.Discounts.TYPE;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.Inventory;
 import Domain.Store.Inventory.ProductDTO;
@@ -581,7 +582,7 @@ public class StoreFacade {
         return Response.success("[SUCCESS] Successfully locked the shopping cart.", output);
     }
 
-    public Response<String> CreateDiscount(Integer productID, Integer storeID, String username, String category, Double percent) {
+    public Response<String> CreateDiscount(Integer storeID, String username, Double percent, TYPE type, String object) {
         Store store = storeRepository.getActiveStore(storeID);
         if (store == null) {
             SystemLogger.error("[ERROR] " + username + " tried to create discount in store: " + storeID + " but the store doesn't exist / is deactivated");
@@ -591,7 +592,7 @@ public class StoreFacade {
             SystemLogger.error("[ERROR] " + username + " tried to edit discount in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit discounts", null);
         }
-        return store.CreateDiscount(productID, category, percent, "simple", username);
+        return store.CreateDiscount( percent, "simple", username, type, object);
     }
 
     public Response<Double> CalculateDiscounts(Map<Integer, Map<Integer, Integer>> shoppingCart) {
@@ -744,7 +745,7 @@ public class StoreFacade {
         return store.makeConditionDiscount(username, discountId, conditionId);
     }
 
-    public Response<String> addSimplePolicyToStore(String username, String category, Integer storeID, Integer productID, Double amount, Double minAmount, Double maxAmount, Boolean price) {
+    public Response<String> addSimplePolicyToStore(String username, Integer storeID, Double amount, Double minAmount, Double maxAmount,TYPE type,String value) {
         Store store = storeRepository.getActiveStore(storeID);
         if (store == null) {
             SystemLogger.error("[ERROR] " + username + " tried to add simple policy to store: " + storeID + " but the store doesn't exist / deactivated");
@@ -754,7 +755,7 @@ public class StoreFacade {
             SystemLogger.error("[ERROR] " + username + " tried to edit policy in store: " + storeID + " but the user is not the store owner or manager");
             return Response.error("You don't have permission to edit policies", null);
         }
-        return store.addSimplePolicyToStore(username, category, productID, amount, minAmount, maxAmount, price);
+        return store.addSimplePolicyToStore(username, amount, minAmount, maxAmount, type, value);
     }
 
     public Response<String> removeProductFromCategory(Integer productId, String category, Integer storeId, String username) {

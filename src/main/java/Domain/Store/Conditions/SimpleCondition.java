@@ -1,5 +1,6 @@
 package Domain.Store.Conditions;
 
+import Domain.Store.Discounts.TYPE;
 import Domain.Store.Inventory.ProductDTO;
 
 import java.util.Map;
@@ -7,43 +8,39 @@ import java.util.Objects;
 
 public class SimpleCondition implements Condition{
     private final Integer conditionID;
-    private final Integer productID;
-    private final String category;
     private final Double minAmount;
     private final Double maxAmount;
     private final Double amount;
-    private final Boolean price;
     private final String productName;
+    private final String value;
+    private final TYPE type;
 
 
-    public SimpleCondition(Integer conditionID, Integer productID, String category, Double amount, Double minAmount, Double maxAmount,Boolean price,String productName) {
+    public SimpleCondition(Integer conditionID, TYPE type,String value, Double amount, Double minAmount, Double maxAmount, String productName) {
         this.conditionID = conditionID;
-        this.productID = productID;
-        this.category = category;
         this.amount = amount;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
-        this.price = price;
         this.productName = productName;
+        this.value = value;
+        this.type = type;
     }
 
-    public Boolean getPriceIndicator() {
-        return price;
-    }
 
     public Integer getConditionID() {
         return conditionID;
     }
 
-
-
+    @Override
     public Integer getProductID() {
-        return productID;
+        return 0;
     }
 
+    @Override
     public String getCategory() {
-        return category;
+        return "";
     }
+
 
     public Double getMinAmount() {
         return minAmount;
@@ -68,36 +65,33 @@ public class SimpleCondition implements Condition{
         return null;
     }
 
+
+
     @Override
     public boolean isValid(Map<ProductDTO,Integer> products) {
         double amount = 0;
         for(ProductDTO product : products.keySet()){
-            if(category != null){
-                if(product.getCategories().contains(category)){
-                    amount = amount + products.get(product);
-                }
+            if((TYPE.PRODUCT.equals(type) && product.getProductID().toString().equals(value) ) || (type.equals(TYPE.CATEGORY) && product.getCategories().contains(value))|| type.equals(TYPE.STORE)){
+
+                amount = amount + products.get(product);
             }
-            if (productID != null){
-                if (Objects.equals(product.getProductID(), productID)){
-                    amount = amount + products.get(product);
-                }
-            }
-            if(price != null){
+            if(type.equals(TYPE.PRICE)){
                 amount = amount + product.getPrice()*products.get(product);
             }
+
         }
         return (minAmount == null || !(minAmount > amount)) && (maxAmount == null || !(maxAmount < amount));
     }
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        if (productID != null) {
+        if (TYPE.PRODUCT.equals(type)) {
             result.append("Product name: ").append(productName);
         }
-        if (category != null && !category.isEmpty()) {
-            result.append("Category: ").append(category);
+        if (TYPE.CATEGORY.equals(type)){
+            result.append("Category: ").append(value);
         }
-        if (price != null) {
+        if (TYPE.PRICE.equals(type)) {
             result.append("Price ");
             if (amount != null) {
                 result.append("is exactly: ").append(amount);

@@ -232,18 +232,18 @@ public class PolicyBox extends VerticalLayout {
     }
 
 
-    // Method to convert to DTO (data transfer object)
-    public ConditionDTO toDTO() {
-        if (Objects.equals(policyType, "Category") || Objects.equals(policyType, "Product")) {
-            return new ConditionDTO(ID, productId, productName, category, type, quantity, minQuantity, maxQuantity, null, null, null, null, null);
-        } else if (Objects.equals(policyType, "Price")) {
-            return new ConditionDTO(ID, productId, productName, category, type, price, minPrice, maxPrice, true, null, null, null, null);
-        } else if (Objects.equals(type, "Complex")) {
-            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), policy2.toDTO(), null, policyConditionType);
-        } else {
-            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), null, policy2.toDTO(), null);
-        }
-    }
+//    // Method to convert to DTO (data transfer object)
+//    public ConditionDTO toDTO() {
+//        if (Objects.equals(policyType, "Category") || Objects.equals(policyType, "Product")) {
+//            return new ConditionDTO(ID, productId, productName, category, type, quantity, minQuantity, maxQuantity, null, null, null, null, null);
+//        } else if (Objects.equals(policyType, "Price")) {
+//            return new ConditionDTO(ID, productId, productName, category, type, price, minPrice, maxPrice, true, null, null, null, null);
+//        } else if (Objects.equals(type, "Complex")) {
+//            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), policy2.toDTO(), null, policyConditionType);
+//        } else {
+//            return new ConditionDTO(ID, null, null, null, type, null, null, null, null, policy1.toDTO(), null, policy2.toDTO(), null);
+//        }
+//    }
 
     @Override
     public String toString() {

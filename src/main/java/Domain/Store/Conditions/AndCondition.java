@@ -63,10 +63,6 @@ public class AndCondition implements Condition{
         return condition2;
     }
 
-    @Override
-    public Boolean getPriceIndicator() {
-        return null;
-    }
 
     @Override
     public String toString() {

@@ -60,10 +60,7 @@ public class OrCondition implements Condition{
         return condition2;
     }
 
-    @Override
-    public Boolean getPriceIndicator() {
-        return null;
-    }
+
     @Override
     public String toString() {
         return "(" + condition1.toString() + ") OR (" + condition2.toString() + ")";

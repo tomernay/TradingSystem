@@ -15,7 +15,7 @@ public interface Condition {
     public Double getAmount();
     public Condition getCondition1();
     public Condition getCondition2();
-    public Boolean getPriceIndicator();
+;
     public String toString();
 }
 

@@ -50,7 +50,7 @@ The JSON configuration file must follow a specific structure to be correctly int
         "description": "An example product",
         "price": 9.99,
         "quantity": 100,
-        "categories": ["Category1", "Category2"],
+        "type": ["Category1", "Category2"],
         "ownerUsername": "mia"
       }
     }
@@ -135,7 +135,7 @@ The JSON configuration file must follow a specific structure to be correctly int
          "description": "An example product",
          "price": 9.99,
          "quantity": 100,
-         "categories": ["Category1", "Category2"],
+         "type": ["Category1", "Category2"],
          "ownerUsername": "mia"
        }
      }
@@ -167,7 +167,7 @@ Here are the supported functions and their required parameters:
   - `description`: A description of the product.
   - `price`: The price of the product.
   - `quantity`: The quantity of the product.
-  - `categories`: An array of categories for the product.
+  - `type`: An array of type for the product.
   - `ownerUsername`: The username of the store owner.
 
 - **SendManagerNominationRequest**

@@ -138,9 +138,9 @@ public class DiscountBox extends VerticalLayout {
     }
 
     // Method to convert to DTO (data transfer object)
-    public DiscountDTO toDTO() {
-        return new DiscountDTO(ID, productId, productName, storeId, discountType, category, discountPercent, discount1 != null ? discount1.toDTO() : null, discount2 != null ? discount2.toDTO() : null, condition != null ? condition.toDTO() : null);
-    }
+//    public DiscountDTO toDTO() {
+//        return new DiscountDTO(ID, productId, productName, storeId, discountType, category, discountPercent, discount1 != null ? discount1.toDTO() : null, discount2 != null ? discount2.toDTO() : null, condition != null ? condition.toDTO() : null);
+//    }
 
     @Override
     public String toString() {
