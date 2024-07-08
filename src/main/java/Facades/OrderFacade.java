@@ -38,36 +38,54 @@ public class OrderFacade {
         return orderRepository;
     }
 
-    public Response<List<String>> getPurchaseHistoryByStore(Integer storeID) {
-        List<String> orderList = new ArrayList<>();
+    public Response<List<OrderDTO>> getPurchaseHistoryByStore(Integer storeID) {
+        List<OrderDTO> orderDTOList = new ArrayList<>();
         Map<Integer, Order> orders = orderRepository.getOrders();
         for (Order order : orders.values()) {
             if (order.getStoreID().equals(storeID)) {
-                orderList.add(order.toString());
+                orderDTOList.add(new OrderDTO(
+                        order.getOrderID(),
+                        order.getStoreID(),
+                        order.getUsername(),
+                        order.getDeliveryAddress(),
+                        order.getOrderDate(),
+                        order.getProducts(),
+                        order.getStatus()
+                ));
             }
         }
-        if (orderList.isEmpty()) {
+        if (orderDTOList.isEmpty()) {
             SystemLogger.error("[ERROR] No orders found for store with ID: " + storeID);
             return Response.error("No orders found for store with ID: " + storeID, null);
         }
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
-        return Response.success("Successfully fetched order history", orderList);
+        return Response.success("Successfully fetched order history", orderDTOList);
     }
 
-    public Response<List<String>> getPurchaseHistoryBySubscriber(String subscriberUsername) {
-        List<String> orderList = new ArrayList<>();
+
+
+    public Response<List<OrderDTO>> getPurchaseHistoryBySubscriber(String subscriberUsername) {
+        List<OrderDTO> orderDTOList = new ArrayList<>();
         Map<Integer, Order> orders = orderRepository.getOrders();
         for (Order order : orders.values()) {
             if (order.getUsername().equals(subscriberUsername)) {
-                orderList.add(order.toString());
+                orderDTOList.add(new OrderDTO(
+                        order.getOrderID(),
+                        order.getStoreID(),
+                        order.getUsername(),
+                        order.getDeliveryAddress(),
+                        order.getOrderDate(),
+                        order.getProducts(),
+                        order.getStatus()
+                ));
             }
         }
-        if (orderList.isEmpty()) {
+        if (orderDTOList.isEmpty()) {
             SystemLogger.error("[ERROR] No orders found for subscriber with ID: " + subscriberUsername);
             return Response.error("No orders found for subscriber with ID: " + subscriberUsername, null);
         }
         SystemLogger.info("[SUCCESS] Successfully fetched order history");
-        return Response.success("successfuly fetched order history", orderList);
+        return Response.success("successfuly fetched order history", orderDTOList);
     }
 
     public Response<String> CreateOrder(String username, String deliveryAddress, List<ProductDTO> shoppingCartContents) {

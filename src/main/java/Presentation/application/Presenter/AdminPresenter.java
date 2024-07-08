@@ -1,5 +1,6 @@
 package Presentation.application.Presenter;
 
+import Domain.OrderDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.AdminView;
@@ -76,12 +77,12 @@ public class AdminPresenter {
         return adminService.getSuspensionList().getData();
     }
 
-    public List<String> getPurchaseHistoryBySubscriber(String subName) {
+    public List<OrderDTO> getPurchaseHistoryBySubscriber(String subName) {
 
         return adminService.getPurchaseHistoryBySubscriber(subName).getData();
     }
 
-    public List<String> getPurchaseHistoryByStore(Integer storeID) {
+    public List<OrderDTO> getPurchaseHistoryByStore(Integer storeID) {
         return adminService.getPurchaseHistoryByStore(storeID).getData();
     }
 

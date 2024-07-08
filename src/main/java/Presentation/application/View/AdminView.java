@@ -1,6 +1,7 @@
 package Presentation.application.View;
 
 
+import Domain.OrderDTO;
 import Presentation.application.Presenter.AdminPresenter;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -403,6 +404,7 @@ public class AdminView extends AppLayout  {
 
         Button viewButton = new Button("View purchase history", e -> {
             String subName = subscriberComboBox.getValue();
+
             if (subName == null) {
                 Notification.show("Please select a subscriber to view purchase history");
             } else {
@@ -439,24 +441,17 @@ public class AdminView extends AppLayout  {
         VerticalLayout dialogLayout = new VerticalLayout();
 
         // Retrieve the purchase history
-        List<String> purchaseHistory = presenter.getPurchaseHistoryBySubscriber(subName);
+        List<OrderDTO> purchaseHistory = presenter.getPurchaseHistoryBySubscriber(subName);
 
-        Grid<String> grid = new Grid<>();
-        grid.addClassName("custom-grid");
-        //if the purchase history is empty, display a message
-        if (purchaseHistory == null ) {
-            grid.setItems("No purchase history found for subscriber " + subName);
-        } else {
-            grid.setItems(purchaseHistory);
-        }
-        grid.addColumn(entry -> entry).setHeader("Purchase History").setFlexGrow(1).setWidth("100%");
-        dialogLayout.add(grid);
+//        Grid<String> grid = new Grid<>();
+//        grid.addClassName("custom-grid");
+
+        // Create a grid to display order details
 
 
-
+        // Close button for the dialog
         Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
         closeButton.getElement().getStyle().set("color", "grey");
-        //make the button round
         closeButton.addClassName("close-button");
         closeButton.addClickListener(e -> dialog.close());
         closeButton.getElement().getStyle().set("position", "absolute");
@@ -468,6 +463,46 @@ public class AdminView extends AppLayout  {
         dialog.add(closeButton);
         dialog.open();
     }
+
+    private void showProductsDialog(String products) {
+        Dialog productsDialog = new Dialog();
+        productsDialog.setCloseOnEsc(true);
+        productsDialog.setCloseOnOutsideClick(true);
+        productsDialog.setWidth("400px");
+        productsDialog.setHeight("auto");
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new H4("Products:"));
+
+        // Split the products string into individual product items
+        String[] productList = products.split(", ");
+
+        for (String product : productList) {
+            layout.add(new H4(product));
+        }
+
+        Button closeButton = new Button("Close", event -> productsDialog.close());
+        layout.add(closeButton);
+
+        productsDialog.add(layout);
+        productsDialog.open();
+    }
+
+    private Map<String, String> parseOrderString(String orderString) {
+        Map<String, String> orderDetails = new HashMap<>();
+
+        // Split the order string by comma and trim spaces
+        String[] parts = orderString.split(", ");
+        for (String part : parts) {
+            String[] keyValue = part.split("=");
+            if (keyValue.length == 2) {
+                orderDetails.put(keyValue[0].trim(), keyValue[1].trim());
+            }
+        }
+
+        return orderDetails;
+    }
+
 
     private void openPurchaseHistoryByStoreDialog() {
         Dialog dialog = new Dialog();
@@ -492,8 +527,8 @@ public class AdminView extends AppLayout  {
             if (stores == null) {
                 Notification.show("Please select a store to view purchase history");
             } else {
-                openPurchaseHistoryByStore(storeID);
                 dialog.close();
+                getUI().ifPresent(ui -> ui.navigate("ordersAdmin/" + storeID));
             }
         });
 
@@ -525,18 +560,7 @@ public class AdminView extends AppLayout  {
         VerticalLayout dialogLayout = new VerticalLayout();
 
         // Retrieve the purchase history
-        List<String> purchaseHistory = presenter.getPurchaseHistoryByStore(storeID);
 
-        Grid<String> grid = new Grid<>();
-        grid.addClassName("custom-grid");
-        //if the purchase history is empty, display a message
-        if (purchaseHistory == null ) {
-            grid.setItems("No purchase history found for this store");
-        } else {
-            grid.setItems(purchaseHistory);
-        }
-        grid.addColumn(entry -> entry).setHeader("Purchase History").setFlexGrow(1).setWidth("100%");
-        dialogLayout.add(grid);
 
         Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
         closeButton.getElement().getStyle().set("color", "grey");
