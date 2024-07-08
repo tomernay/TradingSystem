@@ -2,6 +2,7 @@ package Facades;
 
 import Domain.Repo.AdminRepository;
 import Domain.Users.Admin;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import Utilities.SystemLogger;
 import java.time.LocalDate;
@@ -40,6 +41,7 @@ public class AdminFacade {
         try {
             Admin admin = adminRepository.getAdmin();
             admin.getSuspensionList().remove(subscriberUsername);
+            Broadcaster.broadcast("your suspension has been over",subscriberUsername);
             SystemLogger.error("[SUCCESS] The User " +subscriberUsername+ " Has Been Reactivated");
             return Response.success("The user has been successfully reactivated", null);
         }

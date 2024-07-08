@@ -30,7 +30,7 @@ public class OrderRepository {
     public void notifyStaff(List<ProductDTO> products,Set<String> names) {
 
         for(String name : names) {
-            Broadcaster.broadcast("get a payment from store" + products.get(0).getStoreName(),name );
+            Broadcaster.broadcast("get a payment from store " + products.get(0).getStoreName(),name );
         }
     }
 }

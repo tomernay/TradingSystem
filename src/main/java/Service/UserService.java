@@ -233,8 +233,7 @@ public class UserService {
             Set<String> usernames = storeService.waiveOwnership(storeID, username).getData();
             userFacade.removeStoreRole(username, storeID);
             for (String subscriberUsername : usernames) {
-                Broadcaster.broadcast(username +" has waiving ownership from:"+String.valueOf(storeID),subscriberUsername);
-                userFacade.removeStoreRole(subscriberUsername, storeID);
+                 userFacade.removeStoreRole(subscriberUsername, storeID);
                 userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
             }
             return Response.success("The owner of the store has self-waived and all of its' nominess have been removed as well.", null);

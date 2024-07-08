@@ -254,6 +254,7 @@ public class UserFacade {
             return;
         }
         subscriber.removeStoreRole(storeID);
+        Broadcaster.broadcast("you has been removed from:"+String.valueOf(storeID),subscriberUsername);
     }
 
     public Response<String> isOwner(String username) {
