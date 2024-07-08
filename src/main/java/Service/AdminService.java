@@ -1,9 +1,11 @@
 package Service;
 
+import Domain.OrderDTO;
 import Facades.AdminFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class AdminService {
@@ -40,7 +42,7 @@ public class AdminService {
         return null;
     }
 
-    public Response<String> getPurchaseHistoryByStore(Integer storeID) {
+    public Response<List<OrderDTO>> getPurchaseHistoryByStore(Integer storeID) {
         SystemLogger.info("[START] Admin is trying to get purchase history by store");
         try{
             if (!storeService.storeExists(storeID)){
@@ -55,7 +57,7 @@ public class AdminService {
         }
     }
 
-    public Response<String> getPurchaseHistoryBySubscriber(String subscriberUsername){
+    public Response<List<OrderDTO>> getPurchaseHistoryBySubscriber(String subscriberUsername){
         try{
             if (!userService.userExists(subscriberUsername)){
                 SystemLogger.error("[ERROR] The User Does Not Exist");

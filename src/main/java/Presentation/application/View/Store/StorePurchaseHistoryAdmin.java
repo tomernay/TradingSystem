@@ -1,5 +1,6 @@
 package Presentation.application.View.Store;
 
+import Presentation.application.Presenter.Store.StorePurchaseHistoryAdminPresenter;
 import Presentation.application.Presenter.Store.StorePurchaseHistoryPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
@@ -21,25 +22,25 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @PageTitle("Order Management")
-@Route(value = "orders/:storeId", layout = MainLayoutView.class)
+@Route(value = "ordersAdmin/:storeId", layout = MainLayoutView.class)
 @StyleSheet("context://styles.css")
-public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterObserver {
+public class StorePurchaseHistoryAdmin extends VerticalLayout implements BeforeEnterObserver {
 
-    StorePurchaseHistoryPresenter presenter;
+    StorePurchaseHistoryAdminPresenter presenter;
     private Integer storeId;
     private Grid<OrderDTO> ordersGrid;
 
-    public StorePurchaseHistory(StorePurchaseHistoryPresenter presenter) {
+    public StorePurchaseHistoryAdmin(StorePurchaseHistoryAdminPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attachView(this);
         addClassName("page-view");
 
-        Button backButton = new Button("Back to Store Management", event1 -> {
-            RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
-            UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
-        });
-        backButton.addClassName("button");
-        add(backButton);
+//        Button backButton = new Button("Back to Store Management", event1 -> {
+//            RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
+//            UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+//        });
+//        backButton.addClassName("button");
+//        add(backButton);
 
         ordersGrid = new Grid<>(OrderDTO.class);
         ordersGrid.addClassName("custom-grid");
@@ -56,7 +57,6 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
             button.addClassName("button");
             return button;
         })).setHeader("Products");
-
 
         // Set the item details renderer for displaying product details
         ordersGrid.setItemDetailsRenderer(new ComponentRenderer<>(order -> {

@@ -1,5 +1,7 @@
 package Presentation.application.Presenter;
 
+import Domain.OrderDTO;
+import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.AdminView;
 import Service.AdminService;
@@ -73,5 +75,20 @@ public class AdminPresenter {
 
     public Map<String, Date> getSuspensionList() {
         return adminService.getSuspensionList().getData();
+    }
+
+
+
+
+    public List<String> getAllStores() {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.getAllStores(username, token).getData();
+    }
+
+    public Integer getStoreIDbyName(String storeName) {
+        String token = CookiesHandler.getTokenFromCookies(request);
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return storeService.getStoreIDbyName(storeName, username, token).getData();
     }
 }
