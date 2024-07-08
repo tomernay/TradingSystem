@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @PageTitle("Order Management")
 @Route(value = "orders/:storeId", layout = MainLayoutView.class)
-@StyleSheet("context://login-view-styles.css")
+@StyleSheet("context://styles.css")
 public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterObserver {
 
     StorePurchaseHistoryPresenter presenter;
@@ -53,8 +53,10 @@ public class StorePurchaseHistory extends VerticalLayout implements BeforeEnterO
             button.addClickListener(e -> {
                 ordersGrid.setDetailsVisible(order, !ordersGrid.isDetailsVisible(order));
             });
+            button.addClassName("button");
             return button;
         })).setHeader("Products");
+
 
         // Set the item details renderer for displaying product details
         ordersGrid.setItemDetailsRenderer(new ComponentRenderer<>(order -> {

@@ -77,14 +77,8 @@ public class AdminPresenter {
         return adminService.getSuspensionList().getData();
     }
 
-    public List<OrderDTO> getPurchaseHistoryBySubscriber(String subName) {
 
-        return adminService.getPurchaseHistoryBySubscriber(subName).getData();
-    }
 
-    public List<OrderDTO> getPurchaseHistoryByStore(Integer storeID) {
-        return adminService.getPurchaseHistoryByStore(storeID).getData();
-    }
 
     public List<String> getAllStores() {
         String token = CookiesHandler.getTokenFromCookies(request);

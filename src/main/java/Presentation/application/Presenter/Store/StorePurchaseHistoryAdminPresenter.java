@@ -4,6 +4,7 @@ import Domain.OrderDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.StorePurchaseHistory;
 import Presentation.application.View.Store.StorePurchaseHistoryAdmin;
+import Service.AdminService;
 import Service.OrderService;
 import Service.ServiceInitializer;
 import Service.UserService;
@@ -19,11 +20,13 @@ public class StorePurchaseHistoryAdminPresenter {
     private final OrderService orderService;
     private final UserService userService;
     private final HttpServletRequest request;
+    private final AdminService adminService;
 
     public StorePurchaseHistoryAdminPresenter(HttpServletRequest request) {
         orderService = ServiceInitializer.getInstance().getOrderService();
         userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
+        adminService = ServiceInitializer.getInstance().getAdminService();
     }
 
     public void attachView(StorePurchaseHistoryAdmin view) {
@@ -36,7 +39,7 @@ public class StorePurchaseHistoryAdminPresenter {
             return;
         }
 
-        List<OrderDTO> storeOrders = orderService.getOrdersHistory(storeID).getData();
+        List<OrderDTO> storeOrders = adminService.getPurchaseHistoryByStore(storeID).getData();
         if (storeOrders == null || storeOrders.isEmpty()) {
             Notification.show("No orders found for Store ID: " + storeID);
         } else {

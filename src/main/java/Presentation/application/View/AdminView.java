@@ -404,12 +404,11 @@ public class AdminView extends AppLayout  {
 
         Button viewButton = new Button("View purchase history", e -> {
             String subName = subscriberComboBox.getValue();
-            Integer storeID = presenter.getStoreIDbyName(subName);
             if (subName == null) {
                 Notification.show("Please select a subscriber to view purchase history");
             } else {
+                getUI().ifPresent(ui -> ui.navigate("ordersAdminSub/" + subName));
                 dialog.close();
-                getUI().ifPresent(ui -> ui.navigate("ordersAdminSub/" + storeID));
             }
         });
 
@@ -431,77 +430,6 @@ public class AdminView extends AppLayout  {
         dialog.open();
     }
 
-    private void openPurchaseHistoryBySubscriber(String subName) {
-        Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(true);
-        dialog.setCloseOnOutsideClick(true);
-        dialog.setWidth("600px");
-        dialog.setHeight("auto");
-        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
-        VerticalLayout dialogLayout = new VerticalLayout();
-
-        // Retrieve the purchase history
-        List<OrderDTO> purchaseHistory = presenter.getPurchaseHistoryBySubscriber(subName);
-
-//        Grid<String> grid = new Grid<>();
-//        grid.addClassName("custom-grid");
-
-        // Create a grid to display order details
-
-
-        // Close button for the dialog
-        Button closeButton = new Button(new Icon(VaadinIcon.CLOSE));
-        closeButton.getElement().getStyle().set("color", "grey");
-        closeButton.addClassName("close-button");
-        closeButton.addClickListener(e -> dialog.close());
-        closeButton.getElement().getStyle().set("position", "absolute");
-        closeButton.getElement().getStyle().set("top", "0");
-        closeButton.getElement().getStyle().set("right", "0");
-        closeButton.getElement().getStyle().set("background-color", "transparent");
-
-        dialog.add(dialogLayout);
-        dialog.add(closeButton);
-        dialog.open();
-    }
-
-    private void showProductsDialog(String products) {
-        Dialog productsDialog = new Dialog();
-        productsDialog.setCloseOnEsc(true);
-        productsDialog.setCloseOnOutsideClick(true);
-        productsDialog.setWidth("400px");
-        productsDialog.setHeight("auto");
-
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new H4("Products:"));
-
-        // Split the products string into individual product items
-        String[] productList = products.split(", ");
-
-        for (String product : productList) {
-            layout.add(new H4(product));
-        }
-
-        Button closeButton = new Button("Close", event -> productsDialog.close());
-        layout.add(closeButton);
-
-        productsDialog.add(layout);
-        productsDialog.open();
-    }
-
-    private Map<String, String> parseOrderString(String orderString) {
-        Map<String, String> orderDetails = new HashMap<>();
-
-        // Split the order string by comma and trim spaces
-        String[] parts = orderString.split(", ");
-        for (String part : parts) {
-            String[] keyValue = part.split("=");
-            if (keyValue.length == 2) {
-                orderDetails.put(keyValue[0].trim(), keyValue[1].trim());
-            }
-        }
-
-        return orderDetails;
-    }
 
 
     private void openPurchaseHistoryByStoreDialog() {

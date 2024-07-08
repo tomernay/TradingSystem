@@ -36,23 +36,7 @@ public class SubscriberPurchaseHistoryAdminPresenter {
         this.subscriberPurchaseHistoryAdmin = view;
     }
 
-    public void getStoreHistory(Integer storeID, Grid<OrderDTO> ordersGrid) {
-        if (storeID == null) {
-            Notification.show("Please enter a Store ID");
-            return;
-        }
 
-        List<OrderDTO> storeOrders = orderService.getOrdersHistory(storeID).getData();
-        if (storeOrders == null || storeOrders.isEmpty()) {
-            Notification.show("No orders found for Store ID: " + storeID);
-        } else {
-            ordersGrid.setItems(storeOrders);
-        }
-    }
-
-    public void fetchStoreHistory(Integer storeID, Grid<OrderDTO> ordersGrid) {
-        getStoreHistory(storeID, ordersGrid);
-    }
 
     public void fetchSubscriberHistory(String subscriberName, Grid<OrderDTO> ordersGrid) {
         List<OrderDTO> subscriberOrders = adminService.getPurchaseHistoryBySubscriber(subscriberName).getData();
