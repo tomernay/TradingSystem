@@ -54,6 +54,7 @@ public class StorePurchaseHistoryAdmin extends VerticalLayout implements BeforeE
             button.addClickListener(e -> {
                 ordersGrid.setDetailsVisible(order, !ordersGrid.isDetailsVisible(order));
             });
+            button.addClassName("button");
             return button;
         })).setHeader("Products");
 

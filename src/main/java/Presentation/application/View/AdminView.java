@@ -404,12 +404,12 @@ public class AdminView extends AppLayout  {
 
         Button viewButton = new Button("View purchase history", e -> {
             String subName = subscriberComboBox.getValue();
-
+            Integer storeID = presenter.getStoreIDbyName(subName);
             if (subName == null) {
                 Notification.show("Please select a subscriber to view purchase history");
             } else {
-                openPurchaseHistoryBySubscriber(subName);
                 dialog.close();
+                getUI().ifPresent(ui -> ui.navigate("ordersAdminSub/" + storeID));
             }
         });
 

@@ -37,14 +37,7 @@ public class SubscriberPurchaseHistoryAdmin {
 
 
 
-    public void fetchSubscriberHistory(String subscriberName, Grid<OrderDTO> ordersGrid) {
-        List<OrderDTO> subscriberOrders = adminService.getPurchaseHistoryBySubscriber(subscriberName).getData();
-        if (subscriberOrders == null || subscriberOrders.isEmpty()) {
-            Notification.show("No orders found for Subscriber: " + subscriberName);
-        } else {
-            ordersGrid.setItems(subscriberOrders);
-        }
-    }
+
 
     public boolean isLoggedIn() {
         String username = CookiesHandler.getUsernameFromCookies(request);
