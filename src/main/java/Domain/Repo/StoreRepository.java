@@ -3,6 +3,7 @@ package Domain.Repo;
 import Domain.Store.Store;
 import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Subscriber;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,6 +29,8 @@ public class StoreRepository {
 
     public void addDeactivatedStore(Store store) {
         deactivatedStores.put(store.getId(), store);
+        for(String name : store.getSubscribers().keySet())
+            Broadcaster.broadcast(store.getName()+" has been deactivated",name);
     }
 
     public Boolean removeActiveStore(Integer storeId) {
@@ -80,7 +83,8 @@ public class StoreRepository {
         return deactivatedStores;
     }
 
-    public Response< Set<String>> getStoreCreator(Integer storeName) {
+    public Response< Set<String>>
+    getStoreCreator(Integer storeName) {
         Map<String, SubscriberState> subscriberStateMap=stores.get(storeName).getSubscribers();
 
             return new Response<Set<String>>(true,"",subscriberStateMap.keySet() );

@@ -1,6 +1,7 @@
 package Domain.Users.Subscriber;
 
 import Domain.Users.Subscriber.Cart.ShoppingCart;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 
 import Domain.Users.User;
@@ -53,6 +54,7 @@ public class Subscriber extends User {
 
     //yair added
     public synchronized Response<Integer> addMessage(Message m){
+        Broadcaster.broadcast(m.getMessage(),username);
         if (m instanceof nominateOwnerMessage) {
             if (messages.stream().anyMatch(a -> a instanceof nominateOwnerMessage && ((nominateOwnerMessage) a).getStoreID().equals(((nominateOwnerMessage) m).getStoreID()))) {
                 SystemLogger.error("[ERROR] User already has a pending owner nomination message.");
@@ -80,6 +82,7 @@ public class Subscriber extends User {
             SystemLogger.info("[SUCCESS] Message successfully sent to: " + username);
             return Response.success("Message successfully sent to: " + username, null);
         }
+
     }
 
     public List<Message> getMessages() {

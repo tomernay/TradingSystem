@@ -144,8 +144,13 @@ public class Store {
         reverseNominationMap.put(subscriberUsername, nominatorUsername);
         Response<String> response = subscribers.get(subscriberUsername).changeState(this, subscriberUsername, new StoreOwner(this, subscriberUsername, nominatorUsername));
         if (!response.isSuccess()) {
+            Broadcaster.broadcast(subscriberUsername+ " decline the nomination as owner to:"+storeName+" by:"+nominatorUsername,subscriberUsername);
+
             return response;
         }
+        for(String name:getSubscribers().keySet())
+            Broadcaster.broadcast(subscriberUsername+" has been nominated as Owner to:"+storeName+" by:"+nominatorUsername,name);
+
         Broadcaster.broadcast("you has been nominated ad Owner to:"+storeName+" by:"+nominatorUsername,subscriberUsername);
         SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store owner in store: " + storeName);
         return Response.success("The user: " + subscriberUsername + " has been nominated as the store owner", null);
@@ -157,9 +162,15 @@ public class Store {
         reverseNominationMap.put(subscriberUsername, nominatorUsername);
         Response<String> response = subscribers.get(subscriberUsername).changeState(this, subscriberUsername, new StoreManager(this, subscriberUsername, nominatorUsername));
         if (!response.isSuccess()) {
+            Broadcaster.broadcast(subscriberUsername+ " decline the nomination as manager to:"+storeName+" by:"+nominatorUsername,subscriberUsername);
+
             return response;
+
         }
         managerPermissions.put(subscriberUsername, Permissions.convertStringList(permissions));
+        for(String name:getSubscribers().keySet())
+            Broadcaster.broadcast(subscriberUsername+" has been nominated as Manager to:"+storeName+" by:"+nominatorUsername,name);
+
         Broadcaster.broadcast("you has been nominated ad manager to:"+storeName+" by:"+nominatorUsername,subscriberUsername);
         SystemLogger.info("[SUCCESS] The user: " + subscriberUsername + " has been nominated as the store manager in store: " + storeName);
         return Response.success("The user: " + subscriberUsername + " has been nominated as the store manager", null);

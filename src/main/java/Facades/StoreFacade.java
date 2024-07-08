@@ -845,6 +845,9 @@ public class StoreFacade {
         }
         storeRepository.removeDeactivatedStore(storeID);
         storeRepository.addActiveStore(deactivatedStore);
+        for(String name:deactivatedStore.getSubscribers().keySet()){
+            Broadcaster.broadcast("store has been reopened",name);
+        }
         SystemLogger.info("[SUCCESS] " + currentUsername + " reopened store: " + storeID + " successfully");
         return Response.success("Store: " + getStoreNameByID(storeID, currentUsername) + " was reopened successfully", new ArrayList<>(deactivatedStore.getSubscribers().keySet()));
     }
