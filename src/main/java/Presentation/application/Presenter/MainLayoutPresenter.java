@@ -91,6 +91,10 @@ public class MainLayoutPresenter {
     }
 
 
+    public boolean isSuspended(String username) {
+        return userService.isSuspended(username);
+    }
+
 
     public String getUserName() {
         String username = CookiesHandler.getUsernameFromCookies(request);

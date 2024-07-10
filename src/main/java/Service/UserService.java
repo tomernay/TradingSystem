@@ -752,4 +752,8 @@ public class UserService {
         SystemLogger.error("[ERROR] User: " + username + " tried to get all subscribers but the token was invalid");
         return Response.error("Invalid token",null);
     }
+
+    public boolean isSuspended(String username) {
+        return adminService.isSuspended(username);
+    }
 }
