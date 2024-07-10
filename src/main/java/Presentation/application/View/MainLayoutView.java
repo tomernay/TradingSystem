@@ -185,21 +185,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
-
-        if(presenter.getUserName().equals("u1")) {
+        String username = presenter.getUserName();
+        if(username.equals("u1") && presenter.isSuspended(username)) {
             MenuItem admin = dropdownMenu.addItem("Admin actions", e -> {
                 UI.getCurrent().navigate(AdminView.class);
             });
         }
 
 
-        if(!presenter.getUserName().contains("Guest")) {
+        if(username.contains("Guest")) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
             MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         }
 
         //if user is guest add register button
-        if(presenter.getUserName().contains("Guest")) {
+        if(username.contains("Guest")) {
             MenuItem register = dropdownMenu.addItem("Register", e -> navigateToRegister());
         }
 
@@ -249,14 +249,18 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         VerticalLayout deactivatedStoresLayout = new VerticalLayout();
         deactivatedStoresLayout.add(new H4("Deactivated Stores:"));
+        String username = presenter.getUserName();
 
         for (String store : stores) {
             final Integer storeId = getStoreIdByName(store);  // Get the store ID once per iteration
 
             Button storeButton = new Button(store, e -> {
-                RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
-                UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
-                dialog.close();
+                if(!presenter.isSuspended(username)) {
+                    // Navigate to the store management page (assuming StoreManagementView is the correct view
+                    RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
+                    UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                    dialog.close();
+                }
             });
             storeButton.addClassName("button");
 
@@ -266,17 +270,19 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                 deactivatedStoresLayout.add(storeButton);
             }
         }
-
-        Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
-        openNewStore.addClassName("button");
-        openNewStore.getElement().getStyle().set("position", "absolute");
-        openNewStore.getElement().getStyle().set("bottom", "0");
-        openNewStore.getElement().getStyle().set("left", "0");
-        openNewStore.getElement().getStyle().set("right", "0");
+        if(presenter.isSuspended(username)) {
+            Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
+            openNewStore.addClassName("button");
+            openNewStore.getElement().getStyle().set("position", "absolute");
+            openNewStore.getElement().getStyle().set("bottom", "0");
+            openNewStore.getElement().getStyle().set("left", "0");
+            openNewStore.getElement().getStyle().set("right", "0");
+            dialogLayout.add(openNewStore);
+        }
 
         Button closeDialogButton = addCloseButton(dialog);
 
-        dialogLayout.add(activeStoresLayout, deactivatedStoresLayout, openNewStore, closeDialogButton);
+        dialogLayout.add(activeStoresLayout, deactivatedStoresLayout, closeDialogButton);
         dialog.add(dialogLayout);
         dialog.open();
     }
