@@ -20,6 +20,7 @@ import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -185,21 +186,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         //icon
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
-
-        if(presenter.getUserName().equals("u1")) {
+        String username = presenter.getUserName();
+        if(username.equals("u1") && !presenter.isSuspended(username)) {
             MenuItem admin = dropdownMenu.addItem("Admin actions", e -> {
                 UI.getCurrent().navigate(AdminView.class);
             });
         }
 
 
-        if(!presenter.getUserName().contains("Guest")) {
+        if(!username.contains("Guest")) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
             MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         }
 
         //if user is guest add register button
-        if(presenter.getUserName().contains("Guest")) {
+        if(username.contains("Guest")) {
             MenuItem register = dropdownMenu.addItem("Register", e -> navigateToRegister());
         }
 
@@ -249,14 +250,18 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         VerticalLayout deactivatedStoresLayout = new VerticalLayout();
         deactivatedStoresLayout.add(new H4("Deactivated Stores:"));
+        String username = presenter.getUserName();
 
         for (String store : stores) {
             final Integer storeId = getStoreIdByName(store);  // Get the store ID once per iteration
 
             Button storeButton = new Button(store, e -> {
-                RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
-                UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
-                dialog.close();
+                if(!presenter.isSuspended(username)) {
+                    // Navigate to the store management page (assuming StoreManagementView is the correct view
+                    RouteParameters routeParameters = new RouteParameters("storeId", storeId.toString());
+                    UI.getCurrent().navigate(StoreManagementView.class, routeParameters);
+                    dialog.close();
+                }
             });
             storeButton.addClassName("button");
 
@@ -266,17 +271,19 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                 deactivatedStoresLayout.add(storeButton);
             }
         }
-
-        Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
-        openNewStore.addClassName("button");
-        openNewStore.getElement().getStyle().set("position", "absolute");
-        openNewStore.getElement().getStyle().set("bottom", "0");
-        openNewStore.getElement().getStyle().set("left", "0");
-        openNewStore.getElement().getStyle().set("right", "0");
+        if(!presenter.isSuspended(username)) {
+            Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
+            openNewStore.addClassName("button");
+            openNewStore.getElement().getStyle().set("position", "absolute");
+            openNewStore.getElement().getStyle().set("bottom", "0");
+            openNewStore.getElement().getStyle().set("left", "0");
+            openNewStore.getElement().getStyle().set("right", "0");
+            dialogLayout.add(openNewStore);
+        }
 
         Button closeDialogButton = addCloseButton(dialog);
 
-        dialogLayout.add(activeStoresLayout, deactivatedStoresLayout, openNewStore, closeDialogButton);
+        dialogLayout.add(activeStoresLayout, deactivatedStoresLayout, closeDialogButton);
         dialog.add(dialogLayout);
         dialog.open();
     }
@@ -509,10 +516,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
             }
         });
 
-//        Button purchaseHistoryByStoreButton = new Button("Purchase History By Store");
-//        purchaseHistoryByStoreButton.addClickListener(e -> {
-//            UI.getCurrent().navigate(StorePurchaseHistory.class);
-//        });
+
 
         mainContent.add(addMessageButton);
     }
@@ -550,36 +554,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //        addToNavbar(viewTitle);
     }
 
-//    private void addDrawerContent() {
-//        Span appName = new Span("My App");
-//        //  appName.addClassNames(Lumo.FontStyle.BOLD, Lumo.FontStyle.LARGE);
-//        Header header = new Header(appName);
-//
-//        Scroller scroller = new Scroller(createNavigation());
-//
-//        addToDrawer(header, scroller, createFooter());
-//    }
-//
-//
-//    private SideNav createNavigation() {
-//        SideNav nav = new SideNav();
-//        SideNavItem paymentItem = new SideNavItem("Payment");
-//        paymentItem.addAttachListener(new ComponentEventListener<AttachEvent>() {
-//            @Override
-//            public void onComponentEvent(AttachEvent event) {
-//
-//            }
-//        });
-//
-////        nav.addItem(new SideNavItem("Payment", PaymentView.class));
-//
-//        nav.addItem(new SideNavItem("Messages", MessagesList.class));
-////        nav.addItem(new SideNavItem("Roles Management", RolesManagementView.class)); // New navigation item
-//        nav.addItem(new SideNavItem("My Shopping Cart", ShoppingCartView.class)); // New navigation item
-//
-//
-//        return nav;
-//    }
 
     public HttpServletRequest getRequest() {
         return ((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest();
@@ -615,6 +589,144 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
 
 
+//    private void displaySearchResults(ArrayList<ProductDTO> results) {
+//        Dialog dialog = new Dialog();
+//        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
+//        dialog.setWidth("800px");
+//        dialog.setHeight("700px");
+//
+//        // Create and configure the filter button
+//        Button filterButton = new Button("");
+//        filterButton.setIcon(new Icon(VaadinIcon.FILTER));
+//        filterButton.getElement().getStyle().set("color", "black");
+//        filterButton.getElement().getStyle().set("background-color", "transparent");
+//        filterButton.addClickListener(event -> openFilterDialog(results));
+//        filterButton.getElement().getStyle().set("margin-left", "auto"); // Align the filter button to the right
+//
+//        // Create a horizontal layout for the title and filter button
+//        HorizontalLayout titleAndFilterLayout = new HorizontalLayout();
+//        titleAndFilterLayout.setWidthFull();
+//        titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+//
+////        HorizontalLayout productDetailsLayout = new HorizontalLayout();
+//        VerticalLayout nameLayout = new VerticalLayout();
+//        VerticalLayout priceLayout = new VerticalLayout();
+//        VerticalLayout quantityLayout = new VerticalLayout();
+//        VerticalLayout buttonLayout = new VerticalLayout();
+//        nameLayout.setSpacing(false);
+//        priceLayout.setSpacing(false);
+//        quantityLayout.setSpacing(false);
+//        buttonLayout.setSpacing(false);
+//
+//
+////        productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
+//
+//
+//        // Create the "Search Results" span title
+//        Span searchResultsSpan = new Span("Search Results");
+//        searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
+//
+//        // Add the title and filter button to the titleAndFilterLayout
+//        titleAndFilterLayout.add(searchResultsSpan, filterButton);
+//
+//        VerticalLayout dialogLayout = new VerticalLayout();
+//        dialogLayout.add(titleAndFilterLayout);
+//
+//        if(results.isEmpty()){
+//            dialogLayout.add(new Span("No results found"));
+//        }
+//
+//        for (ProductDTO product : results) {
+////            Div productDiv = new Div();
+//            // Create a horizontal layout for each product's details
+//            HorizontalLayout productDetailsLayout = new HorizontalLayout();
+//            productDetailsLayout.setWidthFull();
+//            productDetailsLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Center align items vertically
+//
+//
+//
+//            // Product name span
+//            Span productNameSpan = new Span(product.getProductName());
+////            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
+//            //set the font size of the product name
+//            productNameSpan.getElement().getStyle().set("font-size", "17px");
+//            //set height of the product name
+//            //top margin
+//            productNameSpan.getElement().getStyle().set("margin-top", "10px");
+//            productNameSpan.getElement().getStyle().set("margin-bottom", "10px");
+//
+//            // Product price span
+//            Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
+//            productPriceSpan.getElement().getStyle().set("color", "gray");
+//            productPriceSpan.getElement().getStyle().set("font-size", "17px");
+//            productPriceSpan.getElement().getStyle().set("margin-top", "10px");
+//            productPriceSpan.getElement().getStyle().set("margin-bottom", "10px");
+////            productPriceSpan.getElement().getStyle().set("height", "43px");
+//
+//            // Quantity input field
+//            IntegerField quantityField = new IntegerField();
+//            quantityField.setMin(1); // Minimum quantity allowed
+//            quantityField.setWidth("2em"); // Set a fixed width for better alignment
+//            quantityField.setValue(1); // Default quantity
+//
+//            // Create buttons for increasing and decreasing quantity
+//            Button increaseButton = new Button("+");
+//            increaseButton.getElement().getStyle().set("color", "black");
+//            increaseButton.getElement().getStyle().set("background-color", "transparent");
+//            increaseButton.addClickListener(e -> {
+//                int currentValue = quantityField.getValue();
+//                quantityField.setValue(currentValue + 1);
+//            });
+//
+//            Button decreaseButton = new Button("-");
+//            decreaseButton.getElement().getStyle().set("color", "black");
+//            decreaseButton.getElement().getStyle().set("background-color", "transparent");
+//            decreaseButton.addClickListener(e -> {
+//                int currentValue = quantityField.getValue();
+//                if (currentValue > 1) {
+//                    quantityField.setValue(currentValue - 1);
+//                }
+//            });
+//
+//            // Create the add to cart button with a + icon and transparent background
+//            Button addToCartButton = new Button("Add to Cart");
+//            addToCartButton.addClassName("button");
+//            addToCartButton.addClickListener(e -> addToCart(product, quantityField.getValue()));
+//            addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
+//
+//            HorizontalLayout quantityIncDec = new HorizontalLayout();
+//            quantityIncDec.add(increaseButton, quantityField, decreaseButton);
+//
+//            nameLayout.add(productNameSpan);
+//            priceLayout.add(productPriceSpan);
+//            quantityLayout.add(quantityIncDec);
+//            buttonLayout.add(addToCartButton);
+//
+//            productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
+//
+//            // Add components to productDetailsLayout
+////            productDetailsLayout.add(productNameSpan, productPriceSpan, createQuantityLayout(quantityField, decreaseButton, increaseButton, addToCartButton));
+//
+//            // Add productDetailsLayout to productDiv
+////            productDiv.add(productDetailsLayout);
+//
+//            // Add productDiv to dialogLayout
+//            dialogLayout.add(productDetailsLayout);
+//        }
+//
+//        // Add close button to dialogLayout
+//        Button closeDialogButton = addCloseButton(dialog);
+//        dialogLayout.add(closeDialogButton);
+//
+//        // Add dialogLayout to dialog
+//        dialog.add(dialogLayout);
+//
+//        // Open the dialog
+//        dialog.open();
+//
+//    }
+
+
     private void displaySearchResults(ArrayList<ProductDTO> results) {
         Dialog dialog = new Dialog();
         dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
@@ -634,20 +746,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         titleAndFilterLayout.setWidthFull();
         titleAndFilterLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-//        HorizontalLayout productDetailsLayout = new HorizontalLayout();
-        VerticalLayout nameLayout = new VerticalLayout();
-        VerticalLayout priceLayout = new VerticalLayout();
-        VerticalLayout quantityLayout = new VerticalLayout();
-        VerticalLayout buttonLayout = new VerticalLayout();
-        nameLayout.setSpacing(false);
-        priceLayout.setSpacing(false);
-        quantityLayout.setSpacing(false);
-        buttonLayout.setSpacing(false);
-
-
-//        productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
-
-
         // Create the "Search Results" span title
         Span searchResultsSpan = new Span("Search Results");
         searchResultsSpan.getElement().getStyle().set("font-size", "20px"); // Set the font size of the title
@@ -660,84 +758,57 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         if(results.isEmpty()){
             dialogLayout.add(new Span("No results found"));
-        }
+        } else {
+            Grid<ProductDTO> productGrid = new Grid<>(ProductDTO.class, false);
 
-        for (ProductDTO product : results) {
-//            Div productDiv = new Div();
-            // Create a horizontal layout for each product's details
-            HorizontalLayout productDetailsLayout = new HorizontalLayout();
-            productDetailsLayout.setWidthFull();
-            productDetailsLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Center align items vertically
+            productGrid.addClassName("custom-grid");
+            productGrid.addColumn(ProductDTO::getProductName).setHeader("Product Name").setAutoWidth(true);
+
+            productGrid.addColumn(product -> "$" + product.getPrice()).setHeader("Price").setAutoWidth(true);
+
+            if(!presenter.isSuspended(presenter.getUserName())) {
+            productGrid.addComponentColumn(product -> {
+                IntegerField quantityField = new IntegerField();
+                quantityField.setMin(1); // Minimum quantity allowed
+                quantityField.setWidth("2em"); // Set a fixed width for better alignment
+                quantityField.setValue(1); // Default quantity
+
+                Button increaseButton = new Button("+");
+                increaseButton.getElement().getStyle().set("color", "black");
+                increaseButton.getElement().getStyle().set("background-color", "transparent");
+                increaseButton.setWidth("10px");
+                increaseButton.addClickListener(e -> {
+                    int currentValue = quantityField.getValue();
+                    quantityField.setValue(currentValue + 1);
+                });
+
+                Button decreaseButton = new Button("-");
+                decreaseButton.getElement().getStyle().set("color", "black");
+                decreaseButton.getElement().getStyle().set("background-color", "transparent");
+                //narrow the button
+                decreaseButton.setWidth("10px");
+                decreaseButton.addClickListener(e -> {
+                    int currentValue = quantityField.getValue();
+                    if (currentValue > 1) {
+                        quantityField.setValue(currentValue - 1);
+                    }
+                });
+
+                HorizontalLayout quantityLayout = new HorizontalLayout(decreaseButton, quantityField, increaseButton);
+                return quantityLayout;
+            }).setHeader("Quantity").setAutoWidth(true);
 
 
+                productGrid.addComponentColumn(product -> {
+                    Button addToCartButton = new Button("Add to Cart");
+                    addToCartButton.addClassName("button");
+                    addToCartButton.addClickListener(e -> addToCart(product, 1)); // default quantity to 1
+                    return addToCartButton;
+                }).setHeader("").setAutoWidth(true);
+            }
 
-            // Product name span
-            Span productNameSpan = new Span(product.getProductName());
-//            productNameSpan.getElement().getStyle().set("margin-right", "1em"); // Add margin between name and price
-            //set the font size of the product name
-            productNameSpan.getElement().getStyle().set("font-size", "17px");
-            //set height of the product name
-            //top margin
-            productNameSpan.getElement().getStyle().set("margin-top", "10px");
-            productNameSpan.getElement().getStyle().set("margin-bottom", "10px");
-
-            // Product price span
-            Span productPriceSpan = new Span("$" + product.getPrice()); // Assuming price is stored in ProductDTO
-            productPriceSpan.getElement().getStyle().set("color", "gray");
-            productPriceSpan.getElement().getStyle().set("font-size", "17px");
-            productPriceSpan.getElement().getStyle().set("margin-top", "10px");
-            productPriceSpan.getElement().getStyle().set("margin-bottom", "10px");
-//            productPriceSpan.getElement().getStyle().set("height", "43px");
-
-            // Quantity input field
-            IntegerField quantityField = new IntegerField();
-            quantityField.setMin(1); // Minimum quantity allowed
-            quantityField.setWidth("2em"); // Set a fixed width for better alignment
-            quantityField.setValue(1); // Default quantity
-
-            // Create buttons for increasing and decreasing quantity
-            Button increaseButton = new Button("+");
-            increaseButton.getElement().getStyle().set("color", "black");
-            increaseButton.getElement().getStyle().set("background-color", "transparent");
-            increaseButton.addClickListener(e -> {
-                int currentValue = quantityField.getValue();
-                quantityField.setValue(currentValue + 1);
-            });
-
-            Button decreaseButton = new Button("-");
-            decreaseButton.getElement().getStyle().set("color", "black");
-            decreaseButton.getElement().getStyle().set("background-color", "transparent");
-            decreaseButton.addClickListener(e -> {
-                int currentValue = quantityField.getValue();
-                if (currentValue > 1) {
-                    quantityField.setValue(currentValue - 1);
-                }
-            });
-
-            // Create the add to cart button with a + icon and transparent background
-            Button addToCartButton = new Button("Add to Cart");
-            addToCartButton.addClassName("button");
-            addToCartButton.addClickListener(e -> addToCart(product, quantityField.getValue()));
-            addToCartButton.getElement().getStyle().set("margin-left", "auto"); // Align the button to the right
-
-            HorizontalLayout quantityIncDec = new HorizontalLayout();
-            quantityIncDec.add(increaseButton, quantityField, decreaseButton);
-
-            nameLayout.add(productNameSpan);
-            priceLayout.add(productPriceSpan);
-            quantityLayout.add(quantityIncDec);
-            buttonLayout.add(addToCartButton);
-
-            productDetailsLayout.add(nameLayout, priceLayout, quantityLayout, buttonLayout);
-
-            // Add components to productDetailsLayout
-//            productDetailsLayout.add(productNameSpan, productPriceSpan, createQuantityLayout(quantityField, decreaseButton, increaseButton, addToCartButton));
-
-            // Add productDetailsLayout to productDiv
-//            productDiv.add(productDetailsLayout);
-
-            // Add productDiv to dialogLayout
-            dialogLayout.add(productDetailsLayout);
+            productGrid.setItems(results);
+            dialogLayout.add(productGrid);
         }
 
         // Add close button to dialogLayout
@@ -749,8 +820,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
         // Open the dialog
         dialog.open();
-
     }
+
 
     // Method to create a horizontal layout for quantity controls and add to cart button
     private HorizontalLayout createQuantityLayout(IntegerField quantityField, Button decreaseButton, Button increaseButton, Button addToCartButton) {
@@ -802,6 +873,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
         dialog.setHeight("450px");
+        dialog.getElement().executeJs("this.$.overlay.$.overlay.style.backgroundColor = '#E6DCD3';");
 
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.add(new Span("Filter Options"));

@@ -71,4 +71,16 @@ public class StorePagePresenter {
     public List<String> getPolicies(Integer storeId) {
         return storeService.getPoliciesString(storeId);
     }
+    public boolean isSuspended(String username) {
+        return userService.isSuspended(username);
+    }
+    public String getUserName() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        if (username == null) {
+            username = "Guest";
+        } else if (username.contains("Guest")) {
+            username = username.substring(0, 5);
+        }
+        return username;
+    }
 }
