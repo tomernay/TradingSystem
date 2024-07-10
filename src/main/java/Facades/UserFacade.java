@@ -2,6 +2,7 @@ package Facades;
 
 import Domain.Externals.Security.PasswordEncoderUtil;
 import Domain.Externals.Security.TokenHandler;
+import Domain.Repo.IUserRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
@@ -12,15 +13,22 @@ import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+@Service
 public class UserFacade {
-    private final UserRepository userRepository;
+    @Autowired
+    private IUserRepository iUserRepository;
+    private UserRepository userRepository;
 
-    public UserFacade() {
+
+    public UserFacade( ) {
         userRepository = new UserRepository();
     }
 
@@ -124,6 +132,7 @@ public class UserFacade {
                 return Response.error("User is already registered", null);
             }
             Subscriber subscriber = new Subscriber(username, PasswordEncoderUtil.encode(password));
+            iUserRepository.save(subscriber);
             Boolean answer = userRepository.addSubscriber(subscriber);
             if (!answer) {
                 SystemLogger.error("[ERROR] User " + username + " is already registered");

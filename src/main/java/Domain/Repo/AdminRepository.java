@@ -2,7 +2,9 @@ package Domain.Repo;
 
 
 import Domain.Users.Admin;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class AdminRepository {
     private final Admin admin;
 

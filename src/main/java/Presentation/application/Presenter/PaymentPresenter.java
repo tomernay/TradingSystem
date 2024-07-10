@@ -4,11 +4,11 @@ import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.PaymentView;
 import Service.OrderService;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,15 +18,15 @@ import java.util.Map;
 @Component
 public class PaymentPresenter {
     private PaymentView paymentView;
-    private final OrderService orderService;
-    private final StoreService storeService;
-    private final UserService userService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private HttpServletRequest request;
 
     public PaymentPresenter(HttpServletRequest request) {
-        orderService = ServiceInitializer.getInstance().getOrderService();
-        storeService = ServiceInitializer.getInstance().getStoreService();
-        userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
     }
 

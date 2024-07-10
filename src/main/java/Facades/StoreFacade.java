@@ -13,17 +13,18 @@ import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Service
 public class StoreFacade {
-    private final StoreRepository storeRepository;
-
-    public StoreFacade() {
-        storeRepository = new StoreRepository();
-    }
+    @Autowired
+    private StoreRepository storeRepository;
 
     public boolean isStoreManager(Integer storeID, String currentUsername) {
         Store store = storeRepository.getActiveStore(storeID);

@@ -1,14 +1,13 @@
 package Presentation.application.Presenter.Store;
 
-import Domain.Store.Inventory.Product;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.StorePageView;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,14 +17,14 @@ import java.util.List;
 @Component
 public class StorePagePresenter {
     StorePageView view;
-    private final UserService userService; // Assuming you have a UserService
-    private final StoreService storeService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
 
 
     public StorePagePresenter(HttpServletRequest request) {
-        this.userService = ServiceInitializer.getInstance().getUserService();
-        this.storeService = ServiceInitializer.getInstance().getStoreService();
         this.request = request;
     }
 

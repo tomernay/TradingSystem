@@ -3,11 +3,11 @@ package Presentation.application.Presenter;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.View.ShoppingCartView;
 import Presentation.application.CookiesHandler;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,16 +18,16 @@ import java.util.Map;
 public class ShoppingCartPresenter {
 
     private ShoppingCartView view;
-    private UserService userService;
+    @Autowired
     private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private final List<ProductDTO> productList;
     private HttpServletRequest request;
     private double totalPrice; // Store the total price
 
     public ShoppingCartPresenter(HttpServletRequest request) {
-        this.userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
-        this.storeService = ServiceInitializer.getInstance().getStoreService();
         productList = new ArrayList<>();
     }
 

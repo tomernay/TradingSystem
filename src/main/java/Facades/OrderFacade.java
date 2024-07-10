@@ -6,17 +6,18 @@ import Domain.Repo.OrderRepository;
 import Domain.Store.Inventory.ProductDTO;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class OrderFacade {
-    private final OrderRepository orderRepository;
-
-    public OrderFacade() {
-        orderRepository = new OrderRepository();
-    }
+    @Autowired
+    private OrderRepository orderRepository;
 
     public Response<Map<String, String>> getOrdersHistory(Integer storeID) {
         Map<String, String> orderHistory = new HashMap<>();

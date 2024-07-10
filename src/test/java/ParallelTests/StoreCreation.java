@@ -1,6 +1,5 @@
 package ParallelTests;
 
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;

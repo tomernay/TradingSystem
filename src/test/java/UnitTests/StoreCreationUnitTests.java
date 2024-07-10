@@ -3,7 +3,6 @@ package UnitTests;
 import Domain.Repo.StoreRepository;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import org.junit.jupiter.api.Assertions;

@@ -1,7 +1,6 @@
 package UnitTests;
 
 import Domain.Repo.UserRepository;
-import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;

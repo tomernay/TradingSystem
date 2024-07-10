@@ -2,7 +2,6 @@ package UnitTests;
 
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Users.Subscriber.Subscriber;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
@@ -10,7 +9,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 

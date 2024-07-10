@@ -1,6 +1,5 @@
 package AcceptanceTests;
 
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
@@ -11,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Set;
 
 public class StoreRole {
     ServiceInitializer serviceInitializer;

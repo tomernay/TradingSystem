@@ -9,21 +9,16 @@ import jakarta.persistence.*;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@Entity
-@Table(name = "users")
+
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     protected String username;
 
-    @Embedded
     protected ShoppingCart shoppingCart;
 
-    @Column(name = "token")
     protected String Token;
 
     public User(String username) {

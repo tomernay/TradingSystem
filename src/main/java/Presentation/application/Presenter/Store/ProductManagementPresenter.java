@@ -3,11 +3,11 @@ package Presentation.application.Presenter.Store;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.ProductManagementView;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ import java.util.Set;
 @Component
 public class ProductManagementPresenter {
     private ProductManagementView view;
-    private final StoreService storeService;
-    private final UserService userService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private HttpServletRequest request;
 
     public ProductManagementPresenter(HttpServletRequest request) {
-        this.storeService = ServiceInitializer.getInstance().getStoreService(); // Assume this service is implemented
-        this.userService = ServiceInitializer.getInstance().getUserService(); // Assume this service is implemented
         this.request = request;
     }
 

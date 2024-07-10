@@ -3,11 +3,11 @@ package Presentation.application.Presenter.Store;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.RolesManagementView;
 import Presentation.application.View.UtilitiesView.Broadcaster;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public class RolesManagementPresenter {
 
     private RolesManagementView view;
-    private final StoreService storeService;
-    private final UserService userService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
     private Set<String> roleFilter;
     private Integer storeID;
 
     public RolesManagementPresenter(HttpServletRequest request) {
-        this.storeService = ServiceInitializer.getInstance().getStoreService();
-        this.userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
         this.roleFilter = new HashSet<>(Arrays.asList("OWNER", "MANAGER", "CREATOR", "SUBSCRIBER"));
     }

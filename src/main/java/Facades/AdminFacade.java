@@ -5,18 +5,20 @@ import Domain.Users.Admin;
 import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 
+@Service
 public class AdminFacade {
 
-    private final AdminRepository adminRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
-    public AdminFacade(){
-        adminRepository = new AdminRepository();
-    }
 
     public Response<String> suspendUser(String subscriberUsername, Date endOfSuspensionDate) {
         try {

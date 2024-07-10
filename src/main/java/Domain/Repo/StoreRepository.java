@@ -5,9 +5,12 @@ import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Subscriber;
 import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Repository
 public class StoreRepository {
     private final Map<Integer, Store> stores;
     private final Map<Integer, Store> deactivatedStores; // <StoreID, Store>

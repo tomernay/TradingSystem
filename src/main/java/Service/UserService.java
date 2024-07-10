@@ -9,6 +9,8 @@ import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 
@@ -19,27 +21,23 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserService {
-    private final UserFacade userFacade;
-    private StoreService storeService;
-    private AdminService adminService;
 
-    public UserService() {
-        userFacade = new UserFacade();
-    }
-
-
+    @Autowired
+    private UserFacade userFacade;
+    @Autowired
+    private @Lazy StoreService storeService;
+    @Autowired
+    private @Lazy AdminService adminService;
 
     // Setters for dependencies
-
-    public void setStoreService(StoreService storeService) {
+    @Autowired
+    public void setStoreService(@Lazy StoreService storeService) {
         this.storeService = storeService;
     }
-    public void setAdminService(AdminService adminService) {
+    @Autowired
+    public void setAdminService(@Lazy AdminService adminService) {
         this.adminService = adminService;
     }
-
-
-
 
     // User Authentication Methods
 

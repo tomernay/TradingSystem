@@ -2,20 +2,14 @@ package ConfigurationFileTests;
 
 import Domain.Externals.InitFile.Configuration;
 import Domain.Externals.Payment.DefaultPaymentGateway;
-import Domain.Externals.Payment.ProxyPaymentGateway;
-import Domain.Users.Subscriber.Subscriber;
-import Presentation.application.Application;
 import Service.OrderService;
-import Service.ServiceInitializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.SpringApplication;
 
 import java.io.File;
-import java.io.IOException;
 
 public class ConfigurationFileTests {
 

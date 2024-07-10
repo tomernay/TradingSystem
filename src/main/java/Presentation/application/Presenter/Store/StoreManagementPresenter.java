@@ -2,17 +2,16 @@ package Presentation.application.Presenter.Store;
 
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.DiscountDTO;
-import Domain.Store.Discounts.TYPE;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.DiscountBox;
 import Presentation.application.View.Store.PolicyBox;
 import Presentation.application.View.Store.StoreManagementView;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import Domain.Store.Inventory.ProductDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -22,13 +21,13 @@ import java.util.Objects;
 @Component
 public class StoreManagementPresenter {
     private StoreManagementView view;
-    private final UserService userService; // Assuming you have a UserService
-    private final StoreService storeService; // Assuming you have a StoreService
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
 
     public StoreManagementPresenter(HttpServletRequest request) {
-        this.userService = ServiceInitializer.getInstance().getUserService();
-        this.storeService = ServiceInitializer.getInstance().getStoreService();
         this.request = request;
     }
 

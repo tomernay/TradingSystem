@@ -3,7 +3,6 @@ package UnitTests;
 import Domain.Externals.Security.PasswordEncoderUtil;
 import Domain.Externals.Security.TokenHandler;
 import Domain.Repo.UserRepository;
-import Service.ServiceInitializer;
 import Service.UserService;
 import org.junit.Assert;
 import org.junit.Before;

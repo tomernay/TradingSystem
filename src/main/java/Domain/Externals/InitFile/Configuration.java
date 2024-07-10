@@ -7,6 +7,10 @@ import Domain.Externals.Suppliers.DefaultSupplySystem;
 import Domain.Externals.Suppliers.ProxySupplySystem;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Users.Subscriber.Subscriber;
+import Facades.AdminFacade;
+import Facades.OrderFacade;
+import Facades.StoreFacade;
+import Facades.UserFacade;
 import Service.OrderService;
 import Service.ServiceInitializer;
 import Service.StoreService;
@@ -15,17 +19,33 @@ import Utilities.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@org.springframework.context.annotation.Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"Domain"})
 public class Configuration {
     private PaymentGateway paymentGateway;
     private SupplySystem supplySystem;
     private String adminUser;
     private String adminPassword;
     private List<FunctionCall> initSequence;
+    @Autowired
+    private @Lazy UserService userService;
+    @Autowired
+    private @Lazy StoreService storeService;
+
+
+    public Configuration() {
+    }
 
     public Configuration(JsonNode jsonNode) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
@@ -96,15 +116,32 @@ public class Configuration {
         }
     }
 
+    @Bean(name = "UserFacade")
+    public UserFacade userFacade() {
+        return new UserFacade();
+    }
 
-    public static void init(JsonNode configNode) throws JsonProcessingException {
+    @Bean(name = "StoreFacade")
+    public StoreFacade storeFacade() {
+        return new StoreFacade();
+    }
+
+    @Bean(name = "AdminFacade")
+    public AdminFacade adminFacade() {
+        return new AdminFacade();
+    }
+
+    @Bean(name = "OrderFacade")
+    public OrderFacade orderFacade() {
+        return new OrderFacade();
+    }
+
+
+    public void init(JsonNode configNode) throws JsonProcessingException {
         Configuration config = new Configuration(configNode);
         ServiceInitializer.reset();
-        ServiceInitializer serviceInitializer = ServiceInitializer.getInstance();
-       UserService userService = serviceInitializer.getUserService();
-      StoreService storeService = serviceInitializer.getStoreService();
-     OrderService orderService = serviceInitializer.getOrderService();
-        Subscriber subscriber=null;
+
+        Subscriber subscriber = null;
         for (FunctionCall functionCall : config.getInitSequence()) {
             try {
 

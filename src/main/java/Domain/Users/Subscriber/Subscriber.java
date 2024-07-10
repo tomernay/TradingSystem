@@ -10,15 +10,25 @@ import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import jakarta.persistence.*;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Entity
+@Table(name = "subscribers")
 public class Subscriber extends User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Transient
     private final List<Integer> subscribedStores;
+    @Transient
     private final List<Message> messages;
+    @Column(nullable = true)
     private String password;
     private String credit;
+    @Transient
     private final Map<Integer, String> storesRole;
 
     public Subscriber(String username,String password) {
@@ -29,20 +39,17 @@ public class Subscriber extends User {
         this.storesRole = new HashMap<>();
     }
 
+    public Subscriber() {
+        super();
+        this.subscribedStores = new ArrayList<>();
+        this.messages = new ArrayList<>();
+        this.storesRole = new HashMap<>();
+    }
+
     public void addStore(Integer storeID) {
         subscribedStores.add(storeID);
     }
 
-
-//    public Response<String> messageResponse(boolean answer) {
-//        Message message = messages.poll();
-//        if (message == null) {
-//            SystemLogger.error("[ERROR] No messages to respond to.");
-//            return Response.error("No messages to respond to.", null);
-//        }
-//        Response<Message> response = message.response(answer);
-//        return Response.success(response.getMessage(), null);
-//    }
 
     public String getToken() {
         return Token;

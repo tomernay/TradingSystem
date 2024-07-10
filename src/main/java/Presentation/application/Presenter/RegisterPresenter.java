@@ -2,19 +2,18 @@ package Presentation.application.Presenter;
 
 
 import Presentation.application.View.RegisterView;
-import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RegisterPresenter {
-
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
     private RegisterView view;
 
     public RegisterPresenter() {
-        this.userService = ServiceInitializer.getInstance().getUserService();
     }
 
     public void attachView(RegisterView view) {

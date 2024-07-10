@@ -4,7 +4,6 @@ import Domain.Store.Store;
 import Domain.Users.StateOfSubscriber.StoreManager;
 import Domain.Users.StateOfSubscriber.StoreOwner;
 import Domain.Users.Subscriber.Subscriber;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Messages.Message;

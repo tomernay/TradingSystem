@@ -1,8 +1,6 @@
 package AcceptanceTests;
 
-import Service.ServiceInitializer;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.StoreService;

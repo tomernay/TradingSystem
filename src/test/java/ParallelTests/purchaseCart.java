@@ -3,7 +3,6 @@ package ParallelTests;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Users.Subscriber.Subscriber;
 import Service.OrderService;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
