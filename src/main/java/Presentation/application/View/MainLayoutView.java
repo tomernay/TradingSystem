@@ -187,14 +187,14 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         userButton.setIcon(new Icon(VaadinIcon.USER));
 
         String username = presenter.getUserName();
-        if(username.equals("u1") && presenter.isSuspended(username)) {
+        if(username.equals("u1") && !presenter.isSuspended(username)) {
             MenuItem admin = dropdownMenu.addItem("Admin actions", e -> {
                 UI.getCurrent().navigate(AdminView.class);
             });
         }
 
 
-        if(username.contains("Guest")) {
+        if(!username.contains("Guest")) {
             MenuItem myStores = dropdownMenu.addItem("My Stores", e -> myStoresDialog());
             MenuItem personalSettings = dropdownMenu.addItem("Personal Settings", e -> openSettings());
         }
@@ -271,7 +271,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
                 deactivatedStoresLayout.add(storeButton);
             }
         }
-        if(presenter.isSuspended(username)) {
+        if(!presenter.isSuspended(username)) {
             Button openNewStore = new Button("Open a new store", e -> openNewStoreDialog());
             openNewStore.addClassName("button");
             openNewStore.getElement().getStyle().set("position", "absolute");

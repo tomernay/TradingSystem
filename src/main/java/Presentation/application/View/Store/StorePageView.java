@@ -236,41 +236,42 @@ public class StorePageView extends AppLayout implements BeforeEnterObserver {
             productGrid.addColumn(ProductDTO::getProductName).setHeader("Product Name").setAutoWidth(true);
             productGrid.addColumn(product -> "$" + product.getPrice()).setHeader("Price").setAutoWidth(true);
 
-            productGrid.addComponentColumn(product -> {
-                IntegerField quantityField = new IntegerField();
-                quantityField.setMin(1); // Minimum quantity allowed
-                quantityField.setWidth("4em"); // Set a fixed width for better alignment
-                quantityField.setValue(1); // Default quantity
+            if(!presenter.isSuspended(presenter.getUserName())) {
+                productGrid.addComponentColumn(product -> {
+                    IntegerField quantityField = new IntegerField();
+                    quantityField.setMin(1); // Minimum quantity allowed
+                    quantityField.setWidth("4em"); // Set a fixed width for better alignment
+                    quantityField.setValue(1); // Default quantity
 
-                Button increaseButton = new Button("+");
-                increaseButton.getElement().getStyle().set("color", "black");
-                increaseButton.getElement().getStyle().set("background-color", "transparent");
-                increaseButton.addClickListener(e -> {
-                    int currentValue = quantityField.getValue();
-                    quantityField.setValue(currentValue + 1);
-                });
+                    Button increaseButton = new Button("+");
+                    increaseButton.getElement().getStyle().set("color", "black");
+                    increaseButton.getElement().getStyle().set("background-color", "transparent");
+                    increaseButton.addClickListener(e -> {
+                        int currentValue = quantityField.getValue();
+                        quantityField.setValue(currentValue + 1);
+                    });
 
-                Button decreaseButton = new Button("-");
-                decreaseButton.getElement().getStyle().set("color", "black");
-                decreaseButton.getElement().getStyle().set("background-color", "transparent");
-                decreaseButton.addClickListener(e -> {
-                    int currentValue = quantityField.getValue();
-                    if (currentValue > 1) {
-                        quantityField.setValue(currentValue - 1);
-                    }
-                });
+                    Button decreaseButton = new Button("-");
+                    decreaseButton.getElement().getStyle().set("color", "black");
+                    decreaseButton.getElement().getStyle().set("background-color", "transparent");
+                    decreaseButton.addClickListener(e -> {
+                        int currentValue = quantityField.getValue();
+                        if (currentValue > 1) {
+                            quantityField.setValue(currentValue - 1);
+                        }
+                    });
 
-                HorizontalLayout quantityLayout = new HorizontalLayout(decreaseButton, quantityField, increaseButton);
-                return quantityLayout;
-            }).setHeader("Quantity").setAutoWidth(true);
+                    HorizontalLayout quantityLayout = new HorizontalLayout(decreaseButton, quantityField, increaseButton);
+                    return quantityLayout;
+                }).setHeader("Quantity").setAutoWidth(true);
 
-            productGrid.addComponentColumn(product -> {
-                Button addToCartButton = new Button("Add to Cart");
-                addToCartButton.addClassName("button");
-                addToCartButton.addClickListener(e -> addToCart(product, 1)); // default quantity to 1
-                return addToCartButton;
-            }).setHeader("").setAutoWidth(true);
-
+                productGrid.addComponentColumn(product -> {
+                    Button addToCartButton = new Button("Add to Cart");
+                    addToCartButton.addClassName("button");
+                    addToCartButton.addClickListener(e -> addToCart(product, 1)); // default quantity to 1
+                    return addToCartButton;
+                }).setHeader("").setAutoWidth(true);
+            }
             productGrid.setItems(products);
             container.add(productGrid);
         }
