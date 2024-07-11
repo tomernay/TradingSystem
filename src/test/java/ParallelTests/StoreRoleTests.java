@@ -1,5 +1,6 @@
 package ParallelTests;
 
+import Service.ServiceInitializer;
 import Service.StoreService;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;

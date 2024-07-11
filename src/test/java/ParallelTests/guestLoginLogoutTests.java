@@ -1,5 +1,6 @@
 package ParallelTests;
 
+import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.Assert;

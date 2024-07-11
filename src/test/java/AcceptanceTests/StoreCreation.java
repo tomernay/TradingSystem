@@ -1,5 +1,6 @@
 package AcceptanceTests;
 
+import Service.ServiceInitializer;
 import org.junit.Before;
 import org.junit.Test;
 import Domain.Store.Store;

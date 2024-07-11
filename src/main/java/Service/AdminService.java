@@ -15,12 +15,16 @@ import java.util.Map;
 @Service
 public class AdminService {
     @Autowired
+    @Lazy
     private UserService userService;
     @Autowired
+    @Lazy
     private StoreService storeService;
     @Autowired
+    @Lazy
     private OrderService orderService;
     @Autowired
+    @Lazy
     private AdminFacade adminFacade;
 
     public AdminService(){

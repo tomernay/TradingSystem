@@ -3,6 +3,7 @@ package ConfigurationFileTests;
 import Domain.Externals.InitFile.Configuration;
 import Domain.Externals.Payment.DefaultPaymentGateway;
 import Service.OrderService;
+import Service.ServiceInitializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -25,7 +26,7 @@ public class ConfigurationFileTests {
 
                 // Initialize the Configuration object
                 Configuration.init(configNode);
-                serviceInitializer=ServiceInitializer.getInstance(configuration);
+                serviceInitializer=ServiceInitializer.getInstance();
 
             // Pass the configuration to SpringApplication.run
 
@@ -53,7 +54,7 @@ public class ConfigurationFileTests {
 
             // Initialize the Configuration object
             Configuration.init(configNode);
-            serviceInitializer = ServiceInitializer.getInstance(configuration);
+            serviceInitializer = ServiceInitializer.getInstance();
             OrderService orderService = ServiceInitializer.getInstance().getOrderService();
             Assert.assertTrue(false);
             boolean isMiaExist = ServiceInitializer.getInstance().getUserService().userExists("mia");
@@ -76,7 +77,7 @@ public class ConfigurationFileTests {
 
             // Initialize the Configuration object
             Configuration.init(configNode);
-            serviceInitializer = ServiceInitializer.getInstance(configuration);
+            serviceInitializer = ServiceInitializer.getInstance();
             OrderService orderService = ServiceInitializer.getInstance().getOrderService();
             Assert.assertTrue(false);
             boolean isMiaExist = ServiceInitializer.getInstance().getUserService().userExists("mia");

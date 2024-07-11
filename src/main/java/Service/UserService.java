@@ -12,6 +12,7 @@ import Utilities.SystemLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -84,6 +85,7 @@ public class UserService {
      * @param password The password of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public synchronized Response<String> register(String username, String password) {
         SystemLogger.info("[START] User: " + username + " is trying to register");
         return userFacade.register(username, password);

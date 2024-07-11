@@ -3,6 +3,7 @@ package UnitTests;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
+import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
