@@ -3,7 +3,6 @@ package AcceptanceTests;
 import Domain.Externals.Payment.PaymentGateway;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Repo.OrderRepository;
-import Domain.Store.Discounts.TYPE;
 import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;

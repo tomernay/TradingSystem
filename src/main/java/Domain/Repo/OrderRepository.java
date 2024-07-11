@@ -3,10 +3,12 @@ package Domain.Repo;
 import Domain.Order;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.View.UtilitiesView.Broadcaster;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Repository
 public class OrderRepository {
     private final Map<Integer, Order> orders; // <orderID, Order>
     private final AtomicInteger orderID = new AtomicInteger(0);

@@ -9,31 +9,42 @@ import Facades.OrderFacade;
 import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Service
 public class OrderService {
-    private final OrderFacade orderFacade;
+    @Autowired
+    private OrderFacade orderFacade;
+    @Autowired
     private UserService userService;
     private SupplySystem supplySystem;
+    @Autowired
     private StoreService storeService;
     private PaymentGateway paymentGateway;
 
-    public OrderService(PaymentGateway paymentGateway, SupplySystem supplySystem,StoreService storeService) {
+
+    public OrderService() {
         this.orderFacade = new OrderFacade();
+    }
+    //    @Autowired
+    public OrderService(PaymentGateway paymentGateway, SupplySystem supplySystem) {
         this.supplySystem = supplySystem;
         this.paymentGateway = paymentGateway;
-        this.storeService=storeService;
     }
 
     public OrderFacade getOrderFacade() {
         return orderFacade;
     }
 
-    public void setUserService(UserService userService) {
+    @Autowired
+    public void setUserService(@Lazy UserService userService) {
         this.userService = userService;
     }
 

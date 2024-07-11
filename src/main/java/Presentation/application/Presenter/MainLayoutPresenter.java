@@ -2,10 +2,9 @@ package Presentation.application.Presenter;
 
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.MainLayoutView;
-import Service.ServiceInitializer;
 import Service.UserService;
-import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import Domain.Store.Inventory.ProductDTO;
 import Service.StoreService;
@@ -19,14 +18,14 @@ import java.util.*;
 @Component
 public class MainLayoutPresenter {
     private MainLayoutView view;
-    private final UserService userService; // Assuming you have a UserService
-    private final StoreService storeService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
 
 
     public MainLayoutPresenter(HttpServletRequest request) {
-        this.userService = ServiceInitializer.getInstance().getUserService();
-        this.storeService = ServiceInitializer.getInstance().getStoreService();
         this.request = request;
     }
 

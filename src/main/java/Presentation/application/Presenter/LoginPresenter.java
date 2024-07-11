@@ -1,9 +1,9 @@
 package Presentation.application.Presenter;
 
 import Presentation.application.View.LoginView;
-import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
 @Component
 public class LoginPresenter {
     private LoginView view;
-    private final UserService userService; // Assuming you have a UserService
+    @Autowired
+    private UserService userService;
 
     public LoginPresenter() {
-        this.userService = ServiceInitializer.getInstance().getUserService();
     }
 
     public void attachView(LoginView view) {

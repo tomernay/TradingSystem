@@ -2,14 +2,9 @@ package Presentation.application.View.Store;
 
 import Domain.OrderDTO;
 import Domain.Store.Inventory.ProductDTO;
-import Presentation.application.CookiesHandler;
 import Presentation.application.Presenter.Store.SubscriberPurchaseHistoryAdminPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
-import Service.AdminService;
-import Service.OrderService;
-import Service.ServiceInitializer;
-import Service.UserService;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -25,9 +20,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @PageTitle("")
 @Route(value = "ordersAdminSub/:subscriber", layout = MainLayoutView.class)

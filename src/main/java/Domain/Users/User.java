@@ -11,19 +11,20 @@ import java.util.concurrent.CompletableFuture;
 
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Integer id;
 
     @Column(nullable = false, unique = true)
     protected String username;
 
-    @Embedded
+    @Transient // ShoppingCart might need to be an entity or embedded if you want to persist it
     protected ShoppingCart shoppingCart;
 
-    @Column(name = "token")
+    @Transient
     protected String Token;
 
     public User(String username) {

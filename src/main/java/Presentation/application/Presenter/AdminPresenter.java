@@ -1,18 +1,15 @@
 package Presentation.application.Presenter;
 
-import Domain.OrderDTO;
-import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.AdminView;
 import Service.AdminService;
-import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,15 +18,15 @@ import java.util.Set;
 @Component
 public class AdminPresenter {
     AdminView view;
-    private final UserService userService; // Assuming you have a UserService
-    private final StoreService storeService;
-    private final AdminService adminService;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AdminService adminService;
     private final HttpServletRequest request;
 
     public AdminPresenter(HttpServletRequest request) {
-        this.userService = ServiceInitializer.getInstance().getUserService();
-        this.storeService = ServiceInitializer.getInstance().getStoreService();
-        this.adminService = ServiceInitializer.getInstance().getAdminService();
         this.request = request;
     }
 

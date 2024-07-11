@@ -1,69 +1,52 @@
 package Service;
-
-import Domain.Externals.InitFile.Configuration;
-import Domain.Externals.Payment.DefaultPaymentGateway;
-import Domain.Externals.Payment.ProxyPaymentGateway;
-import Domain.Externals.Suppliers.DefaultSupplySystem;
-import Domain.Externals.Suppliers.ProxySupplySystem;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ServiceInitializer {
-    private static ServiceInitializer instance = null;
+    private static ServiceInitializer instance;
 
-    private UserService userService;
-    private StoreService storeService;
-    private AdminService adminService;
-//    private PaymentService paymentService;
-    private OrderService orderService;
+    private final UserService userService;
+    private final StoreService storeService;
+    private final AdminService adminService;
+    private final OrderService orderService;
 
-    private ServiceInitializer() {
-        userService = new UserService();
-        storeService = new StoreService();
-        adminService = new AdminService();
-        orderService = new OrderService(new DefaultPaymentGateway(), new DefaultSupplySystem(), storeService);
-        userService.setStoreService(storeService);
-        userService.setAdminService(adminService);
-        storeService.setUserService(userService);
-        storeService.setAdminService(adminService);
-        adminService.setUserService(userService);
-        adminService.setStoreService(storeService);
-        adminService.setOrderService(orderService);
-        orderService.setUserService(userService);
-
-
+    @Autowired
+    public ServiceInitializer(@Lazy UserService userService, @Lazy StoreService storeService, @Lazy AdminService adminService, @Lazy OrderService orderService) {
+        this.userService = userService;
+        this.storeService = storeService;
+        this.adminService = adminService;
+        this.orderService = orderService;
+        instance = this;
     }
 
-    private ServiceInitializer(Configuration configuration) {
-        userService = new UserService();
-        storeService = new StoreService();
-        adminService = new AdminService();
-        //orderService = new OrderService(configuration.getPaymentGateway(), configuration.getSupplySystem());
-        userService.setStoreService(storeService);
-        userService.setAdminService(adminService);
-        storeService.setUserService(userService);
-        storeService.setAdminService(adminService);
-        adminService.setUserService(userService);
-        adminService.setStoreService(storeService);
-        adminService.setOrderService(orderService);
-        orderService.setUserService(userService);
-
-
+    @PostConstruct
+    private void init() {
+        setupServiceInteractions();
     }
-    public static ServiceInitializer getInstance(Configuration configuration) {
-        if (instance == null) {
-            instance = new ServiceInitializer();
-        }
-        return instance;
+
+    public static void reset() {
+        instance = null;
     }
+
     public static ServiceInitializer getInstance() {
-        if (instance == null) {
-            instance = new ServiceInitializer();
-        }
         return instance;
     }
 
+    private void setupServiceInteractions() {
+        userService.setStoreService(storeService);
+        userService.setAdminService(adminService);
+        storeService.setUserService(userService);
+        storeService.setAdminService(adminService);
+        adminService.setUserService(userService);
+        adminService.setStoreService(storeService);
+        adminService.setOrderService(orderService);
+        orderService.setUserService(userService);
+    }
 
+    // Getters for services
     public UserService getUserService() {
         return userService;
     }
@@ -78,9 +61,5 @@ public class ServiceInitializer {
 
     public OrderService getOrderService() {
         return orderService;
-    }
-
-    public static void reset() {
-        instance = null;
     }
 }

@@ -4,29 +4,42 @@ import Domain.OrderDTO;
 import Facades.AdminFacade;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class AdminService {
+    @Autowired
+    @Lazy
     private UserService userService;
+    @Autowired
+    @Lazy
     private StoreService storeService;
+    @Autowired
+    @Lazy
     private OrderService orderService;
-    private final AdminFacade adminFacade;
+    @Autowired
+    @Lazy
+    private AdminFacade adminFacade;
 
     public AdminService(){
-        adminFacade = new AdminFacade();
     }
 
-    public void setUserService(UserService userService) {
+    @Autowired
+    public void setUserService(@Lazy UserService userService) {
         this.userService = userService;
     }
-
-    public void setStoreService(StoreService storeService) {
+    @Autowired
+    public void setStoreService(@Lazy StoreService storeService) {
         this.storeService = storeService;
     }
-
-    public void setOrderService(OrderService orderService) {
+    @Autowired
+    public void setOrderService(@Lazy OrderService orderService) {
         this.orderService = orderService;
     }
 

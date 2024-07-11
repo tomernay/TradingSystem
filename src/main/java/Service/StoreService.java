@@ -9,27 +9,34 @@ import Facades.StoreFacade;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Service
 public class StoreService {
-    private final StoreFacade storeFacade;
-    private UserService userService;
-    private AdminService adminService;
+    @Autowired
+    private StoreFacade storeFacade;
+    @Autowired
+    private @Lazy UserService userService;
+    @Autowired
+    private @Lazy AdminService adminService;
 
-    public StoreService() {
-        storeFacade = new StoreFacade();
-    }
-
-    public void setUserService(UserService userService) {
+    @Autowired
+    public void setUserService(@Lazy UserService userService) {
         this.userService = userService;
     }
 
-    public void setAdminService(AdminService adminService) {
+    @Autowired
+    public void setAdminService(@Lazy AdminService adminService) {
         this.adminService = adminService;
     }
+
 
     /**
      * This method creates a new store

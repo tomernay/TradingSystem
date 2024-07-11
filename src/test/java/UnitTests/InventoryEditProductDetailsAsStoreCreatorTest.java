@@ -1,7 +1,6 @@
 package UnitTests;
 
 import Domain.Store.Inventory.Inventory;
-import Domain.Store.Inventory.ProductDTO;
 import Domain.Store.Store;
 import Domain.Users.Subscriber.Subscriber;
 import Service.ServiceInitializer;
@@ -9,7 +8,6 @@ import Service.StoreService;
 import Service.UserService;
 import Utilities.Response;
 import org.junit.jupiter.api.*;
-import java.util.ArrayList;
 
 public class InventoryEditProductDetailsAsStoreCreatorTest {
 

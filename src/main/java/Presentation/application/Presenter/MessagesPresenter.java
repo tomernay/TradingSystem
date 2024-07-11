@@ -2,26 +2,25 @@ package Presentation.application.Presenter;
 
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.MessagesList;
-import Service.ServiceInitializer;
 import Service.UserService;
 import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Queue;
 
 @Component
 public class MessagesPresenter {
 
     private MessagesList view;
-    UserService userService;
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
 
     public MessagesPresenter(HttpServletRequest request){
-        userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
     }
 

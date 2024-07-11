@@ -1,27 +1,36 @@
 package Domain.Users.Subscriber;
 
-import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
-
 import Domain.Users.User;
 import Utilities.Messages.NormalMessage;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 
+@Entity
+@Table(name = "subscribers")
 public class Subscriber extends User {
-    private final List<Integer> subscribedStores;
-    private final List<Message> messages;
-    private String password;
-    private String credit;
-    private final Map<Integer, String> storesRole;
 
-    public Subscriber(String username,String password) {
+    @Transient
+    private final List<Integer> subscribedStores;
+    @Transient
+    private final List<Message> messages;
+    @Column(nullable = true)
+    private String password;
+//    private String credit;
+    @Transient
+    private final Map<Integer, String> storesRole;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    public Subscriber(String username, String password) {
         super(username);
         this.subscribedStores = new ArrayList<>();
         this.messages = new ArrayList<>();
@@ -29,20 +38,16 @@ public class Subscriber extends User {
         this.storesRole = new HashMap<>();
     }
 
+    public Subscriber() {
+        super();
+        this.subscribedStores = new ArrayList<>();
+        this.messages = new ArrayList<>();
+        this.storesRole = new HashMap<>();
+    }
+
     public void addStore(Integer storeID) {
         subscribedStores.add(storeID);
     }
-
-
-//    public Response<String> messageResponse(boolean answer) {
-//        Message message = messages.poll();
-//        if (message == null) {
-//            SystemLogger.error("[ERROR] No messages to respond to.");
-//            return Response.error("No messages to respond to.", null);
-//        }
-//        Response<Message> response = message.response(answer);
-//        return Response.success(response.getMessage(), null);
-//    }
 
     public String getToken() {
         return Token;
@@ -52,37 +57,31 @@ public class Subscriber extends User {
         return super.getUsername();
     }
 
-    //yair added
-    public synchronized Response<Integer> addMessage(Message m){
-        Broadcaster.broadcast(m.getMessage(),username);
+    public synchronized Response<Integer> addMessage(Message m) {
+        Broadcaster.broadcast(m.getMessage(), username);
         if (m instanceof nominateOwnerMessage) {
             if (messages.stream().anyMatch(a -> a instanceof nominateOwnerMessage && ((nominateOwnerMessage) a).getStoreID().equals(((nominateOwnerMessage) m).getStoreID()))) {
                 SystemLogger.error("[ERROR] User already has a pending owner nomination message.");
                 return Response.error("User already has a pending owner nomination message.", null);
-            }
-            else {
+            } else {
                 messages.add(m);
                 SystemLogger.info("[SUCCESS] Owner nomination message successfully sent to: " + username);
                 return Response.success("Owner nomination message successfully sent to: " + username, m.getId());
             }
-        }
-        else if (m instanceof nominateManagerMessage) {
+        } else if (m instanceof nominateManagerMessage) {
             if (messages.stream().anyMatch(a -> a instanceof nominateManagerMessage && ((nominateManagerMessage) a).getStoreID().equals(((nominateManagerMessage) m).getStoreID()))) {
                 SystemLogger.error("[ERROR] User already has a pending manager nomination message.");
                 return Response.error("User already has a pending manager nomination message.", null);
-            }
-            else {
+            } else {
                 messages.add(m);
                 SystemLogger.info("[SUCCESS] Manager nomination message successfully sent to: " + username);
                 return Response.success("Manager nomination message successfully sent to: " + username, m.getId());
             }
-        }
-        else {
+        } else {
             messages.add(m);
             SystemLogger.info("[SUCCESS] Message successfully sent to: " + username);
             return Response.success("Message successfully sent to: " + username, null);
         }
-
     }
 
     public List<Message> getMessages() {
@@ -144,7 +143,7 @@ public class Subscriber extends User {
     }
 
     public void setUsername(String username) {
-        super.setUsername(username);
+        setUsername(username);
     }
 
     public Response<String> isOwner() {
@@ -193,5 +192,13 @@ public class Subscriber extends User {
     public Response<String> sendMessage(String message) {
         messages.add(new NormalMessage(message));
         return Response.success("[SUCCESS] Message sent successfully.", null);
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

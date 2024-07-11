@@ -3,13 +3,11 @@ package Presentation.application.Presenter.Store;
 import Domain.OrderDTO;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.StorePurchaseHistoryAdmin;
-import Service.AdminService;
-import Service.OrderService;
-import Service.ServiceInitializer;
-import Service.UserService;
+import Service.*;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import Presentation.application.View.Store.SubscriberPurchaseHistoryAdmin;
 
@@ -20,16 +18,17 @@ import java.util.List;
 @Component
 public class SubscriberPurchaseHistoryAdminPresenter {
     private SubscriberPurchaseHistoryAdmin subscriberPurchaseHistoryAdmin;
-    private final OrderService orderService;
-    private final UserService userService;
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
-    private final AdminService adminService;
+    @Autowired
+    private AdminService adminService;
 
     public SubscriberPurchaseHistoryAdminPresenter(HttpServletRequest request) {
-        orderService = ServiceInitializer.getInstance().getOrderService();
-        userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
-        adminService = ServiceInitializer.getInstance().getAdminService();
     }
 
     public void attachView(SubscriberPurchaseHistoryAdmin view) {

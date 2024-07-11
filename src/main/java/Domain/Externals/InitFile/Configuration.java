@@ -7,7 +7,10 @@ import Domain.Externals.Suppliers.DefaultSupplySystem;
 import Domain.Externals.Suppliers.ProxySupplySystem;
 import Domain.Externals.Suppliers.SupplySystem;
 import Domain.Users.Subscriber.Subscriber;
-import Service.OrderService;
+import Facades.AdminFacade;
+import Facades.OrderFacade;
+import Facades.StoreFacade;
+import Facades.UserFacade;
 import Service.ServiceInitializer;
 import Service.StoreService;
 import Service.UserService;
@@ -15,17 +18,36 @@ import Utilities.Response;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+@org.springframework.context.annotation.Configuration
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = {"Domain"})
 public class Configuration {
     private PaymentGateway paymentGateway;
     private SupplySystem supplySystem;
     private String adminUser;
     private String adminPassword;
     private List<FunctionCall> initSequence;
+
+    @Autowired
+    @Lazy
+    private UserService userService;
+
+    @Autowired
+    @Lazy
+    private StoreService storeService;
+
+    public Configuration() {
+    }
 
     public Configuration(JsonNode jsonNode) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
@@ -35,19 +57,19 @@ public class Configuration {
             paymentGateway = mapper.treeToValue(paymentServiceNode.get("ProxyPaymentGateway"), ProxyPaymentGateway.class);
         } else if (paymentServiceNode.has("DefaultPaymentGateway")) {
             paymentGateway = mapper.treeToValue(paymentServiceNode.get("DefaultPaymentGateway"), DefaultPaymentGateway.class);
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("Invalid payment service configuration");
         }
+
         JsonNode supplierServiceNode = jsonNode.get("supplier service");
         if (supplierServiceNode.has("ProxySupplyGateway")) {
             supplySystem = mapper.treeToValue(supplierServiceNode.get("ProxySupplyGateway"), ProxySupplySystem.class);
         } else if (supplierServiceNode.has("DefaultSupplySystem")) {
             supplySystem = mapper.treeToValue(supplierServiceNode.get("DefaultSupplySystem"), DefaultSupplySystem.class);
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("Invalid supplier service configuration");
         }
+
         JsonNode adminDetails = jsonNode.get("Admin details");
         adminUser = adminDetails.get("user").asText();
         adminPassword = adminDetails.get("password").asText();
@@ -96,24 +118,37 @@ public class Configuration {
         }
     }
 
+    @Bean(name = "UserFacade")
+    public UserFacade userFacade() {
+        return new UserFacade();
+    }
 
-    public static void init(JsonNode configNode) throws JsonProcessingException {
+    @Bean(name = "StoreFacade")
+    public StoreFacade storeFacade() {
+        return new StoreFacade();
+    }
+
+    @Bean(name = "AdminFacade")
+    public AdminFacade adminFacade() {
+        return new AdminFacade();
+    }
+
+    @Bean(name = "OrderFacade")
+    public OrderFacade orderFacade() {
+        return new OrderFacade();
+    }
+
+    public void init(JsonNode configNode) throws JsonProcessingException {
         Configuration config = new Configuration(configNode);
         ServiceInitializer.reset();
-        ServiceInitializer serviceInitializer = ServiceInitializer.getInstance();
-       UserService userService = serviceInitializer.getUserService();
-      StoreService storeService = serviceInitializer.getStoreService();
-     OrderService orderService = serviceInitializer.getOrderService();
-        Subscriber subscriber=null;
+
+        Subscriber subscriber = null;
         for (FunctionCall functionCall : config.getInitSequence()) {
             try {
-
-
                 JsonNode params = functionCall.getParameters();
                 switch (functionCall.getFunction()) {
                     case "register":
                         userService.register(params.get("username").asText(), params.get("password").asText());
-
                         break;
                     case "loginAsSubscriber":
                         userService.loginAsSubscriber(params.get("username").asText(), params.get("password").asText());
@@ -138,8 +173,7 @@ public class Configuration {
                                 params.get("description").asText(),
                                 params.get("price").asDouble(),
                                 params.get("quantity").asInt(),
-                               categories
-                                ,
+                                categories,
                                 params.get("ownerUsername").asText(),
                                 subscriber.getToken()
                         );
@@ -169,7 +203,6 @@ public class Configuration {
                     case "ownerNominationResponse":
                         userService.ownerNominationResponse(params.get("requestId").asInt(), params.get("newOwnerUsername").asText(), params.get("accepted").asBoolean(), "Password123!"); // Assuming all passwords are the same
                         break;
-
                     case "addProductToShoppingCart":
                         userService.addProductToShoppingCart(
                                 params.get("storeIndex").asInt(),
@@ -183,20 +216,11 @@ public class Configuration {
                         userService.logoutAsSubscriber(params.get("username").asText());
                         break;
                     default:
-                       throw new IllegalArgumentException();
-
+                        throw new IllegalArgumentException();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-           // throw new IllegalArgumentException("Illegal external file");
             }
         }
     }
-
-    public static void main(String[] args) throws JsonProcessingException {
-        ProxyPaymentGateway proxyPaymentGateway=new ProxyPaymentGateway();
-        System.out.println(proxyPaymentGateway);
-    }
-
 }

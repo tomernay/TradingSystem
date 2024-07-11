@@ -3,12 +3,12 @@ package Presentation.application.Presenter.Store;
 import Presentation.application.CookiesHandler;
 import Presentation.application.View.Store.StorePurchaseHistory;
 import Service.OrderService;
-import Service.ServiceInitializer;
 import Domain.OrderDTO;
 import Service.UserService;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 public class StorePurchaseHistoryPresenter {
     private StorePurchaseHistory storePurchaseHistory;
-    private final OrderService orderService;
-    private final UserService userService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private UserService userService;
     private final HttpServletRequest request;
 
     public StorePurchaseHistoryPresenter(HttpServletRequest request) {
-        orderService = ServiceInitializer.getInstance().getOrderService();
-        userService = ServiceInitializer.getInstance().getUserService();
         this.request = request;
     }
 
