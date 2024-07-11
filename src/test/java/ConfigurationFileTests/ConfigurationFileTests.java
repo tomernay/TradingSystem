@@ -13,19 +13,17 @@ import org.junit.Test;
 import java.io.File;
 
 public class ConfigurationFileTests {
-
    static ServiceInitializer serviceInitializer;
     @BeforeClass
     public static void setUp() throws Exception {
-
-            Configuration configuration = null;
 
                 // Read the configuration file
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/proxyConfig.json"));
 
                 // Initialize the Configuration object
-                Configuration.init(configNode);
+                Configuration configuration = new Configuration(configNode);
+                configuration.init(configNode);
                 serviceInitializer=ServiceInitializer.getInstance();
 
             // Pass the configuration to SpringApplication.run
@@ -53,7 +51,7 @@ public class ConfigurationFileTests {
             JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/p.json"));
 
             // Initialize the Configuration object
-            Configuration.init(configNode);
+            configuration.init(configNode);
             serviceInitializer = ServiceInitializer.getInstance();
             OrderService orderService = ServiceInitializer.getInstance().getOrderService();
             Assert.assertTrue(false);
@@ -76,7 +74,7 @@ public class ConfigurationFileTests {
             JsonNode configNode = mapper.readTree(new File("src/main/java/Domain/Externals/InitFile/FailedTestFile.json"));
 
             // Initialize the Configuration object
-            Configuration.init(configNode);
+            configuration.init(configNode);
             serviceInitializer = ServiceInitializer.getInstance();
             OrderService orderService = ServiceInitializer.getInstance().getOrderService();
             Assert.assertTrue(false);

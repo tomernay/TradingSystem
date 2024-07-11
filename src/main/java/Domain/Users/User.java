@@ -9,22 +9,22 @@ import jakarta.persistence.*;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-//@Entity
-//@Table(name = "users")
-//@Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected Integer id;
 
-//    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     protected String username;
 
-//    @Transient // ShoppingCart might need to be an entity or embedded if you want to persist it
+    @Transient // ShoppingCart might need to be an entity or embedded if you want to persist it
     protected ShoppingCart shoppingCart;
 
+    @Transient
     protected String Token;
 
     public User(String username) {
