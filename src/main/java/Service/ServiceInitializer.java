@@ -1,30 +1,30 @@
 package Service;
-
-import Domain.Externals.InitFile.Configuration;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class ServiceInitializer {
-    private static ServiceInitializer instance = null;
+    private static ServiceInitializer instance;
+
+    private final UserService userService;
+    private final StoreService storeService;
+    private final AdminService adminService;
+    private final OrderService orderService;
 
     @Autowired
-    private @Lazy UserService userService;
-    @Autowired
-    private @Lazy StoreService storeService;
-    @Autowired
-    private @Lazy AdminService adminService;
-    @Autowired
-    private @Lazy OrderService orderService;
+    public ServiceInitializer(@Lazy UserService userService, @Lazy StoreService storeService, @Lazy AdminService adminService, @Lazy OrderService orderService) {
+        this.userService = userService;
+        this.storeService = storeService;
+        this.adminService = adminService;
+        this.orderService = orderService;
+        instance = this;
+    }
 
     @PostConstruct
     private void init() {
         setupServiceInteractions();
-    }
-
-    public ServiceInitializer(){
     }
 
     public static void reset() {

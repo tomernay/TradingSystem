@@ -7,9 +7,7 @@ import Utilities.Response;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import java.sql.Date;
-import java.util.HashMap;
 
 public class AdminTests {
 

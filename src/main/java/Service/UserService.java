@@ -25,18 +25,16 @@ public class UserService {
 
     @Autowired
     private UserFacade userFacade;
-    @Autowired
-    private @Lazy StoreService storeService;
-    @Autowired
-    private @Lazy AdminService adminService;
+    private StoreService storeService;
+    private AdminService adminService;
 
-    // Setters for dependencies
     @Autowired
-    public void setStoreService(@Lazy StoreService storeService) {
+    public void setStoreService(StoreService storeService) {
         this.storeService = storeService;
     }
+
     @Autowired
-    public void setAdminService(@Lazy AdminService adminService) {
+    public void setAdminService(AdminService adminService) {
         this.adminService = adminService;
     }
 
@@ -46,6 +44,7 @@ public class UserService {
      * This method connects a guest to the system.
      * @return If successful, returns a success message & the token. <br> If not, returns an error message.
      */
+    @Transactional
     public synchronized Response<List<String>> loginAsGuest() {
         return userFacade.loginAsGuest();
     }
@@ -54,6 +53,7 @@ public class UserService {
      * This method disconnects a guest from the system.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public synchronized Response<String> logoutAsGuest(String username) {
         return userFacade.logoutAsGuest(username);
     }
@@ -64,6 +64,7 @@ public class UserService {
      * @param password The password of the subscriber.
      * @return If successful, returns a success message & the token. <br> If not, returns an error message.
      */
+    @Transactional
     public synchronized Response<String> loginAsSubscriber(String username, String password) {
         SystemLogger.info("[START] User: " + username + " is trying to login");
         return userFacade.loginAsSubscriber(username, password);
@@ -74,6 +75,7 @@ public class UserService {
      * @param username The username of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public synchronized Response<String> logoutAsSubscriber(String username) {
         SystemLogger.info("[START] User: " + username + " is trying to logout");
         return userFacade.logoutAsSubscriber(username);
@@ -91,13 +93,7 @@ public class UserService {
         return userFacade.register(username, password);
     }
 
-
-
-
-
-
     // Nomination Methods
-
     /**
      * This method sends an owner nomination request to a subscriber.
      * @param storeID The store ID of the store.
@@ -106,6 +102,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Integer> SendOwnerNominationRequest(Integer storeID, String nominatorUsername, String nomineeUsername, String token) {
         SystemLogger.info("[START] User: " + nominatorUsername + " is trying to make " + nomineeUsername + " a store owner");
         if(isValidToken(token,nominatorUsername)) {
@@ -139,6 +136,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Integer> SendManagerNominationRequest(Integer storeID, String nominatorUsername, String nomineeUsername, List<String> permissions, String token) {
         SystemLogger.info("[START] User: " + nominatorUsername + " is trying to make " + nomineeUsername + " a store manager");
         if(isValidToken(token,nominatorUsername)) {
@@ -171,6 +169,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> ownerNominationResponse(Integer messageID, String username, Boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a store owner nomination");
         if(isValidToken(token,username)) {
@@ -197,6 +196,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> managerNominationResponse(Integer messageID, String username, Boolean answer, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to respond to a store manager nomination");
         if(isValidToken(token,username)) {
@@ -223,6 +223,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> waiveOwnership(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to waive his ownership of the store");
         if(isValidToken(token,username)) {
@@ -241,13 +242,7 @@ public class UserService {
         SystemLogger.error("[ERROR] User: " + username + " tried to waive his ownership of the store but the token was invalid");
         return Response.error("Invalid token",null);
     }
-
-
-
-
-
     // Shopping Cart Products Management
-
 
     /**
      * This method adds a product to the shopping cart.
@@ -257,6 +252,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> addProductToShoppingCart(Integer storeID, Integer productID, Integer quantity, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to add a product to the shopping cart");
         if (isValidToken(token, username)) {
@@ -285,6 +281,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> removeProductFromShoppingCart(Integer storeID, Integer productID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to remove a product from the shopping cart");
         if (isValidToken(token, username)) {
@@ -306,6 +303,7 @@ public class UserService {
      * @param quantity The quantity of the product.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> updateProductInShoppingCart(Integer storeID, Integer productID, String username, String token, int quantity) {
         SystemLogger.info("[START] User: " + username + " is trying to update a product in the shopping cart");
         if (isValidToken(token, username)) {
@@ -321,6 +319,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> clearCart(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to clear the shopping cart");
         if (isValidToken(token, username)) {
@@ -339,6 +338,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> updateProductQuantityInCart(Integer storeID, Integer productId, Integer quantity, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to update the quantity of a product in the shopping cart");
         if (isValidToken(token, username)) {
@@ -348,14 +348,7 @@ public class UserService {
         return Response.error("invalid token", null);
     }
 
-
-
-
-
-
     // Shopping Cart - Purchase Process
-
-
 
     /**
      * This method gets the shopping cart contents.
@@ -363,6 +356,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message & map of {storeID, {productID, quantity}}. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to get the shopping cart contents");
         if (isValidToken(token, username)) {
@@ -379,6 +373,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message & the price. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Double> calculateShoppingCartPrice(String username, String token){
         SystemLogger.info("[START] User: " + username + " is trying calculated  shopping cart contents");
         if (isValidToken(token, username)) {
@@ -403,6 +398,7 @@ public class UserService {
      * @param isOverEighteen
      * @return
      */
+    @Transactional
     public Response<List<ProductDTO>> lockShoppingCart(String username, String token, Boolean isOverEighteen) {
         SystemLogger.info("[START] User: " + username + " is trying to lock the shopping cart");
         if (isValidToken(token, username)) {
@@ -433,6 +429,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> RemoveOrderFromStoreAfterSuccessfulPurchase(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
@@ -448,6 +445,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> ResetCartAfterPurchase(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
@@ -464,6 +462,7 @@ public class UserService {
      * @param token The token of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> unlockProductsBackToStore(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to release the shopping cart");
         if (isValidToken(token, username)) {
@@ -480,6 +479,7 @@ public class UserService {
      * @param username The username of the subscriber.
      * @param token The token of the subscriber.
      */
+    @Transactional
     public void purchaseProcessTimer(String username, String token) {
         CompletableFuture<String> future = userFacade.startPurchaseTimer(username);
 
@@ -494,16 +494,17 @@ public class UserService {
      * This method interrupts the purchase process timer.
      * @param username The username of the subscriber.
      */
+    @Transactional
     public void purchaseProcessInterrupt(String username) {
         userFacade.interruptPurchaseTimer(username);
     }
-
     /**
      * This method calculates the discount price for a shopping cart.
      * @param username The username of the subscriber.
      * @param token The token of the subscriber.
      * @return If successful, returns a success message & the discounts. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Double> CalculateDiscounts(String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to calculate the discounts");
         if (isValidToken(token, username)) {
@@ -528,6 +529,7 @@ public class UserService {
      * @param username The username of the subscriber.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> unlockFlagShoppingCart(String username) {
         SystemLogger.info("[START] User: " + username + " is trying to unlock the shopping cart");
         return userFacade.unlockFlagShoppingCart(username);
@@ -548,18 +550,11 @@ public class UserService {
      * @param user The username of the subscriber.
      * @return If successful, returns a success message & the flag status. <br> If not, returns an error message.
      */
+    @Transactional
     public boolean isInPurchaseProcess(String user) {
         return userFacade.isInPurchaseProcess(user);
     }
-
-
-
-
-
-
-
     // Message Methods
-
 
     public Response<String> sendMessage(String username, String message) {
         return userFacade.sendMessage(username, message);
@@ -572,6 +567,7 @@ public class UserService {
      * @param storeName The store name of the store.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeName) {
         return userFacade.sendCloseStoreNotification(subscriberNames, storeName);
     }
@@ -582,6 +578,7 @@ public class UserService {
      * @param storeName The store ID of the store.
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeName) {
         return userFacade.sendReopenStoreNotification(subscriberNames, storeName);
     }
@@ -591,13 +588,10 @@ public class UserService {
      * @param username the user to get the messages for
      * @return If successful, returns a success message & the messages. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<List<Message>> getMessages(String username){
         return userFacade.getMessages(username);
     }
-
-
-
-
 
 
     // User Existence and Role Methods
@@ -627,6 +621,7 @@ public class UserService {
      * @param token The token of the requesting subscriber.
      * @return If successful, returns a success message & map of {username, role}. <br> If not, returns an error message.
      */
+    @Transactional
     public synchronized Response<Map<String, String>> requestEmployeesStatus(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to request the employees status of the store");
         if (isValidToken(token, username)) {
@@ -651,6 +646,7 @@ public class UserService {
      * @param token The token of the requesting subscriber.
      * @return If successful, returns a success message & map of {username, permissions}. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Map<String, List<String>>> requestManagersPermissions(Integer storeID, String username, String token) {
         SystemLogger.info("[START] User: " + username + " is trying to request the managers permissions of the store");
         if (isValidToken(token, username)) {
@@ -671,6 +667,7 @@ public class UserService {
      * @param creatorUsername The username of the subscriber.
      * @param storeID The store ID of the store.
      */
+    @Transactional
     public void addCreatorRole(String creatorUsername, Integer storeID) {
         userFacade.addCreatorRole(creatorUsername, storeID);
     }
@@ -680,6 +677,7 @@ public class UserService {
      * @param username The username of the subscriber.
      * @return If successful, returns a success message & map of {storeID - StoreName, Role}. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Map<Integer, String>> getStoresRole(String username) {
         Map<Integer, String> storesRole = userFacade.getStoresRole(username).getData();
         if (storesRole == null) {
@@ -694,7 +692,7 @@ public class UserService {
     // User's Details Change Methods
 
 
-
+    @Transactional
     public Response<String> changePassword(String username, String oldPassword, String newPassword, String token) {
         if(isValidToken(token,username)){
             userFacade.changePassword(username, oldPassword, newPassword);
@@ -703,7 +701,7 @@ public class UserService {
         SystemLogger.error("[ERROR] User: " + username + " tried to change his password but the token was invalid");
         return Response.error("Invalid token",null);
     }
-
+    @Transactional
     public Response<String> changeUsername(String username, String newUsername, String token) {
         if(isValidToken(token,username)){
             Response<String> res = userFacade.changeUsername(username, newUsername);
@@ -713,12 +711,7 @@ public class UserService {
         return Response.error("Invalid token",null);
     }
 
-
-
-
-
-
-
+    @Transactional
     public boolean isValidToken(String token, String currentUsername) {
         return userFacade.isValidToken(token, currentUsername);
     }
@@ -728,6 +721,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public Response<String> removeMessage(String username, String token, Integer messageID) {
         if (!isValidToken(token, username)) {
             SystemLogger.error("[ERROR] User: " + username + " tried to remove a message but the token was invalid");
@@ -736,7 +730,7 @@ public class UserService {
         return userFacade.removeMessage(username, messageID);
     }
 
-
+    @Transactional
     public Response<Integer> getUnreadMessagesCount(String username, String token) {
         if (!isValidToken(token, username)) {
             SystemLogger.error("[ERROR] User: " + username + " tried to get the unread messages count but the token was invalid");
@@ -744,7 +738,7 @@ public class UserService {
         }
         return userFacade.getUnreadMessagesCount(username);
     }
-
+    @Transactional
     public Response<Set<String>> getAllSubscribersUsernames(String username, String token) {
         if(isValidToken(token,username)){
             return userFacade.getAllSubscribersUsernames();

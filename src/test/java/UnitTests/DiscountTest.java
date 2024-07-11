@@ -10,23 +10,28 @@ import Utilities.Response;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class DiscountTest {
 
-    ServiceInitializer serviceInitializer;
-    StoreService storeService;
-    UserService userService;
+    @Autowired
+    private ServiceInitializer serviceInitializer;
+    @Autowired
+    private StoreService storeService;
+    @Autowired
+    private UserService userService;
+
     Subscriber buyer, owner;
     Store store1, store2;
 
     @Before
     public void init() {
-        ServiceInitializer.reset();
-        serviceInitializer = ServiceInitializer.getInstance();
-        storeService = serviceInitializer.getStoreService();
-        userService = serviceInitializer.getUserService();
         userService.register("yair12312", "Password123!");
         userService.register("newOwner", "Password123!");
         userService.loginAsSubscriber("yair12312", "Password123!");
@@ -132,5 +137,4 @@ public class DiscountTest {
         Response<List<DiscountDTO>> allDiscount1 = storeService.getDiscountsFromStore(0,"newOwner",owner.getToken());
         Assert.assertEquals(1, allDiscount1.getData().size());;
     }
-
 }
