@@ -1,33 +1,42 @@
 package Domain.Store.Inventory;
 import Utilities.Response;
 import Utilities.SystemLogger;
-
-//import javax.persistence.Entity;
-//import javax.persistence.Id;
-//import javax.persistence.Table;
+import jakarta.persistence.*;
 
 
 /**
  * Represents a product in the store inventory.
  * Each product has a unique product ID and is associated with a store.
  */
-//@Entity
-//@Table(name = "products")
+@Entity
+@Table(name = "products")
 public class Product {
-//    @Id
-    private Integer storeID;     // The ID of the store to which the product belongs,
+    @Column(name = "store_id")
+    private Integer storeID;     // The ID of the store to which the product belongs
+
+    @Column(name = "store_name")
     private String storeName;   // The name of the store
+
+    @Id
+    @Column(name = "product_id")
     private Integer productID;  // The unique ID of the product
+
+    @Column(name = "product_name")
     private String name;        // The name of the product
+
+    @Column(name = "product_desc")
     private String desc;        // The description of the product
+
+    @Column(name = "product_price")
     private Double price;          // The price of the product
+
+    @Column(name = "product_quantity")
     private Integer quantity;       // The quantity of the product available in the inventory
-    //private ArrayList<String> categories; // The category that a product is related to
 
     // Default constructor for JPA
-        protected Product() {
-            // for JPA / hibernate
-        }
+    protected Product() {
+        // for JPA / hibernate
+    }
 
 
     /**
@@ -45,7 +54,7 @@ public class Product {
         this.desc = builder.desc;
         this.price = builder.price;
         this.quantity = builder.quantity;
-      //  this.categories = builder.categories;
+        //  this.categories = builder.categories;
     }
 
     /**
@@ -60,7 +69,7 @@ public class Product {
         private String desc;
         private Double price;
         private Integer quantity;
-    //    public ArrayList<String> categories;
+        //    public ArrayList<String> categories;
 
         public Builder(Integer storeID, String name, Integer productID) {
             this.name = name;
@@ -197,7 +206,7 @@ public class Product {
 
 
     public synchronized Response<String> addQuantity(int amountToAdd) {
-       return setQuantity(this.quantity + amountToAdd);
+        return setQuantity(this.quantity + amountToAdd);
     }
 
     @Override

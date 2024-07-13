@@ -4,9 +4,8 @@ import Utilities.SystemLogger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import Utilities.Response;
+import jakarta.persistence.*;
 
-//import javax.persistence.Entity;
-//import javax.persistence.Table;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,19 +14,36 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Represents a store's inventory.
  * Each store has an inventory that contains a list of products.
  */
-public class Inventory {
-    private final AtomicInteger productIDGenerator = new AtomicInteger(1);
-    private final Integer storeID; //Inventory for specific store
-    public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
-    public final ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
-    private final ConcurrentHashMap<Product, Integer> lockedProducts; // <Product, Quantity>
 
-    // Constructor
+@Entity
+@Table(name = "inventories")
+public class Inventory {
+    @Transient
+    private final AtomicInteger productIDGenerator = new AtomicInteger(1);
+
+    @Id
+    @Column(name = "storeID")
+    private Integer storeID; //Inventory for specific store
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", referencedColumnName = "storeID", foreignKey = @ForeignKey(name = "FK_product_inventory"))
+    public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
+
+    @Transient
+    public  ConcurrentHashMap<String, ArrayList<Integer>> categories; // <Category:String, <ArrayList<ProductID>>
+    @Transient
+    private  ConcurrentHashMap<Product, Integer> lockedProducts; // <Product, Quantity>
+
+
+
     public Inventory(Integer storeID) {
         this.storeID = storeID;
         this.productsList = new ConcurrentHashMap<>();
         this.categories = new ConcurrentHashMap<>();
         this.lockedProducts = new ConcurrentHashMap<>();
+    }
+
+    public Inventory() {
     }
 
     public Integer getStoreID() {
@@ -789,27 +805,3 @@ public class Inventory {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,5 +1,6 @@
 package Facades;
 
+import Domain.Repo.IStoreRepository;
 import Domain.Repo.StoreRepository;
 import Domain.Store.Conditions.ConditionDTO;
 import Domain.Store.Discounts.TYPE;
@@ -25,6 +26,8 @@ import java.util.Set;
 public class StoreFacade {
     @Autowired
     private StoreRepository storeRepository;
+    @Autowired
+    private IStoreRepository iStoreRepository;
 
     public boolean isStoreManager(Integer storeID, String currentUsername) {
         Store store = storeRepository.getActiveStore(storeID);
@@ -153,6 +156,7 @@ public class StoreFacade {
         try {
             Integer storeId = storeRepository.getStoreID();
             Store store = new Store(storeId, storeName, creator);
+            iStoreRepository.save(store);
             Inventory inventory = new Inventory(storeId);
             store.setInventory(inventory);
             storeRepository.addActiveStore(store);

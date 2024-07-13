@@ -12,7 +12,6 @@
     { "function": "register", "parameters": { "username": "u4", "password": "Password123!" } },
     { "function": "register", "parameters": { "username": "u5", "password": "Password123!" } },
     { "function": "register", "parameters": { "username": "u6", "password": "Password123!" } },
-    { "function": "loginAsSubscriber", "parameters": { "username": "u2", "password": "Password123!" } },
     { "function": "addStore", "parameters": { "storeName": "s1", "ownerUsername": "u2" } },
     { "function": "addProductToStore", "parameters": { "storeIndex": 0, "productName": "Bamba", "description": "Bamba", "price": 30, "quantity": 20, "categories": ["snacks"], "ownerUsername": "u2" } },
     { "function": "SendManagerNominationRequest", "parameters": { "storeIndex": 0, "ownerUsername": "u2", "managerUsername": "u3", "permissions": ["MANAGE_PRODUCTS"] } },

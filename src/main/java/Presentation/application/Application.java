@@ -21,9 +21,9 @@ import java.sql.Statement;
 
 @Push
 @SpringBootApplication
-@ComponentScan(basePackages = {"Service", "Domain", "Presentation"})
+@ComponentScan(basePackages = {"Service", "Domain", "Presentation", "Domain.Store"})
 @Theme(value = "my-app")
-@EntityScan(basePackages = "Domain.Users.Subscriber,Domain.Users.User")
+@EntityScan(basePackages = "Domain")
 public class Application implements AppShellConfigurator {
     private static final String DATABASE_NAME = "TradingSystem";
     private static final String USERNAME = "admin";
@@ -49,11 +49,13 @@ public class Application implements AppShellConfigurator {
             // Select the database
             stmt.executeUpdate("USE " + DATABASE_NAME);
 
+            // Reset the auto-increment value of the ID column to 1
+            stmt.executeUpdate("ALTER TABLE subscribers AUTO_INCREMENT = 1");
+
             // Delete all subscribers
             stmt.executeUpdate("DELETE FROM subscribers");
 
-            // Reset the auto-increment value of the ID column to 1
-            stmt.executeUpdate("ALTER TABLE subscribers AUTO_INCREMENT = 1");
+
 
             System.out.println("Subscribers table has been reset successfully, including the ID column.");
 

@@ -10,31 +10,42 @@ import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Messages.Message;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import jakarta.persistence.*;
 
-
-//import javax.persistence.Entity;
-//import javax.persistence.Id;
-//import javax.persistence.Table;
-//import javax.persistence.Transient;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//@Entity
-//@Table(name = "stores")
+@Entity
+@Table(name = "stores")
 public class Store {
 
-    //    @Id
+    @Id
+    @Column(name = "storeID", nullable = false, unique = true)
     private Integer storeID;
+
+    @Column(name = "store_name", nullable = false)
     private String storeName;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "storeID", referencedColumnName = "storeID", foreignKey = @ForeignKey(name = "FK_inventory_store"))
     private Inventory inventory;
+
+    @Transient
     private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
+    @Transient
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
+    @Transient
     private Map<String, List<String>> nominationGraph;
+    @Transient
     private Map<String, String> reverseNominationMap;
-    private Map<Integer, Discount> discounts = new HashMap<>();///
+    @Transient
+    private Map<Integer, Discount> discounts = new HashMap<>();
+    @Transient
     private Map<Integer, Condition> policies = new HashMap<>();
+    @Transient
     private final AtomicInteger productIDGeneratorPolicy = new AtomicInteger(1);
+    @Transient
     private final AtomicInteger productIDGeneratorDiscount = new AtomicInteger(1);
 
 
@@ -851,4 +862,3 @@ public class Store {
 
     }
 }
-

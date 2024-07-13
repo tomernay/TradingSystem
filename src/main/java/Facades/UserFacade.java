@@ -2,6 +2,7 @@ package Facades;
 
 import Domain.Externals.Security.PasswordEncoderUtil;
 import Domain.Externals.Security.TokenHandler;
+import Domain.Repo.IStoreRepository;
 import Domain.Repo.IUserRepository;
 import Domain.Repo.UserRepository;
 import Domain.Users.Subscriber.Subscriber;
@@ -58,14 +59,14 @@ public class UserFacade {
         return Response.success("You signed out as a GUEST", null);
     }
 
-    public Response<String> loginAsSubscriber(String username, String password){
-        // First, attempt to find the subscriber by username only
+    public Response<String> loginAsSubscriber(String username, String password) {
         Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
-            // Then, compare the provided password with the hashed password stored in the database
             if (PasswordEncoderUtil.matches(password, subscriber.getPassword())) {
                 String token = subscriber.generateToken();
+                subscriber.setToken(token); // Ensure token is stored in the subscriber
                 Boolean answer = userRepository.addLoggedIn(username);
+                iUserRepository.save(subscriber);
                 if (!answer) {
                     SystemLogger.error("[ERROR] User " + username + " is already logged in");
                     return Response.error("User is already logged in", null);
@@ -100,6 +101,7 @@ public class UserFacade {
         if (answer) {
             // Reset the token or any other logout related operations
             subscriber.resetToken();
+            iUserRepository.save(subscriber);
             SystemLogger.info("[SUCCESS] User " + username + " logged out successfully");
             return Response.success("You signed out as a SUBSCRIBER", null);
         } else {
@@ -333,6 +335,7 @@ public class UserFacade {
                     subscriber.setUsername(newUsername);
                     String token = subscriber.generateToken();
                     userRepository.addSubscriber(subscriber);
+                    iUserRepository.save(subscriber);
                     SystemLogger.info("[SUCCESS] Username for user " + username + " changed successfully to " + newUsername);
                     return Response.success("Username changed successfully", token);
                 }

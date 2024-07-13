@@ -2,9 +2,8 @@ package Domain.Users.Subscriber.Cart;
 
 import Utilities.Response;
 import Utilities.SystemLogger;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import org.hibernate.engine.internal.Cascade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,15 +11,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-@Embeddable
+@Entity
 public class ShoppingCart {
 
-    @OneToMany
-    private final List<Basket> baskets = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "basket_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_basket_shoppingCart"))
+    private List<Basket> baskets;
     boolean inPurchaseProcess = false;
     private transient ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private transient ScheduledFuture<?> future;
     private transient CompletableFuture<String> purchaseFuture;
+
 
     public List<Basket> getBaskets() {
         return baskets;

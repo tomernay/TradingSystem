@@ -12,6 +12,7 @@ import Utilities.SystemLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class StoreService {
      * @param token the token of the creator
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
+    @Transactional
     public Response<Integer> addStore(String storeName, String creatorUsername, String token) {
         SystemLogger.info("[START] User: " + creatorUsername + " is trying to create a store with name: " + storeName);
         if (userService.isValidToken(token, creatorUsername)) {

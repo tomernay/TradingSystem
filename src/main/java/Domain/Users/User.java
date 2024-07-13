@@ -5,6 +5,7 @@ import Domain.Users.Subscriber.Cart.ShoppingCart;
 import Utilities.Response;
 import Utilities.SystemLogger;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -21,8 +22,9 @@ public class User {
     @Column(nullable = false, unique = true)
     protected String username;
 
-    @Transient // ShoppingCart might need to be an entity or embedded if you want to persist it
-    protected ShoppingCart shoppingCart;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "shopping_cart_id", foreignKey = @ForeignKey(name = "FK_shoppingCart_user"))
+    private ShoppingCart shoppingCart;
 
     @Transient
     protected String Token;

@@ -2,22 +2,20 @@ package Domain.Users.Subscriber.Cart;
 
 import Utilities.Response;
 import Utilities.SystemLogger;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Entity
+@Table(name = "baskets")
 public class Basket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Integer storeID;
 
     @ElementCollection

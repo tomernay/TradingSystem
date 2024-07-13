@@ -16,6 +16,9 @@ import java.util.*;
 @Entity
 @Table(name = "subscribers")
 public class Subscriber extends User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     @Transient
     private final List<Integer> subscribedStores;
@@ -25,9 +28,6 @@ public class Subscriber extends User {
     private String password;
     @Transient
     private final Map<Integer, String> storesRole;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
 
     public Subscriber(String username, String password) {
         super(username);
