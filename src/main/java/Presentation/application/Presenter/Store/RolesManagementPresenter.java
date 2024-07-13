@@ -155,4 +155,9 @@ public class RolesManagementPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         return userService.isValidToken(token, username);
     }
+
+    public boolean isSuspended() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isSuspended(username);
+    }
 }

@@ -1103,18 +1103,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     private void shoppingCart() {
         // Navigate to the shopping cart page
         Button cart = new Button("", e -> {
-            getUI().ifPresent(ui -> ui.navigate("shopping-cart"));
+            // Define your condition here
+            String username = presenter.getUserName();
+            boolean conditionMet = presenter.isSuspended(username);
+
+            if (conditionMet) {
+                getUI().ifPresent(ui -> ui.navigate("shopping-cart"));
+            } else {
+                // Optionally, handle the case when the condition is not met
+                Notification.show("You're suspended, therefor can't access the shopping cart.");
+            }
         });
         cart.setIcon(new Icon(VaadinIcon.CART));
         cart.getElement().getStyle().setColor("black");
         cart.getElement().getStyle().set("margin-right", "10px"); // Add a margin to the right side of the search button
-
-//        HorizontalLayout cartLayout = new HorizontalLayout(cart);
-//        cartLayout.addClassName("right-layout"); // Add the CSS class
-        //on the right side of the page
-//        cart.getElement().getStyle().setAlignSelf(Style.JustifyContentMode.FLEX_END);
         addToNavbar(cart);
-//        addToNavbar(cartLayout);
 
     }
 
@@ -1151,17 +1154,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     }
 
     private boolean isValidToken(String token) {
-        // Implement your token validation logic here
-        // This could involve checking the token against a database or decoding a JWT token
         return token != null && !token.isEmpty();
     }
-
-//    private void addLogoutButton() {
-//        Button logoutButton = new Button("Logout", e -> logout());
-//        logoutButton.getElement().getStyle().set("margin-top", "auto"); // This will push the button to the bottom
-//        addToDrawer(logoutButton);
-//    }
-
     public void navigateToLogin() {
         getUI().ifPresent(ui -> ui.navigate("login"));
     }
@@ -1170,23 +1164,9 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         presenter.logout();
     }
 
-    private Footer createFooter() {
-        Footer footer = new Footer();
-        return footer;
-    }
-
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
-    }
-
-    private String getCurrentPageTitle() {
-        Component content = getContent();
-        if (content == null) {
-            return "";
-        }
-        PageTitle title = content.getClass().getAnnotation(PageTitle.class);
-        return title == null ? "" : title.value();
     }
 
     public void showPwdError(String message, PasswordField field) {
@@ -1197,20 +1177,6 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
     public void showUNError(String message, TextField field) {
         field.setErrorMessage(message);
         field.setInvalid(true);
-    }
-
-
-    public void pwdSuccess() {
-//        CookiesHandler.setCookie("password", "password", 5 * 60); // 5 minutes
-    }
-
-    public void UnSuccess() {
-//        CookiesHandler.setCookie("username", "username", 5 * 60); // 5 minutes
-    }
-
-    public void addStoreSuccess() {
-//        CookiesHandler.setCookie("store", "store", 5 * 60); // 5 minutes
-
     }
 
     public void addStoreError(String message, TextField field) {

@@ -45,7 +45,7 @@ public class CreateDiscountDialog extends Dialog {
 
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
-        if (presenter.hasPermission(storeId, "MANAGE_DISCOUNTS_POLICIES") && presenter.isActiveStore(storeId)) {
+        if (presenter.hasPermission(storeId, "MANAGE_DISCOUNTS_POLICIES") && presenter.isActiveStore(storeId) && !presenter.isSuspended()) {
             // Create and style buttons
             Button simpleDiscountButton = new Button("Create Simple Discount", e -> openSimpleDiscountForm());
             Button simplePolicyButton = new Button("Create Simple Policy", e -> openSimplePolicyForm());

@@ -105,7 +105,13 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void navigateToMain() {
-        getUI().ifPresent(ui -> ui.navigate(""));
+        getUI().ifPresent(ui -> ui.access(() -> {
+            try {
+                ui.navigate("");
+            } catch (Exception e) {
+                e.printStackTrace(); // Log the exception for debugging
+            }
+        }));
     }
 
     public void navigateToRegister() {
@@ -113,9 +119,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void loginSuccessful(String username, String token) {
-        CookiesHandler.setCookie("username", username, 24 * 60 * 60); // 24 hours
-        CookiesHandler.setCookie("token", token, 24 * 60 * 60); // 24 hours
-        navigateToMain();
+        getUI().ifPresent(ui -> ui.access(() -> {
+            CookiesHandler.setCookie("username", username, 24 * 60 * 60); // 24 hours
+            CookiesHandler.setCookie("token", token, 24 * 60 * 60); // 24 hours
+            navigateToMain();
+        }));
     }
 
 }

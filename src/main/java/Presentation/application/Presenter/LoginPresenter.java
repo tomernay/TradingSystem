@@ -27,16 +27,15 @@ public class LoginPresenter {
             if (response.isSuccess()) {
                 String token = response.getData();
                 if (token != null) {
-                    view.loginSuccessful(username, token);
+                    view.getUI().ifPresent(ui -> ui.access(() -> view.loginSuccessful(username, token)));
                 } else {
-                    view.showError("Invalid username or password");
+                    view.getUI().ifPresent(ui -> ui.access(() -> view.showError("Invalid username or password")));
                 }
             } else {
-                view.showError("Invalid username or password");
+                view.getUI().ifPresent(ui -> ui.access(() -> view.showError("Invalid username or password")));
             }
-
         } catch (Exception e) {
-            view.showError("An error occurred during login");
+            view.getUI().ifPresent(ui -> ui.access(() -> view.showError("An error occurred during login")));
         }
     }
 
@@ -46,12 +45,12 @@ public class LoginPresenter {
             String username = response.getData().get(0);
             String token = response.getData().get(1);
             if (token != null) {
-                view.loginSuccessful(username, token);
+                view.getUI().ifPresent(ui -> ui.access(() -> view.loginSuccessful(username, token)));
             } else {
-                view.showError("An error occurred during login");
+                view.getUI().ifPresent(ui -> ui.access(() -> view.showError("An error occurred during login")));
             }
         } catch (Exception e) {
-            view.showError("An error occurred during login");
+            view.getUI().ifPresent(ui -> ui.access(() -> view.showError("An error occurred during login")));
         }
     }
 }

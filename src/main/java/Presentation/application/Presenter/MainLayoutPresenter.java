@@ -48,7 +48,6 @@ public class MainLayoutPresenter {
         } else {
             CookiesHandler.setCookie("username", newUsername, 3600);
             CookiesHandler.setCookie("token", response.getData(), 3600);
-            view.UnSuccess();
         }
 
     }
@@ -60,22 +59,10 @@ public class MainLayoutPresenter {
             Response<String> response = userService.changePassword(username, oldPassword, newPassword, token);
             if (!response.isSuccess()) {
                 view.showPwdError(response.getMessage(), passwordField);
-            } else {
-                view.pwdSuccess();
             }
         } else {
             view.showPwdError("Passwords do not match", passwordField);
         }
-
-
-//            if (!register.isSuccess()) {
-//                view.showError(register.getMessage());
-//                return;
-//            }
-//            view.navigateToLogin();
-//        } else {
-//            view.showError("Passwords do not match");
-//        }
     }
 
     public void logout() {
@@ -111,9 +98,7 @@ public class MainLayoutPresenter {
         String username = CookiesHandler.getUsernameFromCookies(request);
         String token = CookiesHandler.getTokenFromCookies(request);
         Response<Integer> response = storeService.addStore(storeName, username, token);
-        if (response.isSuccess()) {
-            view.addStoreSuccess();
-        } else {
+        if (!response.isSuccess()) {
             view.addStoreError(response.getMessage(), field);
         }
     }

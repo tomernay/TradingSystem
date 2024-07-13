@@ -103,8 +103,8 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         Button confirmButton = new Button("Yes", e -> {
             presenter.closeStore(storeId);
             confirmationDialog.close();
-         //   UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
-           // showSuccess("Store closed successfully");
+            UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
+            showSuccess("Store closed successfully");
             try {
                 UI ui=UI.getCurrent();
                 String user= CookiesHandler.getUsernameFromCookies(((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest());
@@ -210,7 +210,7 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             buttonLayout.add(viewPurchaseHistoryButton);
         }
 
-        if (presenter.isCreator(storeId)) {
+        if (presenter.isCreator(storeId) && !presenter.isSuspended()) {
             if (presenter.isActiveStore(storeId)) {
                 Button storeClosingButton = new Button("Close Store", e -> navigateToStoreClosing());
                 storeClosingButton.addClassName("button");

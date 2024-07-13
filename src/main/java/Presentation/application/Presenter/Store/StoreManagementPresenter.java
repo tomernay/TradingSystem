@@ -190,4 +190,9 @@ public class StoreManagementPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         return storeService.getStoreNameByID(storeId, username, token).getData();
     }
+
+    public boolean isSuspended() {
+        String username = CookiesHandler.getUsernameFromCookies(request);
+        return userService.isSuspended(username);
+    }
 }

@@ -155,12 +155,12 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
         buttonLayout.setSpacing(true);
         buttonLayout.setAlignItems(FlexComponent.Alignment.END);
 
-        if ((presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator")) && presenter.isActiveStore(storeId)) {
+        if ((presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator")) && presenter.isActiveStore(storeId) && !presenter.isSuspended()) {
             Button addButton = new Button("+ Nominate", e -> showNominationDialog());
             addButton.addClassName("yes_button");  // Adding class for custom styling
             buttonLayout.add(addButton);
         }
-        if (presenter.hasRole(storeId, "Owner") && presenter.isActiveStore(storeId)) {
+        if (presenter.hasRole(storeId, "Owner") && presenter.isActiveStore(storeId) && !presenter.isSuspended()) {
             Button waiveOwnershipButton = new Button("Waive Ownership", e -> navigateToOwnershipWaiving());
             waiveOwnershipButton.addClassName("no_button");  // Adding class for custom styling
             buttonLayout.add(waiveOwnershipButton);
@@ -208,16 +208,17 @@ public class RolesManagementView extends VerticalLayout implements BeforeEnterOb
     private void handleGridItemClick(Map.Entry<String, String> item) {
         String role = item.getValue();
         String username = item.getKey();
+        if (!presenter.isSuspended()) {
+            if (presenter.isActiveStore(storeId) && "MANAGER".equals(role) && ((presenter.hasRole(storeId, "Owner") && presenter.isNominatorOf(storeId, username)) || presenter.hasRole(storeId, "Creator"))) {
+                showPermissionManagementDialog(username);
+            }
+            if (!presenter.isActiveStore(storeId) && "MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") && !presenter.isNominatorOf(storeId, username))) {
+                showError("You're not the nominator of this manager");
+            }
 
-        if (presenter.isActiveStore(storeId) && "MANAGER".equals(role) && ((presenter.hasRole(storeId, "Owner") && presenter.isNominatorOf(storeId, username)) || presenter.hasRole(storeId, "Creator"))) {
-            showPermissionManagementDialog(username);
-        }
-        if (!presenter.isActiveStore(storeId) && "MANAGER".equals(role) && (presenter.hasRole(storeId, "Owner") && !presenter.isNominatorOf(storeId, username))) {
-            showError("You're not the nominator of this manager");
-        }
-
-        if (presenter.isActiveStore(storeId) && "SUBSCRIBER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "REMOVE_STORE_SUBSCRIPTION")))) {
-            showSubscriberDialog(username);
+            if (presenter.isActiveStore(storeId) && "SUBSCRIBER".equals(role) && (presenter.hasRole(storeId, "Owner") || presenter.hasRole(storeId, "Creator") || (presenter.hasRole(storeId, "Manager") && presenter.hasPermission(storeId, "REMOVE_STORE_SUBSCRIPTION")))) {
+                showSubscriberDialog(username);
+            }
         }
     }
 

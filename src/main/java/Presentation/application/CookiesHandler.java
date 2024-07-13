@@ -8,12 +8,17 @@ import jakarta.servlet.http.HttpServletRequest;
 public class CookiesHandler {
 
     public static void setCookie(String name, String value, int maxAge) {
-        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie(name, value);
-        cookie.setPath("/");
-        cookie.setMaxAge(maxAge);
-        cookie.setSecure(true); // Only send over HTTPS
-        cookie.setHttpOnly(true); // Prevent JavaScript access
-        VaadinService.getCurrentResponse().addCookie(cookie);
+        VaadinServletResponse response = (VaadinServletResponse) VaadinService.getCurrentResponse();
+        if (response != null) {
+            Cookie cookie = new Cookie(name, value);
+            cookie.setPath("/");
+            cookie.setMaxAge(maxAge);
+            cookie.setSecure(true); // Only send over HTTPS
+            cookie.setHttpOnly(true); // Prevent JavaScript access
+            response.addCookie(cookie);
+        } else {
+            throw new IllegalStateException("Unable to get current VaadinResponse");
+        }
     }
 
     public static String getTokenFromCookies(HttpServletRequest request) {
@@ -41,13 +46,18 @@ public class CookiesHandler {
     }
 
     public static void deleteCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                cookie.setMaxAge(0); // This will delete the cookie
-                cookie.setPath("/"); // Allow the entire application to access it
-                ((VaadinServletResponse) VaadinService.getCurrentResponse()).addCookie(cookie);
+        VaadinServletResponse response = (VaadinServletResponse) VaadinService.getCurrentResponse();
+        if (response != null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    cookie.setMaxAge(0); // This will delete the cookie
+                    cookie.setPath("/"); // Allow the entire application to access it
+                    response.addCookie(cookie);
+                }
             }
+        } else {
+            throw new IllegalStateException("Unable to get current VaadinResponse");
         }
     }
 }
