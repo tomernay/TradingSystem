@@ -13,6 +13,7 @@ import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
 import Utilities.SystemLogger;
+import org.apache.logging.log4j.core.util.PasswordDecryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,6 @@ public class UserFacade {
     public UserFacade( ) {
         userRepository = new UserRepository();
     }
-
 
     public Response<List<String>> loginAsGuest(){
         String username = "Guest" + userRepository.getIdCounter();
@@ -59,9 +59,11 @@ public class UserFacade {
     }
 
     public Response<String> loginAsSubscriber(String username, String password){
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        // First, attempt to find the subscriber by username only
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
-            if (PasswordEncoderUtil.matches(password,subscriber.getPassword())) {
+            // Then, compare the provided password with the hashed password stored in the database
+            if (PasswordEncoderUtil.matches(password, subscriber.getPassword())) {
                 String token = subscriber.generateToken();
                 Boolean answer = userRepository.addLoggedIn(username);
                 if (!answer) {
@@ -70,28 +72,41 @@ public class UserFacade {
                 }
                 SystemLogger.info("[SUCCESS] User " + username + " logged in successfully");
                 return Response.success("Logged in successfully", token);
+            } else {
+                SystemLogger.error("[ERROR] Incorrect password for user " + username);
+                return Response.error("Incorrect password", null);
             }
-            SystemLogger.error("[ERROR] Incorrect password for user " + username);
-            return Response.error("Incorrect password", null);
         }
         SystemLogger.error("[ERROR] User " + username + " does not exist");
         return Response.error("User does not exist", null);
     }
 
     public Response<String> logoutAsSubscriber(String username){
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        // Use iUserRepository to check if the subscriber exists in the database
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber == null) {
             SystemLogger.error("[ERROR] User " + username + " does not exist");
             return Response.error("User does not exist", null);
         }
+        // Assuming there's a method to check if the user is currently logged in
+        // This part of the logic might need to be adjusted based on how you track logged-in status
+        Boolean isLoggedIn = userRepository.isUserLoggedIn(username);
+        if (!isLoggedIn) {
+            SystemLogger.error("[ERROR] User " + username + " is already logged out");
+            return Response.error("User is already logged out", null);
+        }
+        // Proceed with logout logic
         Boolean answer = userRepository.removeLoggedIn(username);
         if (answer) {
+            // Reset the token or any other logout related operations
             subscriber.resetToken();
             SystemLogger.info("[SUCCESS] User " + username + " logged out successfully");
             return Response.success("You signed out as a SUBSCRIBER", null);
+        } else {
+            // Handle unexpected failure during logout process
+            SystemLogger.error("[ERROR] Failed to log out user " + username);
+            return Response.error("Failed to log out", null);
         }
-        SystemLogger.error("[ERROR] User " + username + " is already logged out");
-        return Response.error("User is already logged out", null);
     }
 
     public UserRepository getUserRepository() {
@@ -101,7 +116,7 @@ public class UserFacade {
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
             Broadcaster.broadcast("Store " + storeName + " has been closed",subscriberName);
-            Subscriber subscriber = userRepository.getSubscriber(subscriberName);
+            Subscriber subscriber = iUserRepository.findByUsername(subscriberName);;
             subscriber.addMessage(new NormalMessage("Store " + storeName + " has been closed"));
         }
         SystemLogger.info("[SUCCESS] Store " + storeName + " has been closed. Notifications sent to all related subscribers.");
@@ -110,7 +125,7 @@ public class UserFacade {
     public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
             Broadcaster.broadcast("Store " + storeName + " has been reopen",subscriberName);
-            Subscriber subscriber = userRepository.getSubscriber(subscriberName);
+            Subscriber subscriber = iUserRepository.findByUsername(subscriberName);
             subscriber.addMessage(new NormalMessage("Store " + storeName + " has been re-opened"));
         }
         SystemLogger.info("[SUCCESS] Store " + storeName + " has been reopened. Notifications sent to all related subscribers.");
@@ -133,7 +148,7 @@ public class UserFacade {
             }
             Subscriber subscriber = new Subscriber(username, PasswordEncoderUtil.encode(password));
             iUserRepository.save(subscriber);
-            Boolean answer = userRepository.addSubscriber(subscriber);
+            Boolean answer = userRepository.addSubscriber(subscriber) && iUserRepository.findByUsername(username) != null;
             if (!answer) {
                 SystemLogger.error("[ERROR] User " + username + " is already registered");
                 return Response.error("User is already registered", null);
@@ -144,7 +159,7 @@ public class UserFacade {
     }
 
     public Response<String> addProductToShoppingCart(Integer storeID,Integer productID, Integer quantity,String username){
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.addProductToShoppingCart(storeID, productID, quantity);
         }
@@ -157,7 +172,7 @@ public class UserFacade {
     }
 
     public Response<String> removeProductFromShoppingCart(String username,Integer storeID, Integer productID) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.removeProductFromShoppingCart(storeID, productID);
         }
@@ -170,7 +185,7 @@ public class UserFacade {
     }
 
     public Response<String> updateProductInShoppingCart(Integer storeID, Integer productID, String username, Integer quantity) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.updateProductInShoppingCart(storeID, productID, quantity);
         }
@@ -183,7 +198,7 @@ public class UserFacade {
     }
 
     public Response<Message> ownerNominationResponse(Integer messageID, String currentUsername, Boolean answer) {
-        Subscriber subscriber = userRepository.getSubscriber(currentUsername);
+        Subscriber subscriber =iUserRepository.findByUsername(currentUsername);
         if (subscriber == null) {
             SystemLogger.error("[ERROR] User " + currentUsername + " does not exist");
             return Response.error("User does not exist", null);
@@ -198,7 +213,7 @@ public class UserFacade {
     }
 
     public Response<Message> managerNominationResponse(Integer messageID, String currentUsername, Boolean answer) {
-        Subscriber subscriber = userRepository.getSubscriber(currentUsername);
+        Subscriber subscriber = iUserRepository.findByUsername(currentUsername);
         if (subscriber == null) {
             SystemLogger.error("[ERROR] User " + currentUsername + " does not exist");
             return Response.error("User does not exist", null);
@@ -213,11 +228,11 @@ public class UserFacade {
     }
 
     public boolean userExist(String subscriberUsername) {
-        return userRepository.isUserExist(subscriberUsername);
+        return userRepository.isUserExist(subscriberUsername) && iUserRepository.findByUsername(subscriberUsername) != null;
     }
 
     public Response<Map<Integer, Map<Integer, Integer>>> getShoppingCartContents(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.getShoppingCartContents();
         }
@@ -230,7 +245,7 @@ public class UserFacade {
     }
 
     public Response<Integer> sendMessageToUser(String username, Message message) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         return subscriber.addMessage(message);
     }
 
@@ -239,7 +254,7 @@ public class UserFacade {
     }
 
     public void addCreatorRole(String creatorUsername, Integer storeID) {
-        Subscriber subscriber = userRepository.getSubscriber(creatorUsername);
+        Subscriber subscriber = iUserRepository.findByUsername(creatorUsername);
         if (subscriber == null) {
             SystemLogger.error("[ERROR] User " + creatorUsername + " does not exist");
             return;
@@ -248,7 +263,7 @@ public class UserFacade {
     }
 
     public Response<Map<Integer, String>> getStoresRole(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber == null) {
             SystemLogger.error("[ERROR] User " + username + " does not exist");
             return Response.error("User does not exist", null);
@@ -257,7 +272,7 @@ public class UserFacade {
     }
 
     public void removeStoreRole(String subscriberUsername, Integer storeID) {
-        Subscriber subscriber = userRepository.getSubscriber(subscriberUsername);
+        Subscriber subscriber = iUserRepository.findByUsername(subscriberUsername);
         if (subscriber == null) {
             SystemLogger.error("[ERROR] User " + subscriberUsername + " does not exist");
             return;
@@ -267,7 +282,7 @@ public class UserFacade {
     }
 
     public Response<String> isOwner(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if(subscriber == null){
             return Response.error("User does not exist",null);
         }
@@ -275,7 +290,7 @@ public class UserFacade {
     }
 
     public Response<String> isManager(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if(subscriber == null){
             return Response.error("User does not exist",null);
         }
@@ -283,7 +298,7 @@ public class UserFacade {
     }
 
     public Response<String> isCreator(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if(subscriber == null){
             return Response.error("User does not exist",null);
         }
@@ -291,7 +306,7 @@ public class UserFacade {
     }
 
     public Response<String> changePassword(String username, String oldPassword, String newPassword){
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             if (PasswordEncoderUtil.matches(oldPassword, subscriber.getPassword())) {
                 if (isValidPassword(newPassword)) {
@@ -310,7 +325,7 @@ public class UserFacade {
     }
 
     public Response<String> changeUsername(String username, String newUsername){
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             if (isUsernameValid(newUsername)) {
                 if (!userRepository.isUserExist(username)) {
@@ -377,7 +392,7 @@ public class UserFacade {
     }
 
     public Response<String> ResetCartAfterPurchase(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.resetShoppingCart();
         }
@@ -390,7 +405,7 @@ public class UserFacade {
     }
 
     public Response<String> lockFlagShoppingCart(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.lockFlagShoppingCart();
         }
@@ -403,7 +418,7 @@ public class UserFacade {
     }
 
     public Response<String> unlockFlagShoppingCart(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.unlockFlagShoppingCart();
         }
@@ -416,7 +431,7 @@ public class UserFacade {
     }
 
     public Response<Boolean> isFlagLock(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             SystemLogger.info("[SUCCESS] Shopping cart for user " + username + " is locked");
             return Response.success("Shopping cart is locked", subscriber.isFlagLock());
@@ -431,7 +446,7 @@ public class UserFacade {
     }
 
     public Response<String> clearCart(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.clearCart();
         }
@@ -444,7 +459,7 @@ public class UserFacade {
     }
 
     public Response<String> updateProductQuantityInCart(Integer storeId, Integer productId, Integer quantity, String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.updateProductQuantityInCart(storeId, productId, quantity);
         }
@@ -457,7 +472,7 @@ public class UserFacade {
     }
 
     public CompletableFuture<String> startPurchaseTimer(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.startPurchaseTimer();
         }
@@ -470,7 +485,7 @@ public class UserFacade {
     }
 
     public void interruptPurchaseTimer(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             subscriber.interruptPurchaseTimer();
         }
@@ -487,7 +502,7 @@ public class UserFacade {
 
 
     public boolean isInPurchaseProcess(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.isInPurchaseProcess();
         }
@@ -500,7 +515,7 @@ public class UserFacade {
     }
 
     public Response<String> removeMessage(String username, Integer messageID) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.removeMessage(messageID);
         }
@@ -509,7 +524,7 @@ public class UserFacade {
     }
 
     public Response<Integer> getUnreadMessagesCount(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.getUnreadMessagesCount();
         }
@@ -522,7 +537,7 @@ public class UserFacade {
     }
 
     public Response<List<Message>> getMessages(String username) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return Response.success("Messages retrieved successfully", subscriber.getMessages());
         }
@@ -531,7 +546,7 @@ public class UserFacade {
     }
 
     public Response<String> sendMessage(String username, String message) {
-        Subscriber subscriber = userRepository.getSubscriber(username);
+        Subscriber subscriber = iUserRepository.findByUsername(username);
         if (subscriber != null) {
             return subscriber.sendMessage(message);
         }

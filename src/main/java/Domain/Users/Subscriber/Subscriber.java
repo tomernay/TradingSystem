@@ -23,7 +23,6 @@ public class Subscriber extends User {
     private final List<Message> messages;
     @Column(nullable = true)
     private String password;
-//    private String credit;
     @Transient
     private final Map<Integer, String> storesRole;
     @Id

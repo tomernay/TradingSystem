@@ -99,6 +99,10 @@ public class UserRepository {
         return true;
     }
 
+    public Boolean isUserLoggedIn(String username) {
+        return subscribersLoggedIn.contains(username);
+    }
+
     public Boolean removeLoggedIn(String username) {
         if (subscribersLoggedIn.contains(username)) {
             subscribersLoggedIn.remove(username);
