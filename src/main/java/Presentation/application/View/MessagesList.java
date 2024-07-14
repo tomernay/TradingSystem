@@ -79,7 +79,15 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
             Message message = event.getItem();
             message.setRead(true);
             grid.getDataProvider().refreshItem(message);
-            decrementNotificationCount();
+            MainLayoutView mainLayout = (MainLayoutView) UI.getCurrent().getChildren()
+                    .filter(component -> component instanceof MainLayoutView)
+                    .findFirst()
+                    .orElse(null);
+
+            if (mainLayout != null) {
+                String username = CookiesHandler.getUsernameFromCookies(getRequest());
+                mainLayout.updateNotifications(username);
+            }
         });
 
         // Add a class name generator to highlight unread messages
@@ -154,17 +162,17 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
         return token != null && !token.isEmpty();
     }
 
-    private void decrementNotificationCount() {
-        // Find the MainLayoutView instance
-        MainLayoutView mainLayout = (MainLayoutView) UI.getCurrent().getChildren()
-                .filter(component -> component instanceof MainLayoutView)
-                .findFirst()
-                .orElse(null);
-
-        if (mainLayout != null) {
-            mainLayout.decrementNotificationCount();
-        }
-    }
+//    private void decrementNotificationCount() {
+//        // Find the MainLayoutView instance
+//        MainLayoutView mainLayout = (MainLayoutView) UI.getCurrent().getChildren()
+//                .filter(component -> component instanceof MainLayoutView)
+//                .findFirst()
+//                .orElse(null);
+//
+//        if (mainLayout != null) {
+//            mainLayout.decrementNotificationCount();
+//        }
+//    }
 
     private void reloadMessages() {
         messages = this.presenter.initMessages(user);

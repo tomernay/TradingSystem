@@ -4,7 +4,6 @@ import Presentation.application.CookiesHandler;
 import Presentation.application.Presenter.Store.StoreManagementPresenter;
 import Presentation.application.View.LoginView;
 import Presentation.application.View.MainLayoutView;
-import Presentation.application.View.UtilitiesView.WSClient;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -48,7 +47,6 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
         // Set full size
         setSizeFull();
     }
- WSClient wsClient;
     private void navigateToStoreReopening() {
         Dialog confirmationDialog = new Dialog();
         confirmationDialog.setWidth("400px");
@@ -61,21 +59,6 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             presenter.reopenStore(storeId);
             confirmationDialog.close();
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
-         //   showSuccess("Store re-opened successfully");
-            try {
-                UI ui=UI.getCurrent();
-                String user= CookiesHandler.getUsernameFromCookies(((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest());
-
-                wsClient=WSClient.getClient(ui,user);
-
-                wsClient.sendMessage(user+":reopen store");
-            } catch (InterruptedException eX) {
-                eX.printStackTrace();
-            } catch (ExecutionException eX) {
-                eX.printStackTrace();
-            } catch (URISyntaxException ex) {
-                ex.printStackTrace();
-            }
         });
         confirmButton.addClassName("yes_button");
 
@@ -105,21 +88,6 @@ public class StoreManagementView extends VerticalLayout implements BeforeEnterOb
             confirmationDialog.close();
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             showSuccess("Store closed successfully");
-            try {
-                UI ui=UI.getCurrent();
-                String user= CookiesHandler.getUsernameFromCookies(((VaadinServletRequest) VaadinRequest.getCurrent()).getHttpServletRequest());
-
-                wsClient=WSClient.getClient(ui,user);
-
-                wsClient.sendMessage(user+":close store");
-            } catch (InterruptedException eX) {
-                eX.printStackTrace();
-            } catch (ExecutionException eX) {
-                eX.printStackTrace();
-            } catch (URISyntaxException ex) {
-                ex.printStackTrace();
-            }
-
         });
         confirmButton.addClassName("yes_button");
 

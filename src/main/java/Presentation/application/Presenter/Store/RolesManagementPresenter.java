@@ -131,8 +131,8 @@ public class RolesManagementPresenter {
         String token = CookiesHandler.getTokenFromCookies(request);
         String username = CookiesHandler.getUsernameFromCookies(request);
         Response<String> response = storeService.removeStoreSubscription(storeID, username, subscriber, token);
-        Broadcaster.broadcast("you subscription has been removed from store:"+String.valueOf(storeID),subscriber);
         if (response.isSuccess()) {
+            Broadcaster.broadcast("you subscription has been removed from store:"+ storeID,subscriber);
             view.showSuccess("Removed subscription successfully from " + subscriber);
         } else {
             view.showError(response.getMessage());

@@ -13,7 +13,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
-import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 import com.vaadin.flow.component.*;

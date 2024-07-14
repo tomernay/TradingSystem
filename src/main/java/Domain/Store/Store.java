@@ -261,7 +261,6 @@ public class Store {
                     String nominator = reverseNominationMap.get(subscriber);
                     nominationGraph.get(nominator).remove(subscriber);
                 }
-                Broadcaster.broadcast("manager "+currentUsername+" has waived ownership which caused to waiving your ownership",subscriber);
             }
             SystemLogger.info("[SUCCESS] " + currentUsername + " successfully waived ownership of the store and removed all of his nominees");
             return Response.success("Successfully waived ownership of the store and remove all of nominees", toRemove);

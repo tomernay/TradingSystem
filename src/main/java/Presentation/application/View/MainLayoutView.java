@@ -12,14 +12,12 @@ import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
 
 import com.vaadin.flow.component.*;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
@@ -60,6 +58,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 
     private final MainLayoutPresenter presenter;
 
+    private final String currentUser;
     private H1 viewTitle;
     private Queue<Message> sub;
     private VerticalLayout mainContent;
@@ -85,21 +84,21 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         shoppingCart();
         addStoresToMain();
         UI currentUI = UI.getCurrent();
-
-        int unreadCount = presenter.getUnreadMessagesCount(); // Fetch this from the server or database
+        currentUser =CookiesHandler.getUsernameFromCookies(getRequest());
+        int unreadCount = presenter.getUnreadMessagesCount(currentUser); // Fetch this from the server or database
         if (unreadCount > 0) {
             notificationCountSpan.setText(String.valueOf(unreadCount));
             notificationCountSpan.setVisible(true);
         }
 
 
-        String user=CookiesHandler.getUsernameFromCookies(getRequest());
+
         Broadcaster.register(message -> {
             getUI().ifPresent(ui -> ui.access(() -> {
                 Notification.show(message);
-
+                updateNotifications(currentUser);
             }));
-        }, user);
+        }, currentUser);
 
         UI.getCurrent().getPage().executeJs(
                 "document.body.addEventListener('click', function() {" +
@@ -474,23 +473,27 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         mainContent.add(addMessageButton);
     }
 
-    private void incrementNotificationCount() {
-        int count = Integer.parseInt(notificationCountSpan.getText().isEmpty() ? "0" : notificationCountSpan.getText());
-        count++;
-        notificationCountSpan.setText(String.valueOf(count));
-        notificationCountSpan.setVisible(true);
-    }
-
-    public void decrementNotificationCount() {
-        int count = Integer.parseInt(notificationCountSpan.getText().isEmpty() ? "0" : notificationCountSpan.getText());
-        if (count > 0) {
-            count--;
-            notificationCountSpan.setText(String.valueOf(count));
-            if (count == 0) {
+    public void updateNotifications(String username) {
+        int count = presenter.getUnreadMessagesCount(username);
+        if (count == 0) {
                 notificationCountSpan.setVisible(false);
-            }
+        }
+        else {
+            notificationCountSpan.setText(String.valueOf(count));
+            notificationCountSpan.setVisible(true);
         }
     }
+
+//    public void decrementNotificationCount() {
+//        int count = Integer.parseInt(notificationCountSpan.getText().isEmpty() ? "0" : notificationCountSpan.getText());
+//        if (count > 0) {
+//            count--;
+//            notificationCountSpan.setText(String.valueOf(count));
+//            if (count == 0) {
+//                notificationCountSpan.setVisible(false);
+//            }
+//        }
+//    }
 
     private void clearNotificationCount() {
         notificationCountSpan.setText("");

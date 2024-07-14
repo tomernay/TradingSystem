@@ -54,7 +54,7 @@ public class Subscriber extends User {
 
     //yair added
     public synchronized Response<Integer> addMessage(Message m){
-        Broadcaster.broadcast("You received a new message",username);
+//        Broadcaster.broadcast("You received a new message",username);
         if (m instanceof nominateOwnerMessage) {
             if (messages.stream().anyMatch(a -> a instanceof nominateOwnerMessage && ((nominateOwnerMessage) a).getStoreID().equals(((nominateOwnerMessage) m).getStoreID()))) {
                 SystemLogger.error("[ERROR] User already has a pending owner nomination message.");

@@ -123,8 +123,9 @@ public class UserService {
             }
             Message ownerNominationMessage = storeService.makeNominateOwnerMessage(storeID, nominatorUsername, nomineeUsername).getData();
             if (ownerNominationMessage != null) {
-                Broadcaster.broadcast(ownerNominationMessage.getMessage(),nomineeUsername);
-                return userFacade.sendMessageToUser(nomineeUsername, ownerNominationMessage);
+                Response<Integer> res = userFacade.sendMessageToUser(nomineeUsername, ownerNominationMessage);
+                Broadcaster.broadcast("You've got a new owner nomination request",nomineeUsername);
+                return res;
             }
         }
         SystemLogger.error("[ERROR] User: " + nominatorUsername + " tried to make " + nomineeUsername + " a store owner but the token was invalid");
@@ -156,8 +157,9 @@ public class UserService {
             }
             Message managerNominationMessage = storeService.makeNominateManagerMessage(storeID,nominatorUsername, nomineeUsername, permissions).getData();
             if (managerNominationMessage != null) {
-                Broadcaster.broadcast(managerNominationMessage.getMessage(),nomineeUsername);
-                return userFacade.sendMessageToUser(nomineeUsername, managerNominationMessage);
+                Response<Integer> res = userFacade.sendMessageToUser(nomineeUsername, managerNominationMessage);
+                Broadcaster.broadcast("You've got a new manager nomination request",nomineeUsername);
+                return res;
             }
         }
         SystemLogger.error("[ERROR] User: " + nominatorUsername + " tried to make " + nomineeUsername + " a store manager but the token was invalid");
@@ -234,7 +236,8 @@ public class UserService {
             userFacade.removeStoreRole(username, storeID);
             for (String subscriberUsername : usernames) {
                  userFacade.removeStoreRole(subscriberUsername, storeID);
-                userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
+                 userFacade.sendMessageToUser(subscriberUsername, new NormalMessage("The owner of the store has self-waived and you have been removed from the store"));
+                 Broadcaster.broadcast("manager "+subscriberUsername+" has waived ownership which caused to waiving your ownership",username);
             }
             return Response.success("The owner of the store has self-waived and all of its' nominess have been removed as well.", null);
         }
@@ -737,11 +740,7 @@ public class UserService {
     }
 
 
-    public Response<Integer> getUnreadMessagesCount(String username, String token) {
-        if (!isValidToken(token, username)) {
-            SystemLogger.error("[ERROR] User: " + username + " tried to get the unread messages count but the token was invalid");
-            return Response.error("Invalid token", null);
-        }
+    public Response<Integer> getUnreadMessagesCount(String username) {
         return userFacade.getUnreadMessagesCount(username);
     }
 

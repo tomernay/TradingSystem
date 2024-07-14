@@ -156,7 +156,7 @@ public class StoreFacade {
             store.setInventory(inventory);
             storeRepository.addActiveStore(store);
             SystemLogger.info("[SUCCESS] successfully opened the store " + storeName);
-            Broadcaster.broadcast("successfully opened the store " + storeName,creator);
+//            Broadcaster.broadcast("successfully opened the store " + storeName,creator);
             return Response.success("successfully opened the store " + storeName, storeId);
         }
         catch (Exception e) {
@@ -845,9 +845,6 @@ public class StoreFacade {
         }
         storeRepository.removeDeactivatedStore(storeID);
         storeRepository.addActiveStore(deactivatedStore);
-        for(String name:deactivatedStore.getSubscribers().keySet()){
-            Broadcaster.broadcast("store has been reopened",name);
-        }
         SystemLogger.info("[SUCCESS] " + currentUsername + " reopened store: " + storeID + " successfully");
         return Response.success("Store: " + getStoreNameByID(storeID, currentUsername) + " was reopened successfully", new ArrayList<>(deactivatedStore.getSubscribers().keySet()));
     }

@@ -2,8 +2,11 @@ package Service;
 
 import Domain.OrderDTO;
 import Facades.AdminFacade;
+import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import Utilities.SystemLogger;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +86,10 @@ public class AdminService {
             }
             Response<String> res = adminFacade.suspendUser(subscriberUsername,endOfSuspensionDate);
             if (res.isSuccess()){
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                String formattedDate = formatter.format(endOfSuspensionDate);
                 userService.sendMessage(subscriberUsername, "You have been suspended until " + endOfSuspensionDate);
+                Broadcaster.broadcast("your subscription has been suspended until:"+ formattedDate,subscriberUsername);
             }
             return res;
         }

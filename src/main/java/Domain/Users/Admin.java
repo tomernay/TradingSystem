@@ -25,7 +25,6 @@ public class Admin {
 
         // Format the date using the formatter
         String formattedDate = formatter.format(endOfSuspensionDate);
-        Broadcaster.broadcast("your subscription has been suspended until:"+formattedDate,subscriberUsername);
         suspensionList.put(subscriberUsername, endOfSuspensionDate);
     }
 }

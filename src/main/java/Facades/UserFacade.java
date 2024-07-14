@@ -92,18 +92,18 @@ public class UserFacade {
 
     public Response<String> sendCloseStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
-            Broadcaster.broadcast("Store " + storeName + " has been closed",subscriberName);
             Subscriber subscriber = userRepository.getSubscriber(subscriberName);
             subscriber.addMessage(new NormalMessage("Store " + storeName + " has been closed"));
+            Broadcaster.broadcast("Store " + storeName + " has been closed",subscriberName);
         }
         SystemLogger.info("[SUCCESS] Store " + storeName + " has been closed. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);
     }
     public Response<String> sendReopenStoreNotification(List<String> subscriberNames, String storeName) {
         for (String subscriberName : subscriberNames) {
-            Broadcaster.broadcast("Store " + storeName + " has been reopen",subscriberName);
             Subscriber subscriber = userRepository.getSubscriber(subscriberName);
             subscriber.addMessage(new NormalMessage("Store " + storeName + " has been re-opened"));
+            Broadcaster.broadcast("store has been reopened",subscriber.getUsername());
         }
         SystemLogger.info("[SUCCESS] Store " + storeName + " has been reopened. Notifications sent to all related subscribers.");
         return Response.success("Notification sent successfully", null);

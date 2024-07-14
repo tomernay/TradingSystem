@@ -208,10 +208,8 @@ public class MainLayoutPresenter {
         return storeService.isStoreActive(storeID, username, token);
     }
 
-    public int getUnreadMessagesCount() {
-        String username = CookiesHandler.getUsernameFromCookies(request);
-        String token = CookiesHandler.getTokenFromCookies(request);
-        Response<Integer> response = userService.getUnreadMessagesCount(username, token);
+    public int getUnreadMessagesCount(String username) {
+        Response<Integer> response = userService.getUnreadMessagesCount(username);
         if (response.isSuccess()) {
             return response.getData();
         }
