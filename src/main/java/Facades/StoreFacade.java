@@ -25,7 +25,7 @@ import java.util.Set;
 @Service
 public class StoreFacade {
     @Autowired
-    private StoreRepository storeRepository;
+    private StoreRepository storeRepository = new StoreRepository();
 //    @Autowired
 //    private IStoreRepository iStoreRepository;
 
@@ -156,9 +156,9 @@ public class StoreFacade {
         try {
             Integer storeId = storeRepository.getStoreID();
             Store store = new Store(storeId, storeName, creator);
+            storeRepository.addActiveStore(store);
             Inventory inventory = new Inventory(storeId);
             store.setInventory(inventory);
-            storeRepository.addActiveStore(store);
             SystemLogger.info("[SUCCESS] successfully opened the store " + storeName);
             Broadcaster.broadcast("successfully opened the store " + storeName,creator);
             return Response.success("successfully opened the store " + storeName, storeId);

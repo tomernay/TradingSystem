@@ -18,6 +18,8 @@ public class StoreRepository {
     private final Map<Integer, Store> stores;
     private final Map<Integer, Store> deactivatedStores; // <StoreID, Store>
     private final AtomicInteger storeID = new AtomicInteger(0);
+    @Autowired
+    private UserRepository userRepository;
 
 
     public StoreRepository() {
@@ -48,7 +50,7 @@ public class StoreRepository {
     }
 
     public Store getActiveStore(Integer storeID) {
-        return stores.get(storeID);
+        return iStoreRepository.findById(storeID).get();
     }
 
     public Store getDeactivatedStore(Integer storeID) {
