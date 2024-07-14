@@ -8,32 +8,25 @@ import Presentation.application.View.Store.StorePageView;
 
 
 import Presentation.application.View.UtilitiesView.Broadcaster;
-import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.NormalMessage;
+
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.sidenav.SideNav;
-import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.VaadinRequest;
 import com.vaadin.flow.server.VaadinService;
@@ -42,13 +35,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+import java.util.concurrent.*;
 
 import Domain.Store.Inventory.ProductDTO;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -96,11 +85,13 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         shoppingCart();
         addStoresToMain();
         UI currentUI = UI.getCurrent();
+
         int unreadCount = presenter.getUnreadMessagesCount(); // Fetch this from the server or database
         if (unreadCount > 0) {
             notificationCountSpan.setText(String.valueOf(unreadCount));
             notificationCountSpan.setVisible(true);
         }
+
 
         String user=CookiesHandler.getUsernameFromCookies(getRequest());
         Broadcaster.register(message -> {
@@ -302,7 +293,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         return presenter.getStoreIdByName(storeName);
     }
 
-    WSClient wsClient;
+
 
     private void openNewStoreDialog() {
         Dialog dialog = new Dialog();
@@ -319,26 +310,12 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         storeName.getElement().getStyle().set("margin", "0 auto");
         String user=CookiesHandler.getUsernameFromCookies(getRequest());
 
-        try {
-            UI ui=UI.getCurrent();
-            wsClient=WSClient.getClient(ui,user);
 
-
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
 
 //        TextField storeDescription = new TextField("Store Description");
         Button openStore = new Button("Open Store", e -> {
             presenter.addStore(storeName.getValue(), storeName);
 
-            try {
-                wsClient.sendMessage(user+":open store");
-            } catch (InterruptedException eX) {
-                eX.printStackTrace();
-            } catch (ExecutionException eX) {
-                eX.printStackTrace();
-            }
 
             UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
 
@@ -481,40 +458,16 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //        addToNavbar(categoriesLayout);
     }
 
-  WSClient webSocketClient;
+
     private void addMessageButton() {
         Button addMessageButton = new Button("Add Message");
         UI ui = UI.getCurrent();
         String user = CookiesHandler.getUsernameFromCookies(getRequest());
 
-        try {
-            webSocketClient = WSClient.getClient(ui, user);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Notification.show("Error initializing WebSocket client");
-        }
 
-        addMessageButton.addClickListener(e -> {
-            try {
-                webSocketClient.sendMessage("user:message");
-                webSocketClient.sendMessage(user + ":message2");
-            } catch (InterruptedException | ExecutionException ex) {
-                ex.printStackTrace();
-                Notification.show("Error sending WebSocket message");
-            }
-        });
 
-        // Listen for WebSocket messages and update the UI
-        webSocketClient.setOnMessageListener(message -> {
-            String[] m = message.split(":");
 
-            if (m[0].equals(user)) {
-                ui.access(() -> {
-                    Notification.show("New message: " + message);
-                    incrementNotificationCount();
-                });
-            }
-        });
+
 
 
 

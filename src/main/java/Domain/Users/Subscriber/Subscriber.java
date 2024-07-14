@@ -54,7 +54,7 @@ public class Subscriber extends User {
 
     //yair added
     public synchronized Response<Integer> addMessage(Message m){
-        Broadcaster.broadcast(m.getMessage(),username);
+        Broadcaster.broadcast("You received a new message",username);
         if (m instanceof nominateOwnerMessage) {
             if (messages.stream().anyMatch(a -> a instanceof nominateOwnerMessage && ((nominateOwnerMessage) a).getStoreID().equals(((nominateOwnerMessage) m).getStoreID()))) {
                 SystemLogger.error("[ERROR] User already has a pending owner nomination message.");
@@ -62,6 +62,7 @@ public class Subscriber extends User {
             }
             else {
                 messages.add(m);
+
                 SystemLogger.info("[SUCCESS] Owner nomination message successfully sent to: " + username);
                 return Response.success("Owner nomination message successfully sent to: " + username, m.getId());
             }
@@ -79,6 +80,7 @@ public class Subscriber extends User {
         }
         else {
             messages.add(m);
+
             SystemLogger.info("[SUCCESS] Message successfully sent to: " + username);
             return Response.success("Message successfully sent to: " + username, null);
         }
