@@ -2,7 +2,6 @@ package Presentation.application.View;
 
 import Presentation.application.CookiesHandler;
 import Presentation.application.Presenter.MessagesPresenter;
-import Presentation.application.View.UtilitiesView.WSClient;
 import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
@@ -10,7 +9,6 @@ import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -28,10 +26,8 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Route(value = "MessagesList", layout = MainLayoutView.class)
 @StyleSheet("context://styles.css")
@@ -40,7 +36,7 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
     static private List<Message> messages = new ArrayList<>();
     String user;
     MessagesPresenter presenter;
-    WSClient wsClient;
+
 
     private Grid<Message> grid;
 
@@ -53,19 +49,7 @@ public class MessagesList extends VerticalLayout implements BeforeEnterObserver 
         messages = this.presenter.initMessages(user);
 
         UI ui = UI.getCurrent();
-        try {
-            wsClient = WSClient.getClient(ui, user);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        wsClient.setOnMessageListener(message -> {
-            String[] m = message.split(":");
 
-            if (m[0].equals(user)) {
-                ui.access(() -> Notification.show("New message: " + message));
-                reloadMessages();
-            }
-        });
 
         // Create header
         H1 header = new H1("Your Messages");

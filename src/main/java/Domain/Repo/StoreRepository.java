@@ -29,8 +29,8 @@ public class StoreRepository {
 
     public void addDeactivatedStore(Store store) {
         deactivatedStores.put(store.getId(), store);
-        for(String name : store.getSubscribers().keySet())
-            Broadcaster.broadcast(store.getName()+" has been deactivated",name);
+      /*  for(String name : store.getSubscribers().keySet())
+            Broadcaster.broadcast(store.getName()+" has been deactivated",name);*/
     }
 
     public Boolean removeActiveStore(Integer storeId) {
