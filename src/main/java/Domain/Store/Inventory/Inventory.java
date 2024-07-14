@@ -22,11 +22,15 @@ public class Inventory {
     private final AtomicInteger productIDGenerator = new AtomicInteger(1);
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "inventory_id")
+    private Integer inventoryId;
+
     @Column(name = "storeID")
     private Integer storeID; //Inventory for specific store
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "storeID", foreignKey = @ForeignKey(name = "FK_inventory_store"))
+    @JoinColumn(name = "product_id", referencedColumnName = "storeID", foreignKey = @ForeignKey(name = "FK_product_inventory"))
     public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
 
     @Transient
@@ -38,6 +42,7 @@ public class Inventory {
 
     public Inventory(Integer storeID) {
         this.storeID = storeID;
+        this.inventoryId = storeID;
         this.productsList = new ConcurrentHashMap<>();
         this.categories = new ConcurrentHashMap<>();
         this.lockedProducts = new ConcurrentHashMap<>();

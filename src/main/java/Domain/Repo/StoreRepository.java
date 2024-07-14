@@ -5,6 +5,7 @@ import Domain.Users.StateOfSubscriber.SubscriberState;
 import Domain.Users.Subscriber.Subscriber;
 import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -12,6 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 public class StoreRepository {
+    @Autowired
+    private IStoreRepository iStoreRepository;
     private final Map<Integer, Store> stores;
     private final Map<Integer, Store> deactivatedStores; // <StoreID, Store>
     private final AtomicInteger storeID = new AtomicInteger(0);
@@ -27,7 +30,7 @@ public class StoreRepository {
     }
 
     public void addActiveStore(Store store) {
-        stores.put(store.getId(), store);
+        iStoreRepository.save(store);
     }
 
     public void addDeactivatedStore(Store store) {
@@ -36,20 +39,12 @@ public class StoreRepository {
             Broadcaster.broadcast(store.getName()+" has been deactivated",name);
     }
 
-    public Boolean removeActiveStore(Integer storeId) {
-        if (!stores.containsKey(storeId)) {
-            return false;
-        }
-        stores.remove(storeId);
-        return true;
+    public void removeActiveStore(Integer storeId) {
+        iStoreRepository.deleteById(storeId);
     }
 
-    public Boolean removeDeactivatedStore(Integer storeId) {
-        if (!deactivatedStores.containsKey(storeId)) {
-            return false;
-        }
-        deactivatedStores.remove(storeId);
-        return true;
+    public void removeDeactivatedStore(Integer storeId) {
+        iStoreRepository.deleteById(storeId);
     }
 
     public Store getActiveStore(Integer storeID) {
@@ -68,18 +63,12 @@ public class StoreRepository {
         return stores.containsKey(storeID);
     }
 
-    public synchronized Response<String> isStoreExist(Integer storeID) {
-        if (!stores.containsKey(storeID)) {
-            if (deactivatedStores.containsKey(storeID)) {
-                return Response.success("Store with ID: " + storeID + " is deactivated", null);
-            }
-            return Response.error("Store with ID: " + storeID + " doesn't exist", null);
-        }
-        return Response.success("Store with ID: " + storeID + " is active", null);
+    public synchronized Boolean isStoreExist(Integer storeID) {
+        return iStoreRepository.existsById(storeID);
     }
 
-    public Map<Integer, Store> getActiveStores() {
-        return stores;
+    public List<Store> getActiveStores() {
+        return iStoreRepository.findAll();
     }
 
     public Map<Integer, Store> getDeactivatedStores() {

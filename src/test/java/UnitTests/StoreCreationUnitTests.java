@@ -68,7 +68,7 @@ class StoreCreationUnitTests {
         storeService.addStore("newStore", "yair12312", subscriber.getToken());
         storeService.addStore("newStore", "yair12312", subscriber.getToken());
         Assertions.assertEquals(storeRepository.getActiveStores().size(), 2);
-        Assertions.assertTrue(storeRepository.getActiveStores().containsKey(0) && storeRepository.getActiveStores().containsKey(1));
+        Assertions.assertTrue(storeRepository.getActiveStore(0).getId() != storeRepository.getActiveStore(1).getId());
     }
 
     @Test

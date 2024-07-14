@@ -16,14 +16,11 @@ import java.util.concurrent.CompletableFuture;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Integer id;
-
     @Column(nullable = false, unique = true)
     protected String username;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "shopping_cart_id", foreignKey = @ForeignKey(name = "FK_shoppingCart_user"))
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_shoppingCart_user_1"))
     private ShoppingCart shoppingCart;
 
     @Column(nullable = true)

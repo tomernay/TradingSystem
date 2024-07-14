@@ -3,6 +3,7 @@ package Domain.Repo;
 import Domain.Users.Subscriber.Subscriber;
 import Domain.Users.User;
 import Utilities.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,13 +18,13 @@ import java.util.function.Function;
 @Repository
 public class UserRepository {
 
-    private final Map<String, Subscriber> subscribers;
+    @Autowired
+    private IUserRepository iuserRepository;
     private final List<String> subscribersLoggedIn;
     private final Map<String, User> guests;
     private Integer userIDS; //Counter for guest ID
 
     public UserRepository() {
-        subscribers = new HashMap<>();
         subscribersLoggedIn = new ArrayList<>();
         guests = new HashMap<>();
         userIDS = 0;
@@ -37,14 +38,11 @@ public class UserRepository {
     }
 
     public Subscriber getSubscriber(String username) {
-        if (subscribers.containsKey(username)) {
-            return subscribers.get(username);
-        }
-        return null;
+        return iuserRepository.findById(username).get();
     }
 
-    public Map<String, Subscriber> getSubscribers() {
-        return subscribers;
+    public List<Subscriber> getAllSubscribers() {
+        return iuserRepository.findAll();
     }
 
     public List<String> getSubscribersLoggedIn() {
@@ -60,23 +58,16 @@ public class UserRepository {
     }
 
     public Boolean isUserExist(String username) {
-        return subscribers.containsKey(username);
+        return iuserRepository.existsById(username);
     }
 
-    public Boolean addSubscriber(Subscriber subscriber) {
-        if (subscribers.containsKey(subscriber.getUsername())) {
-            return false;
-        }
-        subscribers.put(subscriber.getUsername(), subscriber);
-        return true;
+    public void addSubscriber(Subscriber subscriber) {
+        iuserRepository.save(subscriber);
     }
 
-    public Boolean removeSubscriber(String username) {
-        if (subscribers.containsKey(username)) {
-            subscribers.remove(username);
-            return true;
-        }
-        return false;
+    public void removeSubscriber(String username) {
+        Subscriber subscriber = iuserRepository.findById(username).get();
+        iuserRepository.delete(subscriber);
     }
 
     public Boolean addGuest(User guest) {
@@ -117,6 +108,6 @@ public class UserRepository {
 
 
     public Response<Set<String>> getAllSubscribersUsernames() {
-        return Response.success("All subscribers",subscribers.keySet());
+        return Response.success("All subscribers", new HashSet<>(iuserRepository.findAll().stream().map(Subscriber::getUsername).toList()));
     }
 }

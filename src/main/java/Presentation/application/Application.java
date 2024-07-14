@@ -21,7 +21,7 @@ import java.sql.Statement;
 
 @Push
 @SpringBootApplication
-@ComponentScan(basePackages = {"Service", "Domain", "Presentation", "Domain.Store"})
+@ComponentScan(basePackages = {"Domain", "Facades", "Service", "Presentation"})
 @Theme(value = "my-app")
 @EntityScan(basePackages = "Domain")
 public class Application implements AppShellConfigurator {

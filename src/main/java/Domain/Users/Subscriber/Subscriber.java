@@ -16,10 +16,10 @@ import java.util.*;
 @Entity
 @Table(name = "subscribers")
 public class Subscriber extends User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = true)
     private Integer id;
-
     @Transient
     private final List<Integer> subscribedStores;
     @Transient

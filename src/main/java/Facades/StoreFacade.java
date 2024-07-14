@@ -26,8 +26,8 @@ import java.util.Set;
 public class StoreFacade {
     @Autowired
     private StoreRepository storeRepository;
-    @Autowired
-    private IStoreRepository iStoreRepository;
+//    @Autowired
+//    private IStoreRepository iStoreRepository;
 
     public boolean isStoreManager(Integer storeID, String currentUsername) {
         Store store = storeRepository.getActiveStore(storeID);
@@ -156,7 +156,6 @@ public class StoreFacade {
         try {
             Integer storeId = storeRepository.getStoreID();
             Store store = new Store(storeId, storeName, creator);
-            iStoreRepository.save(store);
             Inventory inventory = new Inventory(storeId);
             store.setInventory(inventory);
             storeRepository.addActiveStore(store);
@@ -229,7 +228,7 @@ public class StoreFacade {
     }
 
     public boolean storeExists(Integer storeID) {
-        return storeRepository.isStoreExist(storeID).isSuccess();
+        return storeRepository.isStoreExist(storeID);
     }
 
 
@@ -403,8 +402,8 @@ public class StoreFacade {
 
 
     public Response<Integer> getStoreIDbyName(String storeName, String userName) {
-        Map<Integer, Store> stores = storeRepository.getActiveStores();
-        for (Store store : stores.values()) {
+        List<Store> stores = storeRepository.getActiveStores();
+        for (Store store : stores) {
             if (store.getName().equals(storeName)) {
                 SystemLogger.info("[SUCCESS] " + userName + " successfully retrieved the store ID by name: " + storeName);
                 return Response.success("Successfully retrieved the store ID by name.", store.getId());
@@ -531,9 +530,9 @@ public class StoreFacade {
     }
 
     public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByName(String productName) {
-        Map<Integer, Store> stores = storeRepository.getActiveStores();
+        List<Store> stores = storeRepository.getActiveStores();
         ArrayList<ProductDTO> products = new ArrayList<>();
-        for (Store store : stores.values()) {
+        for (Store store : stores) {
             Response<ProductDTO> response = store.viewProductByName(productName);
             if (response.isSuccess()) {
                 products.add(response.getData());
@@ -543,9 +542,9 @@ public class StoreFacade {
     }
 
     public Response<ArrayList<ProductDTO>> viewProductFromAllStoresByCategory(String category) {
-        Map<Integer, Store> stores = storeRepository.getActiveStores();
+        List<Store> stores = storeRepository.getActiveStores();
         ArrayList<ProductDTO> products = new ArrayList<>();
-        for (Store store : stores.values()) {
+        for (Store store : stores) {
             Response<ArrayList<ProductDTO>> response = store.viewProductByCategory(category);
             if (response.isSuccess()) {
                 products.addAll(response.getData());
@@ -862,9 +861,9 @@ public class StoreFacade {
     }
 
     public Response<ArrayList<String>> retrieveAllCategoriesFromAllStore() {
-        Map<Integer, Store> stores = storeRepository.getActiveStores();
+        List<Store> stores = storeRepository.getActiveStores();
         ArrayList<String> categories = new ArrayList<>();
-        for (Store store : stores.values()) {
+        for (Store store : stores) {
             Response<ArrayList<String>> response = store.retrieveAllCategoriesFromAllStore();
             if (response.isSuccess()) {
                 for (String category : response.getData()) {
@@ -881,9 +880,9 @@ public class StoreFacade {
     }
 
     public Response<List<String>> getAllStores() {
-        Map<Integer, Store> stores = storeRepository.getActiveStores();
+        List<Store> stores = storeRepository.getActiveStores();
         List<String> storesList = new ArrayList<>();
-        for (Store store : stores.values()) {
+        for (Store store : stores) {
             storesList.add(store.getName());
         }
         return Response.success("All stores were retrieved successfully", storesList);

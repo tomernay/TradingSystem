@@ -28,11 +28,11 @@ public class Store {
     private String storeName;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "inventory_id", foreignKey = @ForeignKey(name = "FK_inventory_store"))
+    @JoinColumn(name = "inventory_id", referencedColumnName = "inventory_id", foreignKey = @ForeignKey(name = "FK_inventory_store"))
     private Inventory inventory;
 
     @Transient
-    private Map<String, SubscriberState> subscribers; //<SubscriberUsername, SubscriberState>
+    private Map<String, SubscriberState> subscribers = new HashMap<>(); //<SubscriberUsername, SubscriberState>
     @Transient
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     @Transient
@@ -55,7 +55,6 @@ public class Store {
         this.storeID = storeID;
         this.storeName = name;
         SubscriberState create = new StoreCreator(this, creator);
-        subscribers = new HashMap<>();
         subscribers.put(creator, create);
         managerPermissions = new HashMap<>();
         nominationGraph = new HashMap<>();
