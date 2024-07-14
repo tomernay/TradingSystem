@@ -26,7 +26,7 @@ public class Inventory {
     private Integer storeID; //Inventory for specific store
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id", referencedColumnName = "storeID", foreignKey = @ForeignKey(name = "FK_product_inventory"))
+    @JoinColumn(name = "storeID", foreignKey = @ForeignKey(name = "FK_inventory_store"))
     public ConcurrentHashMap<Integer, Product> productsList; // <productID, Product>
 
     @Transient

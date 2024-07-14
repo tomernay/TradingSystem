@@ -9,4 +9,6 @@ import java.util.Map;
 
 @Repository
 public interface IStoreRepository extends JpaRepository<Store, Integer> {
+    @Query("SELECT s FROM Store s WHERE s.storeID = ?1")
+    Store findByStoreID(Integer storeID);
 }

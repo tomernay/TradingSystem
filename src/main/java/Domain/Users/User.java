@@ -26,7 +26,7 @@ public class User {
     @JoinColumn(name = "shopping_cart_id", foreignKey = @ForeignKey(name = "FK_shoppingCart_user"))
     private ShoppingCart shoppingCart;
 
-    @Transient
+    @Column(nullable = true)
     protected String Token;
 
     public User(String username) {

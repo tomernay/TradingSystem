@@ -713,7 +713,7 @@ public class UserService {
 
     @Transactional
     public boolean isValidToken(String token, String currentUsername) {
-        return userFacade.isValidToken(token, currentUsername);
+        return userFacade.isValidToken(currentUsername);
     }
 
     public UserFacade getUserFacade() {

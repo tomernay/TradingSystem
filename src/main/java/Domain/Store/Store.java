@@ -27,8 +27,8 @@ public class Store {
     @Column(name = "store_name", nullable = false)
     private String storeName;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeID", referencedColumnName = "storeID", foreignKey = @ForeignKey(name = "FK_inventory_store"))
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "inventory_id", foreignKey = @ForeignKey(name = "FK_inventory_store"))
     private Inventory inventory;
 
     @Transient

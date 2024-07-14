@@ -251,8 +251,9 @@ public class UserFacade {
         return subscriber.addMessage(message);
     }
 
-    public boolean isValidToken(String token, String currentUsername) {
-        return TokenHandler.isValidJWT(token,currentUsername);
+    public boolean isValidToken(String currentUsername) {
+        Subscriber subscriber = iUserRepository.findByUsername(currentUsername);
+        return TokenHandler.isValidJWT(subscriber.getToken(),currentUsername);
     }
 
     public void addCreatorRole(String creatorUsername, Integer storeID) {
