@@ -508,7 +508,7 @@ public class Store {
                 for (Condition c : policies.values()) {
                     if (!c.isValid(productsInShoppingCart)) {
                         SystemLogger.error("[ERROR] The following policy is not valid:\n" + c);
-                        return Response.error("The condition: " + c.getConditionID() + " is not valid", false);
+                        return Response.error("[ERROR] The following policy is not valid:\n" + c, false);
                     }
                 }
                 SystemLogger.info("[SUCCESS] All conditions are valid");

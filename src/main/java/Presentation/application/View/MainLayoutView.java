@@ -1061,7 +1061,7 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
         Button cart = new Button("", e -> {
             // Define your condition here
             String username = presenter.getUserName();
-            boolean conditionMet = presenter.isSuspended(username);
+            boolean conditionMet = !presenter.isSuspended(username);
 
             if (conditionMet) {
                 getUI().ifPresent(ui -> ui.navigate("shopping-cart"));
