@@ -1,18 +1,30 @@
 package Domain;
 
 import Domain.Store.Inventory.ProductDTO;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Entity
+@Table(name = "Orders")
 public class Order {
-    private final Integer orderID;
-    private final Integer storeID;
-    private final String username;
-    private final String deliveryAddress;
-    private final Date orderDate;
-    private final List<ProductDTO> products; // <productID, <PARAMETER, VALUE>>
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer orderID;
+    @Column(nullable = true)
+    private Integer storeID;
+    @Column(nullable = true)
+    private String username;
+    @Column(nullable = true)
+    private String deliveryAddress;
+    @Column(nullable = true)
+    private Date orderDate;
+    @Transient
+    private List<ProductDTO> products; // <productID, <PARAMETER, VALUE>>
+    @Column(nullable = true)
     private String status;
 
     public Order(Integer orderID, Integer storeID, String username, String deliveryAddress, List<ProductDTO> products) {
@@ -23,6 +35,9 @@ public class Order {
         this.orderDate = new Date(); // Set to current date/time
         this.products = products;
         this.status = "Pending";
+    }
+    public Order(){
+        this.products = new ArrayList<>();
     }
 
     public int getOrderID() {

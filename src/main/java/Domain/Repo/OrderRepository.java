@@ -3,6 +3,7 @@ package Domain.Repo;
 import Domain.Order;
 import Domain.Store.Inventory.ProductDTO;
 import Presentation.application.View.UtilitiesView.Broadcaster;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -10,6 +11,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Repository
 public class OrderRepository {
+
+    @Autowired
+    private IOrderRepository iOrderRepository;
     private final Map<Integer, Order> orders; // <orderID, Order>
     private final AtomicInteger orderID = new AtomicInteger(0);
 
@@ -18,7 +22,8 @@ public class OrderRepository {
     }
 
     public void addOrder(Order order) {
-        orders.put(order.getOrderID(), order);
+        //orders.put(order.getOrderID(), order);
+        iOrderRepository.save(order);
     }
 
     public Integer getOrderID() {
@@ -26,7 +31,15 @@ public class OrderRepository {
     }
 
     public Map<Integer, Order> getOrders() {
+
+        Map<Integer, Order> orders = new HashMap<>();
+        for (Order order : iOrderRepository.findAll()){
+            orders.put(order.getOrderID(), order);
+        }
+
         return orders;
+
+
     }
 
     public void notifyStaff(List<ProductDTO> products,Set<String> names) {
