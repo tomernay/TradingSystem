@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Store {
 
     @Id
-    @Column(name = "storeID", nullable = false, unique = true)
+    @Column(name = "store_id", nullable = false, unique = true)
     private Integer storeID;
 
     @Column(name = "store_name", nullable = false)
@@ -31,7 +31,9 @@ public class Store {
     @JoinColumn(name = "inventory_id", referencedColumnName = "inventory_id", foreignKey = @ForeignKey(name = "FK_inventory_store"))
     private Inventory inventory;
 
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "store_id")
+    @MapKey(name = "subscriberUsername")
     private Map<String, SubscriberState> subscribers = new HashMap<>(); //<SubscriberUsername, SubscriberState>
     @Transient
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
@@ -64,6 +66,12 @@ public class Store {
     }
 
     public Store() {
+        this.subscribers = new HashMap<>();
+        this.managerPermissions = new HashMap<>();
+        this.nominationGraph = new HashMap<>();
+        this.reverseNominationMap = new HashMap<>();
+        this.discounts = new HashMap<>();
+        this.policies = new HashMap<>();
     }
 
     // Getter and setter for id

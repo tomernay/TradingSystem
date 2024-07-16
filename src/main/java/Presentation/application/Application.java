@@ -57,7 +57,6 @@ public class Application implements AppShellConfigurator {
 
 
 
-            System.out.println("Subscribers table has been reset successfully, including the ID column.");
 
         } catch (SQLException e) {
             e.printStackTrace();

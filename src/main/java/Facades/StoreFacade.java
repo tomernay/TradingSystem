@@ -156,6 +156,7 @@ public class StoreFacade {
         try {
             Integer storeId = storeRepository.getStoreID();
             Store store = new Store(storeId, storeName, creator);
+            System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" + store.getSubscribers().toString());
             storeRepository.addActiveStore(store);
             Inventory inventory = new Inventory(storeId);
             store.setInventory(inventory);

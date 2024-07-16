@@ -2,10 +2,17 @@ package Domain.Users.StateOfSubscriber;
 
 import Domain.Store.Store;
 import Utilities.Response;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 
-
+@Entity
+@DiscriminatorValue("OWNER")
 public class StoreOwner extends SubscriberState {
-    private final String nominatorUsername;
+    private  String nominatorUsername;
+
+    public StoreOwner() {
+    }
 
     public StoreOwner(Store store, String subscriberUsername, String nominatorUsername) {
         super(subscriberUsername, store);

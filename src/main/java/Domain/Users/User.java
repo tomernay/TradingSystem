@@ -19,8 +19,9 @@ public class User {
     @Column(nullable = false, unique = true)
     protected String username;
 
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_shoppingCart_user_1"))
+    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "FK_shoppingCart_user_2"))
     private ShoppingCart shoppingCart;
 
     @Column(nullable = true)

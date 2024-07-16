@@ -2,8 +2,16 @@ package Domain.Users.StateOfSubscriber;
 
 import Domain.Store.Store;
 import Utilities.Response;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
 
+@Entity
+@DiscriminatorValue("NORMAL")
 public class NormalSubscriber extends SubscriberState {
+
+    public NormalSubscriber() {
+    }
 
     public NormalSubscriber(Store store, String subscriberID) {
         super(subscriberID, store);
