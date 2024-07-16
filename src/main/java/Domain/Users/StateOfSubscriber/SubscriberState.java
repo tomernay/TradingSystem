@@ -5,13 +5,23 @@ import Utilities.Messages.Message;
 import Utilities.Messages.nominateManagerMessage;
 import Utilities.Messages.nominateOwnerMessage;
 import Utilities.Response;
+import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.List;
 
-public abstract class SubscriberState {
-    private final String subscriberUsername;
-    private final Store store;
+@Entity
+public class SubscriberState {
+    @Id
+    private String subscriberUsername;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id", foreignKey = @ForeignKey(name = "FK_store_subscribers"))
+    private Store store;
+
+    public SubscriberState() {
+    }
 
     public SubscriberState(String subscriberUsername, Store store) {
         this.subscriberUsername = subscriberUsername;
@@ -19,7 +29,9 @@ public abstract class SubscriberState {
     }
 
 
-    public abstract Response<String> changeState(Store store, String subscriberUsername, SubscriberState newState);
+    public Response<String> changeState(Store store, String subscriberUsername, SubscriberState newState) {
+        return store.changeState(subscriberUsername, newState);
+    }
 
     public Response<Message> makeNominateOwnerMessage(String subscriberUsername, boolean isSubscribed, String nominatorUsername) {
         return Response.success("Created message successfully", new nominateOwnerMessage(this.store.getId(), this.store.getName(), subscriberUsername, isSubscribed, nominatorUsername));
@@ -35,5 +47,10 @@ public abstract class SubscriberState {
 
     //Override toString()
     @Override
-    public abstract String toString();
+    public String toString() {
+        return "SubscriberState{" +
+                "subscriberUsername='" + subscriberUsername + '\'' +
+                ", store=" + store +
+                '}';
+    }
 }
