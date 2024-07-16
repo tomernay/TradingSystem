@@ -2,6 +2,7 @@ package Presentation.application.View;
 
 import Presentation.application.CookiesHandler;
 import Presentation.application.Presenter.LoginPresenter;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -108,6 +109,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         getUI().ifPresent(ui -> ui.access(() -> {
             try {
                 ui.navigate("");
+                UI.getCurrent().getPage().executeJs("setTimeout(function() { window.location.reload(); }, 1);");
             } catch (Exception e) {
                 e.printStackTrace(); // Log the exception for debugging
             }

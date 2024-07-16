@@ -1,8 +1,6 @@
 package Service;
 
 import Domain.Store.Conditions.ConditionDTO;
-import Domain.Store.Conditions.ConditionType;
-import Domain.Store.Discounts.TYPE;
 import Domain.Store.Discounts.DiscountDTO;
 import Domain.Store.Inventory.ProductDTO;
 import Facades.StoreFacade;
