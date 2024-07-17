@@ -5,12 +5,14 @@ import Utilities.Response;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
-@DiscriminatorValue("CREATOR")
+@Table(name = "store_creators")
 public class StoreCreator extends SubscriberState {
 
     public StoreCreator() {
+        super();
     }
 
     public StoreCreator(Store store, String subscriberID) {

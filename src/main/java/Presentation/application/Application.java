@@ -14,10 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 @Push
 @SpringBootApplication
@@ -47,13 +44,13 @@ public class Application implements AppShellConfigurator {
              Statement stmt = conn.createStatement()) {
 
             // Select the database
-            stmt.executeUpdate("USE " + DATABASE_NAME);
+        //    stmt.executeUpdate("USE " + DATABASE_NAME);
 
             // Reset the auto-increment value of the ID column to 1
-            stmt.executeUpdate("ALTER TABLE subscribers AUTO_INCREMENT = 1");
+        //    stmt.executeUpdate("ALTER TABLE subscribers AUTO_INCREMENT = 1");
 
             // Delete all subscribers
-            stmt.executeUpdate("DELETE FROM subscribers");
+          //  stmt.executeUpdate("DELETE FROM subscribers");
 
 
 

@@ -5,9 +5,10 @@ import Utilities.Response;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
-@DiscriminatorValue("MANAGER")
+@Table(name = "store_managers")
 public class StoreManager extends SubscriberState {
     private  String nominatorUsername;
 

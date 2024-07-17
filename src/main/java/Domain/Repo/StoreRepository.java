@@ -7,6 +7,7 @@ import Presentation.application.View.UtilitiesView.Broadcaster;
 import Utilities.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +32,7 @@ public class StoreRepository {
         return storeID.getAndIncrement();
     }
 
+
     public void addActiveStore(Store store) {
         iStoreRepository.save(store);
     }
@@ -50,7 +52,9 @@ public class StoreRepository {
     }
 
     public Store getActiveStore(Integer storeID) {
-        return iStoreRepository.findById(storeID).get();
+        Store s= iStoreRepository.findById(storeID).get();
+        System.out.println(s);
+        return s;
     }
 
     public Store getDeactivatedStore(Integer storeID) {
@@ -69,6 +73,7 @@ public class StoreRepository {
         return iStoreRepository.existsById(storeID);
     }
 
+    @Transactional
     public List<Store> getActiveStores() {
         return iStoreRepository.findAll();
     }

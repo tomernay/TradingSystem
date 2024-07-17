@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepository {
@@ -104,6 +105,10 @@ public class UserRepository {
 
     public Map<String, User> getGuests() {
         return guests;
+    }
+
+    public Map<String, Subscriber> getSubscribers(){
+        return iuserRepository.findAll().stream().collect(Collectors.toMap(Subscriber::getUsername, Function.identity()));
     }
 
 

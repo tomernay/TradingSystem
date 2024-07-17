@@ -88,6 +88,8 @@ public class MainLayoutView extends AppLayout implements BeforeEnterObserver {
 //         addDrawerContent();
         addHomeButton();
         addUserButton();
+
+
         welcomeText();
         addSearchBar();
         searchByCategory();

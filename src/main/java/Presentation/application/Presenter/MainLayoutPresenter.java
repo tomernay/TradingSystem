@@ -237,13 +237,19 @@ public class MainLayoutPresenter {
     }
 
     public ArrayList<String> getAllCategories() {
-        String username = CookiesHandler.getUsernameFromCookies(request);
-        String token = CookiesHandler.getTokenFromCookies(request);
-        Response<ArrayList<String>> response = storeService.retrieveCategoriesFromAllStore(username, token);
-        if (response.isSuccess()) {
-            return response.getData();
-        }
-        return new ArrayList<>();
+        try {
+
+
+            String username = CookiesHandler.getUsernameFromCookies(request);
+            String token = CookiesHandler.getTokenFromCookies(request);
+            Response<ArrayList<String>> response = storeService.retrieveCategoriesFromAllStore(username, token);
+            if (response.isSuccess()) {
+                return response.getData();
+            }
+        }catch (Exception e){}
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("snacks");
+        return list;
     }
   
     public boolean isLoggedIn() {

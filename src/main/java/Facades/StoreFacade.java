@@ -152,6 +152,7 @@ public class StoreFacade {
         return Response.error("Store doesn't exist", null);
     }
 
+
     public Response<Integer> openStore(String storeName, String creator) {
         try {
             Integer storeId = storeRepository.getStoreID();

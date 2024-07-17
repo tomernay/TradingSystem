@@ -21,8 +21,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Store {
 
     @Id
-    @Column(name = "store_id", nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer storeID;
+
 
     @Column(name = "store_name", nullable = false)
     private String storeName;
@@ -31,10 +32,13 @@ public class Store {
     @JoinColumn(name = "inventory_id", referencedColumnName = "inventory_id", foreignKey = @ForeignKey(name = "FK_inventory_store"))
     private Inventory inventory;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "store_id")
-    @MapKey(name = "subscriberUsername")
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @MapKey(name = "subscriberUsername") // Change this to match the property in SubscriberState
     private Map<String, SubscriberState> subscribers = new HashMap<>(); //<SubscriberUsername, SubscriberState>
+//<SubscriberUsername, SubscriberState>
+
+    @Column(name = "store_id", nullable = true) // Add this line
+    private Integer storeId=0; // This should match the DB schema
     @Transient
     private Map<String, List<Permissions>> managerPermissions; //<ManagerUsername, List<Permissions>>
     @Transient
@@ -63,6 +67,7 @@ public class Store {
         reverseNominationMap = new HashMap<>();
         discounts = new HashMap<>();
         policies = new HashMap<>();
+      inventory=new Inventory(storeID);
     }
 
     public Store() {
@@ -72,6 +77,7 @@ public class Store {
         this.reverseNominationMap = new HashMap<>();
         this.discounts = new HashMap<>();
         this.policies = new HashMap<>();
+          inventory=new Inventory(storeID);
     }
 
     // Getter and setter for id
@@ -299,6 +305,7 @@ public class Store {
     }
 
     private synchronized Response<String> checkUserPermission(String userName, Permissions requiredPermission) {
+
         if (!subscribers.containsKey(userName)) {
             SystemLogger.error("[ERROR] The user: " + userName + " is not a subscriber of the store: " + storeName);
             return Response.error("The user: " + userName + " can't perform this action", null);

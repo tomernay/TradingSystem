@@ -46,7 +46,7 @@ public class StoreService {
      * @param token the token of the creator
      * @return If successful, returns a success message. <br> If not, returns an error message.
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Response<Integer> addStore(String storeName, String creatorUsername, String token) {
         SystemLogger.info("[START] User: " + creatorUsername + " is trying to create a store with name: " + storeName);
         if (userService.isValidToken(token, creatorUsername)) {
